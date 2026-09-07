@@ -3,7 +3,7 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCX_ZC18wviACEZg2oxDY",
+  apiKey: "AIzaSyCX_ZC18wviACEbGwTLBQiD95HVZg2oxDY",
   authDomain: "great-stand-consult.firebaseapp.com",
   projectId: "great-stand-consult",
   storageBucket: "great-stand-consult.firebasestorage.app",
