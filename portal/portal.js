@@ -13,46 +13,43 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-
 const loginView = document.getElementById("loginView");
 const dashboardView = document.getElementById("dashboardView");
 const form = document.getElementById("loginForm");
 const msg = document.getElementById("loginMessage");
 const logout = document.getElementById("logoutBtn");
 
-
-form.addEventListener("submit", async (e) => {
+form.addEventListener("submit", async function (e) {
   e.preventDefault();
-
-  msg.textContent = "Logging in...";
 
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
+  msg.textContent = "Logging in...";
+
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
-    console.error(error);
-    msg.textContent = "Login failed: " + error.message;
+    console.error("LOGIN ERROR:", error);
+    msg.textContent = "Login failed: " + error.code;
   }
 });
 
-
-logout.onclick = () => signOut(auth);
-
+logout.addEventListener("click", function () {
+  signOut(auth);
+});
 
 async function count(collectionName) {
   try {
     const snapshot = await getDocs(collection(db, collectionName));
     return snapshot.size;
   } catch (error) {
-    console.error("Count error:", error);
+    console.error("COUNT ERROR:", error);
     return 0;
   }
 }
 
-
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, async function (user) {
 
   if (!user) {
     loginView.classList.remove("hidden");
@@ -65,15 +62,10 @@ onAuthStateChanged(auth, async (user) => {
   dashboardView.classList.remove("hidden");
   logout.classList.remove("hidden");
 
-
   try {
-
-    console.log("Logged-in UID:", user.uid);
 
     const userRef = doc(db, "users", user.uid);
     const userSnapshot = await getDoc(userRef);
-
-    console.log("Profile exists:", userSnapshot.exists());
 
     if (!userSnapshot.exists()) {
 
@@ -81,31 +73,24 @@ onAuthStateChanged(auth, async (user) => {
         "PROFILE NOT FOUND";
 
       document.getElementById("roleText").textContent =
-        "No user profile was found in Firestore.";
+        "No Firestore profile was found.";
 
       document.getElementById("statusText").textContent =
-        "Your Firebase account is working, but your users document was not found.";
+        "Your login worked, but your user profile is missing.";
 
       return;
     }
 
-
     const profile = userSnapshot.data();
 
     const name = profile.name || user.email;
-
-    const role = String(profile.role || "student")
-      .trim()
-      .toLowerCase();
-
+    const role = String(profile.role || "student").trim().toLowerCase();
 
     document.getElementById("welcomeTitle").textContent =
       "Welcome, " + name;
 
-
     document.getElementById("roleText").textContent =
       "Signed in as " + role;
-
 
     if (role === "superadmin") {
 
@@ -124,7 +109,6 @@ onAuthStateChanged(auth, async (user) => {
 
     }
 
-
     document.getElementById("notesCount").textContent =
       await count("notes");
 
@@ -137,19 +121,18 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById("resultsCount").textContent =
       await count("results");
 
-
   } catch (error) {
 
-    console.error(error);
+    console.error("FIRESTORE ERROR:", error);
 
     document.getElementById("welcomeTitle").textContent =
       "FIRESTORE ERROR";
 
     document.getElementById("roleText").textContent =
-      error.message;
+      error.code || error.message;
 
     document.getElementById("statusText").textContent =
-      "There was a problem reading your Firestore profile.";
+      "There was a problem reading your profile.";
 
   }
 
