@@ -1,13 +1,83 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Great Stand Portal</title><link rel="stylesheet" href="portal.css"></head>
-<body><header class="topbar"><div class="brand"><span class="brand-mark">G</span><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div><button id="logoutBtn" class="logout hidden">Logout</button></header>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Great Stand Portal</title>
+<link rel="stylesheet" href="portal.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="brand-mark">G</span><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div>
+  <button id="logoutBtn" class="logout hidden">Logout</button>
+</header>
+
 <main>
-<section id="loginView" class="card login-card"><div class="badge">GREAT STAND PORTAL</div><h1>Welcome Back</h1><p class="intro">Sign in to access your Great Stand Educational Consult portal.</p><form id="loginForm"><label for="email">Email Address</label><input id="email" type="email" placeholder="Enter your email" required><label for="password">Password</label><input id="password" type="password" placeholder="Enter your password" required><button type="submit" class="primary-btn">Login</button><p id="loginMessage" class="message"></p></form></section>
-<section id="dashboardView" class="hidden"><div class="welcome"><span class="badge">GREAT STAND PORTAL</span><h1 id="welcomeTitle">Dashboard</h1><p id="roleText"></p></div>
-<div class="stats"><div class="stat-card"><span>📚</span><strong id="notesCount">0</strong><p>Notes</p></div><div class="stat-card"><span>📝</span><strong id="assignmentsCount">0</strong><p>Assignments</p></div><div class="stat-card"><span>💻</span><strong id="testsCount">0</strong><p>Tests</p></div><div class="stat-card"><span>🏆</span><strong id="resultsCount">0</strong><p>Results</p></div></div>
-<div id="adminPanel" class="panel hidden"><h2>📚 Manage Notes</h2><p class="muted">Admins can publish notes for students to read.</p><form id="noteForm"><label for="noteTitle">Note Title</label><input id="noteTitle" required placeholder="e.g. JAMB English: Parts of Speech"><label for="noteSubject">Subject</label><input id="noteSubject" required placeholder="e.g. English Language"><label for="noteContent">Note Content</label><textarea id="noteContent" required placeholder="Type or paste the lesson note here..."></textarea><button class="primary-btn" type="submit">Publish Note</button><p id="noteMessage" class="message"></p></form></div>
-<div class="panel"><h2>📖 Available Notes</h2><div id="notesList"><p class="muted">Loading notes...</p></div></div>
-<div class="panel"><h2>Portal Status</h2><p id="statusText">Loading...</p></div>
-<div class="panel"><h2>What you can do here</h2><div class="features"><div><strong>📚 Learning Materials</strong><p>Access notes and study materials.</p></div><div><strong>📝 Assignments</strong><p>Receive and submit assignments.</p></div><div><strong>💻 CBT Tests</strong><p>Take online tests and examinations.</p></div><div><strong>🏆 Results</strong><p>View your scores and academic performance.</p></div></div></div>
-</section></main><footer>© 2026 Great Stand Educational Consult. Guiding Students. Building Futures.</footer><script type="module" src="portal.js"></script></body></html>
+<section id="loginView" class="card login-card">
+  <div class="badge">GREAT STAND PORTAL</div>
+  <h1>Welcome Back</h1>
+  <p class="intro">Sign in to access your Great Stand Educational Consult portal.</p>
+  <form id="loginForm">
+    <label for="email">Email Address</label>
+    <input id="email" type="email" required>
+    <label for="password">Password</label>
+    <input id="password" type="password" required>
+    <button class="primary-btn" type="submit">Login</button>
+    <p id="loginMessage" class="message"></p>
+  </form>
+</section>
+
+<section id="dashboardView" class="hidden">
+  <div class="welcome">
+    <span class="badge">GREAT STAND PORTAL</span>
+    <h1 id="welcomeTitle">Dashboard</h1>
+    <p id="roleText"></p>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card"><span>📚</span><strong id="notesCount">0</strong><p>Notes</p></div>
+    <div class="stat-card"><span>📝</span><strong id="assignmentsCount">0</strong><p>Assignments</p></div>
+    <div class="stat-card"><span>💻</span><strong id="testsCount">0</strong><p>Tests</p></div>
+    <div class="stat-card"><span>🏆</span><strong id="resultsCount">0</strong><p>Results</p></div>
+  </div>
+
+  <div id="adminPanel" class="panel hidden">
+    <h2>📚 Manage Notes</h2>
+    <p class="muted">Admin and Superadmin can publish notes for students.</p>
+    <form id="noteForm">
+      <label for="noteTitle">Note Title</label>
+      <input id="noteTitle" required placeholder="e.g. JAMB English: Parts of Speech">
+      <label for="noteSubject">Subject</label>
+      <input id="noteSubject" required placeholder="e.g. English Language">
+      <label for="noteContent">Note Content</label>
+      <textarea id="noteContent" required placeholder="Type or paste the lesson note here..."></textarea>
+      <button class="primary-btn" type="submit">Publish Note</button>
+      <p id="noteMessage" class="message"></p>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h2>📖 Available Notes</h2>
+    <div id="notesList"><p class="muted">Loading notes...</p></div>
+  </div>
+
+  <div class="panel">
+    <h2>Portal Status</h2>
+    <p id="statusText">Loading...</p>
+  </div>
+
+  <div class="panel">
+    <h2>What you can do here</h2>
+    <div class="features">
+      <div><strong>📚 Learning Materials</strong><p>Access notes and study materials.</p></div>
+      <div><strong>📝 Assignments</strong><p>Receive and submit assignments.</p></div>
+      <div><strong>💻 CBT Tests</strong><p>Take online tests and examinations.</p></div>
+      <div><strong>🏆 Results</strong><p>View your scores and academic performance.</p></div>
+    </div>
+  </div>
+</section>
+</main>
+<footer>© 2026 Great Stand Educational Consult. Guiding Students. Building Futures.</footer>
+<script type="module" src="portal.js?v=4"></script>
+</body>
+</html>

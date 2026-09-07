@@ -1,1 +1,3 @@
-Great Stand Portal V3 - Notes feature. Both admin and superadmin can publish notes. Students can read published notes.
+GREAT STAND PORTAL V4
+Admin + Superadmin Notes Management
+Uses the existing Firebase project and Firestore users/notes collections.
