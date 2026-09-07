@@ -1,3 +1,2 @@
-GREAT STAND PORTAL V4
-Admin + Superadmin Notes Management
-Uses the existing Firebase project and Firestore users/notes collections.
+GREAT STAND PORTAL V5
+Admin and Superadmin can publish notes; students can read them.
