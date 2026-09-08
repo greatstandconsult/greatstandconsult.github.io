@@ -1,0 +1,126 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Great Stand Portal</title><link rel="stylesheet" href="portal.css?v=17.0"></head><body><header class="topbar"><div class="brand"><span class="brand-mark">G</span><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div><button id="logoutBtn" class="logout hidden">Logout</button></header><main><section id="loginView" class="card login-card"><div class="badge">GREAT STAND PORTAL</div><h1>Welcome Back</h1><p class="intro">Sign in to access your portal.</p><form id="loginForm"><label>Email Address</label><input id="email" type="email" required><label>Password</label><input id="password" type="password" required><button class="primary-btn" type="submit">Login</button><p id="loginMessage" class="message"></p></form></section><section id="dashboardView" class="hidden"><div class="welcome"><span class="badge">GREAT STAND PORTAL</span><h1 id="welcomeTitle">Dashboard</h1><p id="roleText"></p></div><div class="stats"><div class="stat-card">📚<strong id="notesCount">0</strong><p>Notes</p></div><div class="stat-card">📝<strong id="assignmentsCount">0</strong><p>Assignments</p></div><div class="stat-card">💻<strong id="testsCount">0</strong><p>Tests</p></div><div class="stat-card">🏆<strong id="resultsCount">0</strong><p>Results</p></div><div class="stat-card">👨‍🎓<strong id="studentsCount">0</strong><p>Students</p></div></div><div id="adminPanel" class="panel admin-panel" style="display:none"><h2>📚 Manage Notes</h2><p class="muted">Admins and Superadmins can publish notes for students.</p><form id="noteForm"><label>Note Title</label><input id="noteTitle" required placeholder="e.g. JAMB English: Parts of Speech"><label>Subject</label><input id="noteSubject" required placeholder="e.g. English Language"><label>Note Content</label><textarea id="noteContent" required placeholder="Type or paste the lesson note here..."></textarea><button class="primary-btn" type="submit">Publish Note</button><p id="noteMessage" class="message"></p></form></div><div class="panel"><h2>📖 Available Notes</h2><div id="notesList"><p class="muted">Loading notes...</p></div></div>
+<div id="assignmentAdminPanel" class="panel admin-panel" style="display:none">
+  <h2>📝 Manage Assignments</h2>
+  <p class="muted">Admins and Superadmins can create assignments for students.</p>
+  <form id="assignmentForm">
+    <label>Assignment Title</label>
+    <input id="assignmentTitle" required placeholder="e.g. JAMB English Practice">
+    <label>Subject</label>
+    <input id="assignmentSubject" required placeholder="e.g. English Language">
+    <label>Instructions / Questions</label>
+    <textarea id="assignmentContent" required placeholder="Type the assignment questions or instructions here..."></textarea>
+    <label>Deadline (optional)</label>
+    <input id="assignmentDeadline" type="datetime-local">
+    <button class="primary-btn" type="submit">Publish Assignment</button>
+    <p id="assignmentMessage" class="message"></p>
+  </form>
+</div>
+<div id="studentAdminPanel" class="panel admin-panel" style="display:none">
+  <h2>👨‍🎓 Manage Students</h2>
+  <p class="muted">Admins and Superadmins can register and manage student accounts.</p>
+  <form id="studentForm">
+    <label>Student Full Name</label><input id="studentName" required placeholder="e.g. Test Student">
+    <label>Email Address</label><input id="studentEmail" type="email" required placeholder="student@example.com">
+    <label>Temporary Password</label><input id="studentPassword" type="password" minlength="6" required placeholder="Minimum 6 characters">
+    <label>Category</label><select id="studentCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="JAMB & WAEC" selected>JAMB & WAEC</option></select>
+    <label>Class / Level (optional)</label><input id="studentLevel" placeholder="e.g. SS3 / UTME 2027">
+    <button class="primary-btn" type="submit">Create Student Account</button>
+    <p id="studentMessage" class="message"></p>
+  </form>
+  <div class="student-list-head"><h3>Registered Students</h3></div>
+  <div id="studentsList"><p class="muted">Loading students...</p></div>
+</div>
+<div id="testAdminPanel" class="panel admin-panel" style="display:none">
+  <h2>💻 Manage CBT Tests</h2>
+  <p class="muted">Create multiple-choice practice tests for students.</p>
+  <form id="testForm">
+    <label>Test Title</label>
+    <input id="testTitle" required placeholder="e.g. JAMB English Practice Test 1">
+    <label>Subject</label>
+    <input id="testSubject" required placeholder="e.g. English Language">
+    <label>Duration (minutes)</label>
+    <input id="testDuration" type="number" min="1" max="180" value="30" required>
+    <div class="cbt-create-tabs">
+      <button id="manualCbtTab" class="secondary-btn cbt-tab active" type="button">✍️ Add Manually</button>
+      <button id="pasteCbtTab" class="secondary-btn cbt-tab" type="button">📋 Paste Questions</button>
+      <button id="csvCbtTab" class="secondary-btn cbt-tab" type="button">📊 Paste CSV</button>
+    </div>
+    <div id="manualCbtMode">
+      <div id="questionBuilder"></div>
+      <button id="addQuestionBtn" class="secondary-btn" type="button">＋ Add Question</button>
+    </div>
+    <div id="pasteCbtMode" class="cbt-import-mode hidden">
+      <p class="muted">Paste 50, 100, 150+ questions using the format below. We recognize ANSWER:, Answer =, Correct Answer:, etc.</p>
+      <textarea id="bulkQuestionsText" class="bulk-question-input" placeholder="1. What is the capital of Nigeria?
+A. Lagos
+B. Abuja
+C. Kano
+D. Ibadan
+ANSWER: B
+
+2. Which is a prime number?
+A. 12
+B. 15
+C. 17
+D. 21
+ANSWER: C"></textarea>
+      <button id="parseBulkQuestionsBtn" class="secondary-btn" type="button">🔍 Preview & Parse Questions</button>
+      <div id="bulkParseMessage" class="message"></div>
+      <div id="bulkQuestionsPreview"></div>
+    </div>
+    <div id="csvCbtMode" class="cbt-import-mode hidden">
+      <p class="muted">Paste CSV with columns: question,A,B,C,D,answer. The first row may be a header.</p>
+      <textarea id="csvQuestionsText" class="bulk-question-input" placeholder="question,A,B,C,D,answer
+What is 2+2?,1,2,3,4,D
+Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
+      <button id="parseCsvQuestionsBtn" class="secondary-btn" type="button">🔍 Preview & Parse CSV</button>
+      <div id="csvParseMessage" class="message"></div>
+      <div id="csvQuestionsPreview"></div>
+    </div>
+    <button class="primary-btn" type="submit">Publish CBT Test</button>
+    <p id="testMessage" class="message"></p>
+  </form>
+</div>
+<div class="panel">
+  <h2>💻 Available CBT Tests</h2>
+  <div id="testsList"><p class="muted">Loading tests...</p></div>
+  <div id="testModal" class="assignment-modal hidden">
+    <div class="assignment-modal-card cbt-modal-card">
+      <button id="closeTestBtn" class="close-btn" type="button">×</button>
+      <div class="cbt-head"><div><span class="badge">GREAT STAND CBT</span><h2 id="openTestTitle">Test</h2><p id="openTestSubject" class="subject"></p></div><div id="testTimer" class="test-timer">00:00</div></div>
+      <div id="testProgress" class="cbt-progress"></div>
+      <div id="testQuestionArea"></div>
+      <div class="cbt-nav"><button id="prevQuestionBtn" class="secondary-btn" type="button">← Previous</button><button id="nextQuestionBtn" class="primary-btn cbt-next" type="button">Next →</button><button id="submitTestBtn" class="primary-btn cbt-submit hidden" type="button">Submit Test</button></div>
+      <p id="testSubmitMessage" class="message"></p>
+    </div>
+  </div>
+</div>
+<div id="testResultsAdminPanel" class="panel admin-panel" style="display:none"><h2>📊 CBT Student Results</h2><p class="muted">View students' automatically marked CBT scores.</p><div id="testResultsList"><p class="muted">Loading CBT results...</p></div></div>
+<div id="materialsAdminPanel" class="panel admin-panel" style="display:none">
+  <h2>📚 Manage Study Materials</h2>
+  <p class="muted">Publish JAMB, WAEC and general study materials. For now, add a public PDF link (Google Drive, Dropbox, website, etc.).</p>
+  <form id="materialForm">
+    <label>Material Title</label><input id="materialTitle" required placeholder="e.g. JAMB English Past Questions 2026">
+    <label>Subject</label><input id="materialSubject" required placeholder="e.g. English Language">
+    <label>Category</label><select id="materialCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General" selected>General</option></select>
+    <label>Description (optional)</label><textarea id="materialDescription" class="short-textarea" placeholder="Briefly describe this material..."></textarea>
+    <label>PDF / Material Link</label><input id="materialUrl" type="url" required placeholder="https://...">
+    <button class="primary-btn" type="submit">Publish Study Material</button>
+    <p id="materialMessage" class="message"></p>
+  </form>
+</div>
+<div class="panel">
+  <h2>📚 Study Materials</h2>
+  <div class="material-filters">
+    <button class="secondary-btn material-filter active" data-filter="All" type="button">All</button>
+    <button class="secondary-btn material-filter" data-filter="JAMB" type="button">JAMB</button>
+    <button class="secondary-btn material-filter" data-filter="WAEC" type="button">WAEC</button>
+    <button class="secondary-btn material-filter" data-filter="General" type="button">Other</button>
+  </div>
+  <div id="materialsList"><p class="muted">Loading study materials...</p></div>
+</div>
+<div class="panel">
+  <h2>📝 Available Assignments</h2>
+  <div id="assignmentsList"><p class="muted">Loading assignments...</p></div><div id="assignmentModal" class="assignment-modal hidden"><div class="assignment-modal-card"><button id="closeAssignmentBtn" class="close-btn" type="button">×</button><h2 id="openAssignmentTitle">Assignment</h2><p id="openAssignmentSubject" class="subject"></p><div id="openAssignmentContent" class="note-content"></div><p id="openAssignmentDeadline" class="muted"></p><form id="submissionForm"><label>Your Answer</label><textarea id="submissionAnswer" required placeholder="Type your answer here..."></textarea><button class="primary-btn" type="submit">Submit Assignment</button><p id="submissionMessage" class="message"></p></form></div></div>
+</div>
+<div id="submissionsAdminPanel" class="panel admin-panel" style="display:none"><h2>📥 Student Submissions</h2><p class="muted">Admins and Superadmins can review submitted assignments.</p><div id="submissionsList"><p class="muted">Loading submissions...</p></div></div><div id="studentResultsPanel" class="panel"><h2>🏆 My Results</h2><p class="muted">Your marked assignment results will appear here.</p><div id="studentResultsList"><p class="muted">Loading results...</p></div></div><div class="panel"><h2>Portal Status</h2><p id="statusText">Loading...</p></div><div class="panel"><h2>What you can do here</h2><div class="features"><div><strong>📚 Learning Materials</strong><p>Access notes and study materials.</p></div><div><strong>📝 Assignments</strong><p>Receive and submit assignments.</p></div><div><strong>💻 CBT Tests</strong><p>Take online tests and examinations.</p></div><div><strong>🏆 Results</strong><p>View your scores and academic performance.</p></div></div></div></section></main><footer>© 2026 Great Stand Educational Consult. Guiding Students. Building Futures.</footer><script type="module" src="portal.js?v=17.1"></script></body></html>
