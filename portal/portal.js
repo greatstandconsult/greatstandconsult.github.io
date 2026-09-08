@@ -222,27 +222,27 @@ function collectQuestions(){
 
 function normalizeAnswer(v){const m=String(v||'').trim().toUpperCase().match(/[ABCD]/);return m?m[0]:''}
 function parsePastedQuestions(raw){
-  const lines=String(raw||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
-  const out=[];let current=null,lastField='text';
-  const finish=()=>{if(current&&current.text){current.text=current.text.trim();current.correct=normalizeAnswer(current.correct);current.explanation=(current.explanation||'').trim();out.push(current)}current=null};
+  const lines=String(raw||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(x=>x!=='');
+  const out=[]; let current=null; let lastField='text';
+  const finish=()=>{if(current&&current.text){current.text=current.text.trim();current.correct=normalizeAnswer(current.correct);if(!current.explanation)current.explanation='';out.push(current)}current=null};
   for(const line of lines){
     const qm=line.match(/^(\d+)[\.)]\s*(.+)$/);
     if(qm){finish();current={text:qm[2].trim(),options:{A:'',B:'',C:'',D:''},correct:'',explanation:''};lastField='text';continue}
     if(!current)continue;
     const om=line.match(/^([ABCD])[\.)\:\-]\s*(.+)$/i);
     if(om){const letter=om[1].toUpperCase();current.options[letter]=om[2].trim();lastField=letter;continue}
-    const am=line.match(/^(?:ANSWER|ANS|CORRECT\s*ANSWER|CORRECT\s*OPTION)\s*[:=\-]?\s*([ABCD])\b/i);
+    const am=line.match(/^(?:ANSWER|ANS|CORRECT\s*ANSWER|CORRECT)\s*[:=\-]?\s*([ABCD])\b/i);
     if(am){current.correct=normalizeAnswer(am[1]);lastField='answer';continue}
-    const em=line.match(/^(?:EXPLANATION|CORRECTION|EXPLANATION\s*\/\s*CORRECTION)\s*[:=\-]?\s*(.*)$/i);
+    const em=line.match(/^(?:EXPLANATION|CORRECTION)\s*[:=\-]?\s*(.*)$/i);
     if(em){current.explanation=em[1].trim();lastField='explanation';continue}
     if(lastField==='text')current.text+=' '+line;
     else if(lastField==='explanation')current.explanation+=' '+line;
-    else if(lastField==='answer')continue;
+    else if(lastField==='answer'){continue}
     else if(current.options[lastField])current.options[lastField]+=' '+line;
   }
-  finish();return out;
+  finish();
+  return out;
 }
-
 function validateImportedQuestions(qs){
   if(!qs.length)return 'No questions were detected. Make sure each question starts with 1., 2., 3., etc.';
   const bad=qs.findIndex(q=>!q.text||!q.options.A||!q.options.B||!q.options.C||!q.options.D||!normalizeAnswer(q.correct));
@@ -251,21 +251,10 @@ function validateImportedQuestions(qs){
 }
 function renderImportedPreview(containerId,qs){
   const box=$(containerId);box.innerHTML='';
-  const head=document.createElement('div');
-  head.className='import-preview-head';
-  head.innerHTML=`<strong>${qs.length} question${qs.length===1?'':'s'} detected</strong><span>Ready to publish</span>`;
-  box.appendChild(head);
-  qs.slice(0,8).forEach((q,i)=>{
-    const c=document.createElement('div');c.className='import-preview-card';
-    const title=document.createElement('strong');title.textContent=`${i+1}. ${q.text}`;c.appendChild(title);
-    ['A','B','C','D'].forEach(letter=>{const d=document.createElement('div');d.textContent=`${letter}. ${q.options[letter]||''}`;c.appendChild(d)});
-    const ans=document.createElement('div');ans.className='preview-answer';ans.textContent=`Correct answer: ${q.correct}`;c.appendChild(ans);
-    if(q.explanation){const exp=document.createElement('div');exp.className='preview-explanation';exp.textContent=`Explanation: ${q.explanation}`;c.appendChild(exp)}
-    box.appendChild(c);
-  });
+  const head=document.createElement('div');head.className='import-preview-head';head.innerHTML=`<strong>${qs.length} question${qs.length===1?'':'s'} detected</strong><span>Ready to publish</span>`;box.appendChild(head);
+  qs.slice(0,8).forEach((q,i)=>{const c=document.createElement('div');c.className='import-preview-card';c.innerHTML=`<strong>${i+1}. ${q.text}</strong><div>A. ${q.options.A}</div><div>B. ${q.options.B}</div><div>C. ${q.options.C}</div><div>D. ${q.options.D}</div><div class="preview-answer">Answer: ${q.correct}</div>`;box.appendChild(c)});
   if(qs.length>8){const more=document.createElement('p');more.className='muted';more.textContent=`Showing first 8 of ${qs.length} questions.`;box.appendChild(more)}
 }
-
 function parseCsvLine(line){
   const cells=[];let cur='',quoted=false;
   for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){if(quoted&&line[i+1]==='"'){cur+='"';i++;}else quoted=!quoted;}else if(ch===','&&!quoted){cells.push(cur.trim());cur='';}else cur+=ch;}cells.push(cur.trim());return cells;
@@ -282,6 +271,16 @@ function setCbtMode(mode){
   $('manualCbtMode').classList.toggle('hidden',mode!=='manual');
   $('pasteCbtMode').classList.toggle('hidden',mode!=='paste');
   $('csvCbtMode').classList.toggle('hidden',mode!=='csv');
+  // Disable required manual fields when using Paste/CSV so they cannot block Publish.
+  questionBuilder.querySelectorAll('input,textarea,select').forEach(el=>{
+    if(mode==='manual'){
+      el.disabled=false;
+      el.required=true;
+    }else{
+      el.disabled=true;
+      el.required=false;
+    }
+  });
   ['manualCbtTab','pasteCbtTab','csvCbtTab'].forEach(id=>$(id).classList.remove('active'));
   $(mode==='manual'?'manualCbtTab':mode==='paste'?'pasteCbtTab':'csvCbtTab').classList.add('active');
 }
