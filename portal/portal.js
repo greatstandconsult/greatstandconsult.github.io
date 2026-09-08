@@ -1,23 +1,4 @@
-import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,
-function normalizeRole(value){
-  return String(value || "").trim().toLowerCase().replace(/\s+/g,"");
-}
-
-function userRole(profile){
-  if (!profile) return "";
-  return normalizeRole(profile.role ?? profile.Role);
-}
-
-function isAdminRole(profile){
-  const role = userRole(profile);
-  return userRole(profile) === "admin" || userRole(profile) === "superadmin";
-}
-
-function isSuperAdminRole(profile){
-  return userRole(profile) === "superadmin";
-}
-
-onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const $=id=>document.getElementById(id),loginView=$("loginView"),dashboardView=$("dashboardView"),logoutBtn=$("logoutBtn"),adminPanel=$("adminPanel"),noteForm=$("noteForm"),notesList=$("notesList");
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginMessage").textContent="Logging in...";try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(err){console.error(err);$("loginMessage").textContent="Login failed: "+(err.code||err.message)}}); logoutBtn.addEventListener("click",()=>signOut(auth));
 async function getCount(n){try{return(await getDocs(collection(db,n))).size}catch(e){console.error(e);return 0}}
@@ -49,7 +30,7 @@ async function openAssignment(id,a){
   $("submissionMessage").textContent="";
   $("submissionAnswer").value="";
   const role=(window.currentUserRole||"student").toLowerCase();
-  submissionForm.style.display=userRole(profile) === "student"?"block":"none";
+  submissionForm.style.display=role==="student"?"block":"none";
   assignmentModal.classList.remove("hidden");
 }
 submissionForm.addEventListener("submit",async e=>{
@@ -241,27 +222,27 @@ function collectQuestions(){
 
 function normalizeAnswer(v){const m=String(v||'').trim().toUpperCase().match(/[ABCD]/);return m?m[0]:''}
 function parsePastedQuestions(raw){
-  const lines=String(raw||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(x=>x!=='');
-  const out=[]; let current=null; let lastField='text';
-  const finish=()=>{if(current&&current.text){current.text=current.text.trim();current.correct=normalizeAnswer(current.correct);if(!current.explanation)current.explanation='';out.push(current)}current=null};
+  const lines=String(raw||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
+  const out=[];let current=null,lastField='text';
+  const finish=()=>{if(current&&current.text){current.text=current.text.trim();current.correct=normalizeAnswer(current.correct);current.explanation=(current.explanation||'').trim();out.push(current)}current=null};
   for(const line of lines){
     const qm=line.match(/^(\d+)[\.)]\s*(.+)$/);
     if(qm){finish();current={text:qm[2].trim(),options:{A:'',B:'',C:'',D:''},correct:'',explanation:''};lastField='text';continue}
     if(!current)continue;
     const om=line.match(/^([ABCD])[\.)\:\-]\s*(.+)$/i);
     if(om){const letter=om[1].toUpperCase();current.options[letter]=om[2].trim();lastField=letter;continue}
-    const am=line.match(/^(?:ANSWER|ANS|CORRECT\s*ANSWER|CORRECT)\s*[:=\-]?\s*([ABCD])\b/i);
+    const am=line.match(/^(?:ANSWER|ANS|CORRECT\s*ANSWER|CORRECT\s*OPTION)\s*[:=\-]?\s*([ABCD])\b/i);
     if(am){current.correct=normalizeAnswer(am[1]);lastField='answer';continue}
-    const em=line.match(/^(?:EXPLANATION\s*\/\s*CORRECTION|EXPLANATION|CORRECTION|WHY)\s*[:=\-]?\s*(.*)$/i);
+    const em=line.match(/^(?:EXPLANATION|CORRECTION|EXPLANATION\s*\/\s*CORRECTION)\s*[:=\-]?\s*(.*)$/i);
     if(em){current.explanation=em[1].trim();lastField='explanation';continue}
     if(lastField==='text')current.text+=' '+line;
     else if(lastField==='explanation')current.explanation+=' '+line;
-    else if(lastField==='answer'){continue}
+    else if(lastField==='answer')continue;
     else if(current.options[lastField])current.options[lastField]+=' '+line;
   }
-  finish();
-  return out;
+  finish();return out;
 }
+
 function validateImportedQuestions(qs){
   if(!qs.length)return 'No questions were detected. Make sure each question starts with 1., 2., 3., etc.';
   const bad=qs.findIndex(q=>!q.text||!q.options.A||!q.options.B||!q.options.C||!q.options.D||!normalizeAnswer(q.correct));
@@ -270,10 +251,21 @@ function validateImportedQuestions(qs){
 }
 function renderImportedPreview(containerId,qs){
   const box=$(containerId);box.innerHTML='';
-  const head=document.createElement('div');head.className='import-preview-head';head.innerHTML=`<strong>${qs.length} question${qs.length===1?'':'s'} detected</strong><span>Ready to publish</span>`;box.appendChild(head);
-  qs.slice(0,8).forEach((q,i)=>{const c=document.createElement('div');c.className='import-preview-card';c.innerHTML=`<strong>${i+1}. ${q.text}</strong><div>A. ${q.options.A}</div><div>B. ${q.options.B}</div><div>C. ${q.options.C}</div><div>D. ${q.options.D}</div><div class="preview-answer">Correct answer: ${q.correct}</div>${q.explanation?`<div class="preview-explanation"><strong>Explanation:</strong> ${String(q.explanation).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}</div>`:''}`;box.appendChild(c)});
+  const head=document.createElement('div');
+  head.className='import-preview-head';
+  head.innerHTML=`<strong>${qs.length} question${qs.length===1?'':'s'} detected</strong><span>Ready to publish</span>`;
+  box.appendChild(head);
+  qs.slice(0,8).forEach((q,i)=>{
+    const c=document.createElement('div');c.className='import-preview-card';
+    const title=document.createElement('strong');title.textContent=`${i+1}. ${q.text}`;c.appendChild(title);
+    ['A','B','C','D'].forEach(letter=>{const d=document.createElement('div');d.textContent=`${letter}. ${q.options[letter]||''}`;c.appendChild(d)});
+    const ans=document.createElement('div');ans.className='preview-answer';ans.textContent=`Correct answer: ${q.correct}`;c.appendChild(ans);
+    if(q.explanation){const exp=document.createElement('div');exp.className='preview-explanation';exp.textContent=`Explanation: ${q.explanation}`;c.appendChild(exp)}
+    box.appendChild(c);
+  });
   if(qs.length>8){const more=document.createElement('p');more.className='muted';more.textContent=`Showing first 8 of ${qs.length} questions.`;box.appendChild(more)}
 }
+
 function parseCsvLine(line){
   const cells=[];let cur='',quoted=false;
   for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){if(quoted&&line[i+1]==='"'){cur+='"';i++;}else quoted=!quoted;}else if(ch===','&&!quoted){cells.push(cur.trim());cur='';}else cur+=ch;}cells.push(cur.trim());return cells;
@@ -290,11 +282,6 @@ function setCbtMode(mode){
   $('manualCbtMode').classList.toggle('hidden',mode!=='manual');
   $('pasteCbtMode').classList.toggle('hidden',mode!=='paste');
   $('csvCbtMode').classList.toggle('hidden',mode!=='csv');
-  // Hidden manual question fields must not block Paste/CSV publishing via HTML5 required validation.
-  questionBuilder.querySelectorAll('input,textarea,select').forEach(el=>{
-    if(mode==='manual'){el.disabled=false;el.required=true;}
-    else{el.disabled=true;el.required=false;}
-  });
   ['manualCbtTab','pasteCbtTab','csvCbtTab'].forEach(id=>$(id).classList.remove('active'));
   $(mode==='manual'?'manualCbtTab':mode==='paste'?'pasteCbtTab':'csvCbtTab').classList.add('active');
 }
@@ -502,7 +489,7 @@ onAuthStateChanged(auth,async user=>{
 
     const p=s.data();
     const role=String(p.role||"student").trim().toLowerCase();
-    const allowed=userRole(profile) === "admin"||userRole(profile) === "superadmin";
+    const allowed=role==="admin"||role==="superadmin";
 
     window.currentUserRole=role;
 
@@ -517,9 +504,9 @@ onAuthStateChanged(auth,async user=>{
 
     $("welcomeTitle").textContent="Welcome, "+(p.name||user.email);
     $("roleText").textContent="Signed in as "+role;
-    $("statusText").textContent=userRole(profile) === "superadmin"
+    $("statusText").textContent=role==="superadmin"
       ?"SUPERADMIN ACCOUNT DETECTED ✅"
-      :userRole(profile) === "admin"
+      :role==="admin"
       ?"ADMIN ACCOUNT DETECTED ✅"
       :"Student account detected.";
 
