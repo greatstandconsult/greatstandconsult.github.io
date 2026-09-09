@@ -643,6 +643,8 @@ onAuthStateChanged(auth,async user=>{
     // This is intentionally before loading dashboard data so a later
     // non-critical loading error cannot hide the panels.
     setAdminPanelsVisible(allowed);
+    if(allowed){ const cp=$("courseAdminPanel"); if(cp) cp.style.display="block"; }
+    if(window.gsRefreshNavigation) window.gsRefreshNavigation();
 
     try{$("notesCount").textContent=await getCount("notes")}catch(e){}
     try{$("assignmentsCount").textContent=await getCount("assignments")}catch(e){}
@@ -775,7 +777,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
   ];
   function addHeading(text){const h=document.createElement("div");h.className="gs-nav-section-title";h.textContent=text;links.appendChild(h)}
   function addItem(item){const [icon,label,target,sub]=item,btn=document.createElement("button");btn.type="button";btn.className="gs-nav-link";btn.innerHTML='<span>'+icon+'</span><div class="gs-nav-copy"><b>'+label+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div>';btn.dataset.target=target;btn.addEventListener("click",()=>{showSection(target);links.querySelectorAll(".gs-nav-link").forEach(x=>x.classList.remove("active"));btn.classList.add("active");closeNav()});links.appendChild(btn)}
-  function buildNav(){if(!links)return;const role=String(window.currentUserRole||"student").trim().toLowerCase(),isSuper=role==="superadmin",isAdmin=role==="admin"||isSuper,groups=isSuper?superadminGroups:(isAdmin?adminGroups:studentGroups);links.innerHTML="";groups.forEach(g=>{addHeading(g.heading);g.items.forEach(addItem)});const first=links.querySelector(".gs-nav-link");first?.classList.add("active");if(nameEl){const n=document.getElementById("welcomeTitle")?.textContent||"Welcome";nameEl.textContent=n.replace(/^Welcome,\s*/i,"")||"Welcome"}if(roleEl){roleEl.textContent=isSuper?"SUPERADMIN":isAdmin?"ADMIN":"STUDENT";roleEl.className="gs-nav-role-badge "+(isSuper?"superadmin":isAdmin?"admin":"student")}sideNav?.classList.toggle("gs-superadmin",isSuper)}
+  function buildNav(){if(!links)return;const role=String(window.currentUserRole||currentStudentProfile?.role||"student").trim().toLowerCase(),isSuper=role==="superadmin",isAdmin=role==="admin"||isSuper,groups=isSuper?superadminGroups:(isAdmin?adminGroups:studentGroups);links.innerHTML="";groups.forEach(g=>{addHeading(g.heading);g.items.forEach(addItem)});const first=links.querySelector(".gs-nav-link");first?.classList.add("active");if(nameEl){const n=document.getElementById("welcomeTitle")?.textContent||"Welcome";nameEl.textContent=n.replace(/^Welcome,\s*/i,"")||"Welcome"}if(roleEl){roleEl.textContent=isSuper?"SUPERADMIN":isAdmin?"ADMIN":"STUDENT";roleEl.className="gs-nav-role-badge "+(isSuper?"superadmin":isAdmin?"admin":"student")}sideNav?.classList.toggle("gs-superadmin",isSuper)}
   function allSections(){return Array.from(document.querySelectorAll(".portal-section"))}
   function showSection(target){const dash=document.getElementById("dashboardView");if(target==="dashboardView"){allSections().forEach(el=>el.classList.add("gs-section-hidden"));window.scrollTo({top:0,behavior:"smooth"});return}allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));const el=document.getElementById(target);if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)}
   window.gsShowSection=showSection;window.gsBuildNav=buildNav;window.gsRefreshNavigation=buildNav;
