@@ -796,16 +796,24 @@ const courseData={courses:[],subjects:[],topics:[],lessons:[]};
 let learningTrail=[];
 function fsDate(v){try{return v?.toDate?v.toDate():new Date(v)}catch(e){return null}}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+async function readCollectionSafe(name){
+  try{return await getDocs(collection(db,name))}
+  catch(e){console.error('Could not read '+name,e);return null}
+}
 async function loadCourseStructure(){
   if(!courseAdminPanel && !learningPathPanel)return;
   try{
-    const [cs,ss,ts,ls]=await Promise.all([getDocs(collection(db,'courses')),getDocs(collection(db,'subjects')),getDocs(collection(db,'topics')),getDocs(collection(db,'lessons'))]);
-    courseData.courses=cs.docs.map(d=>({id:d.id,...d.data()}));
-    courseData.subjects=ss.docs.map(d=>({id:d.id,...d.data()}));
-    courseData.topics=ts.docs.map(d=>({id:d.id,...d.data()}));
-    courseData.lessons=ls.docs.map(d=>({id:d.id,...d.data()}));
+    const [cs,ss,ts,ls]=await Promise.all([
+      readCollectionSafe('courses'),readCollectionSafe('subjects'),
+      readCollectionSafe('topics'),readCollectionSafe('lessons')
+    ]);
+    courseData.courses=cs?cs.docs.map(d=>({id:d.id,...d.data()})):[];
+    courseData.subjects=ss?ss.docs.map(d=>({id:d.id,...d.data()})):[];
+    courseData.topics=ts?ts.docs.map(d=>({id:d.id,...d.data()})):[];
+    courseData.lessons=ls?ls.docs.map(d=>({id:d.id,...d.data()})):[];
     populateCourseSelectors(); renderCourseAdminList();
-  }catch(e){console.error('Course structure:',e); if(courseAdminPanel)$('courseAdminList').innerHTML='<p class="message">Could not load course structure. Check your Firestore rules for courses, subjects, topics and lessons.</p>'}
+    if(!cs && courseAdminPanel)$('courseAdminList').innerHTML='<p class="message">Could not read courses. Please check that you are logged in and that the Firestore courses rule is published.</p>';
+  }catch(e){console.error('Course structure:',e); if(courseAdminPanel)$('courseAdminList').innerHTML='<p class="message">Could not load course structure: '+(e.code||e.message)+'</p>'}
 }
 function populateCourseSelectors(){
   const c=$('subjectCourse'), s=$('topicSubject'), t=$('lessonTopic'); if(!c||!s||!t)return;
@@ -850,7 +858,7 @@ function renderPathCards(rows,type){
   learningPathContent.innerHTML=rows.map(x=>{const count=type==='subject'?courseData.topics.filter(t=>t.subjectId===x.id).length:type==='topic'?courseData.lessons.filter(l=>l.topicId===x.id).length:0;return `<button class="path-card" type="button" data-id="${x.id}" data-type="${type}"><span>${type==='subject'?'📘':type==='topic'?'📌':'📖'}</span><div><b>${esc(x.name||x.title)}</b><small>${type==='lesson'?'Open lesson':count+' '+(type==='subject'?'topics':'lessons')}</small></div><strong>›</strong></button>`}).join('');
   learningPathContent.querySelectorAll('.path-card').forEach(b=>b.addEventListener('click',()=>openLearningPath(b.dataset.type,b.dataset.id)));
 }
-function publishedLessons(){return courseData.lessons.filter(l=>String(l.status||'published').toLowerCase()!=='draft')}
+function publishedLessons(){return courseData.lessons.filter(l=>String(l.status||'published').toLowerCase()==='published' || !l.status)}
 function renderLearningCoursesV25(){
   if(!learningCourseGrid)return;
   let rows=courseData.courses.filter(c=>learningFilter==='all'||c.category===learningFilter);
@@ -960,7 +968,7 @@ function qbEditorText(){
 function sanitizeRichHtml(html){
   const template=document.createElement('template');
   template.innerHTML=String(html||'');
-  const allowed=new Set(['B','STRONG','I','EM','U','H2','H3','H4','P','BR','UL','OL','LI','BLOCKQUOTE','A','CODE','PRE','SUB','SUP','DIV']);
+  const allowed=new Set(['B','STRONG','I','EM','U','H2','H3','H4','P','BR','UL','OL','LI','BLOCKQUOTE','A','CODE','PRE','SUB','SUP','DIV','SPAN','IMG','FIGURE','FIGCAPTION','IFRAME']);
   const walk=node=>{
     [...node.childNodes].forEach(child=>{
       if(child.nodeType===Node.ELEMENT_NODE){
@@ -969,14 +977,24 @@ function sanitizeRichHtml(html){
           while(child.firstChild)frag.appendChild(child.firstChild);
           child.replaceWith(frag); return;
         }
-        [...child.attributes].forEach(attr=>{
-          if(child.tagName==='A' && attr.name.toLowerCase()==='href')return;
-          if(child.tagName==='A' && ['target','rel'].includes(attr.name.toLowerCase()))return;
-          child.removeAttribute(attr.name);
-        });
-        if(child.tagName==='A'){
+        const tag=child.tagName;
+        const keep=new Set(tag==='A'?['href','target','rel']:tag==='IMG'?['src','alt','title']:tag==='IFRAME'?['src','title','allow','allowfullscreen','frameborder']:[]);
+        [...child.attributes].forEach(attr=>{if(!keep.has(attr.name.toLowerCase()))child.removeAttribute(attr.name)});
+        if(tag==='A'){
           const href=child.getAttribute('href')||'';
           if(!/^https?:\/\//i.test(href)){child.removeAttribute('href')}else{child.setAttribute('target','_blank');child.setAttribute('rel','noopener noreferrer')}
+        }
+        if(tag==='IMG'){
+          const src=child.getAttribute('src')||'';
+          if(!/^https?:\/\//i.test(src)){child.remove();return}
+          child.setAttribute('loading','lazy');
+        }
+        if(tag==='IFRAME'){
+          const src=child.getAttribute('src')||'';
+          if(!/^https:\/\/(www\.)?(youtube\.com|youtube-nocookie\.com)\//i.test(src)){child.remove();return}
+          child.setAttribute('loading','lazy');
+          child.setAttribute('allow','accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+          child.setAttribute('allowfullscreen','');
         }
         walk(child);
       }else if(child.nodeType!==Node.TEXT_NODE){child.remove()}
@@ -1002,6 +1020,31 @@ $('qbLessonToolbar [data-link]')?.addEventListener('click',()=>{
   const url=prompt('Enter the full link (https://...)');
   if(url && /^https?:\/\//i.test(url.trim()))qbRichExec('createLink',url.trim());
 });
+
+function qbYoutubeEmbed(url){
+  try{
+    const u=new URL(url); let id='';
+    if(u.hostname==='youtu.be') id=u.pathname.slice(1);
+    if(u.hostname.includes('youtube.com')) id=u.searchParams.get('v')||u.pathname.split('/').filter(Boolean).pop();
+    id=(id||'').replace(/[^a-zA-Z0-9_-]/g,'');
+    return id?`https://www.youtube-nocookie.com/embed/${id}`:'';
+  }catch(e){return ''}
+}
+function qbInsertHtml(html){const editor=$('qbLessonContent');if(!editor)return;editor.focus();document.execCommand('insertHTML',false,html);}
+function qbInsertImage(){
+  const url=prompt('Paste the image URL (https://...)');
+  if(!url||!/^https?:\/\//i.test(url.trim()))return;
+  const alt=prompt('Image description (optional)')||'Lesson image';
+  qbInsertHtml(`<figure class="lesson-media image-media"><img src="${esc(url.trim())}" alt="${esc(alt)}"><figcaption>${esc(alt)}</figcaption></figure><p><br></p>`);
+}
+function qbInsertVideo(){
+  const url=prompt('Paste a YouTube video link (https://youtube.com/... or https://youtu.be/...)');
+  const embed=qbYoutubeEmbed((url||'').trim());
+  if(!embed){if(url)alert('Please enter a valid YouTube link.');return}
+  qbInsertHtml(`<div class="lesson-media video-media"><iframe src="${embed}" title="Lesson video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><p><br></p>`);
+}
+$('qbInsertImage')?.addEventListener('click',qbInsertImage);
+$('qbInsertVideo')?.addEventListener('click',qbInsertVideo);
 
 async function qbSaveLesson(status){
   const topicId=qbTopic?.value,title=$('qbLessonTitle').value.trim(),rawHtml=$('qbLessonContent')?.innerHTML||'',content=sanitizeRichHtml(rawHtml),file=$('qbLessonFile')?.files?.[0];
