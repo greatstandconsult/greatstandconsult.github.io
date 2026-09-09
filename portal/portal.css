@@ -127,3 +127,11 @@
 @media(max-width:700px){.learning-centre-panel{padding:17px}.learning-head{align-items:stretch;flex-direction:column}.learning-head .secondary-btn{width:100%}.learning-course-grid{grid-template-columns:1fr}.course-resource-row{grid-template-columns:1fr 1fr}.learning-course-card{padding:16px}}
 
 .learning-track-card{border-top:4px solid #d4a72c}.learning-track-card h3{font-size:21px}.learning-track-card .course-icon{background:#fff7df}.learning-track-card .course-category{background:#fff7df;color:#946800}
+
+
+/* V22 direct material upload */
+#materialFile{width:100%;padding:12px;border:1px dashed #c9ced8;border-radius:12px;background:#fff;box-sizing:border-box}
+.upload-help{display:block;margin:6px 0 14px;color:#6b7280;font-size:.82rem}
+.material-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.material-actions .danger-btn{border:1px solid #fecaca;background:#fff5f5;color:#b91c1c;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+.material-actions .danger-btn:disabled{opacity:.6;cursor:not-allowed}

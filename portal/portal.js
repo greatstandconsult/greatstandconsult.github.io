@@ -1,5 +1,6 @@
-import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {getStorage,ref as storageRef,uploadBytes,getDownloadURL,deleteObject} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const $=id=>document.getElementById(id),loginView=$("loginView"),dashboardView=$("dashboardView"),logoutBtn=$("logoutBtn"),adminPanel=$("adminPanel"),noteForm=$("noteForm"),notesList=$("notesList");
+const storage=getStorage(getApps()[0]);
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginMessage").textContent="Logging in...";try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(err){console.error(err);$("loginMessage").textContent="Login failed: "+(err.code||err.message)}}); logoutBtn.addEventListener("click",()=>signOut(auth));
 async function getCount(n){try{return(await getDocs(collection(db,n))).size}catch(e){console.error(e);return 0}}
 async function loadNotes(){notesList.innerHTML='<p class="muted">Loading notes...</p>';try{let s;try{s=await getDocs(query(collection(db,"notes"),orderBy("createdAt","desc")))}catch(e){s=await getDocs(collection(db,"notes"))}if(s.empty){notesList.innerHTML='<p class="muted">No notes published yet.</p>';return}notesList.innerHTML="";s.forEach(d=>{let n=d.data(),c=document.createElement("article");c.className="note-card";let h=document.createElement("h3");h.textContent=n.title||"Untitled Note";let sub=document.createElement("p");sub.className="subject";sub.textContent=n.subject||"General";let body=document.createElement("div");body.className="note-content";body.textContent=n.content||"";c.append(h,sub,body);notesList.appendChild(c)})}catch(e){console.error(e);notesList.innerHTML='<p class="message">Could not load notes.</p>'}}
@@ -449,28 +450,55 @@ async function loadMaterials(){
   if(!materialsList)return;
   materialsList.innerHTML='<p class="muted">Loading study materials...</p>';
   try{
-    let s;try{s=await getDocs(query(collection(db,'materials'),orderBy('createdAt','desc')))}catch(e){s=await getDocs(collection(db,'materials'))}
+    let s;
+    try{s=await getDocs(query(collection(db,'materials'),orderBy('createdAt','desc')))}catch(e){s=await getDocs(collection(db,'materials'))}
     const rows=s.docs.map(d=>({id:d.id,...d.data()})).filter(m=>materialFilter==='All'||String(m.category||'General')===materialFilter);
     if(!rows.length){materialsList.innerHTML='<p class="muted">No study materials published yet.</p>';return}
-    materialsList.innerHTML='';rows.forEach(m=>{
+    materialsList.innerHTML='';
+    rows.forEach(m=>{
       const c=document.createElement('article');c.className='material-card';
-      const h=document.createElement('h3');h.textContent=m.title||'Study Material';
-      const meta=document.createElement('p');meta.className='subject';meta.textContent=(m.subject||'General')+' • '+(m.category||'General');
+      const h=document.createElement('h3');h.textContent=m.title||'Untitled Material';
+      const meta=document.createElement('p');meta.className='subject';meta.textContent=(m.category||'General')+' • '+(m.subject||'General');
       const desc=document.createElement('p');desc.className='muted';desc.textContent=m.description||'Study material / PDF resource.';
-      const actions=document.createElement('div');actions.className='card-actions';
-      const open=document.createElement('a');open.className='primary-btn material-link';open.href=m.url;open.target='_blank';open.rel='noopener noreferrer';open.textContent='📄 Open / Download';actions.appendChild(open);
+      const actions=document.createElement('div');actions.className='material-actions';
+      const open=document.createElement('a');open.className='primary-btn material-link';open.href=m.url||'#';open.target='_blank';open.rel='noopener noreferrer';open.textContent='📄 Open / Download';actions.appendChild(open);
       if(isAdminRole()){
-        const del=document.createElement('button');del.type='button';del.className='secondary-btn';del.textContent='Delete';
-        del.addEventListener('click',async()=>{if(!confirm('Delete this study material? This cannot be undone.'))return;del.disabled=true;try{await deleteDoc(doc(db,'materials',m.id));await loadMaterials();await loadLearningCentre()}catch(e){console.error(e);alert('Could not delete material: '+(e.code||e.message));del.disabled=false}});actions.appendChild(del);
+        const del=document.createElement('button');del.className='danger-btn';del.type='button';del.textContent='🗑 Delete';
+        del.addEventListener('click',async()=>{
+          if(!confirm('Delete this study material? This cannot be undone.'))return;
+          del.disabled=true;
+          try{
+            if(m.storagePath){try{await deleteObject(storageRef(storage,m.storagePath))}catch(storageErr){console.warn('Storage delete warning:',storageErr)}}
+            await deleteDoc(doc(db,'materials',m.id));await loadMaterials();await loadLearningCentre();
+          }catch(e){console.error(e);alert('Could not delete material: '+(e.code||e.message));del.disabled=false}
+        });actions.appendChild(del);
       }
       c.append(h,meta,desc,actions);materialsList.appendChild(c);
     });
   }catch(e){console.error(e);materialsList.innerHTML='<p class="message">Could not load study materials: '+(e.code||e.message)+'</p>'}
 }
+
 materialForm?.addEventListener('submit',async e=>{
-  e.preventDefault();if(!isAdminRole()){ $('materialMessage').textContent='Only admins can publish study materials.';return; }
-  $('materialMessage').textContent='Publishing material...';
-  try{await addDoc(collection(db,'materials'),{title:$('materialTitle').value.trim(),subject:$('materialSubject').value.trim(),category:$('materialCategory').value,description:$('materialDescription').value.trim(),url:$('materialUrl').value.trim(),createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});materialForm.reset();$('materialCategory').value='General';$('materialMessage').className='message submission-success';$('materialMessage').textContent='Study material published successfully ✅';await loadMaterials();await loadLearningCentre()}catch(e){console.error(e);$('materialMessage').className='message submission-error';$('materialMessage').textContent='Could not publish material: '+(e.code||e.message)}});
+  e.preventDefault();
+  if(!isAdminRole()){ $('materialMessage').textContent='Only admins can publish study materials.';return; }
+  const file=$('materialFile')?.files?.[0];
+  if(!file){$('materialMessage').className='message submission-error';$('materialMessage').textContent='Please select a PDF or material file.';return;}
+  if(file.type!=='application/pdf'){ $('materialMessage').className='message submission-error';$('materialMessage').textContent='Only PDF files are supported for now.';return; }
+  if(file.size>25*1024*1024){ $('materialMessage').className='message submission-error';$('materialMessage').textContent='File is too large. Maximum size is 25 MB.';return; }
+  const submitBtn=materialForm.querySelector('button[type="submit"]');if(submitBtn)submitBtn.disabled=true;
+  $('materialMessage').className='message';$('materialMessage').textContent='Uploading PDF...';
+  try{
+    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    const storagePath='materials/'+auth.currentUser.uid+'/'+Date.now()+'_'+safeName;
+    const fileRef=storageRef(storage,storagePath);
+    await uploadBytes(fileRef,file,{contentType:'application/pdf'});
+    const url=await getDownloadURL(fileRef);
+    await addDoc(collection(db,'materials'),{title:$('materialTitle').value.trim(),subject:$('materialSubject').value.trim(),category:$('materialCategory').value,description:$('materialDescription').value.trim(),url,storagePath,fileName:file.name,fileSize:file.size,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
+    materialForm.reset();$('materialCategory').value='General';$('materialMessage').className='message submission-success';$('materialMessage').textContent='Study material uploaded successfully ✅';await loadMaterials();await loadLearningCentre();
+  }catch(e){console.error(e);$('materialMessage').className='message submission-error';$('materialMessage').textContent='Could not upload material: '+(e.code||e.message)+' — make sure Firebase Storage is enabled.'}
+  finally{if(submitBtn)submitBtn.disabled=false;}
+});
+
 document.querySelectorAll('.material-filter').forEach(btn=>btn.addEventListener('click',()=>{materialFilter=btn.dataset.filter;document.querySelectorAll('.material-filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');loadMaterials()}));
 
 const studentAdminPanel=$("studentAdminPanel"),studentForm=$("studentForm"),studentsList=$("studentsList"),studentMessage=$("studentMessage");
