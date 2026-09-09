@@ -134,15 +134,51 @@ Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
   </div>
 </div>
 <div id="courseAdminPanel" class="panel admin-panel portal-section" style="display:none">
-  <h2>🎓 Manage Courses & Lessons</h2>
-  <p class="muted">Build the learning structure: course → subject → topic → lesson.</p>
-  <div class="course-admin-grid">
-    <form id="courseForm" class="mini-form"><h3>Create Course</h3><label>Course name</label><input id="courseName" required placeholder="e.g. JAMB Preparation"><label>Category</label><select id="courseCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General">General</option></select><button class="primary-btn" type="submit">Create Course</button><p id="courseMessage" class="message"></p></form>
-    <form id="subjectForm" class="mini-form"><h3>Create Subject</h3><label>Course</label><select id="subjectCourse" required></select><label>Subject name</label><input id="subjectName" required placeholder="e.g. Mathematics"><button class="primary-btn" type="submit">Create Subject</button><p id="subjectMessage" class="message"></p></form>
-    <form id="topicForm" class="mini-form"><h3>Create Topic</h3><label>Subject</label><select id="topicSubject" required></select><label>Topic title</label><input id="topicName" required placeholder="e.g. Number Bases"><button class="primary-btn" type="submit">Create Topic</button><p id="topicMessage" class="message"></p></form>
-    <form id="lessonForm" class="mini-form"><h3>Create Lesson</h3><label>Topic</label><select id="lessonTopic" required></select><label>Lesson title</label><input id="lessonTitle" required placeholder="e.g. Introduction to Number Bases"><label>Lesson content</label><textarea id="lessonContent" required placeholder="Write the lesson here..."></textarea><label>Optional PDF URL</label><input id="lessonPdfUrl" type="url" placeholder="https://..."><button class="primary-btn" type="submit">Publish Lesson</button><p id="lessonMessage" class="message"></p></form>
+  <div class="builder-head">
+    <div><span class="badge">COURSE BUILDER</span><h2>🎓 Build Your Learning Centre</h2><p class="muted">Create a complete learning path from your phone: course → subject → topic → lesson.</p></div>
   </div>
-  <div class="course-admin-list"><h3>Current Learning Structure</h3><div id="courseAdminList"><p class="muted">Loading courses...</p></div></div>
+
+  <div class="quick-builder" id="quickBuilder">
+    <div class="builder-progress"><div class="builder-step active"><span>1</span><b>Course</b></div><div class="builder-line"></div><div class="builder-step"><span>2</span><b>Subject</b></div><div class="builder-line"></div><div class="builder-step"><span>3</span><b>Topic</b></div><div class="builder-line"></div><div class="builder-step"><span>4</span><b>Lesson</b></div></div>
+
+    <div class="builder-card">
+      <div class="builder-card-title"><div><span class="builder-number">1</span><div><h3>Choose or create a course</h3><p class="muted">Example: JAMB Preparation</p></div></div></div>
+      <div class="builder-row"><select id="qbCourse"></select><button id="qbNewCourse" class="secondary-btn" type="button">＋ New Course</button></div>
+      <div id="qbCourseNew" class="builder-new hidden"><input id="qbCourseName" placeholder="Course name e.g. JAMB Preparation"><select id="qbCourseCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General">General</option></select><button id="qbSaveCourse" class="primary-btn" type="button">Create Course</button></div>
+      <p id="qbCourseMsg" class="message"></p>
+    </div>
+
+    <div class="builder-card">
+      <div class="builder-card-title"><div><span class="builder-number">2</span><div><h3>Choose or create a subject</h3><p class="muted">Example: Mathematics</p></div></div></div>
+      <div class="builder-row"><select id="qbSubject"></select><button id="qbNewSubject" class="secondary-btn" type="button">＋ New Subject</button></div>
+      <div id="qbSubjectNew" class="builder-new hidden"><input id="qbSubjectName" placeholder="Subject name e.g. Mathematics"><button id="qbSaveSubject" class="primary-btn" type="button">Create Subject</button></div>
+      <p id="qbSubjectMsg" class="message"></p>
+    </div>
+
+    <div class="builder-card">
+      <div class="builder-card-title"><div><span class="builder-number">3</span><div><h3>Choose or create a topic</h3><p class="muted">Example: Number Bases</p></div></div></div>
+      <div class="builder-row"><select id="qbTopic"></select><button id="qbNewTopic" class="secondary-btn" type="button">＋ New Topic</button></div>
+      <div id="qbTopicNew" class="builder-new hidden"><input id="qbTopicName" placeholder="Topic title e.g. Number Bases"><button id="qbSaveTopic" class="primary-btn" type="button">Create Topic</button></div>
+      <p id="qbTopicMsg" class="message"></p>
+    </div>
+
+    <div class="builder-card builder-lesson-card">
+      <div class="builder-card-title"><div><span class="builder-number">4</span><div><h3>Create the lesson</h3><p class="muted">Add your teaching content and an optional PDF.</p></div></div></div>
+      <input id="qbLessonTitle" placeholder="Lesson title e.g. Introduction to Number Bases">
+      <textarea id="qbLessonContent" placeholder="Write the lesson here...
+
+You can include explanations, examples, formulas and practice questions."></textarea>
+      <label class="upload-label">Optional lesson PDF</label>
+      <input id="qbLessonFile" type="file" accept="application/pdf,.pdf">
+      <small class="upload-help">PDF only • Maximum 50 MB</small>
+      <div class="builder-publish"><button id="qbPublishLesson" class="primary-btn" type="button">📖 Publish Lesson</button></div>
+      <p id="qbLessonMsg" class="message"></p>
+    </div>
+  </div>
+
+  <div class="course-builder-tip"><b>💡 Recommended workflow</b><span>Choose JAMB → Mathematics → Number Bases → publish your first lesson. Then repeat the last two steps for the next topic.</span></div>
+
+  <div class="course-admin-list"><div class="builder-list-head"><div><h3>Current Learning Structure</h3><p class="muted">Everything you have created appears here.</p></div><button id="qbRefresh" class="secondary-btn" type="button">↻ Refresh</button></div><div id="courseAdminList"><p class="muted">Loading courses...</p></div></div>
 </div>
 <div id="testResultsAdminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📊 CBT Student Results</h2><p class="muted">View students' automatically marked CBT scores.</p><div id="testResultsList"><p class="muted">Loading CBT results...</p></div></div>
 <div id="materialsAdminPanel" class="panel admin-panel portal-section" style="display:none">
@@ -172,4 +208,4 @@ Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
   <h2>📝 Available Assignments</h2>
   <div id="assignmentsList"><p class="muted">Loading assignments...</p></div><div id="assignmentModal" class="assignment-modal hidden"><div class="assignment-modal-card"><button id="closeAssignmentBtn" class="close-btn" type="button">×</button><h2 id="openAssignmentTitle">Assignment</h2><p id="openAssignmentSubject" class="subject"></p><div id="openAssignmentContent" class="note-content"></div><p id="openAssignmentDeadline" class="muted"></p><form id="submissionForm"><label>Your Answer</label><textarea id="submissionAnswer" required placeholder="Type your answer here..."></textarea><button class="primary-btn" type="submit">Submit Assignment</button><p id="submissionMessage" class="message"></p></form></div></div>
 </div>
-<div id="submissionsAdminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📥 Student Submissions</h2><p class="muted">Admins and Superadmins can review submitted assignments.</p><div id="submissionsList"><p class="muted">Loading submissions...</p></div></div><div id="studentResultsPanel" class="panel portal-section"><h2>🏆 My Results</h2><p class="muted">Your marked assignment results will appear here.</p><div id="studentResultsList"><p class="muted">Loading results...</p></div></div><div id="statusPanel" class="panel portal-section"><h2>Portal Status</h2><p id="statusText">Loading...</p></div><div id="featuresPanel" class="panel portal-section"><h2>What you can do here</h2><div class="features"><div><strong>📚 Learning Materials</strong><p>Access notes and study materials.</p></div><div><strong>📝 Assignments</strong><p>Receive and submit assignments.</p></div><div><strong>💻 CBT Tests</strong><p>Take online tests and examinations.</p></div><div><strong>🏆 Results</strong><p>View your scores and academic performance.</p></div></div></div></section><div id="courseModal" class="course-modal hidden" role="dialog" aria-modal="true" aria-labelledby="courseModalTitle"><div class="course-modal-card"><button id="closeCourseModal" class="close-btn" type="button">×</button><div class="course-modal-hero"><span id="courseModalIcon" class="course-modal-icon">📚</span><div><span id="courseModalCategory" class="course-category">COURSE</span><h2 id="courseModalTitle">Course</h2><p id="courseModalSubtitle" class="muted">Learning resources</p></div></div><div id="courseModalStats" class="course-modal-stats"></div><div id="courseModalResources" class="course-modal-resources"></div></div></div></main><footer>© 2026 Great Stand Educational Consult. Guiding Students. Building Futures.</footer><script type="module" src="portal.js?v=25"></script></body></html>
+<div id="submissionsAdminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📥 Student Submissions</h2><p class="muted">Admins and Superadmins can review submitted assignments.</p><div id="submissionsList"><p class="muted">Loading submissions...</p></div></div><div id="studentResultsPanel" class="panel portal-section"><h2>🏆 My Results</h2><p class="muted">Your marked assignment results will appear here.</p><div id="studentResultsList"><p class="muted">Loading results...</p></div></div><div id="statusPanel" class="panel portal-section"><h2>Portal Status</h2><p id="statusText">Loading...</p></div><div id="featuresPanel" class="panel portal-section"><h2>What you can do here</h2><div class="features"><div><strong>📚 Learning Materials</strong><p>Access notes and study materials.</p></div><div><strong>📝 Assignments</strong><p>Receive and submit assignments.</p></div><div><strong>💻 CBT Tests</strong><p>Take online tests and examinations.</p></div><div><strong>🏆 Results</strong><p>View your scores and academic performance.</p></div></div></div></section><div id="courseModal" class="course-modal hidden" role="dialog" aria-modal="true" aria-labelledby="courseModalTitle"><div class="course-modal-card"><button id="closeCourseModal" class="close-btn" type="button">×</button><div class="course-modal-hero"><span id="courseModalIcon" class="course-modal-icon">📚</span><div><span id="courseModalCategory" class="course-category">COURSE</span><h2 id="courseModalTitle">Course</h2><p id="courseModalSubtitle" class="muted">Learning resources</p></div></div><div id="courseModalStats" class="course-modal-stats"></div><div id="courseModalResources" class="course-modal-resources"></div></div></div></main><footer>© 2026 Great Stand Educational Consult. Guiding Students. Building Futures.</footer><script type="module" src="portal.js?v=26"></script></body></html>

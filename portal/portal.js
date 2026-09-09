@@ -861,3 +861,94 @@ const _v24RenderLearningCentre=renderLearningCentre;
 renderLearningCentre=function(){ if(courseData.courses.length){renderLearningCoursesV25()} else {_v24RenderLearningCentre()} };
 const _v24LoadLearningCentre=loadLearningCentre;
 loadLearningCentre=async function(){await _v24LoadLearningCentre();await loadCourseStructure();if(courseData.courses.length)renderLearningCoursesV25();};
+
+// ===== V26 PHONE-FRIENDLY COURSE BUILDER =====
+const qbCourse=$('qbCourse'),qbSubject=$('qbSubject'),qbTopic=$('qbTopic');
+function qbSetMsg(id,text,ok=false){const el=$(id);if(!el)return;el.className='message '+(ok?'submission-success':'');el.textContent=text||'';}
+function qbToggle(id){$(id)?.classList.toggle('hidden');}
+function refreshQuickBuilder(){
+  if(!qbCourse)return;
+  qbCourse.innerHTML=courseData.courses.length?courseData.courses.map(c=>`<option value="${esc(c.id)}">${esc(c.name)} — ${esc(c.category||'General')}</option>`).join(''):'<option value="">No courses yet — create one</option>';
+  refreshQBSubjects();
+}
+function refreshQBSubjects(){
+  if(!qbSubject)return;
+  const cid=qbCourse?.value;
+  const rows=courseData.subjects.filter(s=>s.courseId===cid);
+  qbSubject.innerHTML=rows.length?rows.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join(''):'<option value="">No subjects yet — create one</option>';
+  refreshQBTopics();
+}
+function refreshQBTopics(){
+  if(!qbTopic)return;
+  const sid=qbSubject?.value;
+  const rows=courseData.topics.filter(t=>t.subjectId===sid);
+  qbTopic.innerHTML=rows.length?rows.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join(''):'<option value="">No topics yet — create one</option>';
+}
+function renderCourseAdminListV26(){
+  const box=$('courseAdminList');if(!box)return;
+  if(!courseData.courses.length){box.innerHTML='<div class="learning-empty"><div>🎓</div><h3>No courses yet</h3><p class="muted">Start with a course above.</p></div>';return;}
+  box.innerHTML=courseData.courses.map(c=>{
+    const subs=courseData.subjects.filter(s=>s.courseId===c.id);
+    return `<div class="admin-course-block"><div class="admin-course-title"><b>🎓 ${esc(c.name)}</b><span>${esc(c.category||'General')}</span></div>${subs.length?subs.map(s=>{
+      const tops=courseData.topics.filter(t=>t.subjectId===s.id);
+      return `<div class="admin-subject-block"><div class="admin-course-title"><b>📘 ${esc(s.name)}</b><span>${tops.length} topic${tops.length===1?'':'s'}</span></div>${tops.length?tops.map(t=>{const ls=courseData.lessons.filter(l=>l.topicId===t.id);return `<div class="admin-topic-block"><div class="admin-course-title"><b>📌 ${esc(t.name)}</b><span>${ls.length} lesson${ls.length===1?'':'s'}</span></div>${ls.length?ls.map(l=>`<div class="lesson-row"><div><b>📖 ${esc(l.title||'Untitled Lesson')}</b>${l.pdfUrl?'<small> • PDF attached</small>':''}</div><div class="lesson-row-actions"><button type="button" class="secondary-btn admin-delete-mini" data-del-type="lesson" data-del-id="${esc(l.id)}">Delete</button></div></div>`).join(''):'<small class="muted">No lessons yet</small>'}</div>`}).join(''):'<small class="muted">No topics yet</small>'}</div>`;
+    }).join(''):'<p class="muted">No subjects yet.</p>'}</div>`;
+  }).join('');
+  box.querySelectorAll('[data-del-type="lesson"]').forEach(btn=>btn.addEventListener('click',()=>qbDeleteLesson(btn.dataset.delId)));
+}
+async function qbReload(){
+  await loadCourseStructure();
+  refreshQuickBuilder();
+  renderCourseAdminListV26();
+}
+qbCourse?.addEventListener('change',refreshQBSubjects);
+qbSubject?.addEventListener('change',refreshQBTopics);
+$('qbNewCourse')?.addEventListener('click',()=>qbToggle('qbCourseNew'));
+$('qbNewSubject')?.addEventListener('click',()=>qbToggle('qbSubjectNew'));
+$('qbNewTopic')?.addEventListener('click',()=>qbToggle('qbTopicNew'));
+$('qbSaveCourse')?.addEventListener('click',async()=>{
+  const name=$('qbCourseName').value.trim(),category=$('qbCourseCategory').value;
+  if(!name){qbSetMsg('qbCourseMsg','Enter a course name.');return}
+  qbSetMsg('qbCourseMsg','Creating course...');
+  try{const ref=await addDoc(collection(db,'courses'),{name,category,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbCourseName').value='';$('qbCourseNew').classList.add('hidden');await qbReload();qbCourse.value=ref.id;refreshQBSubjects();qbSetMsg('qbCourseMsg','Course created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbCourseMsg','Could not create course: '+(e.code||e.message))}
+});
+$('qbSaveSubject')?.addEventListener('click',async()=>{
+  const courseId=qbCourse?.value,name=$('qbSubjectName').value.trim();
+  if(!courseId){qbSetMsg('qbSubjectMsg','Create or select a course first.');return}
+  if(!name){qbSetMsg('qbSubjectMsg','Enter a subject name.');return}
+  qbSetMsg('qbSubjectMsg','Creating subject...');
+  try{const ref=await addDoc(collection(db,'subjects'),{name,courseId,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbSubjectName').value='';$('qbSubjectNew').classList.add('hidden');await qbReload();qbCourse.value=courseId;refreshQBSubjects();qbSubject.value=ref.id;refreshQBTopics();qbSetMsg('qbSubjectMsg','Subject created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbSubjectMsg','Could not create subject: '+(e.code||e.message))}
+});
+$('qbSaveTopic')?.addEventListener('click',async()=>{
+  const subjectId=qbSubject?.value,name=$('qbTopicName').value.trim();
+  if(!subjectId){qbSetMsg('qbTopicMsg','Create or select a subject first.');return}
+  if(!name){qbSetMsg('qbTopicMsg','Enter a topic title.');return}
+  qbSetMsg('qbTopicMsg','Creating topic...');
+  try{const ref=await addDoc(collection(db,'topics'),{name,subjectId,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbTopicName').value='';$('qbTopicNew').classList.add('hidden');await qbReload();qbSubject.value=subjectId;refreshQBTopics();qbTopic.value=ref.id;qbSetMsg('qbTopicMsg','Topic created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbTopicMsg','Could not create topic: '+(e.code||e.message))}
+});
+$('qbPublishLesson')?.addEventListener('click',async()=>{
+  const topicId=qbTopic?.value,title=$('qbLessonTitle').value.trim(),content=$('qbLessonContent').value.trim(),file=$('qbLessonFile')?.files?.[0];
+  if(!topicId){qbSetMsg('qbLessonMsg','Create or select a topic first.');return}
+  if(!title||!content){qbSetMsg('qbLessonMsg','Enter both a lesson title and lesson content.');return}
+  if(file && (file.type!=='application/pdf' && !/\.pdf$/i.test(file.name))){qbSetMsg('qbLessonMsg','Only PDF files are allowed.');return}
+  if(file && file.size>50*1024*1024){qbSetMsg('qbLessonMsg','PDF must be 50 MB or smaller.');return}
+  const topic=courseData.topics.find(t=>t.id===topicId),subject=courseData.subjects.find(s=>s.id===topic?.subjectId),course=courseData.courses.find(c=>c.id===subject?.courseId);
+  const btn=$('qbPublishLesson');btn.disabled=true;qbSetMsg('qbLessonMsg',file?'Uploading PDF and publishing lesson...':'Publishing lesson...');
+  let uploadedPath='';
+  try{
+    let pdfUrl='';
+    if(file){const safeName=file.name.replace(/[^a-zA-Z0-9._-]+/g,'_');uploadedPath='materials/lessons/'+auth.currentUser.uid+'/'+Date.now()+'_'+safeName;const {error}=await supabase.storage.from(SUPABASE_BUCKET).upload(uploadedPath,file,{contentType:'application/pdf',upsert:false,cacheControl:'3600'});if(error)throw error;const {data}=supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(uploadedPath);pdfUrl=data.publicUrl}
+    await addDoc(collection(db,'lessons'),{title,content,pdfUrl,storagePath:uploadedPath||'',storageProvider:uploadedPath?'supabase':'',topicId,subjectId:subject?.id||'',courseId:course?.id||'',category:course?.category||'General',createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
+    $('qbLessonTitle').value='';$('qbLessonContent').value='';if($('qbLessonFile'))$('qbLessonFile').value='';await qbReload();qbSetMsg('qbLessonMsg','Lesson published successfully ✅',true);
+  }catch(e){console.error(e);if(uploadedPath){try{await supabase.storage.from(SUPABASE_BUCKET).remove([uploadedPath])}catch(cleanErr){console.warn(cleanErr)}}qbSetMsg('qbLessonMsg','Could not publish lesson: '+(e.code||e.message))}finally{btn.disabled=false}
+});
+async function qbDeleteLesson(id){
+  const lesson=courseData.lessons.find(l=>l.id===id);if(!lesson)return;
+  if(!confirm('Delete this lesson? This cannot be undone.'))return;
+  try{if(lesson.storagePath)await supabase.storage.from(SUPABASE_BUCKET).remove([lesson.storagePath]);await deleteDoc(doc(db,'lessons',id));await qbReload();await loadLearningCentre();alert('Lesson deleted successfully.')}catch(e){console.error(e);alert('Could not delete lesson: '+(e.code||e.message))}
+}
+$('qbRefresh')?.addEventListener('click',qbReload);
+const _v25RenderCourseAdminList=renderCourseAdminList;
+renderCourseAdminList=function(){renderCourseAdminListV26()};
+const _v25LoadCourseStructure=loadCourseStructure;
+loadCourseStructure=async function(){await _v25LoadCourseStructure();refreshQuickBuilder();renderCourseAdminListV26()};
