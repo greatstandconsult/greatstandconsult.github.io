@@ -971,7 +971,7 @@ function qbEditorText(){
 function sanitizeRichHtml(html){
   const template=document.createElement('template');
   template.innerHTML=String(html||'');
-  const allowed=new Set(['B','STRONG','I','EM','U','H2','H3','H4','P','BR','UL','OL','LI','BLOCKQUOTE','A','CODE','PRE','SUB','SUP','DIV','SPAN','IMG','FIGURE','FIGCAPTION','IFRAME']);
+  const allowed=new Set(['B','STRONG','I','EM','U','H2','H3','H4','P','BR','UL','OL','LI','BLOCKQUOTE','A','CODE','PRE','SUB','SUP','DIV','SPAN','IMG','FIGURE','FIGCAPTION','IFRAME','TABLE','THEAD','TBODY','TR','TH','TD']);
   const walk=node=>{
     [...node.childNodes].forEach(child=>{
       if(child.nodeType===Node.ELEMENT_NODE){
@@ -1055,6 +1055,83 @@ function qbInsertVideo(){
 }
 $('qbInsertImage')?.addEventListener('click',qbInsertImage);
 $('qbInsertVideo')?.addEventListener('click',qbInsertVideo);
+
+// ===== V32 PASTE-FRIENDLY TABLE + CALCULATION BLOCKS =====
+function htmlEscText(v){return esc(String(v??''));}
+function linesToPreHtml(text){return htmlEscText(text).replace(/\n/g,'<br>');}
+function parsePipeTable(lines){
+  const rows=lines.map(x=>x.trim()).filter(Boolean).map(x=>x.replace(/^\||\|$/g,'').split('|').map(c=>c.trim()));
+  if(rows.length<2 || !rows[0].length)return '';
+  const isSep=r=>r.every(c=>/^:?-{3,}:?$/.test(c));
+  const header=rows[0], body=isSep(rows[1])?rows.slice(2):rows.slice(1);
+  const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
+  const bodyHtml=body.map(r=>'<tr>'+header.map((_,i)=>`<td>${htmlEscText(r[i]||'')}</td>`).join('')+'</tr>').join('');
+  return `<table>${head}${bodyHtml?`<tbody>${bodyHtml}</tbody>`:''}</table>`;
+}
+function transformPastedLessonText(text){
+  let src=String(text||'').replace(/\r\n?/g,'\n');
+  if(!src.trim())return '';
+  const lines=src.split('\n'); let out='', i=0;
+  const flushPlain=arr=>{if(!arr.length)return; const t=arr.join('\n'); out+=`<p>${htmlEscText(t).replace(/\n/g,'<br>')}</p>`; arr.length=0};
+  let plain=[];
+  while(i<lines.length){
+    const line=lines[i]; const trimmed=line.trim();
+    if(/^\[table\]$/i.test(trimmed)){
+      flushPlain(plain); let block=[]; i++;
+      while(i<lines.length&&!/^\[\/table\]$/i.test(lines[i].trim())){block.push(lines[i]);i++}
+      if(i<lines.length)i++;
+      const t=parsePipeTable(block); out+=t||`<p>${htmlEscText(block.join('\n')).replace(/\n/g,'<br>')}</p>`; continue;
+    }
+    if(/^\[calc\]$/i.test(trimmed)){
+      flushPlain(plain); let block=[]; i++;
+      while(i<lines.length&&!/^\[\/calc\]$/i.test(lines[i].trim())){block.push(lines[i]);i++}
+      if(i<lines.length)i++;
+      out+=`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`; continue;
+    }
+    if(/^\[answer\]$/i.test(trimmed)){
+      flushPlain(plain); let block=[]; i++;
+      while(i<lines.length&&!/^\[\/answer\]$/i.test(lines[i].trim())){block.push(lines[i]);i++}
+      if(i<lines.length)i++;
+      out+=`<div class="answer-block"><b>Answer</b><div>${htmlEscText(block.join('\n')).replace(/\n/g,'<br>')}</div></div>`; continue;
+    }
+    // Markdown-style pipe table: consecutive lines beginning/ending with |.
+    if(/^\s*\|.*\|\s*$/.test(line) && i+1<lines.length && /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(lines[i+1])){
+      flushPlain(plain); let block=[];
+      while(i<lines.length && /^\s*\|.*\|\s*$/.test(lines[i])){block.push(lines[i]);i++}
+      out+=parsePipeTable(block); continue;
+    }
+    // Indented/aligned calculation block containing a divider line.
+    if(i+1<lines.length && /^(?:\s*[-_=]{4,}\s*)$/.test(lines[i+1]) && trimmed){
+      flushPlain(plain); let block=[line,lines[i+1]]; i+=2;
+      while(i<lines.length && lines[i].trim() && !/^\[/.test(lines[i].trim())){block.push(lines[i]);i++}
+      out+=`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`; continue;
+    }
+    plain.push(line); i++;
+  }
+  flushPlain(plain);
+  return out;
+}
+function pasteAsRichLesson(e){
+  const editor=$('qbLessonContent'); if(!editor)return;
+  const text=e.clipboardData?.getData('text/plain'); if(!text)return;
+  // Only intercept structured/format-sensitive pastes. Plain text still gets clean paragraphs.
+  e.preventDefault();
+  const html=transformPastedLessonText(text);
+  editor.focus(); document.execCommand('insertHTML',false,html);
+}
+$('qbLessonContent')?.addEventListener('paste',pasteAsRichLesson);
+function qbInsertTable(){
+  const r=parseInt(prompt('Number of rows?','4')||'4',10), c=parseInt(prompt('Number of columns?','2')||'2',10);
+  if(!Number.isFinite(r)||!Number.isFinite(c)||r<1||c<1||r>20||c>10)return;
+  let h='<table><tbody>';
+  for(let y=0;y<r;y++){h+='<tr>';for(let x=0;x<c;x++)h+=`<td>${y===0?'Header':''}</td>`;h+='</tr>'}
+  h+='</tbody></table><p><br></p>'; qbInsertHtml(h);
+}
+function qbInsertCalc(){qbInsertHtml('<div class="calc-block"><pre>Write your calculation here...\n------------------------------\nAnswer = </pre></div><p><br></p>');}
+function qbInsertAnswer(){qbInsertHtml('<div class="answer-block"><b>Answer</b><div>Write the final answer here.</div></div><p><br></p>');}
+$('qbInsertTable')?.addEventListener('click',qbInsertTable);
+$('qbInsertCalc')?.addEventListener('click',qbInsertCalc);
+$('qbInsertAnswer')?.addEventListener('click',qbInsertAnswer);
 
 async function qbSaveLesson(status){
   const topicId=qbTopic?.value,title=$('qbLessonTitle').value.trim(),rawHtml=$('qbLessonContent')?.innerHTML||'',content=sanitizeRichHtml(rawHtml),file=$('qbLessonFile')?.files?.[0];
