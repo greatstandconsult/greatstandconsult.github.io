@@ -1,7 +1,13 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Great Stand Portal</title><link rel="stylesheet" href="portal.css?v=17.0"></head><body><div id="gsNavOverlay" class="gs-nav-overlay"></div>
-<aside id="gsSideNav" class="gs-side-nav"><div class="gs-nav-head"><b>GREAT STAND</b><button id="gsNavClose" type="button">×</button></div><nav id="gsNavLinks"></nav><button id="gsNavLogout" type="button">🚪 Logout</button></aside>
-<button id="gsNavOpen" type="button" aria-label="Open menu">☰</button><header class="topbar"><div class="brand"><span class="brand-mark">G</span><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div><button id="logoutBtn" class="logout hidden">Logout</button></header><section id="gsDashboard" class="gs-dashboard hidden"><div class="gs-dash-hero"><small>GREAT STAND EDUCATIONAL CONSULT</small><h2 id="gsWelcome">Welcome 👋</h2><p id="gsRoleText">Your dashboard</p></div><div class="gs-stat-grid"><button class="gs-stat-card" data-gs-target="studentCbtSection"><b id="gsCbtCount">0</b><span>Available CBTs</span></button><button class="gs-stat-card" data-gs-target="studentAssignmentSection"><b id="gsAssignCount">0</b><span>Assignments</span></button><button class="gs-stat-card" data-gs-target="studentMaterialsSection"><b id="gsMaterialCount">0</b><span>Study Materials</span></button><button class="gs-stat-card" data-gs-target="studentResultsSection"><b id="gsResultCount">0</b><span>Results</span></button></div><div class="gs-dashboard-panel"><h3>Quick Access</h3><div id="gsQuickGrid" class="gs-quick-grid"></div></div></section><main><section id="loginView" class="card login-card"><div class="badge">GREAT STAND PORTAL</div><h1>Welcome Back</h1><p class="intro">Sign in to access your portal.</p><form id="loginForm"><label>Email Address</label><input id="email" type="email" required><label>Password</label><input id="password" type="password" required><button class="primary-btn" type="submit">Login</button><p id="loginMessage" class="message"></p></form></section><section id="dashboardView" class="hidden"><div class="welcome"><span class="badge">GREAT STAND PORTAL</span><h1 id="welcomeTitle">Dashboard</h1><p id="roleText"></p></div><div class="stats"><div class="stat-card">📚<strong id="notesCount">0</strong><p>Notes</p></div><div class="stat-card">📝<strong id="assignmentsCount">0</strong><p>Assignments</p></div><div class="stat-card">💻<strong id="testsCount">0</strong><p>Tests</p></div><div class="stat-card">🏆<strong id="resultsCount">0</strong><p>Results</p></div><div class="stat-card">👨‍🎓<strong id="studentsCount">0</strong><p>Students</p></div></div><div id="adminPanel" class="panel admin-panel" style="display:none"><h2>📚 Manage Notes</h2><p class="muted">Admins and Superadmins can publish notes for students.</p><form id="noteForm"><label>Note Title</label><input id="noteTitle" required placeholder="e.g. JAMB English: Parts of Speech"><label>Subject</label><input id="noteSubject" required placeholder="e.g. English Language"><label>Note Content</label><textarea id="noteContent" required placeholder="Type or paste the lesson note here..."></textarea><button class="primary-btn" type="submit">Publish Note</button><p id="noteMessage" class="message"></p></form></div><div class="panel"><h2>📖 Available Notes</h2><div id="notesList"><p class="muted">Loading notes...</p></div></div>
-<div id="assignmentAdminPanel" class="panel admin-panel" style="display:none">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Great Stand Portal</title><link rel="stylesheet" href="portal.css?v=20.1"></head><body><button id="gsMenuBtn" class="gs-menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
+<div id="gsNavOverlay" class="gs-nav-overlay"></div>
+<aside id="gsSideNav" class="gs-side-nav" aria-label="Portal navigation">
+  <div class="gs-nav-brand"><div class="gs-nav-logo">G</div><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div>
+  <div class="gs-nav-user"><span id="gsNavRole">PORTAL</span><b id="gsNavName">Welcome</b></div>
+  <nav id="gsNavLinks"></nav>
+  <button id="gsNavLogout" class="gs-nav-logout" type="button">🚪 Logout</button>
+</aside>
+<header class="topbar"><div class="brand"><span class="brand-mark">G</span><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div><button id="logoutBtn" class="logout hidden">Logout</button></header><main><section id="loginView" class="card login-card"><div class="badge">GREAT STAND PORTAL</div><h1>Welcome Back</h1><p class="intro">Sign in to access your portal.</p><form id="loginForm"><label>Email Address</label><input id="email" type="email" required><label>Password</label><input id="password" type="password" required><button class="primary-btn" type="submit">Login</button><p id="loginMessage" class="message"></p></form></section><section id="dashboardView" class="hidden"><div class="welcome"><span class="badge">GREAT STAND PORTAL</span><h1 id="welcomeTitle">Dashboard</h1><p id="roleText"></p></div><div class="stats"><div class="stat-card">📚<strong id="notesCount">0</strong><p>Notes</p></div><div class="stat-card">📝<strong id="assignmentsCount">0</strong><p>Assignments</p></div><div class="stat-card">💻<strong id="testsCount">0</strong><p>Tests</p></div><div class="stat-card">🏆<strong id="resultsCount">0</strong><p>Results</p></div><div class="stat-card">👨‍🎓<strong id="studentsCount">0</strong><p>Students</p></div></div><div id="adminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📚 Manage Notes</h2><p class="muted">Admins and Superadmins can publish notes for students.</p><form id="noteForm"><label>Note Title</label><input id="noteTitle" required placeholder="e.g. JAMB English: Parts of Speech"><label>Subject</label><input id="noteSubject" required placeholder="e.g. English Language"><label>Note Content</label><textarea id="noteContent" required placeholder="Type or paste the lesson note here..."></textarea><button class="primary-btn" type="submit">Publish Note</button><p id="noteMessage" class="message"></p></form></div><div id="notesPanel" class="panel portal-section"><h2>📖 Available Notes</h2><div id="notesList"><p class="muted">Loading notes...</p></div></div>
+<div id="assignmentAdminPanel" class="panel admin-panel portal-section" style="display:none">
   <h2>📝 Manage Assignments</h2>
   <p class="muted">Admins and Superadmins can create assignments for students.</p>
   <form id="assignmentForm">
@@ -17,7 +23,7 @@
     <p id="assignmentMessage" class="message"></p>
   </form>
 </div>
-<div id="studentAdminPanel" class="panel admin-panel" style="display:none">
+<div id="studentAdminPanel" class="panel admin-panel portal-section" style="display:none">
   <h2>👨‍🎓 Manage Students</h2>
   <p class="muted">Admins and Superadmins can register and manage student accounts.</p>
   <form id="studentForm">
@@ -32,7 +38,7 @@
   <div class="student-list-head"><h3>Registered Students</h3></div>
   <div id="studentsList"><p class="muted">Loading students...</p></div>
 </div>
-<div id="testAdminPanel" class="panel admin-panel" style="display:none">
+<div id="testAdminPanel" class="panel admin-panel portal-section" style="display:none">
   <h2>💻 Manage CBT Tests</h2>
   <p class="muted">Create multiple-choice practice tests for students.</p>
   <form id="testForm">
@@ -83,7 +89,7 @@ Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
     <p id="testMessage" class="message"></p>
   </form>
 </div>
-<div class="panel">
+<div id="testsPanel" class="panel portal-section">
   <h2>💻 Available CBT Tests</h2>
   <div id="testsList"><p class="muted">Loading tests...</p></div>
   <div id="testModal" class="assignment-modal hidden">
@@ -97,8 +103,8 @@ Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
     </div>
   </div>
 </div>
-<div id="testResultsAdminPanel" class="panel admin-panel" style="display:none"><h2>📊 CBT Student Results</h2><p class="muted">View students' automatically marked CBT scores.</p><div id="testResultsList"><p class="muted">Loading CBT results...</p></div></div>
-<div id="materialsAdminPanel" class="panel admin-panel" style="display:none">
+<div id="testResultsAdminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📊 CBT Student Results</h2><p class="muted">View students' automatically marked CBT scores.</p><div id="testResultsList"><p class="muted">Loading CBT results...</p></div></div>
+<div id="materialsAdminPanel" class="panel admin-panel portal-section" style="display:none">
   <h2>📚 Manage Study Materials</h2>
   <p class="muted">Publish JAMB, WAEC and general study materials. For now, add a public PDF link (Google Drive, Dropbox, website, etc.).</p>
   <form id="materialForm">
@@ -111,7 +117,7 @@ Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
     <p id="materialMessage" class="message"></p>
   </form>
 </div>
-<div class="panel">
+<div id="materialsPanel" class="panel portal-section">
   <h2>📚 Study Materials</h2>
   <div class="material-filters">
     <button class="secondary-btn material-filter active" data-filter="All" type="button">All</button>
@@ -121,8 +127,8 @@ Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
   </div>
   <div id="materialsList"><p class="muted">Loading study materials...</p></div>
 </div>
-<div class="panel">
+<div id="assignmentsPanel" class="panel portal-section">
   <h2>📝 Available Assignments</h2>
   <div id="assignmentsList"><p class="muted">Loading assignments...</p></div><div id="assignmentModal" class="assignment-modal hidden"><div class="assignment-modal-card"><button id="closeAssignmentBtn" class="close-btn" type="button">×</button><h2 id="openAssignmentTitle">Assignment</h2><p id="openAssignmentSubject" class="subject"></p><div id="openAssignmentContent" class="note-content"></div><p id="openAssignmentDeadline" class="muted"></p><form id="submissionForm"><label>Your Answer</label><textarea id="submissionAnswer" required placeholder="Type your answer here..."></textarea><button class="primary-btn" type="submit">Submit Assignment</button><p id="submissionMessage" class="message"></p></form></div></div>
 </div>
-<div id="submissionsAdminPanel" class="panel admin-panel" style="display:none"><h2>📥 Student Submissions</h2><p class="muted">Admins and Superadmins can review submitted assignments.</p><div id="submissionsList"><p class="muted">Loading submissions...</p></div></div><div id="studentResultsPanel" class="panel"><h2>🏆 My Results</h2><p class="muted">Your marked assignment results will appear here.</p><div id="studentResultsList"><p class="muted">Loading results...</p></div></div><div class="panel"><h2>Portal Status</h2><p id="statusText">Loading...</p></div><div class="panel"><h2>What you can do here</h2><div class="features"><div><strong>📚 Learning Materials</strong><p>Access notes and study materials.</p></div><div><strong>📝 Assignments</strong><p>Receive and submit assignments.</p></div><div><strong>💻 CBT Tests</strong><p>Take online tests and examinations.</p></div><div><strong>🏆 Results</strong><p>View your scores and academic performance.</p></div></div></div></section></main><footer>© 2026 Great Stand Educational Consult. Guiding Students. Building Futures.</footer><script type="module" src="portal.js?v=17.1"></script></body></html>
+<div id="submissionsAdminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📥 Student Submissions</h2><p class="muted">Admins and Superadmins can review submitted assignments.</p><div id="submissionsList"><p class="muted">Loading submissions...</p></div></div><div id="studentResultsPanel" class="panel portal-section"><h2>🏆 My Results</h2><p class="muted">Your marked assignment results will appear here.</p><div id="studentResultsList"><p class="muted">Loading results...</p></div></div><div id="statusPanel" class="panel portal-section"><h2>Portal Status</h2><p id="statusText">Loading...</p></div><div id="featuresPanel" class="panel portal-section"><h2>What you can do here</h2><div class="features"><div><strong>📚 Learning Materials</strong><p>Access notes and study materials.</p></div><div><strong>📝 Assignments</strong><p>Receive and submit assignments.</p></div><div><strong>💻 CBT Tests</strong><p>Take online tests and examinations.</p></div><div><strong>🏆 Results</strong><p>View your scores and academic performance.</p></div></div></div></section></main><footer>© 2026 Great Stand Educational Consult. Guiding Students. Building Futures.</footer><script type="module" src="portal.js?v=20.1"></script></body></html>

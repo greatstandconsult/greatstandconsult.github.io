@@ -603,9 +603,130 @@ onAuthStateChanged(auth,async user=>{
     $("statusText").textContent="Firestore error: "+(e.code||e.message);
   }
 });
-/* V20 navigation */
-function gsGo(id){const e=document.getElementById(id);if(e)e.scrollIntoView({behavior:"smooth"});document.getElementById("gsSideNav")?.classList.remove("open");document.getElementById("gsNavOverlay")?.classList.remove("open")}
-function gsBuildNav(role){const n=document.getElementById("gsNavLinks");if(!n)return;const admin=role==="admin"||role==="superadmin";const items=admin?[["🏠","Dashboard","gsDashboard"],["👨‍🎓","Manage Students","studentManagementSection"],["📚","Notes","adminNotesSection"],["📝","Assignments","adminAssignmentsSection"],["🧠","CBT / Tests","adminTestsSection"],["📖","Study Materials","adminMaterialsSection"],["📊","Results","adminResultsSection"],["📤","Submissions","adminSubmissionsSection"]]:[["🏠","Dashboard","gsDashboard"],["🧠","CBT / Tests","studentCbtSection"],["📝","Assignments","studentAssignmentSection"],["📖","Study Materials","studentMaterialsSection"],["📊","My Results","studentResultsSection"]];n.innerHTML="";items.forEach(x=>{const b=document.createElement("button");b.type="button";b.textContent=x[0]+"  "+x[1];b.onclick=()=>gsGo(x[2]);n.appendChild(b)})}
-async function gsRefreshDashboard(){if(!auth.currentUser)return;try{const s=await getDoc(doc(db,"users",auth.currentUser.uid)),p=s.data()||{},role=String(p.role||"student").toLowerCase();document.getElementById("gsWelcome").textContent="Welcome, "+(p.name||"Student")+" 👋";document.getElementById("gsRoleText").textContent=role==="superadmin"?"Superadmin Dashboard":role==="admin"?"Admin Dashboard":"Your learning dashboard";gsBuildNav(role);document.getElementById("gsCbtCount").textContent=(await getDocs(collection(db,"tests"))).size;document.getElementById("gsAssignCount").textContent=(await getDocs(collection(db,"assignments"))).size;document.getElementById("gsMaterialCount").textContent=(await getDocs(collection(db,"materials"))).size;document.getElementById("gsResultCount").textContent=(await getDocs(collection(db,"results"))).size;document.getElementById("gsDashboard").classList.remove("hidden")}catch(e){console.warn(e)}}
-document.getElementById("gsNavOpen")?.addEventListener("click",()=>{document.getElementById("gsSideNav").classList.add("open");document.getElementById("gsNavOverlay").classList.add("open")});document.getElementById("gsNavClose")?.addEventListener("click",()=>gsGo("gsDashboard"));document.getElementById("gsNavOverlay")?.addEventListener("click",()=>gsGo("gsDashboard"));document.getElementById("gsNavLogout")?.addEventListener("click",()=>signOut(auth));
-setTimeout(gsRefreshDashboard,1200);
+/* V20.1 navigation/dashboard layer — does not alter Firebase/Auth logic. */
+(function(){
+  const menuBtn=document.getElementById("gsMenuBtn");
+  const sideNav=document.getElementById("gsSideNav");
+  const overlay=document.getElementById("gsNavOverlay");
+  const links=document.getElementById("gsNavLinks");
+  const navLogout=document.getElementById("gsNavLogout");
+  const nameEl=document.getElementById("gsNavName");
+  const roleEl=document.getElementById("gsNavRole");
+
+  function closeNav(){
+    if(!sideNav)return;
+    sideNav.classList.remove("open");
+    overlay?.classList.remove("show");
+    menuBtn?.setAttribute("aria-expanded","false");
+  }
+  function openNav(){
+    if(!sideNav)return;
+    sideNav.classList.add("open");
+    overlay?.classList.add("show");
+    menuBtn?.setAttribute("aria-expanded","true");
+  }
+  function toggleNav(){
+    sideNav?.classList.contains("open") ? closeNav() : openNav();
+  }
+  menuBtn?.addEventListener("click",toggleNav);
+  overlay?.addEventListener("click",closeNav);
+  navLogout?.addEventListener("click",()=>{
+    const b=document.getElementById("logoutBtn");
+    if(b) b.click();
+    closeNav();
+  });
+
+  const studentItems=[
+    ["🏠","Dashboard","dashboardView"],
+    ["📖","My Notes","notesPanel"],
+    ["📝","Assignments","assignmentsPanel"],
+    ["💻","CBT / Tests","testsPanel"],
+    ["📚","Study Materials","materialsPanel"],
+    ["🏆","My Results","studentResultsPanel"],
+    ["ℹ️","Portal Status","statusPanel"]
+  ];
+  const adminItems=[
+    ["🏠","Dashboard","dashboardView"],
+    ["👨‍🎓","Manage Students","studentAdminPanel"],
+    ["📖","Manage Notes","adminPanel"],
+    ["📝","Manage Assignments","assignmentAdminPanel"],
+    ["💻","Manage CBT","testAdminPanel"],
+    ["📚","Manage Materials","materialsAdminPanel"],
+    ["📊","CBT Results","testResultsAdminPanel"],
+    ["📥","Submissions","submissionsAdminPanel"],
+    ["📖","Student Notes","notesPanel"],
+    ["📝","Student Assignments","assignmentsPanel"],
+    ["💻","Student Tests","testsPanel"],
+    ["📚","Study Materials","materialsPanel"],
+    ["🏆","Results","studentResultsPanel"]
+  ];
+
+  function buildNav(){
+    if(!links)return;
+    const role=String(window.currentUserRole||"student").toLowerCase();
+    const isAdmin=role==="admin"||role==="superadmin";
+    const items=isAdmin?adminItems:studentItems;
+    links.innerHTML="";
+    items.forEach(([icon,label,target],i)=>{
+      const btn=document.createElement("button");
+      btn.type="button";
+      btn.className="gs-nav-link"+(i===0?" active":"");
+      btn.innerHTML="<span>"+icon+"</span><b>"+label+"</b>";
+      btn.dataset.target=target;
+      btn.addEventListener("click",()=>{
+        showSection(target);
+        links.querySelectorAll(".gs-nav-link").forEach(x=>x.classList.remove("active"));
+        btn.classList.add("active");
+        closeNav();
+      });
+      links.appendChild(btn);
+    });
+    if(nameEl){
+      const n=document.getElementById("welcomeTitle")?.textContent||"Welcome";
+      nameEl.textContent=n.replace(/^Welcome,\s*/i,"")||"Welcome";
+    }
+    if(roleEl)roleEl.textContent=role==="superadmin"?"SUPERADMIN":isAdmin?"ADMIN":"STUDENT";
+  }
+
+  function allSections(){
+    return Array.from(document.querySelectorAll(".portal-section"));
+  }
+
+  function showSection(target){
+    const dash=document.getElementById("dashboardView");
+    if(target==="dashboardView"){
+      allSections().forEach(el=>el.classList.add("gs-section-hidden"));
+      dash?.classList.remove("gs-section-focus");
+      window.scrollTo({top:0,behavior:"smooth"});
+      return;
+    }
+    allSections().forEach(el=>{
+      el.classList.toggle("gs-section-hidden",el.id!==target);
+    });
+    const el=document.getElementById(target);
+    if(el && !el.classList.contains("hidden")){
+      setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30);
+    }
+  }
+
+  window.gsShowSection=showSection;
+  window.gsBuildNav=buildNav;
+  window.gsRefreshNavigation=buildNav;
+
+  // Start with a clean dashboard view. Authentication code remains untouched.
+  document.addEventListener("DOMContentLoaded",()=>{
+    buildNav();
+    allSections().forEach(el=>el.classList.add("gs-section-hidden"));
+  });
+
+  // Observe role changes made by the existing portal code.
+  let lastRole="";
+  setInterval(()=>{
+    const role=String(window.currentUserRole||"").toLowerCase();
+    if(role && role!==lastRole){
+      lastRole=role;
+      buildNav();
+      allSections().forEach(el=>el.classList.add("gs-section-hidden"));
+    }
+  },500);
+})();
