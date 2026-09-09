@@ -603,132 +603,33 @@ onAuthStateChanged(auth,async user=>{
     $("statusText").textContent="Firestore error: "+(e.code||e.message);
   }
 });
-/* V20.1 navigation/dashboard layer — does not alter Firebase/Auth logic. */
+/* V20.3 role-aware navigation layer — visual/navigation only; Firebase/Auth logic is untouched. */
 (function(){
-  const menuBtn=document.getElementById("gsMenuBtn");
-  const sideNav=document.getElementById("gsSideNav");
-  const overlay=document.getElementById("gsNavOverlay");
-  const links=document.getElementById("gsNavLinks");
-  const navLogout=document.getElementById("gsNavLogout");
-  const navClose=document.getElementById("gsNavClose");
-  const nameEl=document.getElementById("gsNavName");
-  const roleEl=document.getElementById("gsNavRole");
+  const menuBtn=document.getElementById("gsMenuBtn"), sideNav=document.getElementById("gsSideNav"), overlay=document.getElementById("gsNavOverlay"), links=document.getElementById("gsNavLinks"), navLogout=document.getElementById("gsNavLogout"), navClose=document.getElementById("gsNavClose"), nameEl=document.getElementById("gsNavName"), roleEl=document.getElementById("gsNavRole");
+  function closeNav(){sideNav?.classList.remove("open");overlay?.classList.remove("show");menuBtn?.setAttribute("aria-expanded","false")}
+  function openNav(){sideNav?.classList.add("open");overlay?.classList.add("show");menuBtn?.setAttribute("aria-expanded","true")}
+  menuBtn?.addEventListener("click",()=>sideNav?.classList.contains("open")?closeNav():openNav());
+  overlay?.addEventListener("click",closeNav); navClose?.addEventListener("click",closeNav);
+  navLogout?.addEventListener("click",()=>{document.getElementById("logoutBtn")?.click();closeNav()});
 
-  function closeNav(){
-    if(!sideNav)return;
-    sideNav.classList.remove("open");
-    overlay?.classList.remove("show");
-    menuBtn?.setAttribute("aria-expanded","false");
-  }
-  function openNav(){
-    if(!sideNav)return;
-    sideNav.classList.add("open");
-    overlay?.classList.add("show");
-    menuBtn?.setAttribute("aria-expanded","true");
-  }
-  function toggleNav(){
-    sideNav?.classList.contains("open") ? closeNav() : openNav();
-  }
-  menuBtn?.addEventListener("click",toggleNav);
-  overlay?.addEventListener("click",closeNav);
-  navClose?.addEventListener("click",closeNav);
-  navLogout?.addEventListener("click",()=>{
-    const b=document.getElementById("logoutBtn");
-    if(b) b.click();
-    closeNav();
-  });
-
-  const studentItems=[
-    ["🏠","Dashboard","dashboardView"],
-    ["📖","My Notes","notesPanel"],
-    ["📝","Assignments","assignmentsPanel"],
-    ["💻","CBT / Tests","testsPanel"],
-    ["📚","Study Materials","materialsPanel"],
-    ["🏆","My Results","studentResultsPanel"],
-    ["ℹ️","Portal Status","statusPanel"]
+  const studentGroups=[
+    {heading:"STUDENT MENU",items:[["⌂","Dashboard","dashboardView"],["🎓","My Courses","notesPanel"],["🧠","CBT / Tests","testsPanel"],["▤","Assignments","assignmentsPanel"],["▱","Study Materials","materialsPanel"],["▥","My Results","studentResultsPanel"],["●","Notifications","statusPanel"],["◉","My Profile","statusPanel"]]},
+    {heading:"QUICK LINKS",items:[["📚","My Notes","notesPanel","View and read your notes"],["📝","Assignments","assignmentsPanel","View and submit assignments"],["🧠","CBT / Tests","testsPanel","Start and take your tests"],["📖","Study Materials","materialsPanel","Access your study resources"]]}
   ];
-  const adminItems=[
-    ["🏠","Dashboard","dashboardView"],
-    ["👨‍🎓","Manage Students","studentAdminPanel"],
-    ["📖","Manage Notes","adminPanel"],
-    ["📝","Manage Assignments","assignmentAdminPanel"],
-    ["💻","Manage CBT","testAdminPanel"],
-    ["📚","Manage Materials","materialsAdminPanel"],
-    ["📊","CBT Results","testResultsAdminPanel"],
-    ["📥","Submissions","submissionsAdminPanel"],
-    ["📖","Student Notes","notesPanel"],
-    ["📝","Student Assignments","assignmentsPanel"],
-    ["💻","Student Tests","testsPanel"],
-    ["📚","Study Materials","materialsPanel"],
-    ["🏆","Results","studentResultsPanel"]
+  const adminGroups=[
+    {heading:"ADMIN MENU",items:[["⌂","Dashboard","dashboardView"],["👨‍🎓","Manage Students","studentAdminPanel"],["📚","Manage Notes","adminPanel"],["📝","Manage Assignments","assignmentAdminPanel"],["🧠","Manage CBT / Tests","testAdminPanel"],["📖","Manage Study Materials","materialsAdminPanel"],["📊","CBT Results","testResultsAdminPanel"],["📥","Submissions","submissionsAdminPanel"]]},
+    {heading:"STUDENT VIEW",items:[["📚","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📖","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]]}
   ];
-
-  function buildNav(){
-    if(!links)return;
-    const role=String(window.currentUserRole||"student").toLowerCase();
-    const isAdmin=role==="admin"||role==="superadmin";
-    const items=isAdmin?adminItems:studentItems;
-    links.innerHTML="";
-    items.forEach(([icon,label,target],i)=>{
-      const btn=document.createElement("button");
-      btn.type="button";
-      btn.className="gs-nav-link"+(i===0?" active":"");
-      btn.innerHTML="<span>"+icon+"</span><b>"+label+"</b>";
-      btn.dataset.target=target;
-      btn.addEventListener("click",()=>{
-        showSection(target);
-        links.querySelectorAll(".gs-nav-link").forEach(x=>x.classList.remove("active"));
-        btn.classList.add("active");
-        closeNav();
-      });
-      links.appendChild(btn);
-    });
-    if(nameEl){
-      const n=document.getElementById("welcomeTitle")?.textContent||"Welcome";
-      nameEl.textContent=n.replace(/^Welcome,\s*/i,"")||"Welcome";
-    }
-    if(roleEl)roleEl.textContent=role==="superadmin"?"SUPERADMIN":isAdmin?"ADMIN":"STUDENT";
-  }
-
-  function allSections(){
-    return Array.from(document.querySelectorAll(".portal-section"));
-  }
-
-  function showSection(target){
-    const dash=document.getElementById("dashboardView");
-    if(target==="dashboardView"){
-      allSections().forEach(el=>el.classList.add("gs-section-hidden"));
-      dash?.classList.remove("gs-section-focus");
-      window.scrollTo({top:0,behavior:"smooth"});
-      return;
-    }
-    allSections().forEach(el=>{
-      el.classList.toggle("gs-section-hidden",el.id!==target);
-    });
-    const el=document.getElementById(target);
-    if(el && !el.classList.contains("hidden")){
-      setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30);
-    }
-  }
-
-  window.gsShowSection=showSection;
-  window.gsBuildNav=buildNav;
-  window.gsRefreshNavigation=buildNav;
-
-  // Start with a clean dashboard view. Authentication code remains untouched.
-  document.addEventListener("DOMContentLoaded",()=>{
-    buildNav();
-    allSections().forEach(el=>el.classList.add("gs-section-hidden"));
-  });
-
-  // Observe role changes made by the existing portal code.
-  let lastRole="";
-  setInterval(()=>{
-    const role=String(window.currentUserRole||"").toLowerCase();
-    if(role && role!==lastRole){
-      lastRole=role;
-      buildNav();
-      allSections().forEach(el=>el.classList.add("gs-section-hidden"));
-    }
-  },500);
+  const superadminGroups=[
+    {heading:"SUPERADMIN CONTROL",items:[["⌂","Dashboard","dashboardView"],["👨‍🎓","Manage Students","studentAdminPanel"],["📚","Manage Notes","adminPanel"],["📝","Manage Assignments","assignmentAdminPanel"],["🧠","Manage CBT / Tests","testAdminPanel"],["📖","Manage Study Materials","materialsAdminPanel"],["📊","CBT Results","testResultsAdminPanel"],["📥","Submissions","submissionsAdminPanel"]]},
+    {heading:"STUDENT PORTAL VIEW",items:[["📚","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📖","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]]}
+  ];
+  function addHeading(text){const h=document.createElement("div");h.className="gs-nav-section-title";h.textContent=text;links.appendChild(h)}
+  function addItem(item){const [icon,label,target,sub]=item,btn=document.createElement("button");btn.type="button";btn.className="gs-nav-link";btn.innerHTML='<span>'+icon+'</span><div class="gs-nav-copy"><b>'+label+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div>';btn.dataset.target=target;btn.addEventListener("click",()=>{showSection(target);links.querySelectorAll(".gs-nav-link").forEach(x=>x.classList.remove("active"));btn.classList.add("active");closeNav()});links.appendChild(btn)}
+  function buildNav(){if(!links)return;const role=String(window.currentUserRole||"student").trim().toLowerCase(),isSuper=role==="superadmin",isAdmin=role==="admin"||isSuper,groups=isSuper?superadminGroups:(isAdmin?adminGroups:studentGroups);links.innerHTML="";groups.forEach(g=>{addHeading(g.heading);g.items.forEach(addItem)});const first=links.querySelector(".gs-nav-link");first?.classList.add("active");if(nameEl){const n=document.getElementById("welcomeTitle")?.textContent||"Welcome";nameEl.textContent=n.replace(/^Welcome,\s*/i,"")||"Welcome"}if(roleEl){roleEl.textContent=isSuper?"SUPERADMIN":isAdmin?"ADMIN":"STUDENT";roleEl.className="gs-nav-role-badge "+(isSuper?"superadmin":isAdmin?"admin":"student")}sideNav?.classList.toggle("gs-superadmin",isSuper)}
+  function allSections(){return Array.from(document.querySelectorAll(".portal-section"))}
+  function showSection(target){const dash=document.getElementById("dashboardView");if(target==="dashboardView"){allSections().forEach(el=>el.classList.add("gs-section-hidden"));window.scrollTo({top:0,behavior:"smooth"});return}allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));const el=document.getElementById(target);if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)}
+  window.gsShowSection=showSection;window.gsBuildNav=buildNav;window.gsRefreshNavigation=buildNav;
+  document.addEventListener("DOMContentLoaded",()=>{buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))});
+  let lastRole="";setInterval(()=>{const role=String(window.currentUserRole||"").trim().toLowerCase();if(role&&role!==lastRole){lastRole=role;buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))}},500);
 })();
