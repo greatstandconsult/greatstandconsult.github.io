@@ -323,7 +323,64 @@ function showTestCorrections(){
   });
   $('prevQuestionBtn').style.display='none';$('nextQuestionBtn').style.display='none';$('submitTestBtn').style.display='none';
 }
-async function submitTest(autoSubmit){if(!currentTest||!auth.currentUser)return;if(testAutoSubmitTimeout){clearTimeout(testAutoSubmitTimeout);testAutoSubmitTimeout=null}if(String(window.currentUserRole||'student').toLowerCase()!=='student'){return;}if($('submitTestBtn').dataset.submitted==='true')return;clearInterval(testTimerInterval);$('submitTestBtn').disabled=true;$('testSubmitMessage').textContent=autoSubmit?'Submitting...':'Submitting test...';try{const qs=currentTest.questions||[];let correct=0;qs.forEach((q,i)=>{if(testAnswers[i]===q.correct)correct++});const score=qs.length?Math.round(correct/qs.length*100):0;await addDoc(collection(db,'results'),{resultType:'cbt',testId:currentTest.id,testTitle:currentTest.title||'CBT Test',subject:currentTest.subject||'General',studentId:auth.currentUser.uid,studentEmail:auth.currentUser.email||'',score,correctAnswers:correct,totalQuestions:qs.length,answers:testAnswers.map(a=>a||''),corrections:qs.map((q,i)=>({text:q.text,options:q.options,correct:q.correct,yourAnswer:testAnswers[i]||'',explanation:q.explanation||''})),submittedAt:serverTimestamp(),updatedAt:serverTimestamp(),createdAt:serverTimestamp()});$('testSubmitMessage').className='message submission-success';$('testSubmitMessage').textContent=`Test submitted successfully ✅ Score: ${score}/100 (${correct}/${qs.length})`;$('submitTestBtn').textContent='Submitted';$('submitTestBtn').dataset.submitted='true';showTestCorrections();await loadStudentResultsIfNeeded();await loadCbtResultsIfNeeded();await loadAdminResultsIfNeeded();}catch(e){console.error(e);$('testSubmitMessage').className='message submission-error';$('testSubmitMessage').textContent='Could not submit test: '+(e.code||e.message)}finally{$('submitTestBtn').disabled=false}}
+async function submitTest(autoSubmit){
+  if(!currentTest||!auth.currentUser)return;
+  if(testAutoSubmitTimeout){clearTimeout(testAutoSubmitTimeout);testAutoSubmitTimeout=null}
+  if(String(window.currentUserRole||'student').toLowerCase()!=='student')return;
+  if($('submitTestBtn').dataset.submitted==='true')return;
+  clearInterval(testTimerInterval);testTimerInterval=null;
+  $('submitTestBtn').disabled=true;
+  $('testSubmitMessage').textContent=autoSubmit?'Submitting...':'Submitting test...';
+  try{
+    const qs=Array.isArray(currentTest.questions)?currentTest.questions:[];
+    const safeAnswers=qs.map((q,i)=>String(testAnswers[i]||'').trim());
+    let correct=0;
+    qs.forEach((q,i)=>{if(safeAnswers[i]===String(q.correct||'').trim())correct++});
+    const score=qs.length?Math.round(correct/qs.length*100):0;
+    const corrections=qs.map((q,i)=>({
+      text:String(q.text||''),
+      options:{
+        A:String(q.options?.A||''),
+        B:String(q.options?.B||''),
+        C:String(q.options?.C||''),
+        D:String(q.options?.D||'')
+      },
+      correct:String(q.correct||''),
+      yourAnswer:safeAnswers[i],
+      explanation:String(q.explanation||'')
+    }));
+    await addDoc(collection(db,'results'),{
+      resultType:'cbt',
+      testId:String(currentTest.id||''),
+      testTitle:String(currentTest.title||'CBT Test'),
+      subject:String(currentTest.subject||'General'),
+      studentId:String(auth.currentUser.uid||''),
+      studentEmail:String(auth.currentUser.email||''),
+      score:Number(score),
+      correctAnswers:Number(correct),
+      totalQuestions:Number(qs.length),
+      answers:safeAnswers,
+      corrections:corrections,
+      submittedAt:serverTimestamp(),
+      updatedAt:serverTimestamp(),
+      createdAt:serverTimestamp()
+    });
+    $('testSubmitMessage').className='message submission-success';
+    $('testSubmitMessage').textContent=`Test submitted successfully ✅ Score: ${score}/100 (${correct}/${qs.length})`;
+    $('submitTestBtn').textContent='Submitted';
+    $('submitTestBtn').dataset.submitted='true';
+    showTestCorrections();
+    await loadStudentResultsIfNeeded();
+    await loadCbtResultsIfNeeded();
+    await loadAdminResultsIfNeeded();
+  }catch(e){
+    console.error(e);
+    $('testSubmitMessage').className='message submission-error';
+    $('testSubmitMessage').textContent='Could not submit test: '+(e.code||e.message);
+  }finally{
+    $('submitTestBtn').disabled=false;
+  }
+}
 async function loadCbtResultsIfNeeded(){
   const list=$("testResultsList");
   if(!list||!isAdminRole())return;
