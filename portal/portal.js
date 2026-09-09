@@ -766,11 +766,11 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
     {heading:"QUICK LINKS",items:[["📚","My Notes","notesPanel","View and read your notes"],["📝","Assignments","assignmentsPanel","View and submit assignments"],["🧠","CBT / Tests","testsPanel","Start and take your tests"],["📖","Study Materials","materialsPanel","Access your study resources"]]}
   ];
   const adminGroups=[
-    {heading:"ADMIN MENU",items:[["⌂","Dashboard","dashboardView"],["👨‍🎓","Manage Students","studentAdminPanel"],["📚","Manage Notes","adminPanel"],["📝","Manage Assignments","assignmentAdminPanel"],["🧠","Manage CBT / Tests","testAdminPanel"],["📖","Manage Study Materials","materialsAdminPanel"],["📊","CBT Results","testResultsAdminPanel"],["📥","Submissions","submissionsAdminPanel"]]},
+    {heading:"ADMIN MENU",items:[["⌂","Dashboard","dashboardView"],["👨‍🎓","Manage Students","studentAdminPanel"],["🎓","Manage Courses & Lessons","courseAdminPanel"],["📚","Manage Notes","adminPanel"],["📝","Manage Assignments","assignmentAdminPanel"],["🧠","Manage CBT / Tests","testAdminPanel"],["📖","Manage Study Materials","materialsAdminPanel"],["📊","CBT Results","testResultsAdminPanel"],["📥","Submissions","submissionsAdminPanel"]]},
     {heading:"STUDENT VIEW",items:[["🎓","Learning Centre","learningCentrePanel"],["📚","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📖","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]]}
   ];
   const superadminGroups=[
-    {heading:"SUPERADMIN CONTROL",items:[["⌂","Dashboard","dashboardView"],["👨‍🎓","Manage Students","studentAdminPanel"],["📚","Manage Notes","adminPanel"],["📝","Manage Assignments","assignmentAdminPanel"],["🧠","Manage CBT / Tests","testAdminPanel"],["📖","Manage Study Materials","materialsAdminPanel"],["📊","CBT Results","testResultsAdminPanel"],["📥","Submissions","submissionsAdminPanel"]]},
+    {heading:"SUPERADMIN CONTROL",items:[["⌂","Dashboard","dashboardView"],["👨‍🎓","Manage Students","studentAdminPanel"],["🎓","Manage Courses & Lessons","courseAdminPanel"],["📚","Manage Notes","adminPanel"],["📝","Manage Assignments","assignmentAdminPanel"],["🧠","Manage CBT / Tests","testAdminPanel"],["📖","Manage Study Materials","materialsAdminPanel"],["📊","CBT Results","testResultsAdminPanel"],["📥","Submissions","submissionsAdminPanel"]]},
     {heading:"STUDENT PORTAL VIEW",items:[["🎓","Learning Centre","learningCentrePanel"],["📚","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📖","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]]}
   ];
   function addHeading(text){const h=document.createElement("div");h.className="gs-nav-section-title";h.textContent=text;links.appendChild(h)}
@@ -786,3 +786,78 @@ document.querySelectorAll(".quick-action").forEach(btn=>btn.addEventListener("cl
 $("closeCourseModal")?.addEventListener("click",()=>$("courseModal").classList.add("hidden"));
 $("courseModal")?.addEventListener("click",e=>{if(e.target===$("courseModal"))$("courseModal").classList.add("hidden")});
 
+
+// ===== V25 COURSE → SUBJECT → TOPIC → LESSON LEARNING SYSTEM =====
+const courseAdminPanel=$('courseAdminPanel'), courseForm=$('courseForm'), subjectForm=$('subjectForm'), topicForm=$('topicForm'), lessonForm=$('lessonForm');
+const learningPathPanel=$('learningPathPanel'), learningPathContent=$('learningPathContent'), learningPathTitle=$('learningPathTitle'), learningPathSubtitle=$('learningPathSubtitle');
+const courseData={courses:[],subjects:[],topics:[],lessons:[]};
+let learningTrail=[];
+function fsDate(v){try{return v?.toDate?v.toDate():new Date(v)}catch(e){return null}}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+async function loadCourseStructure(){
+  if(!courseAdminPanel && !learningPathPanel)return;
+  try{
+    const [cs,ss,ts,ls]=await Promise.all([getDocs(collection(db,'courses')),getDocs(collection(db,'subjects')),getDocs(collection(db,'topics')),getDocs(collection(db,'lessons'))]);
+    courseData.courses=cs.docs.map(d=>({id:d.id,...d.data()}));
+    courseData.subjects=ss.docs.map(d=>({id:d.id,...d.data()}));
+    courseData.topics=ts.docs.map(d=>({id:d.id,...d.data()}));
+    courseData.lessons=ls.docs.map(d=>({id:d.id,...d.data()}));
+    populateCourseSelectors(); renderCourseAdminList();
+  }catch(e){console.error('Course structure:',e); if(courseAdminPanel)$('courseAdminList').innerHTML='<p class="message">Could not load course structure. Check your Firestore rules for courses, subjects, topics and lessons.</p>'}
+}
+function populateCourseSelectors(){
+  const c=$('subjectCourse'), s=$('topicSubject'), t=$('lessonTopic'); if(!c||!s||!t)return;
+  c.innerHTML=courseData.courses.length?courseData.courses.map(x=>`<option value="${x.id}">${esc(x.name)} (${esc(x.category||'General')})</option>`).join(''):'<option value="">Create a course first</option>';
+  s.innerHTML=courseData.subjects.length?courseData.subjects.map(x=>{const c0=courseData.courses.find(c=>c.id===x.courseId);return `<option value="${x.id}">${esc(x.name)} — ${esc(c0?.name||'Course')}</option>`}).join(''):'<option value="">Create a subject first</option>';
+  t.innerHTML=courseData.topics.length?courseData.topics.map(x=>{const s0=courseData.subjects.find(s=>s.id===x.subjectId);return `<option value="${x.id}">${esc(x.name)} — ${esc(s0?.name||'Subject')}</option>`}).join(''):'<option value="">Create a topic first</option>';
+}
+function renderCourseAdminList(){
+  const box=$('courseAdminList'); if(!box)return;
+  if(!courseData.courses.length){box.innerHTML='<p class="muted">No courses created yet.</p>';return}
+  box.innerHTML=courseData.courses.map(c=>{const subs=courseData.subjects.filter(s=>s.courseId===c.id); return `<div class="admin-course-block"><div class="admin-course-title"><b>🎓 ${esc(c.name)}</b><span>${esc(c.category||'General')}</span></div>${subs.length?subs.map(s=>{const tops=courseData.topics.filter(t=>t.subjectId===s.id);return `<div class="admin-subject-block"><b>📘 ${esc(s.name)}</b>${tops.length?'<ul>'+tops.map(t=>{const ls=courseData.lessons.filter(l=>l.topicId===t.id);return `<li>📌 ${esc(t.name)} <small>${ls.length} lesson${ls.length===1?'':'s'}</small></li>`}).join('')+'</ul>':'<small class="muted">No topics yet</small>'}</div>`}).join(''):'<p class="muted">No subjects yet.</p>'}</div>`}).join('');
+}
+async function addStructureDoc(col,payload,msgEl,form){
+  msgEl.className='message'; msgEl.textContent='Saving...';
+  try{await addDoc(collection(db,col),{...payload,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid}); msgEl.className='message submission-success';msgEl.textContent='Saved successfully ✅';form.reset();await loadCourseStructure();await loadLearningCentre();}
+  catch(e){console.error(e);msgEl.className='message submission-error';msgEl.textContent='Could not save: '+(e.code||e.message)}
+}
+courseForm?.addEventListener('submit',e=>{e.preventDefault();addStructureDoc('courses',{name:$('courseName').value.trim(),category:$('courseCategory').value},$('courseMessage'),courseForm)});
+subjectForm?.addEventListener('submit',e=>{e.preventDefault();if(!$('subjectCourse').value)return;addStructureDoc('subjects',{name:$('subjectName').value.trim(),courseId:$('subjectCourse').value},$('subjectMessage'),subjectForm)});
+topicForm?.addEventListener('submit',e=>{e.preventDefault();if(!$('topicSubject').value)return;addStructureDoc('topics',{name:$('topicName').value.trim(),subjectId:$('topicSubject').value},$('topicMessage'),topicForm)});
+lessonForm?.addEventListener('submit',e=>{e.preventDefault();if(!$('lessonTopic').value)return;addStructureDoc('lessons',{title:$('lessonTitle').value.trim(),content:$('lessonContent').value.trim(),pdfUrl:$('lessonPdfUrl').value.trim(),topicId:$('lessonTopic').value},$('lessonMessage'),lessonForm)});
+function openLearningPath(type,id){
+  learningTrail.push({type,id});
+  const c=courseData.courses.find(x=>x.id===id), s=courseData.subjects.find(x=>x.id===id), t=courseData.topics.find(x=>x.id===id), l=courseData.lessons.find(x=>x.id===id);
+  if(type==='course'){
+    learningPathTitle.textContent=c?.name||'Course';learningPathSubtitle.textContent='Choose a subject';
+    const rows=courseData.subjects.filter(x=>x.courseId===id); renderPathCards(rows,'subject');
+  }else if(type==='subject'){
+    learningPathTitle.textContent=s?.name||'Subject';learningPathSubtitle.textContent='Choose a topic';
+    const rows=courseData.topics.filter(x=>x.subjectId===id);renderPathCards(rows,'topic');
+  }else if(type==='topic'){
+    learningPathTitle.textContent=t?.name||'Topic';learningPathSubtitle.textContent='Choose a lesson';
+    const rows=courseData.lessons.filter(x=>x.topicId===id);renderPathCards(rows,'lesson');
+  }else if(type==='lesson'){
+    learningPathTitle.textContent=l?.title||'Lesson';learningPathSubtitle.textContent='Lesson';
+    learningPathContent.innerHTML=`<article class="lesson-view"><div class="lesson-badge">LESSON</div><div class="lesson-body">${esc(l?.content||'').replace(/\n/g,'<br>')}</div>${l?.pdfUrl?`<div class="lesson-file-actions"><a class="primary-btn" href="${esc(l.pdfUrl)}" target="_blank" rel="noopener">📖 View PDF</a><a class="secondary-btn" href="${esc(l.pdfUrl)}" download>⬇️ Download PDF</a></div>`:''}</article>`;
+  }
+  learningPathPanel?.classList.remove('hidden'); learningPathPanel?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function renderPathCards(rows,type){
+  if(!rows.length){learningPathContent.innerHTML=`<div class="learning-empty"><div>📚</div><h3>No ${type}s yet</h3><p class="muted">Your tutor will add content here.</p></div>`;return}
+  learningPathContent.innerHTML=rows.map(x=>{const count=type==='subject'?courseData.topics.filter(t=>t.subjectId===x.id).length:type==='topic'?courseData.lessons.filter(l=>l.topicId===x.id).length:0;return `<button class="path-card" type="button" data-id="${x.id}" data-type="${type}"><span>${type==='subject'?'📘':type==='topic'?'📌':'📖'}</span><div><b>${esc(x.name||x.title)}</b><small>${type==='lesson'?'Open lesson':count+' '+(type==='subject'?'topics':'lessons')}</small></div><strong>›</strong></button>`}).join('');
+  learningPathContent.querySelectorAll('.path-card').forEach(b=>b.addEventListener('click',()=>openLearningPath(b.dataset.type,b.dataset.id)));
+}
+function renderLearningCoursesV25(){
+  if(!learningCourseGrid)return;
+  let rows=courseData.courses.filter(c=>learningFilter==='all'||c.category===learningFilter);
+  if(!rows.length){learningCourseGrid.innerHTML='<div class="learning-empty"><div>🎓</div><h3>No courses yet</h3><p class="muted">Your tutor will publish courses here.</p></div>';return}
+  learningCourseGrid.innerHTML=rows.map(c=>{const subs=courseData.subjects.filter(s=>s.courseId===c.id),topics=subs.reduce((n,s)=>n+courseData.topics.filter(t=>t.subjectId===s.id).length,0),lessons=topics?courseData.lessons.filter(l=>courseData.topics.some(t=>t.subjectId&&subs.some(s=>s.id===t.subjectId)&&t.id===l.topicId)).length:0;return `<article class="learning-course-card learning-track-card"><div class="learning-course-top"><span class="course-icon">${c.category==='JAMB'?'🎓':c.category==='WAEC'?'📘':'📚'}</span><span class="course-category ${String(c.category||'general').toLowerCase()}">${esc(c.category||'General')}</span></div><h3>${esc(c.name)}</h3><p class="muted">${subs.length} subject${subs.length===1?'':'s'} • ${topics} topics • ${lessons} lessons</p><div class="course-resource-row"><span>📘 ${subs.length} Subjects</span><span>📌 ${topics} Topics</span><span>📖 ${lessons} Lessons</span></div><div class="course-actions"><button class="primary-btn" type="button" data-course-id="${c.id}">Open Course →</button></div></article>`}).join('');
+  learningCourseGrid.querySelectorAll('[data-course-id]').forEach(b=>b.addEventListener('click',()=>{learningPathPanel?.classList.remove('hidden');openLearningPath('course',b.dataset.courseId)}));
+}
+$('learningBackBtn')?.addEventListener('click',()=>{learningTrail.pop();const prev=learningTrail[learningTrail.length-1];if(prev)openLearningPath(prev.type,prev.id);else{learningPathPanel?.classList.add('hidden');learningTrail=[];$('learningCentrePanel')?.scrollIntoView({behavior:'smooth'})}});
+// Override course rendering/loading so V25 courses are first-class while preserving V24 resources.
+const _v24RenderLearningCentre=renderLearningCentre;
+renderLearningCentre=function(){ if(courseData.courses.length){renderLearningCoursesV25()} else {_v24RenderLearningCentre()} };
+const _v24LoadLearningCentre=loadLearningCentre;
+loadLearningCentre=async function(){await _v24LoadLearningCentre();await loadCourseStructure();if(courseData.courses.length)renderLearningCoursesV25();};
