@@ -851,7 +851,9 @@ function openLearningPath(type,id){
     learningPathTitle.textContent=l?.title||'Lesson';learningPathSubtitle.textContent='Lesson';
     const lessonHtml=String(l?.contentFormat||'').toLowerCase()==='html'?sanitizeRichHtml(l?.content||''):esc(l?.content||'').replace(/\n/g,'<br>'); learningPathContent.innerHTML=`<article class="lesson-view"><div class="lesson-badge">LESSON</div><div class="lesson-body">${lessonHtml}</div>${l?.pdfUrl?`<div class="lesson-file-actions"><a class="primary-btn" href="${esc(l.pdfUrl)}" target="_blank" rel="noopener">📖 View PDF</a><a class="secondary-btn" href="${esc(l.pdfUrl)}" download>⬇️ Download PDF</a></div>`:''}</article>`;
   }
-  learningPathPanel?.classList.remove('hidden'); learningPathPanel?.scrollIntoView({behavior:'smooth',block:'start'});
+  // Navigation hides every portal section when switching views. The lesson path is a separate section, so explicitly remove both hidden states before opening it.
+  learningPathPanel?.classList.remove('hidden','gs-section-hidden');
+  learningPathPanel?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderPathCards(rows,type){
   if(!rows.length){learningPathContent.innerHTML=`<div class="learning-empty"><div>📚</div><h3>No ${type}s yet</h3><p class="muted">Your tutor will add content here.</p></div>`;return}
@@ -1007,6 +1009,13 @@ function qbRichExec(cmd,value=null){
   $('qbLessonContent')?.focus();
   try{document.execCommand(cmd,false,value)}catch(e){console.warn('Formatting command failed',cmd,e)}
 }
+
+// Fast formatting shortcuts: admins can format while typing without returning to the toolbar.
+document.getElementById('qbLessonContent')?.addEventListener('keydown',e=>{
+  if(!(e.ctrlKey||e.metaKey))return;
+  const k=e.key.toLowerCase();
+  if(['b','i','u'].includes(k)){e.preventDefault();qbRichExec(k==='b'?'bold':k==='i'?'italic':'underline');}
+});
 document.querySelectorAll('#qbLessonToolbar [data-cmd]').forEach(btn=>btn.addEventListener('mousedown',e=>e.preventDefault()));
 document.querySelectorAll('#qbLessonToolbar [data-cmd]').forEach(btn=>btn.addEventListener('click',()=>qbRichExec(btn.dataset.cmd)));
 $('qbLessonToolbar [data-block]')?.addEventListener('change',e=>{
