@@ -1,4 +1,4 @@
-/* GREAT STAND PORTAL V23.2 - Supabase PDF upload + real browser download */
+/* GREAT STAND PORTAL V24 - Student Dashboard + My Courses */
 import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {createClient} from "https://esm.sh/@supabase/supabase-js@2"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const $=id=>document.getElementById(id),loginView=$("loginView"),dashboardView=$("dashboardView"),logoutBtn=$("logoutBtn"),adminPanel=$("adminPanel"),noteForm=$("noteForm"),notesList=$("notesList");
 const SUPABASE_URL="https://njwjjtxvckemejaezwtd.supabase.co";
@@ -8,7 +8,7 @@ const supabase=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginMessage").textContent="Logging in...";try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(err){console.error(err);$("loginMessage").textContent="Login failed: "+(err.code||err.message)}}); logoutBtn.addEventListener("click",()=>signOut(auth));
 async function getCount(n){try{return(await getDocs(collection(db,n))).size}catch(e){console.error(e);return 0}}
 async function loadNotes(){notesList.innerHTML='<p class="muted">Loading notes...</p>';try{let s;try{s=await getDocs(query(collection(db,"notes"),orderBy("createdAt","desc")))}catch(e){s=await getDocs(collection(db,"notes"))}if(s.empty){notesList.innerHTML='<p class="muted">No notes published yet.</p>';return}notesList.innerHTML="";s.forEach(d=>{let n=d.data(),c=document.createElement("article");c.className="note-card";let h=document.createElement("h3");h.textContent=n.title||"Untitled Note";let sub=document.createElement("p");sub.className="subject";sub.textContent=n.subject||"General";let body=document.createElement("div");body.className="note-content";body.textContent=n.content||"";c.append(h,sub,body);notesList.appendChild(c)})}catch(e){console.error(e);notesList.innerHTML='<p class="message">Could not load notes.</p>'}}
-noteForm.addEventListener("submit",async e=>{e.preventDefault();$("noteMessage").textContent="Publishing...";try{await addDoc(collection(db,"notes"),{title:$("noteTitle").value.trim(),subject:$("noteSubject").value.trim(),content:$("noteContent").value.trim(),createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});noteForm.reset();$("noteMessage").textContent="Note published successfully ✅";$("notesCount").textContent=await getCount("notes");await loadNotes();await loadAssignments();await loadTests();await loadStudentResultsIfNeeded();await loadLearningCentre()}catch(e){console.error(e);$("noteMessage").textContent="Could not publish note: "+(e.code||e.message)}});
+noteForm.addEventListener("submit",async e=>{e.preventDefault();$("noteMessage").textContent="Publishing...";try{await addDoc(collection(db,"notes"),{title:$("noteTitle").value.trim(),subject:$("noteSubject").value.trim(),category:$("noteCategory").value,content:$("noteContent").value.trim(),createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});noteForm.reset();$("noteMessage").textContent="Note published successfully ✅";$("notesCount").textContent=await getCount("notes");await loadNotes();await loadAssignments();await loadTests();await loadStudentResultsIfNeeded();await loadLearningCentre()}catch(e){console.error(e);$("noteMessage").textContent="Could not publish note: "+(e.code||e.message)}});
 
 const assignmentAdminPanel=$("assignmentAdminPanel"),assignmentForm=$("assignmentForm"),assignmentsList=$("assignmentsList");
 const assignmentModal=$("assignmentModal"),closeAssignmentBtn=$("closeAssignmentBtn"),submissionForm=$("submissionForm");
@@ -176,6 +176,7 @@ assignmentForm.addEventListener("submit",async e=>{
     await addDoc(collection(db,"assignments"),{
       title:$("assignmentTitle").value.trim(),
       subject:$("assignmentSubject").value.trim(),
+      category:$("assignmentCategory").value,
       content:$("assignmentContent").value.trim(),
       deadline:deadline?new Date(deadline):null,
       createdAt:serverTimestamp(),
@@ -303,7 +304,7 @@ $('parseCsvQuestionsBtn').addEventListener('click',()=>{
   if(!error)renderImportedPreview('csvQuestionsPreview',csvParsedQuestions);else $('csvQuestionsPreview').innerHTML='';
 });
 setCbtMode('manual');
-testForm.addEventListener('submit',async e=>{e.preventDefault();if(!isAdminRole()){ $('testMessage').textContent='Only admins can publish CBT tests.'; return; }$('testMessage').textContent='Publishing CBT test...';try{const questions=collectQuestions();if(!questions.length)throw new Error('Add at least one question.');if(questions.some(q=>!q.text||Object.values(q.options).some(v=>!v)||!q.correct))throw new Error('Complete every question, all four options, and the correct answer.');await addDoc(collection(db,'tests'),{title:$('testTitle').value.trim(),subject:$('testSubject').value.trim(),duration:Number($('testDuration').value),questions,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});testForm.reset();questionBuilder.innerHTML='';questionCount=0;addQuestion();bulkParsedQuestions=[];csvParsedQuestions=[];$('bulkQuestionsPreview').innerHTML='';$('csvQuestionsPreview').innerHTML='';$('bulkParseMessage').textContent='';$('csvParseMessage').textContent='';setCbtMode('manual');$('testDuration').value=30;$('testMessage').className='message submission-success';$('testMessage').textContent='CBT test published successfully ✅';$('testsCount').textContent=await getCount('tests');await loadTests()}catch(e){console.error(e);$('testMessage').className='message submission-error';$('testMessage').textContent='Could not publish test: '+(e.code||e.message)}});
+testForm.addEventListener('submit',async e=>{e.preventDefault();if(!isAdminRole()){ $('testMessage').textContent='Only admins can publish CBT tests.'; return; }$('testMessage').textContent='Publishing CBT test...';try{const questions=collectQuestions();if(!questions.length)throw new Error('Add at least one question.');if(questions.some(q=>!q.text||Object.values(q.options).some(v=>!v)||!q.correct))throw new Error('Complete every question, all four options, and the correct answer.');await addDoc(collection(db,'tests'),{title:$('testTitle').value.trim(),subject:$('testSubject').value.trim(),category:$('testCategory').value,duration:Number($('testDuration').value),questions,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});testForm.reset();questionBuilder.innerHTML='';questionCount=0;addQuestion();bulkParsedQuestions=[];csvParsedQuestions=[];$('bulkQuestionsPreview').innerHTML='';$('csvQuestionsPreview').innerHTML='';$('bulkParseMessage').textContent='';$('csvParseMessage').textContent='';setCbtMode('manual');$('testDuration').value=30;$('testMessage').className='message submission-success';$('testMessage').textContent='CBT test published successfully ✅';$('testsCount').textContent=await getCount('tests');await loadTests()}catch(e){console.error(e);$('testMessage').className='message submission-error';$('testMessage').textContent='Could not publish test: '+(e.code||e.message)}});
 async function loadTests(){testsList.innerHTML='<p class="muted">Loading tests...</p>';try{let s;try{s=await getDocs(query(collection(db,'tests'),orderBy('createdAt','desc')))}catch(e){s=await getDocs(collection(db,'tests'))}if(s.empty){testsList.innerHTML='<p class="muted">No CBT tests published yet.</p>';return}testsList.innerHTML='';s.forEach(d=>{const t=d.data(),card=document.createElement('article');card.className='note-card test-card';const h=document.createElement('h3');h.textContent=t.title||'Untitled Test';const sub=document.createElement('p');sub.className='subject';sub.textContent=(t.subject||'General')+' • '+(t.questions?.length||0)+' questions • '+(t.duration||30)+' mins';const actions=document.createElement('div');actions.className='card-actions';const btn=document.createElement('button');btn.type='button';btn.className='primary-btn open-assignment-btn';btn.textContent=(window.currentUserRole||'student')==='student'?'Start Test':'Preview Test';btn.addEventListener('click',()=>openTest(d.id,t));actions.appendChild(btn);if(isAdminRole()){const del=document.createElement('button');del.type='button';del.className='secondary-btn';del.textContent='Delete';del.addEventListener('click',async()=>{if(!confirm('Delete this CBT test and its student results? This cannot be undone.'))return;del.disabled=true;try{const results=await getDocs(query(collection(db,'results'),where('testId','==',d.id)));for(const rd of results.docs)await deleteDoc(doc(db,'results',rd.id));await deleteDoc(doc(db,'tests',d.id));await loadTests();await loadLearningCentre();$('testsCount').textContent=await getCount('tests');if(isAdminRole()){await loadCbtResultsIfNeeded();await loadAdminResultsIfNeeded();$('resultsCount').textContent=await getCount('results')}}catch(e){console.error(e);alert('Could not delete test: '+(e.code||e.message));del.disabled=false}});actions.appendChild(del)}card.append(h,sub,actions);testsList.appendChild(card)})}catch(e){console.error(e);testsList.innerHTML='<p class="message">Could not load tests: '+(e.code||e.message)+'</p>'}}
 function closeTest(){clearInterval(testTimerInterval);testTimerInterval=null;if(testAutoSubmitTimeout){clearTimeout(testAutoSubmitTimeout);testAutoSubmitTimeout=null}currentTest=null;testModal.classList.add('hidden');$('testSubmitMessage').textContent=''}
 $('closeTestBtn').addEventListener('click',closeTest);testModal.addEventListener('click',e=>{if(e.target===testModal)closeTest()});
@@ -605,10 +606,21 @@ onAuthStateChanged(auth,async user=>{
     }
 
     const p=s.data();
+    currentStudentProfile=p;
     const role=String(p.role||"student").trim().toLowerCase();
     const allowed=role==="admin"||role==="superadmin";
 
     window.currentUserRole=role;
+    const studentQuick=$("studentQuickPanel");
+    const adminStat=document.querySelector(".admin-stat");
+    if(studentQuick)studentQuick.style.display=role==="student"?"block":"none";
+    if(adminStat)adminStat.style.display=role==="student"?"none":"block";
+    if(role==="student"){
+      const cat=String(p.category||"Student").replace(/\s+/g," ").trim();
+      $("studentCategoryPill").textContent=cat.toUpperCase();
+      learningFilter = cat.toUpperCase()==="JAMB" || cat.toUpperCase()==="WAEC" ? cat.toUpperCase() : "all";
+      document.querySelectorAll(".learning-tab").forEach(b=>b.classList.toggle("active",(b.dataset.learningFilter||"all").toUpperCase()===learningFilter.toUpperCase()));
+    }
 
     if(p.active===false){
       await signOut(auth);
@@ -702,15 +714,28 @@ function renderLearningCentre(){
   });
 }
 function openCourseResources(course){
-  const targets=[];
-  if(course.notes)targets.push('notesPanel');
-  if(course.assignments)targets.push('assignmentsPanel');
-  if(course.tests)targets.push('testsPanel');
-  if(course.materials)targets.push('materialsPanel');
-  if(!targets.length)return;
-  // Keep the clean portal navigation while giving the user a useful starting point.
-  const first=targets[0];
-  if(window.gsShowSection)window.gsShowSection(first);
+  const modal=$('courseModal'); if(!modal)return;
+  $('courseModalTitle').textContent=course.subject||'Course';
+  $('courseModalCategory').textContent=(course.category||'General').toUpperCase();
+  $('courseModalSubtitle').textContent=course.track ? 'Preparation track' : 'Your learning resources for this subject';
+  const icon=course.category==='JAMB'?'🎓':course.category==='WAEC'?'📘':'📚';
+  $('courseModalIcon').textContent=icon;
+  $('courseModalStats').innerHTML=`<div><b>${course.notes}</b><span>Notes</span></div><div><b>${course.assignments}</b><span>Assignments</span></div><div><b>${course.tests}</b><span>CBT Tests</span></div><div><b>${course.materials}</b><span>Materials</span></div>`;
+  const resources=[];
+  const same=(r)=>course.track ? courseCategory(r)===course.category : (courseCategory(r)===course.category && (normalizeText(r.subject)||'General')===course.subject);
+  [
+    [learningStore.notes,'notesPanel','📖','Notes','Read your published lessons'],
+    [learningStore.assignments,'assignmentsPanel','📝','Assignments','Open and submit your work'],
+    [learningStore.tests,'testsPanel','🧠','CBT / Tests','Take practice tests and get scored'],
+    [learningStore.materials,'materialsPanel','📚','Study Materials','View or download PDF materials']
+  ].forEach(([arr,target,ico,title,desc])=>{ const count=arr.filter(same).length; if(count)resources.push({target,ico,title,desc,count}); });
+  if(!resources.length){
+    $('courseModalResources').innerHTML='<div class="course-empty">No resources have been added to this course yet.<br><small>Check back when your tutor publishes new materials.</small></div>';
+  }else{
+    $('courseModalResources').innerHTML=resources.map(r=>`<button class="course-resource-btn" data-target="${r.target}" type="button"><span>${r.ico}</span><div><b>${r.title}</b><small>${r.count} available • ${r.desc}</small></div><strong>›</strong></button>`).join('');
+    $('courseModalResources').querySelectorAll('.course-resource-btn').forEach(btn=>btn.addEventListener('click',()=>{modal.classList.add('hidden'); if(window.gsShowSection)window.gsShowSection(btn.dataset.target)}));
+  }
+  modal.classList.remove('hidden');
 }
 async function loadLearningCentre(){
   if(!learningCourseGrid)return;
@@ -757,3 +782,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
   document.addEventListener("DOMContentLoaded",()=>{buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))});
   let lastRole="";setInterval(()=>{const role=String(window.currentUserRole||"").trim().toLowerCase();if(role&&role!==lastRole){lastRole=role;buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))}},500);
 })();
+document.querySelectorAll(".quick-action").forEach(btn=>btn.addEventListener("click",()=>{if(window.gsShowSection)window.gsShowSection(btn.dataset.target)}));
+$("closeCourseModal")?.addEventListener("click",()=>$("courseModal").classList.add("hidden"));
+$("courseModal")?.addEventListener("click",e=>{if(e.target===$("courseModal"))$("courseModal").classList.add("hidden")});
+
