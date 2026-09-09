@@ -1060,67 +1060,41 @@ $('qbInsertVideo')?.addEventListener('click',qbInsertVideo);
 function htmlEscText(v){return esc(String(v??''));}
 function linesToPreHtml(text){return htmlEscText(text).replace(/\n/g,'<br>');}
 function parsePipeTable(lines){
-  const rows=lines.map(x=>x.trim()).filter(Boolean).map(x=>x.replace(/^\||\|$/g,'').split('|').map(c=>c.trim()));
-  if(rows.length<2 || !rows[0].length)return '';
-  const isSep=r=>r.every(c=>/^:?-{3,}:?$/.test(c));
-  const header=rows[0], body=isSep(rows[1])?rows.slice(2):rows.slice(1);
+  const clean=lines.map(x=>String(x).trim()).filter(Boolean);
+  if(clean.length<2)return '';
+  let rows=clean.map(x=>x.replace(/^\||\|$/g,'').split('|').map(c=>c.trim()));
+  const isSep=r=>r.length>0 && r.every(c=>/^:?-{3,}:?$/.test(c));
+  let header=rows[0], body=rows.slice(1);
+  if(body.length && isSep(body[0])) body=body.slice(1);
+  if(header.length<2 || (!body.length && !isSep(rows[1]||[]))) return '';
   const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
   const bodyHtml=body.map(r=>'<tr>'+header.map((_,i)=>`<td>${htmlEscText(r[i]||'')}</td>`).join('')+'</tr>').join('');
-  return `<table>${head}${bodyHtml?`<tbody>${bodyHtml}</tbody>`:''}</table>`;
+  return `<table class="lesson-table">${head}${bodyHtml?`<tbody>${bodyHtml}</tbody>`:''}</table>`;
 }
-function transformPastedLessonText(text){
-  let src=String(text||'').replace(/\r\n?/g,'\n');
-  if(!src.trim())return '';
-  const lines=src.split('\n'); let out='', i=0;
-  const flushPlain=arr=>{if(!arr.length)return; const t=arr.join('\n'); out+=`<p>${htmlEscText(t).replace(/\n/g,'<br>')}</p>`; arr.length=0};
-  let plain=[];
-  while(i<lines.length){
-    const line=lines[i]; const trimmed=line.trim();
-    if(/^\[table\]$/i.test(trimmed)){
-      flushPlain(plain); let block=[]; i++;
-      while(i<lines.length&&!/^\[\/table\]$/i.test(lines[i].trim())){block.push(lines[i]);i++}
-      if(i<lines.length)i++;
-      const t=parsePipeTable(block); out+=t||`<p>${htmlEscText(block.join('\n')).replace(/\n/g,'<br>')}</p>`; continue;
-    }
-    if(/^\[calc\]$/i.test(trimmed)){
-      flushPlain(plain); let block=[]; i++;
-      while(i<lines.length&&!/^\[\/calc\]$/i.test(lines[i].trim())){block.push(lines[i]);i++}
-      if(i<lines.length)i++;
-      out+=`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`; continue;
-    }
-    if(/^\[answer\]$/i.test(trimmed)){
-      flushPlain(plain); let block=[]; i++;
-      while(i<lines.length&&!/^\[\/answer\]$/i.test(lines[i].trim())){block.push(lines[i]);i++}
-      if(i<lines.length)i++;
-      out+=`<div class="answer-block"><b>Answer</b><div>${htmlEscText(block.join('\n')).replace(/\n/g,'<br>')}</div></div>`; continue;
-    }
-    // Markdown-style pipe table: consecutive lines beginning/ending with |.
-    if(/^\s*\|.*\|\s*$/.test(line) && i+1<lines.length && /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(lines[i+1])){
-      flushPlain(plain); let block=[];
-      while(i<lines.length && /^\s*\|.*\|\s*$/.test(lines[i])){block.push(lines[i]);i++}
-      out+=parsePipeTable(block); continue;
-    }
-    // Indented/aligned calculation block containing a divider line.
-    if(i+1<lines.length && /^(?:\s*[-_=]{4,}\s*)$/.test(lines[i+1]) && trimmed){
-      flushPlain(plain); let block=[line,lines[i+1]]; i+=2;
-      while(i<lines.length && lines[i].trim() && !/^\[/.test(lines[i].trim())){block.push(lines[i]);i++}
-      out+=`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`; continue;
-    }
-    plain.push(line); i++;
-  }
-  flushPlain(plain);
-  return out;
+function parseLooseTable(lines){
+  const clean=lines.map(x=>String(x).trim()).filter(Boolean);
+  if(clean.length<2)return '';
+  // Accept pipe, tab or multiple-space columns. This makes pasted AI tables work even
+  // after a mobile browser has converted the original markdown table into plain text.
+  let rows=clean.map(x=>x.replace(/^\||\|$/g,'').split(/\s*\|\s*|\t+/).map(c=>c.trim()).filter(Boolean));
+  const width=Math.max(...rows.map(r=>r.length));
+  if(width<2)return '';
+  rows=rows.map(r=>Array.from({length:width},(_,i)=>r[i]||''));
+  const looksSep=r=>r.every(c=>/^:?-{3,}:?$/.test(c));
+  if(!looksSep(rows[1]) && !clean.some(x=>x.includes('|')))return '';
+  const header=rows[0], body=looksSep(rows[1])?rows.slice(2):rows.slice(1);
+  const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
+  const bodyHtml=body.map(r=>'<tr>'+header.map((_,i)=>`<td>${htmlEscText(r[i]||'')}</td>`).join('')+'</tr>').join('');
+  return `<table class="lesson-table">${head}<tbody>${bodyHtml}</tbody></table>`;
 }
-// ===== V33 AI NOTE FORMATTER =====
-// Converts a pasted AI note containing portal commands into real rich formatting.
 function aiInlineFormat(text){
   let s=htmlEscText(String(text??''));
-  // Protect simple code spans first.
   const stash=[];
   s=s.replace(/`([^`]+)`/g,(_,x)=>{const k=`@@CODE${stash.length}@@`;stash.push(`<code>${x}</code>`);return k;});
   s=s.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
   s=s.replace(/__([^_\n]+)__/g,'<u>$1</u>');
   s=s.replace(/\*([^*\n]+)\*/g,'<em>$1</em>');
+  s=s.replace(/\b([A-Za-z0-9]+)\^([A-Za-z0-9+-]+)\b/g,'$1<sup>$2</sup>');
   s=s.replace(/@@CODE(\d+)@@/g,(_,i)=>stash[Number(i)]||'');
   return s;
 }
@@ -1131,7 +1105,7 @@ function aiFormatPlainBlock(lines){
     if(/^###\s+/.test(t))return `<h4>${aiInlineFormat(t.replace(/^###\s+/,''))}</h4>`;
     if(/^##\s+/.test(t))return `<h3>${aiInlineFormat(t.replace(/^##\s+/,''))}</h3>`;
     if(/^#\s+/.test(t))return `<h2>${aiInlineFormat(t.replace(/^#\s+/,''))}</h2>`;
-    if(/^[-*]\s+/.test(t))return `<p>• ${aiInlineFormat(t.replace(/^[-*]\s+/,''))}</p>`;
+    if(/^[-•*]\s+/.test(t))return `<p>• ${aiInlineFormat(t.replace(/^[-•*]\s+/,''))}</p>`;
     if(/^\d+[.)]\s+/.test(t))return `<p>${aiInlineFormat(t)}</p>`;
     return `<p>${aiInlineFormat(t)}</p>`;
   }).join('');
@@ -1140,49 +1114,56 @@ function formatAiLessonText(text){
   const src=String(text||'').replace(/\r\n?/g,'\n');
   if(!src.trim())return '';
   const lines=src.split('\n'); let out='',i=0,plain=[]; let firstContentSeen=false;
-  const flush=()=>{if(plain.length){
-    // Make a clear all-caps first line a lesson heading (e.g. CONCORD).
-    if(!firstContentSeen){
-      while(plain.length && !plain[0].trim())plain.shift();
-      if(plain.length && /^[A-Z][A-Z0-9 &'’()\-]{2,70}$/.test(plain[0].trim())){
-        out+=`<h2>${aiInlineFormat(plain.shift().trim())}</h2>`;
-      }
+  const flush=()=>{if(!plain.length)return;
+    while(plain.length && !plain[0].trim())plain.shift();
+    if(!firstContentSeen && plain.length && /^[A-Z][A-Z0-9 &'’()\-]{2,70}$/.test(plain[0].trim())){
+      out+=`<h2>${aiInlineFormat(plain.shift().trim())}</h2>`;
+      firstContentSeen=true;
     }
-    if(plain.length){out+=aiFormatPlainBlock(plain);firstContentSeen=true;}
-    else if(!firstContentSeen)firstContentSeen=true;
+    if(plain.length){
+      // Treat standalone ALL-CAPS lines later in the lesson as subheadings.
+      const chunks=[];
+      plain.forEach(line=>{
+        const t=line.trim();
+        if(/^[A-Z][A-Z0-9 &'’()\-]{2,60}$/.test(t) && t.split(/\s+/).length<=8){
+          if(chunks.length){out+=aiFormatPlainBlock(chunks);chunks.length=0;}
+          out+=`<h3>${aiInlineFormat(t)}</h3>`;
+        }else chunks.push(line);
+      });
+      if(chunks.length)out+=aiFormatPlainBlock(chunks);
+      firstContentSeen=true;
+    } else if(!firstContentSeen) firstContentSeen=true;
     plain=[];
-  }};
+  };
   while(i<lines.length){
     const raw=lines[i], t=raw.trim();
-    if(/^\[table\]$/i.test(t)){
-      flush();let block=[];i++;
-      while(i<lines.length&&!/^\[\/table\]$/i.test(lines[i].trim())){block.push(lines[i]);i++;}
-      if(i<lines.length)i++; const table=parsePipeTable(block);
-      out+=table||aiFormatPlainBlock(block);firstContentSeen=true;continue;
+    if(/^\[table\]/i.test(t)){
+      flush(); let inline=t.replace(/^\[table\]/i,'').replace(/\[\/table\].*$/i,'').trim(); let block=[]; if(inline)block.push(inline); i++;
+      while(i<lines.length&&!/^\[\/table\]/i.test(lines[i].trim())){block.push(lines[i]);i++;}
+      if(i<lines.length)i++;
+      out+=parseLooseTable(block)||`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`; firstContentSeen=true; continue;
     }
-    if(/^\[calc\]$/i.test(t)){
-      flush();let block=[];i++;
-      while(i<lines.length&&!/^\[\/calc\]$/i.test(lines[i].trim())){block.push(lines[i]);i++;}
-      if(i<lines.length)i++;out+=`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`;firstContentSeen=true;continue;
+    if(/^\[calc\]/i.test(t)){
+      flush(); let block=[]; i++;
+      while(i<lines.length&&!/^\[\/calc\]/i.test(lines[i].trim())){block.push(lines[i]);i++;}
+      if(i<lines.length)i++;
+      out+=`<div class="calc-block"><pre>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</pre></div>`; firstContentSeen=true; continue;
     }
-    if(/^\[answer\]$/i.test(t)){
-      flush();let block=[];i++;
-      while(i<lines.length&&!/^\[\/answer\]$/i.test(lines[i].trim())){block.push(lines[i]);i++;}
-      if(i<lines.length)i++;out+=`<div class="answer-block"><b>Answer</b><div>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</div></div>`;firstContentSeen=true;continue;
+    if(/^\[answer\]/i.test(t)){
+      flush(); let block=[]; i++;
+      while(i<lines.length&&!/^\[\/answer\]/i.test(lines[i].trim())){block.push(lines[i]);i++;}
+      if(i<lines.length)i++;
+      out+=`<div class="answer-block"><b>Answer</b><div>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</div></div>`; firstContentSeen=true; continue;
     }
-    if(/^\s*\|.*\|\s*$/.test(raw) && i+1<lines.length && /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(lines[i+1])){
-      flush();let block=[];while(i<lines.length&&/^\s*\|.*\|\s*$/.test(lines[i])){block.push(lines[i]);i++;}
-      out+=parsePipeTable(block);firstContentSeen=true;continue;
+    if(/^\s*\|.*\|\s*$/.test(raw) && i+1<lines.length){
+      let j=i, block=[]; while(j<lines.length && /^\s*\|.*\|\s*$/.test(lines[j])){block.push(lines[j]);j++;}
+      if(block.length>=2){const table=parseLooseTable(block);if(table){flush();out+=table;firstContentSeen=true;i=j;continue;}}
     }
-    // Convert an explicit Markdown heading even when followed by blank lines.
     if(/^#{1,3}\s+/.test(t)){flush();const m=t.match(/^(#{1,3})\s+(.+)$/);const tag=m[1].length===1?'h2':m[1].length===2?'h3':'h4';out+=`<${tag}>${aiInlineFormat(m[2])}</${tag}>`;firstContentSeen=true;i++;continue;}
-    // Calculation lines: a working line followed by a divider.
     if(i+1<lines.length && /^(?:\s*[-_=]{4,}\s*)$/.test(lines[i+1]) && t){
-      flush();let block=[raw,lines[i+1]];i+=2;
-      while(i<lines.length&&lines[i].trim()&&!/^\[/.test(lines[i].trim())){block.push(lines[i]);i++;}
-      out+=`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`;firstContentSeen=true;continue;
+      flush();let block=[raw,lines[i+1]];i+=2;while(i<lines.length&&lines[i].trim()&&!/^\[/.test(lines[i].trim())){block.push(lines[i]);i++;}
+      out+=`<div class="calc-block"><pre>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</pre></div>`;firstContentSeen=true;continue;
     }
-    // Remove bare command explanation lines instead of displaying them.
     if(/^\s*(?:FORMATTING|TABLES|CALCULATIONS|ANSWERS)\s*:\s*$/i.test(t)){flush();i++;continue;}
     plain.push(raw);i++;
   }
