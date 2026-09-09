@@ -1,4 +1,3 @@
-/* GS_REAL_TABLE_V371 */
 /* GREAT STAND PORTAL V27 - Course Builder Wizard */
 import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {createClient} from "https://esm.sh/@supabase/supabase-js@2"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const $=id=>document.getElementById(id),loginView=$("loginView"),dashboardView=$("dashboardView"),logoutBtn=$("logoutBtn"),adminPanel=$("adminPanel"),noteForm=$("noteForm"),notesList=$("notesList");
@@ -1061,37 +1060,32 @@ $('qbInsertVideo')?.addEventListener('click',qbInsertVideo);
 function htmlEscText(v){return esc(String(v??''));}
 function linesToPreHtml(text){return htmlEscText(text).replace(/\n/g,'<br>');}
 function parsePipeTable(lines){
-  return parseLooseTable(lines);
+  const clean=lines.map(x=>String(x).trim()).filter(Boolean);
+  if(clean.length<2)return '';
+  let rows=clean.map(x=>x.replace(/^\||\|$/g,'').split('|').map(c=>c.trim()));
+  const isSep=r=>r.length>0 && r.every(c=>/^:?-{3,}:?$/.test(c));
+  let header=rows[0], body=rows.slice(1);
+  if(body.length && isSep(body[0])) body=body.slice(1);
+  if(header.length<2 || (!body.length && !isSep(rows[1]||[]))) return '';
+  const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
+  const bodyHtml=body.map(r=>'<tr>'+header.map((_,i)=>`<td>${htmlEscText(r[i]||'')}</td>`).join('')+'</tr>').join('');
+  return `<table class="lesson-table">${head}${bodyHtml?`<tbody>${bodyHtml}</tbody>`:''}</table>`;
 }
 function parseLooseTable(lines){
   const clean=lines.map(x=>String(x).trim()).filter(Boolean);
   if(clean.length<2)return '';
-
-  let rows=clean.map(x=>{
-    const s=x.replace(/^\|/,'').replace(/\|$/,'').trim();
-    return s.split(/\s*\|\s*|\t+/).map(c=>c.trim());
-  });
-
-  const isSep=r=>r.length>0 && r.every(c=>/^:?-{3,}:?$/.test(c));
-  const header=rows[0];
-  if(!header || header.length<2)return '';
-
-  let body=rows.slice(1);
-  if(body.length && isSep(body[0])) body=body.slice(1);
-
-  const width=header.length;
-  const normalized=body.map(r=>{
-    const out=[];
-    for(let i=0;i<width;i++) out.push(r[i]||'');
-    return out;
-  });
-
-  const head='<thead><tr>'+header.map(c=>`<th>${aiInlineFormat(c)}</th>`).join('')+'</tr></thead>';
-  const bodyHtml=normalized.map(r=>
-    '<tr>'+r.map(c=>`<td>${aiInlineFormat(c)}</td>`).join('')+'</tr>'
-  ).join('');
-
-  return `<div class="lesson-table-wrap"><table class="lesson-table">${head}<tbody>${bodyHtml}</tbody></table></div>`;
+  // Accept pipe, tab or multiple-space columns. This makes pasted AI tables work even
+  // after a mobile browser has converted the original markdown table into plain text.
+  let rows=clean.map(x=>x.replace(/^\||\|$/g,'').split(/\s*\|\s*|\t+/).map(c=>c.trim()).filter(Boolean));
+  const width=Math.max(...rows.map(r=>r.length));
+  if(width<2)return '';
+  rows=rows.map(r=>Array.from({length:width},(_,i)=>r[i]||''));
+  const looksSep=r=>r.every(c=>/^:?-{3,}:?$/.test(c));
+  if(!looksSep(rows[1]) && !clean.some(x=>x.includes('|')))return '';
+  const header=rows[0], body=looksSep(rows[1])?rows.slice(2):rows.slice(1);
+  const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
+  const bodyHtml=body.map(r=>'<tr>'+header.map((_,i)=>`<td>${htmlEscText(r[i]||'')}</td>`).join('')+'</tr>').join('');
+  return `<table class="lesson-table">${head}<tbody>${bodyHtml}</tbody></table>`;
 }
 function aiInlineFormat(text){
   let s=htmlEscText(String(text??''));
@@ -1148,7 +1142,7 @@ function formatAiLessonText(text){
       flush(); let inline=t.replace(/^\[table\]/i,'').replace(/\[\/table\].*$/i,'').trim(); let block=[]; if(inline)block.push(inline); i++;
       while(i<lines.length&&!/^\[\/table\]/i.test(lines[i].trim())){block.push(lines[i]);i++;}
       if(i<lines.length)i++;
-      out+=parseLooseTable(block)||aiFormatPlainBlock(block); firstContentSeen=true; continue;
+      out+=parseLooseTable(block)||`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`; firstContentSeen=true; continue;
     }
     if(/^\[calc\]/i.test(t)){
       flush(); let block=[]; i++;
@@ -1162,13 +1156,9 @@ function formatAiLessonText(text){
       if(i<lines.length)i++;
       out+=`<div class="answer-block"><b>Answer</b><div>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</div></div>`; firstContentSeen=true; continue;
     }
-    if(/^\s*\|.*\|\s*$/.test(raw)){
-      let j=i, block=[];
-      while(j<lines.length && /^\s*\|.*\|\s*$/.test(lines[j])){block.push(lines[j]);j++;}
-      if(block.length>=2){
-        const table=parseLooseTable(block);
-        if(table){flush();out+=table;firstContentSeen=true;i=j;continue;}
-      }
+    if(/^\s*\|.*\|\s*$/.test(raw) && i+1<lines.length){
+      let j=i, block=[]; while(j<lines.length && /^\s*\|.*\|\s*$/.test(lines[j])){block.push(lines[j]);j++;}
+      if(block.length>=2){const table=parseLooseTable(block);if(table){flush();out+=table;firstContentSeen=true;i=j;continue;}}
     }
     if(/^#{1,3}\s+/.test(t)){flush();const m=t.match(/^(#{1,3})\s+(.+)$/);const tag=m[1].length===1?'h2':m[1].length===2?'h3':'h4';out+=`<${tag}>${aiInlineFormat(m[2])}</${tag}>`;firstContentSeen=true;i++;continue;}
     if(i+1<lines.length && /^(?:\s*[-_=]{4,}\s*)$/.test(lines[i+1]) && t){
@@ -1201,22 +1191,11 @@ function pasteAsRawAiLesson(e){
 }
 $('qbLessonContent')?.addEventListener('paste',pasteAsRawAiLesson);
 function qbInsertTable(){
-  const editor=$('qbLessonContent'); if(!editor)return;
-  const rows=Number(prompt('How many rows?', '3'))||3;
-  const cols=Number(prompt('How many columns?', '3'))||3;
-  const r=Math.max(2,Math.min(20,rows));
-  const c=Math.max(2,Math.min(10,cols));
-  let h='<div class="lesson-table-wrap"><table class="lesson-table"><thead><tr>';
-  for(let j=0;j<c;j++) h+='<th contenteditable="true">Header '+(j+1)+'</th>';
-  h+='</tr></thead><tbody>';
-  for(let i=1;i<r;i++){
-    h+='<tr>';
-    for(let j=0;j<c;j++) h+='<td contenteditable="true">Text</td>';
-    h+='</tr>';
-  }
-  h+='</tbody></table></div><p><br></p>';
-  editor.insertAdjacentHTML('beforeend',h);
-  editor.focus();
+  const r=parseInt(prompt('Number of rows?','4')||'4',10), c=parseInt(prompt('Number of columns?','2')||'2',10);
+  if(!Number.isFinite(r)||!Number.isFinite(c)||r<1||c<1||r>20||c>10)return;
+  let h='<table><tbody>';
+  for(let y=0;y<r;y++){h+='<tr>';for(let x=0;x<c;x++)h+=`<td>${y===0?'Header':''}</td>`;h+='</tr>'}
+  h+='</tbody></table><p><br></p>'; qbInsertHtml(h);
 }
 function qbInsertCalc(){qbInsertHtml('<div class="calc-block"><pre>Write your calculation here...\n------------------------------\nAnswer = </pre></div><p><br></p>');}
 function qbInsertAnswer(){qbInsertHtml('<div class="answer-block"><b>Answer</b><div>Write the final answer here.</div></div><p><br></p>');}
