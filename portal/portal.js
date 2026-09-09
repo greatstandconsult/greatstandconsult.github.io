@@ -855,10 +855,11 @@ function openLearningPath(type,id){
   learningPathPanel?.classList.remove('hidden','gs-section-hidden');
   learningPathPanel?.scrollIntoView({behavior:'smooth',block:'start'});
 }
+window.openLearningPath=openLearningPath;
 function renderPathCards(rows,type){
   if(!rows.length){learningPathContent.innerHTML=`<div class="learning-empty"><div>📚</div><h3>No ${type}s yet</h3><p class="muted">Your tutor will add content here.</p></div>`;return}
-  learningPathContent.innerHTML=rows.map(x=>{const count=type==='subject'?courseData.topics.filter(t=>t.subjectId===x.id).length:type==='topic'?courseData.lessons.filter(l=>l.topicId===x.id).length:0;return `<button class="path-card" type="button" data-id="${x.id}" data-type="${type}"><span>${type==='subject'?'📘':type==='topic'?'📌':'📖'}</span><div><b>${esc(x.name||x.title)}</b><small>${type==='lesson'?'Open lesson':count+' '+(type==='subject'?'topics':'lessons')}</small></div><strong>›</strong></button>`}).join('');
-  learningPathContent.querySelectorAll('.path-card').forEach(b=>b.addEventListener('click',()=>openLearningPath(b.dataset.type,b.dataset.id)));
+  learningPathContent.innerHTML=rows.map(x=>{const count=type==='subject'?courseData.topics.filter(t=>t.subjectId===x.id).length:type==='topic'?courseData.lessons.filter(l=>l.topicId===x.id).length:0;return `<button class="path-card" type="button" data-id="${esc(x.id)}" data-type="${esc(type)}" style="position:relative;z-index:20;pointer-events:auto;cursor:pointer;"><span>${type==='subject'?'📘':type==='topic'?'📌':'📖'}</span><div><b>${esc(x.name||x.title)}</b><small>${type==='lesson'?'Open lesson':count+' '+(type==='subject'?'topics':'lessons')}</small></div><strong>›</strong></button>`}).join('');
+  learningPathContent.querySelectorAll('.path-card').forEach(b=>{b.onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();openLearningPath(b.dataset.type,b.dataset.id)}});
 }
 function publishedLessons(){return courseData.lessons.filter(l=>String(l.status||'published').toLowerCase()==='published' || !l.status)}
 function renderLearningCoursesV25(){
