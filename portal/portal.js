@@ -1,4 +1,4 @@
-/* GREAT STAND PORTAL V24 - Student Dashboard + My Courses */
+/* GREAT STAND PORTAL V26.1 - Admin Course Builder Visibility Fix */
 import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {createClient} from "https://esm.sh/@supabase/supabase-js@2"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const $=id=>document.getElementById(id),loginView=$("loginView"),dashboardView=$("dashboardView"),logoutBtn=$("logoutBtn"),adminPanel=$("adminPanel"),noteForm=$("noteForm"),notesList=$("notesList");
 const SUPABASE_URL="https://njwjjtxvckemejaezwtd.supabase.co";
@@ -196,7 +196,7 @@ assignmentForm.addEventListener("submit",async e=>{
 // ===== CBT / TEST SYSTEM (V14) =====
 const testAdminPanel=$('testAdminPanel'),testForm=$('testForm'),questionBuilder=$('questionBuilder'),testsList=$('testsList'),testModal=$('testModal');
 function isAdminRole(){const r=String(window.currentUserRole||"student").trim().toLowerCase();return r==="admin"||r==="superadmin";}
-function setAdminPanelsVisible(show){["adminPanel","assignmentAdminPanel","testAdminPanel","studentAdminPanel","submissionsAdminPanel","testResultsAdminPanel","materialsAdminPanel"].forEach(id=>{const el=$(id);if(el)el.style.display=show?"block":"none";});}
+function setAdminPanelsVisible(show){["adminPanel","assignmentAdminPanel","testAdminPanel","studentAdminPanel","submissionsAdminPanel","testResultsAdminPanel","materialsAdminPanel","courseAdminPanel"].forEach(id=>{const el=$(id);if(el)el.style.display=show?"block":"none";});}
 setAdminPanelsVisible(false);
 let questionCount=0,currentTest=null,currentQuestionIndex=0,testAnswers=[],testTimerInterval=null,testAutoSubmitTimeout=null,testSecondsLeft=0;
 function addQuestion(){
@@ -862,7 +862,7 @@ renderLearningCentre=function(){ if(courseData.courses.length){renderLearningCou
 const _v24LoadLearningCentre=loadLearningCentre;
 loadLearningCentre=async function(){await _v24LoadLearningCentre();await loadCourseStructure();if(courseData.courses.length)renderLearningCoursesV25();};
 
-// ===== V26 PHONE-FRIENDLY COURSE BUILDER =====
+// ===== V26.1 PHONE-FRIENDLY COURSE BUILDER =====
 const qbCourse=$('qbCourse'),qbSubject=$('qbSubject'),qbTopic=$('qbTopic');
 function qbSetMsg(id,text,ok=false){const el=$(id);if(!el)return;el.className='message '+(ok?'submission-success':'');el.textContent=text||'';}
 function qbToggle(id){$(id)?.classList.toggle('hidden');}
