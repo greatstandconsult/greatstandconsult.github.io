@@ -1,4 +1,4 @@
-/* GREAT STAND PORTAL V23 - free Supabase PDF upload */
+/* GREAT STAND PORTAL V23.2 - Supabase PDF upload + real browser download */
 import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {createClient} from "https://esm.sh/@supabase/supabase-js@2"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const $=id=>document.getElementById(id),loginView=$("loginView"),dashboardView=$("dashboardView"),logoutBtn=$("logoutBtn"),adminPanel=$("adminPanel"),noteForm=$("noteForm"),notesList=$("notesList");
 const SUPABASE_URL="https://njwjjtxvckemejaezwtd.supabase.co";
@@ -465,7 +465,22 @@ async function loadMaterials(){
       const meta=document.createElement('p');meta.className='subject';meta.textContent=(m.category||'General')+' • '+(m.subject||'General');
       const desc=document.createElement('p');desc.className='muted';desc.textContent=m.description||'Study material / PDF resource.';
       const actions=document.createElement('div');actions.className='material-actions';
-      const open=document.createElement('a');open.className='primary-btn material-link';open.href=m.url||'#';open.target='_blank';open.rel='noopener noreferrer';open.textContent='📄 Open / Download';actions.appendChild(open);
+      const open=document.createElement('a');open.className='primary-btn material-link';open.href=m.url||'#';open.target='_blank';open.rel='noopener noreferrer';open.textContent='👁️ View PDF';actions.appendChild(open);
+      if(m.storageProvider==='supabase' && m.storagePath){
+        const dl=document.createElement('button');dl.className='secondary-btn material-download-btn';dl.type='button';dl.textContent='⬇️ Download PDF';
+        dl.addEventListener('click',async()=>{
+          const oldText=dl.textContent;dl.disabled=true;dl.textContent='⏳ Downloading...';
+          try{
+            const {data,error}=await supabase.storage.from(SUPABASE_BUCKET).download(m.storagePath);
+            if(error)throw error;
+            const blobUrl=URL.createObjectURL(data);
+            const a=document.createElement('a');a.href=blobUrl;a.download=m.fileName||((m.title||'study-material')+'.pdf');document.body.appendChild(a);a.click();a.remove();
+            setTimeout(()=>URL.revokeObjectURL(blobUrl),5000);
+          }catch(e){console.error('PDF download error:',e);alert('Could not download this PDF: '+(e?.message||e));}
+          finally{dl.disabled=false;dl.textContent=oldText;}
+        });
+        actions.appendChild(dl);
+      }
       if(isAdminRole()){
         const del=document.createElement('button');del.className='danger-btn';del.type='button';del.textContent='🗑 Delete';
         del.addEventListener('click',async()=>{
