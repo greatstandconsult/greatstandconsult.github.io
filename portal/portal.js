@@ -1125,9 +1125,10 @@ function formatAiLessonText(text){
       const chunks=[];
       plain.forEach(line=>{
         const t=line.trim();
-        if(/^[A-Z][A-Z0-9 &'’()\-]{2,60}$/.test(t) && t.split(/\s+/).length<=8){
+        const labeled=/^(?:DEFINITION|MEANING|INTRODUCTION|RULES?|TYPES?|EXAMPLES?|WORKED EXAMPLES?|IMPORTANT NOTES?|KEY POINTS?|EXAM TIPS?|COMMON ERRORS?|PRACTICE QUESTIONS?|QUESTIONS?|ANSWERS?|SUMMARY|CONCLUSION)\s*:??$/i.test(t);
+        if((/^[A-Z][A-Z0-9 &'’()\-]{2,60}$/.test(t) && t.split(/\s+/).length<=8) || labeled){
           if(chunks.length){out+=aiFormatPlainBlock(chunks);chunks.length=0;}
-          out+=`<h3>${aiInlineFormat(t)}</h3>`;
+          out+=`<h3>${aiInlineFormat(t.replace(/:$/,''))}</h3>`;
         }else chunks.push(line);
       });
       if(chunks.length)out+=aiFormatPlainBlock(chunks);
@@ -1178,15 +1179,17 @@ function qbFormatAiNote(){
 }
 $('qbFormatAiNote')?.addEventListener('click',qbFormatAiNote);
 
-function pasteAsRichLesson(e){
-  const editor=$('qbLessonContent'); if(!editor)return;
-  const text=e.clipboardData?.getData('text/plain'); if(!text)return;
-  // Only intercept structured/format-sensitive pastes. Plain text still gets clean paragraphs.
-  e.preventDefault();
-  const html=transformPastedLessonText(text);
-  editor.focus(); document.execCommand('insertHTML',false,html);
+// V36: Keep pasted AI text as RAW text until the user presses "Format AI Note".
+// This is intentional: converting during paste can destroy [table]/[calc]/[answer]
+// markers before the formatter gets a chance to see them. The browser's normal paste
+// behavior is therefore used here.
+function pasteAsRawAiLesson(e){
+  const text=e.clipboardData?.getData('text/plain');
+  if(!text)return;
+  // Let the browser paste the exact text. The Format AI Note button is the
+  // authoritative conversion step.
 }
-$('qbLessonContent')?.addEventListener('paste',pasteAsRichLesson);
+$('qbLessonContent')?.addEventListener('paste',pasteAsRawAiLesson);
 function qbInsertTable(){
   const r=parseInt(prompt('Number of rows?','4')||'4',10), c=parseInt(prompt('Number of columns?','2')||'2',10);
   if(!Number.isFinite(r)||!Number.isFinite(c)||r<1||c<1||r>20||c>10)return;
