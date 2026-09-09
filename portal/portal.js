@@ -1111,6 +1111,92 @@ function transformPastedLessonText(text){
   flushPlain(plain);
   return out;
 }
+// ===== V33 AI NOTE FORMATTER =====
+// Converts a pasted AI note containing portal commands into real rich formatting.
+function aiInlineFormat(text){
+  let s=htmlEscText(String(text??''));
+  // Protect simple code spans first.
+  const stash=[];
+  s=s.replace(/`([^`]+)`/g,(_,x)=>{const k=`@@CODE${stash.length}@@`;stash.push(`<code>${x}</code>`);return k;});
+  s=s.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
+  s=s.replace(/__([^_\n]+)__/g,'<u>$1</u>');
+  s=s.replace(/\*([^*\n]+)\*/g,'<em>$1</em>');
+  s=s.replace(/@@CODE(\d+)@@/g,(_,i)=>stash[Number(i)]||'');
+  return s;
+}
+function aiFormatPlainBlock(lines){
+  return lines.map(line=>{
+    const t=line.trim();
+    if(!t)return '<p><br></p>';
+    if(/^###\s+/.test(t))return `<h4>${aiInlineFormat(t.replace(/^###\s+/,''))}</h4>`;
+    if(/^##\s+/.test(t))return `<h3>${aiInlineFormat(t.replace(/^##\s+/,''))}</h3>`;
+    if(/^#\s+/.test(t))return `<h2>${aiInlineFormat(t.replace(/^#\s+/,''))}</h2>`;
+    if(/^[-*]\s+/.test(t))return `<p>• ${aiInlineFormat(t.replace(/^[-*]\s+/,''))}</p>`;
+    if(/^\d+[.)]\s+/.test(t))return `<p>${aiInlineFormat(t)}</p>`;
+    return `<p>${aiInlineFormat(t)}</p>`;
+  }).join('');
+}
+function formatAiLessonText(text){
+  const src=String(text||'').replace(/\r\n?/g,'\n');
+  if(!src.trim())return '';
+  const lines=src.split('\n'); let out='',i=0,plain=[]; let firstContentSeen=false;
+  const flush=()=>{if(plain.length){
+    // Make a clear all-caps first line a lesson heading (e.g. CONCORD).
+    if(!firstContentSeen){
+      while(plain.length && !plain[0].trim())plain.shift();
+      if(plain.length && /^[A-Z][A-Z0-9 &'’()\-]{2,70}$/.test(plain[0].trim())){
+        out+=`<h2>${aiInlineFormat(plain.shift().trim())}</h2>`;
+      }
+    }
+    if(plain.length){out+=aiFormatPlainBlock(plain);firstContentSeen=true;}
+    else if(!firstContentSeen)firstContentSeen=true;
+    plain=[];
+  }};
+  while(i<lines.length){
+    const raw=lines[i], t=raw.trim();
+    if(/^\[table\]$/i.test(t)){
+      flush();let block=[];i++;
+      while(i<lines.length&&!/^\[\/table\]$/i.test(lines[i].trim())){block.push(lines[i]);i++;}
+      if(i<lines.length)i++; const table=parsePipeTable(block);
+      out+=table||aiFormatPlainBlock(block);firstContentSeen=true;continue;
+    }
+    if(/^\[calc\]$/i.test(t)){
+      flush();let block=[];i++;
+      while(i<lines.length&&!/^\[\/calc\]$/i.test(lines[i].trim())){block.push(lines[i]);i++;}
+      if(i<lines.length)i++;out+=`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`;firstContentSeen=true;continue;
+    }
+    if(/^\[answer\]$/i.test(t)){
+      flush();let block=[];i++;
+      while(i<lines.length&&!/^\[\/answer\]$/i.test(lines[i].trim())){block.push(lines[i]);i++;}
+      if(i<lines.length)i++;out+=`<div class="answer-block"><b>Answer</b><div>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</div></div>`;firstContentSeen=true;continue;
+    }
+    if(/^\s*\|.*\|\s*$/.test(raw) && i+1<lines.length && /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(lines[i+1])){
+      flush();let block=[];while(i<lines.length&&/^\s*\|.*\|\s*$/.test(lines[i])){block.push(lines[i]);i++;}
+      out+=parsePipeTable(block);firstContentSeen=true;continue;
+    }
+    // Convert an explicit Markdown heading even when followed by blank lines.
+    if(/^#{1,3}\s+/.test(t)){flush();const m=t.match(/^(#{1,3})\s+(.+)$/);const tag=m[1].length===1?'h2':m[1].length===2?'h3':'h4';out+=`<${tag}>${aiInlineFormat(m[2])}</${tag}>`;firstContentSeen=true;i++;continue;}
+    // Calculation lines: a working line followed by a divider.
+    if(i+1<lines.length && /^(?:\s*[-_=]{4,}\s*)$/.test(lines[i+1]) && t){
+      flush();let block=[raw,lines[i+1]];i+=2;
+      while(i<lines.length&&lines[i].trim()&&!/^\[/.test(lines[i].trim())){block.push(lines[i]);i++;}
+      out+=`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`;firstContentSeen=true;continue;
+    }
+    // Remove bare command explanation lines instead of displaying them.
+    if(/^\s*(?:FORMATTING|TABLES|CALCULATIONS|ANSWERS)\s*:\s*$/i.test(t)){flush();i++;continue;}
+    plain.push(raw);i++;
+  }
+  flush();return out;
+}
+function qbFormatAiNote(){
+  const editor=$('qbLessonContent');if(!editor)return;
+  const text=editor.innerText||editor.textContent||'';
+  if(!text.trim()){alert('Paste or type the AI lesson first.');return;}
+  const html=formatAiLessonText(text);
+  if(html){editor.innerHTML=html;editor.focus();qbSetMsg('qbLessonMsg','AI formatting applied successfully ✨');}
+}
+$('qbFormatAiNote')?.addEventListener('click',qbFormatAiNote);
+
 function pasteAsRichLesson(e){
   const editor=$('qbLessonContent'); if(!editor)return;
   const text=e.clipboardData?.getData('text/plain'); if(!text)return;
