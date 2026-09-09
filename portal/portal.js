@@ -1072,25 +1072,69 @@ function parsePipeTable(lines){
   return `<table class="lesson-table">${head}${bodyHtml?`<tbody>${bodyHtml}</tbody>`:''}</table>`;
 }
 function parseLooseTable(lines){
-  const clean=lines.map(x=>String(x).trim()).filter(Boolean);
+  const rawLines=Array.isArray(lines)?lines.map(x=>String(x).trim()):[];
+  const clean=rawLines.filter(Boolean);
   if(clean.length<2)return '';
-  let rows=clean.map(x=>x.replace(/^\||\|$/g,'').split(/\s*\|\s*|\t+/).map(c=>c.trim()));
-  // Remove markdown separator rows such as |---|---|.
+
+  // A real table row must explicitly separate its columns with | or tabs.
+  const rowLines=clean.filter(x=>x.includes('|') || x.includes('\t'));
+  if(rowLines.length<2)return '';
+
+  const splitRow=(line)=>{
+    let x=line.trim();
+    if(x.startsWith('|'))x=x.slice(1);
+    if(x.endsWith('|'))x=x.slice(0,-1);
+    return x.split(/\s*\|\s*|\t+/).map(c=>c.trim());
+  };
+  let rows=rowLines.map(splitRow);
   const isSep=r=>r.length>0 && r.every(c=>/^:?-{3,}:?$/.test(c));
   if(rows.length<2)return '';
-  const width=Math.max(...rows.map(r=>r.length));
-  if(width<2)return '';
-  rows=rows.map(r=>Array.from({length:width},(_,i)=>r[i]??''));
-  const header=rows[0];
+
+  // The first row defines the table columns. Never let later text create extra columns.
+  const columnCount=rows[0].length;
+  if(columnCount<2)return '';
+
+  const header=rows[0].slice(0,columnCount);
   let body=rows.slice(1);
-  if(isSep(body[0]||[]))body=body.slice(1);
-  const hasTableSyntax=clean.some(x=>x.includes('|')||x.includes('\t'));
-  if(!hasTableSyntax)return '';
-  const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
-  const bodyHtml=body.map(r=>'<tr>'+header.map((_,i)=>`<td>${htmlEscText(r[i]??'')}</td>`).join('')+'</tr>').join('');
+
+  // Remove markdown separator row.
+  if(body.length && isSep(body[0])) body=body.slice(1);
+
+  const normalizeRow=(r)=>{
+    const cells=r.slice(0,columnCount);
+    while(cells.length<columnCount)cells.push('');
+    return cells;
+  };
+
+  const head='<thead><tr>'+
+    header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+
+    '</tr></thead>';
+
+  const bodyHtml=body.map(r=>{
+    const cells=normalizeRow(r);
+    return '<tr>'+cells.map(c=>`<td>${htmlEscText(c)}</td>`).join('')+'</tr>';
+  }).join('');
+
   return `<div class="lesson-table-wrap"><table class="lesson-table">${head}<tbody>${bodyHtml}</tbody></table></div>`;
 }
 
+function parseExplicitTableBlock(lines){
+  // Returns a table plus any non-table text that followed it.
+  const clean=(lines||[]).map(x=>String(x).trim()).filter(Boolean);
+  if(clean.length<2)return {html:'',rest:clean};
+
+  let end=clean.length;
+  for(let i=1;i<clean.length;i++){
+    const line=clean[i];
+    if(!(line.includes('|') || line.includes('\t'))){
+      end=i;
+      break;
+    }
+  }
+  const tableLines=clean.slice(0,end);
+  const rest=clean.slice(end);
+  return {html:parseLooseTable(tableLines),rest};
+}
 function aiInlineFormat(text){
   let s=htmlEscText(String(text??''));
   const stash=[];
@@ -1143,10 +1187,35 @@ function formatAiLessonText(text){
   while(i<lines.length){
     const raw=lines[i], t=raw.trim();
     if(/^\[table\]/i.test(t)){
-      flush(); let inline=t.replace(/^\[table\]/i,'').replace(/\[\/table\].*$/i,'').trim(); let block=[]; if(inline)block.push(inline); i++;
-      while(i<lines.length&&!/^\[\/table\]/i.test(lines[i].trim())){block.push(lines[i]);i++;}
-      if(i<lines.length)i++;
-      out+=parseLooseTable(block)||`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`; firstContentSeen=true; continue;
+      flush();
+      let block=[];
+      const first=t.replace(/^\[table\]/i,'').trim();
+      const closeSame=first.search(/\[\/table\]/i);
+      if(closeSame>=0){
+        const inside=first.slice(0,closeSame).trim();
+        if(inside)block.push(inside);
+        const after=first.slice(closeSame+8).trim();
+        if(after)plain.push(after);
+        i++;
+      }else{
+        if(first)block.push(first);
+        i++;
+        while(i<lines.length&&!/^\[\/table\]/i.test(lines[i].trim())){
+          block.push(lines[i]);
+          i++;
+        }
+        if(i<lines.length){
+          const closingLine=lines[i].trim();
+          const after=closingLine.replace(/^\[\/table\]/i,'').trim();
+          if(after)plain.push(after);
+          i++;
+        }
+      }
+      const parsed=parseExplicitTableBlock(block);
+      out+=parsed.html||`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`;
+      if(parsed.rest.length)plain.push(...parsed.rest);
+      firstContentSeen=true;
+      continue;
     }
     if(/^\[calc\]/i.test(t)){
       flush(); let block=[]; i++;
