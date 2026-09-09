@@ -1,4 +1,41 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Great Stand Portal</title><link rel="stylesheet" href="portal.css?v=26.3"></head><body><div id="gsNavOverlay" class="gs-nav-overlay"></div>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Great Stand Portal</title><link rel="stylesheet" href="portal.css?v=26.3"><style id="v264-course-builder-design">
+/* V26.4 GUARANTEED COURSE BUILDER STYLES - inline fallback */
+#courseAdminPanel{background:linear-gradient(180deg,#fff 0%,#f8fafc 100%)!important;border:0!important;overflow:hidden;position:relative!important}
+#courseAdminPanel:before{content:"";display:block;height:6px;margin:-26px -26px 22px;background:linear-gradient(90deg,#071a33,#d6ad55,#071a33)!important}
+#courseAdminPanel .builder-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding:4px 2px 6px}
+#courseAdminPanel .builder-head .badge{background:#eef4ff!important;color:#1e5ca8!important;border-radius:999px!important;padding:7px 11px!important;font-size:11px!important;display:inline-flex!important;align-items:center!important;gap:6px!important}
+#courseAdminPanel .builder-head h2{font-size:28px!important;letter-spacing:-.5px!important;margin:12px 0 5px!important;color:#071a33!important}
+#courseAdminPanel .builder-head .muted{max-width:720px;margin:0;color:#667085!important}
+#courseAdminPanel .builder-progress{display:flex;align-items:center;gap:8px;padding:12px 14px;overflow-x:auto;background:#f4f7fb!important;border:1px solid #e5eaf1!important;border-radius:16px!important;box-shadow:0 4px 14px rgba(7,26,51,.04)!important;margin-top:18px}
+#courseAdminPanel .builder-step{display:flex;align-items:center;gap:7px;white-space:nowrap;color:#8a94a6;font-size:.82rem;font-weight:700}
+#courseAdminPanel .builder-step span{width:34px;height:34px;min-width:34px;border-radius:50%;display:grid;place-items:center;background:#fff!important;border:1px solid #dce4ef!important;color:#56657a!important;font-weight:800;box-shadow:0 2px 7px rgba(7,26,51,.05)}
+#courseAdminPanel .builder-step.active{color:#071a33!important}
+#courseAdminPanel .builder-step.active span{background:#071a33!important;color:#fff!important;border-color:#071a33!important}
+#courseAdminPanel .builder-line{height:1px;background:#dce3ec!important;min-width:22px;flex:1}
+#courseAdminPanel .quick-builder{display:grid;gap:14px;margin-top:18px}
+#courseAdminPanel .builder-card{border:1px solid #e2e8f0!important;border-radius:20px!important;padding:20px!important;background:#fff!important;box-shadow:0 8px 24px rgba(7,26,51,.06)!important}
+#courseAdminPanel .builder-card-title>div{display:flex;align-items:flex-start;gap:12px}
+#courseAdminPanel .builder-number{width:40px;height:40px;min-width:40px;border-radius:13px;background:#fff8e8!important;color:#7a5a08!important;border:1px solid #f0dfad!important;display:grid;place-items:center;font-weight:900;box-shadow:0 3px 8px rgba(122,90,8,.08)}
+#courseAdminPanel .builder-card-title h3{margin:0 0 3px!important;font-size:19px!important;color:#071a33!important}
+#courseAdminPanel .builder-card-title p{margin:0;color:#667085!important;font-size:13px}
+#courseAdminPanel .builder-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:16px}
+#courseAdminPanel .builder-card select,#courseAdminPanel .builder-card input:not([type=file]),#courseAdminPanel .builder-card textarea{appearance:none!important;-webkit-appearance:none!important;width:100%!important;box-sizing:border-box!important;border:1px solid #cfd8e3!important;background:#fbfcfe!important;color:#13243d!important;border-radius:12px!important;padding:13px 14px!important;font-size:15px!important;outline:none!important}
+#courseAdminPanel .builder-card select{background-image:linear-gradient(45deg,transparent 50%,#667085 50%),linear-gradient(135deg,#667085 50%,transparent 50%)!important;background-position:calc(100% - 19px) 50%,calc(100% - 14px) 50%!important;background-size:5px 5px,5px 5px!important;background-repeat:no-repeat!important;padding-right:40px!important}
+#courseAdminPanel .builder-card select:focus,#courseAdminPanel .builder-card input:focus,#courseAdminPanel .builder-card textarea:focus{border-color:#8ca9d3!important;box-shadow:0 0 0 4px rgba(30,92,168,.09)!important;background:#fff!important}
+#courseAdminPanel .builder-card .primary-btn,#courseAdminPanel .builder-card .secondary-btn{width:auto!important;margin-top:0!important;border-radius:12px!important;min-height:46px!important}
+#courseAdminPanel .builder-card .primary-btn{background:#071a33!important;color:#fff!important;box-shadow:0 6px 14px rgba(7,26,51,.14)!important}
+#courseAdminPanel .builder-card .secondary-btn{background:#fff!important;color:#071a33!important;border:1px solid #d7dce5!important}
+#courseAdminPanel .builder-new{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:12px;padding:14px;border-radius:15px;background:#f7f9fc!important;border:1px dashed #cdd7e4!important}
+#courseAdminPanel .builder-card textarea{min-height:220px!important;margin-top:14px!important;resize:vertical!important;line-height:1.6!important}
+#courseAdminPanel .builder-card input[type=file]{width:100%!important;box-sizing:border-box!important;padding:12px!important;border:1px dashed #c7d1df!important;border-radius:12px!important;background:#f8fafc!important;cursor:pointer!important;margin-top:8px!important}
+#courseAdminPanel .builder-card input[type=file]::file-selector-button{border:0;background:#071a33;color:#fff;border-radius:9px;padding:9px 12px;margin-right:10px;font-weight:700}
+#courseAdminPanel .upload-help{display:block;margin-top:7px;color:#7a8494;font-size:12px}
+#courseAdminPanel .builder-publish{display:flex;justify-content:flex-end;margin-top:14px}
+#courseAdminPanel .course-builder-tip{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:15px 16px;border-radius:16px;background:linear-gradient(90deg,#fffaf0,#fff)!important;border:1px solid #ead9a8!important;box-shadow:0 4px 12px rgba(7,26,51,.03)}
+#courseAdminPanel .course-builder-tip b{color:#6f5410}
+#courseAdminPanel .course-builder-tip span{color:#5f6672}
+@media(max-width:700px){#courseAdminPanel{padding:18px!important;margin-left:0!important;margin-right:0!important}#courseAdminPanel:before{margin:-18px -18px 18px!important}.builder-head{display:block!important}.builder-head h2{font-size:24px!important}.builder-row,.builder-new{grid-template-columns:1fr!important}.builder-row .secondary-btn,.builder-new .primary-btn{width:100%!important}.builder-card{padding:16px!important;border-radius:17px!important}.builder-progress{gap:5px!important;padding:10px!important}.builder-step span{width:32px!important;height:32px!important;min-width:32px!important}.builder-step b{display:none}.builder-line{min-width:12px!important}.builder-publish .primary-btn{width:100%!important}.course-builder-tip{flex-direction:column!important;font-size:13px}}
+</style></head><body><div id="gsNavOverlay" class="gs-nav-overlay"></div>
 <aside id="gsSideNav" class="gs-side-nav" aria-label="Portal navigation">
   <div class="gs-nav-head"><div class="gs-nav-brand"><div class="gs-nav-logo">G</div><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div><button id="gsNavClose" class="gs-nav-close" type="button" aria-label="Close navigation">×</button></div>
   <div class="gs-nav-user"><span id="gsNavRole">PORTAL</span><b id="gsNavName">Welcome</b></div>
