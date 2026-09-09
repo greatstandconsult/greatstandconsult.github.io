@@ -610,6 +610,7 @@ onAuthStateChanged(auth,async user=>{
   const overlay=document.getElementById("gsNavOverlay");
   const links=document.getElementById("gsNavLinks");
   const navLogout=document.getElementById("gsNavLogout");
+  const navClose=document.getElementById("gsNavClose");
   const nameEl=document.getElementById("gsNavName");
   const roleEl=document.getElementById("gsNavRole");
 
@@ -630,6 +631,7 @@ onAuthStateChanged(auth,async user=>{
   }
   menuBtn?.addEventListener("click",toggleNav);
   overlay?.addEventListener("click",closeNav);
+  navClose?.addEventListener("click",closeNav);
   navLogout?.addEventListener("click",()=>{
     const b=document.getElementById("logoutBtn");
     if(b) b.click();
