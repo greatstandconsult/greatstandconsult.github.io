@@ -1220,7 +1220,7 @@ $('qbInsertCalc')?.addEventListener('click',qbInsertCalc);
 $('qbInsertAnswer')?.addEventListener('click',qbInsertAnswer);
 
 async function qbSaveLesson(status){
-  const topicId=qbTopic?.value,title=$('qbLessonTitle').value.trim(),rawHtml=$('qbLessonContent')?.innerHTML||'',content=sanitizeRichHtml(rawHtml),file=$('qbLessonFile')?.files?.[0];
+  const topicId=qbTopic?.value,title=$('qbLessonTitle').value.trim(),rawHtml=$('qbLessonContent')?.innerHTML||'',editorText=$('qbLessonContent')?.innerText||$('qbLessonContent')?.textContent||'',formattedHtml=/\[\/?(?:table|calc|answer)\]/i.test(editorText)||/\*\*[^*]+\*\*/.test(editorText)||/__[^_]+__/.test(editorText)?formatAiLessonText(editorText):rawHtml,content=sanitizeRichHtml(formattedHtml),file=$('qbLessonFile')?.files?.[0];
   if(!topicId){qbSetMsg('qbLessonMsg','Create or select a topic first.');return}
   if(!title||!qbEditorText()){qbSetMsg('qbLessonMsg','Enter both a lesson title and lesson content.');return}
   if(file && (file.type!=='application/pdf' && !/\.pdf$/i.test(file.name))){qbSetMsg('qbLessonMsg','Only PDF files are allowed.');return}
