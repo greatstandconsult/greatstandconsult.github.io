@@ -50,6 +50,9 @@
 #courseAdminPanel .builder-publish{display:flex!important;justify-content:flex-end!important;gap:10px!important;margin-top:15px!important}.builder-publish .primary-btn,.builder-publish .secondary-btn{width:auto!important;margin-top:0!important;min-height:46px!important}
 #courseAdminPanel .draft-badge{display:inline-block!important;margin-left:7px!important;padding:3px 7px!important;border-radius:999px!important;background:#fff4d6!important;color:#7a5a08!important;font-size:10px!important;font-weight:800!important}.published-badge{display:inline-block!important;margin-left:7px!important;padding:3px 7px!important;border-radius:999px!important;background:#e7f7ee!important;color:#067647!important;font-size:10px!important;font-weight:800!important}
 @media(max-width:700px){#courseAdminPanel .builder-progress{padding:10px!important}.builder-step b{display:none!important}.builder-line{min-width:14px!important}.builder-step-card.collapsed{padding:13px 14px!important}.builder-summary{margin-left:0!important}.builder-publish{flex-direction:column!important}.builder-publish .primary-btn,.builder-publish .secondary-btn{width:100%!important}.builder-continue .primary-btn{width:100%!important}.builder-context{font-size:11px!important}}
+
+/* V28 RICH LESSON EDITOR */
+.rich-editor-wrap{border:1px solid #d9e0e8;border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 8px 24px rgba(10,30,55,.05);margin:8px 0 16px}.rich-toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px;background:#f7f9fc;border-bottom:1px solid #e2e7ee}.rich-tool,.rich-select{min-height:38px;border:1px solid #d7dee8;background:#fff;color:#10243b;border-radius:9px;padding:7px 10px;font-weight:700;cursor:pointer}.rich-tool:hover,.rich-select:hover{border-color:#c49a35;background:#fffaf0}.rich-tool:focus,.rich-select:focus{outline:2px solid rgba(196,154,53,.25);border-color:#c49a35}.rich-select{font-weight:600;max-width:150px}.rich-divider{width:1px;height:26px;background:#d9e0e8;margin:0 3px}.rich-editor{min-height:340px;padding:18px 18px 22px;font-size:16px;line-height:1.75;color:#17283b;outline:none;overflow-wrap:anywhere}.rich-editor:empty:before{content:attr(data-placeholder);color:#9aa6b5;pointer-events:none}.rich-editor h2{font-size:1.45rem;line-height:1.25;margin:1.2em 0 .5em;color:#0b2340}.rich-editor h3{font-size:1.2rem;line-height:1.3;margin:1.15em 0 .45em;color:#173b61}.rich-editor h4{font-size:1.05rem;margin:1em 0 .35em;color:#294d70}.rich-editor p{margin:.65em 0}.rich-editor ul,.rich-editor ol{padding-left:1.7rem}.rich-editor blockquote{border-left:4px solid #c49a35;background:#fbf7ed;margin:1em 0;padding:10px 14px;color:#5c4a23;border-radius:0 10px 10px 0}.rich-editor a{color:#0b5cad;text-decoration:underline}.rich-editor code{background:#f1f3f6;padding:2px 5px;border-radius:5px}.rich-editor-help{padding:8px 14px 10px;font-size:12px;color:#7b8796;background:#fbfcfe;border-top:1px solid #edf0f4}.lesson-body h2,.lesson-body h3,.lesson-body h4{color:#0b2340;margin:1.2em 0 .5em}.lesson-body p{margin:.7em 0}.lesson-body ul,.lesson-body ol{padding-left:1.7rem}.lesson-body blockquote{border-left:4px solid #c49a35;background:#fbf7ed;padding:10px 14px;border-radius:0 10px 10px 0}.lesson-body a{color:#0b5cad;text-decoration:underline}.lesson-body code{background:#f1f3f6;padding:2px 5px;border-radius:5px}@media(max-width:600px){.rich-toolbar{gap:5px;padding:8px}.rich-tool,.rich-select{min-height:36px;padding:6px 8px;font-size:13px}.rich-select{max-width:125px}.rich-editor{min-height:300px;padding:14px;font-size:15px}.rich-divider{display:none}}
 </style></head><body><div id="gsNavOverlay" class="gs-nav-overlay"></div>
 <aside id="gsSideNav" class="gs-side-nav" aria-label="Portal navigation">
   <div class="gs-nav-head"><div class="gs-nav-brand"><div class="gs-nav-logo">G</div><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div><button id="gsNavClose" class="gs-nav-close" type="button" aria-label="Close navigation">×</button></div>
@@ -236,9 +239,34 @@ Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
       <div class="builder-context" id="qbLessonContext"><span>Course</span><b id="qbContextCourse">—</b><span>Subject</span><b id="qbContextSubject">—</b><span>Topic</span><b id="qbContextTopic">—</b></div>
       <div class="builder-step-body">
         <input id="qbLessonTitle" placeholder="Lesson title e.g. Introduction to Number Bases">
-        <textarea id="qbLessonContent" placeholder="Write the lesson here...
-
-You can include explanations, examples, formulas and practice questions."></textarea>
+        <div class="rich-editor-wrap">
+  <div class="rich-toolbar" id="qbLessonToolbar" role="toolbar" aria-label="Lesson formatting">
+    <button type="button" class="rich-tool" data-cmd="bold" title="Bold"><b>B</b></button>
+    <button type="button" class="rich-tool" data-cmd="italic" title="Italic"><i>I</i></button>
+    <button type="button" class="rich-tool" data-cmd="underline" title="Underline"><u>U</u></button>
+    <span class="rich-divider"></span>
+    <select class="rich-select" data-block title="Text style">
+      <option value="p">Normal</option>
+      <option value="h2">Heading</option>
+      <option value="h3">Subheading</option>
+      <option value="h4">Small heading</option>
+      <option value="blockquote">Quote</option>
+    </select>
+    <button type="button" class="rich-tool" data-cmd="insertUnorderedList" title="Bullet list">• List</button>
+    <button type="button" class="rich-tool" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+    <span class="rich-divider"></span>
+    <button type="button" class="rich-tool" data-link title="Insert link">🔗</button>
+    <button type="button" class="rich-tool" data-cmd="justifyLeft" title="Align left">≡</button>
+    <button type="button" class="rich-tool" data-cmd="justifyCenter" title="Center">≡</button>
+    <button type="button" class="rich-tool" data-cmd="justifyRight" title="Align right">≡</button>
+    <span class="rich-divider"></span>
+    <button type="button" class="rich-tool" data-cmd="undo" title="Undo">↶</button>
+    <button type="button" class="rich-tool" data-cmd="redo" title="Redo">↷</button>
+    <button type="button" class="rich-tool" data-cmd="removeFormat" title="Clear formatting">Tx</button>
+  </div>
+  <div id="qbLessonContent" class="rich-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Write your lesson here... Add explanations, examples, formulas, subtopics and practice questions."></div>
+  <div class="rich-editor-help">Use <b>Heading</b> for main sections and <b>Subheading</b> for subtopics. Your formatting is saved with the lesson.</div>
+</div>
         <label class="upload-label">Optional lesson PDF</label>
         <input id="qbLessonFile" type="file" accept="application/pdf,.pdf">
         <small class="upload-help">PDF only • Maximum 50 MB</small>

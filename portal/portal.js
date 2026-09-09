@@ -841,7 +841,7 @@ function openLearningPath(type,id){
     const rows=publishedLessons().filter(x=>x.topicId===id);renderPathCards(rows,'lesson');
   }else if(type==='lesson'){
     learningPathTitle.textContent=l?.title||'Lesson';learningPathSubtitle.textContent='Lesson';
-    learningPathContent.innerHTML=`<article class="lesson-view"><div class="lesson-badge">LESSON</div><div class="lesson-body">${esc(l?.content||'').replace(/\n/g,'<br>')}</div>${l?.pdfUrl?`<div class="lesson-file-actions"><a class="primary-btn" href="${esc(l.pdfUrl)}" target="_blank" rel="noopener">📖 View PDF</a><a class="secondary-btn" href="${esc(l.pdfUrl)}" download>⬇️ Download PDF</a></div>`:''}</article>`;
+    const lessonHtml=String(l?.contentFormat||'').toLowerCase()==='html'?sanitizeRichHtml(l?.content||''):esc(l?.content||'').replace(/\n/g,'<br>'); learningPathContent.innerHTML=`<article class="lesson-view"><div class="lesson-badge">LESSON</div><div class="lesson-body">${lessonHtml}</div>${l?.pdfUrl?`<div class="lesson-file-actions"><a class="primary-btn" href="${esc(l.pdfUrl)}" target="_blank" rel="noopener">📖 View PDF</a><a class="secondary-btn" href="${esc(l.pdfUrl)}" download>⬇️ Download PDF</a></div>`:''}</article>`;
   }
   learningPathPanel?.classList.remove('hidden'); learningPathPanel?.scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -952,10 +952,61 @@ $('qbSaveTopic')?.addEventListener('click',async()=>{
   qbSetMsg('qbTopicMsg','Creating topic...');
   try{const ref=await addDoc(collection(db,'topics'),{name,subjectId,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbTopicName').value='';$('qbTopicNew').classList.add('hidden');await qbReload();qbSubject.value=subjectId;refreshQBTopics();qbTopic.value=ref.id;qbRefreshSummaries();qbSetStep(4,true);qbSetMsg('qbTopicMsg','Topic created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbTopicMsg','Could not create topic: '+(e.code||e.message))}
 });
+
+// ===== V28 RICH TEXT EDITOR =====
+function qbEditorText(){
+  return ($('qbLessonContent')?.innerText || $('qbLessonContent')?.textContent || '').replace(/\u00a0/g,' ').trim();
+}
+function sanitizeRichHtml(html){
+  const template=document.createElement('template');
+  template.innerHTML=String(html||'');
+  const allowed=new Set(['B','STRONG','I','EM','U','H2','H3','H4','P','BR','UL','OL','LI','BLOCKQUOTE','A','CODE','PRE','SUB','SUP','DIV']);
+  const walk=node=>{
+    [...node.childNodes].forEach(child=>{
+      if(child.nodeType===Node.ELEMENT_NODE){
+        if(!allowed.has(child.tagName)){
+          const frag=document.createDocumentFragment();
+          while(child.firstChild)frag.appendChild(child.firstChild);
+          child.replaceWith(frag); return;
+        }
+        [...child.attributes].forEach(attr=>{
+          if(child.tagName==='A' && attr.name.toLowerCase()==='href')return;
+          if(child.tagName==='A' && ['target','rel'].includes(attr.name.toLowerCase()))return;
+          child.removeAttribute(attr.name);
+        });
+        if(child.tagName==='A'){
+          const href=child.getAttribute('href')||'';
+          if(!/^https?:\/\//i.test(href)){child.removeAttribute('href')}else{child.setAttribute('target','_blank');child.setAttribute('rel','noopener noreferrer')}
+        }
+        walk(child);
+      }else if(child.nodeType!==Node.TEXT_NODE){child.remove()}
+    });
+  };
+  walk(template.content);
+  return template.innerHTML.trim();
+}
+function qbRichExec(cmd,value=null){
+  $('qbLessonContent')?.focus();
+  try{document.execCommand(cmd,false,value)}catch(e){console.warn('Formatting command failed',cmd,e)}
+}
+document.querySelectorAll('#qbLessonToolbar [data-cmd]').forEach(btn=>btn.addEventListener('mousedown',e=>e.preventDefault()));
+document.querySelectorAll('#qbLessonToolbar [data-cmd]').forEach(btn=>btn.addEventListener('click',()=>qbRichExec(btn.dataset.cmd)));
+$('qbLessonToolbar [data-block]')?.addEventListener('change',e=>{
+  const value=e.target.value;
+  $('qbLessonContent')?.focus();
+  qbRichExec('formatBlock',value);
+  e.target.value='p';
+});
+$('qbLessonToolbar [data-link]')?.addEventListener('mousedown',e=>e.preventDefault());
+$('qbLessonToolbar [data-link]')?.addEventListener('click',()=>{
+  const url=prompt('Enter the full link (https://...)');
+  if(url && /^https?:\/\//i.test(url.trim()))qbRichExec('createLink',url.trim());
+});
+
 async function qbSaveLesson(status){
-  const topicId=qbTopic?.value,title=$('qbLessonTitle').value.trim(),content=$('qbLessonContent').value.trim(),file=$('qbLessonFile')?.files?.[0];
+  const topicId=qbTopic?.value,title=$('qbLessonTitle').value.trim(),rawHtml=$('qbLessonContent')?.innerHTML||'',content=sanitizeRichHtml(rawHtml),file=$('qbLessonFile')?.files?.[0];
   if(!topicId){qbSetMsg('qbLessonMsg','Create or select a topic first.');return}
-  if(!title||!content){qbSetMsg('qbLessonMsg','Enter both a lesson title and lesson content.');return}
+  if(!title||!qbEditorText()){qbSetMsg('qbLessonMsg','Enter both a lesson title and lesson content.');return}
   if(file && (file.type!=='application/pdf' && !/\.pdf$/i.test(file.name))){qbSetMsg('qbLessonMsg','Only PDF files are allowed.');return}
   if(file && file.size>50*1024*1024){qbSetMsg('qbLessonMsg','PDF must be 50 MB or smaller.');return}
   const topic=courseData.topics.find(t=>t.id===topicId),subject=courseData.subjects.find(s=>s.id===topic?.subjectId),course=courseData.courses.find(c=>c.id===subject?.courseId);
@@ -964,8 +1015,8 @@ async function qbSaveLesson(status){
   try{
     let pdfUrl='';
     if(file){const safeName=file.name.replace(/[^a-zA-Z0-9._-]+/g,'_');uploadedPath='materials/lessons/'+auth.currentUser.uid+'/'+Date.now()+'_'+safeName;const {error}=await supabase.storage.from(SUPABASE_BUCKET).upload(uploadedPath,file,{contentType:'application/pdf',upsert:false,cacheControl:'3600'});if(error)throw error;const {data}=supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(uploadedPath);pdfUrl=data.publicUrl}
-    await addDoc(collection(db,'lessons'),{title,content,pdfUrl,storagePath:uploadedPath||'',storageProvider:uploadedPath?'supabase':'',topicId,subjectId:subject?.id||'',courseId:course?.id||'',category:course?.category||'General',status,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
-    $('qbLessonTitle').value='';$('qbLessonContent').value='';if($('qbLessonFile'))$('qbLessonFile').value='';await qbReload();qbSetMsg('qbLessonMsg',status==='draft'?'Draft saved successfully ✅':'Lesson published successfully ✅',true);
+    await addDoc(collection(db,'lessons'),{title,content,pdfUrl,storagePath:uploadedPath||'',storageProvider:uploadedPath?'supabase':'',topicId,subjectId:subject?.id||'',courseId:course?.id||'',category:course?.category||'General',status,contentFormat:'html',createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
+    $('qbLessonTitle').value='';$('qbLessonContent').innerHTML='';if($('qbLessonFile'))$('qbLessonFile').value='';await qbReload();qbSetMsg('qbLessonMsg',status==='draft'?'Draft saved successfully ✅':'Lesson published successfully ✅',true);
   }catch(e){console.error(e);if(uploadedPath){try{await supabase.storage.from(SUPABASE_BUCKET).remove([uploadedPath])}catch(cleanErr){console.warn(cleanErr)}}qbSetMsg('qbLessonMsg','Could not '+(status==='draft'?'save draft':'publish lesson')+': '+(e.code||e.message))}finally{btn.disabled=false}
 }
 $('qbSaveDraft')?.addEventListener('click',()=>qbSaveLesson('draft'));
