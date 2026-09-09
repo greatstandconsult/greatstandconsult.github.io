@@ -1059,81 +1059,64 @@ $('qbInsertVideo')?.addEventListener('click',qbInsertVideo);
 // ===== V32 PASTE-FRIENDLY TABLE + CALCULATION BLOCKS =====
 function htmlEscText(v){return esc(String(v??''));}
 function linesToPreHtml(text){return htmlEscText(text).replace(/\n/g,'<br>');}
-function parsePipeTable(lines){
-  const clean=lines.map(x=>String(x).trim()).filter(Boolean);
-  if(clean.length<2)return '';
-  let rows=clean.map(x=>x.replace(/^\||\|$/g,'').split('|').map(c=>c.trim()));
-  const isSep=r=>r.length>0 && r.every(c=>/^:?-{3,}:?$/.test(c));
-  let header=rows[0], body=rows.slice(1);
-  if(body.length && isSep(body[0])) body=body.slice(1);
-  if(header.length<2 || (!body.length && !isSep(rows[1]||[]))) return '';
-  const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
-  const bodyHtml=body.map(r=>'<tr>'+header.map((_,i)=>`<td>${htmlEscText(r[i]||'')}</td>`).join('')+'</tr>').join('');
-  return `<table class="lesson-table">${head}${bodyHtml?`<tbody>${bodyHtml}</tbody>`:''}</table>`;
+function normalizeTableCell(text){
+  return String(text??'').replace(/\s+/g,' ').trim();
 }
-function parseLooseTable(lines){
-  const rawLines=Array.isArray(lines)?lines.map(x=>String(x).trim()):[];
-  const clean=rawLines.filter(Boolean);
-  if(clean.length<2)return '';
-
-  // A real table row must explicitly separate its columns with | or tabs.
-  const rowLines=clean.filter(x=>x.includes('|') || x.includes('\t'));
-  if(rowLines.length<2)return '';
-
-  const splitRow=(line)=>{
-    let x=line.trim();
-    if(x.startsWith('|'))x=x.slice(1);
-    if(x.endsWith('|'))x=x.slice(0,-1);
-    return x.split(/\s*\|\s*|\t+/).map(c=>c.trim());
-  };
-  let rows=rowLines.map(splitRow);
-  const isSep=r=>r.length>0 && r.every(c=>/^:?-{3,}:?$/.test(c));
-  if(rows.length<2)return '';
-
-  // The first row defines the table columns. Never let later text create extra columns.
-  const columnCount=rows[0].length;
-  if(columnCount<2)return '';
-
-  const header=rows[0].slice(0,columnCount);
-  let body=rows.slice(1);
-
-  // Remove markdown separator row.
-  if(body.length && isSep(body[0])) body=body.slice(1);
-
-  const normalizeRow=(r)=>{
-    const cells=r.slice(0,columnCount);
-    while(cells.length<columnCount)cells.push('');
-    return cells;
-  };
-
-  const head='<thead><tr>'+
-    header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+
-    '</tr></thead>';
-
-  const bodyHtml=body.map(r=>{
-    const cells=normalizeRow(r);
-    return '<tr>'+cells.map(c=>`<td>${htmlEscText(c)}</td>`).join('')+'</tr>';
-  }).join('');
-
+function splitTableRow(line){
+  let x=String(line??'').trim();
+  if(x.startsWith('|')) x=x.slice(1);
+  if(x.endsWith('|')) x=x.slice(0,-1);
+  // A table row must contain real pipe separators. Do not treat ordinary prose as a row.
+  if(!x.includes('|')) return [];
+  return x.split('|').map(normalizeTableCell);
+}
+function isTableSeparatorRow(row){
+  return Array.isArray(row) && row.length>=2 && row.every(c=>/^:?-{3,}:?$/.test(c));
+}
+function buildRealTable(rows){
+  if(!Array.isArray(rows)||rows.length<2)return '';
+  const parsed=rows.map(splitTableRow).filter(r=>r.length>=2);
+  if(parsed.length<2)return '';
+  const header=parsed[0];
+  const columnCount=header.length;
+  if(columnCount<2 || columnCount>12)return '';
+  let body=parsed.slice(1);
+  if(body.length && isTableSeparatorRow(body[0])) body=body.slice(1);
+  // Require every actual row to have the same number of columns.
+  // This prevents unrelated text from being swallowed into the table.
+  if(body.length && body.some(r=>r.length!==columnCount)) return '';
+  const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
+  const bodyHtml=body.map(r=>'<tr>'+r.map(c=>`<td>${htmlEscText(c)}</td>`).join('')+'</tr>').join('');
   return `<div class="lesson-table-wrap"><table class="lesson-table">${head}<tbody>${bodyHtml}</tbody></table></div>`;
 }
-
-function parseExplicitTableBlock(lines){
-  // Returns a table plus any non-table text that followed it.
+function parsePipeTable(lines){
+  return buildRealTable(lines);
+}
+function parseLooseTable(lines){
   const clean=(lines||[]).map(x=>String(x).trim()).filter(Boolean);
-  if(clean.length<2)return {html:'',rest:clean};
-
-  let end=clean.length;
-  for(let i=1;i<clean.length;i++){
-    const line=clean[i];
-    if(!(line.includes('|') || line.includes('\t'))){
-      end=i;
-      break;
-    }
-  }
-  const tableLines=clean.slice(0,end);
-  const rest=clean.slice(end);
-  return {html:parseLooseTable(tableLines),rest};
+  if(clean.length<2)return '';
+  // Only explicit pipe/tab rows are eligible. Plain paragraphs are never included.
+  const candidates=clean.filter(x=>x.includes('|')||x.includes('\t'));
+  if(candidates.length<2)return '';
+  const pipeRows=candidates.map(x=>x.includes('|')?splitTableRow(x):x.split(/\t+/).map(normalizeTableCell));
+  if(pipeRows.length<2)return '';
+  const header=pipeRows[0];
+  if(header.length<2||header.length>12)return '';
+  let body=pipeRows.slice(1);
+  if(body.length&&isTableSeparatorRow(body[0]))body=body.slice(1);
+  if(body.length&&body.some(r=>r.length!==header.length))return '';
+  const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
+  const bodyHtml=body.map(r=>'<tr>'+r.map(c=>`<td>${htmlEscText(c)}</td>`).join('')+'</tr>').join('');
+  return `<div class="lesson-table-wrap"><table class="lesson-table">${head}<tbody>${bodyHtml}</tbody></table></div>`;
+}
+function parseExplicitTableBlock(lines){
+  // [table] is authoritative: only the lines inside the markers belong to the table.
+  const raw=(lines||[]).map(x=>String(x).trim());
+  while(raw.length && !raw[0])raw.shift();
+  while(raw.length && !raw[raw.length-1])raw.pop();
+  if(raw.length<2)return {html:'',rest:raw};
+  const html=parseLooseTable(raw);
+  return {html,rest:[]};
 }
 function aiInlineFormat(text){
   let s=htmlEscText(String(text??''));
@@ -1230,8 +1213,12 @@ function formatAiLessonText(text){
       out+=`<div class="answer-block"><b>Answer</b><div>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</div></div>`; firstContentSeen=true; continue;
     }
     if(/^\s*\|.*\|\s*$/.test(raw) && i+1<lines.length){
-      let j=i, block=[]; while(j<lines.length && /^\s*\|.*\|\s*$/.test(lines[j])){block.push(lines[j]);j++;}
-      if(block.length>=2){const table=parseLooseTable(block);if(table){flush();out+=table;firstContentSeen=true;i=j;continue;}}
+      let j=i, block=[];
+      while(j<lines.length && /^\s*\|.*\|\s*$/.test(lines[j])){block.push(lines[j]);j++;}
+      if(block.length>=2){
+        const table=parsePipeTable(block);
+        if(table){flush();out+=table;firstContentSeen=true;i=j;continue;}
+      }
     }
     if(/^#{1,3}\s+/.test(t)){flush();const m=t.match(/^(#{1,3})\s+(.+)$/);const tag=m[1].length===1?'h2':m[1].length===2?'h3':'h4';out+=`<${tag}>${aiInlineFormat(m[2])}</${tag}>`;firstContentSeen=true;i++;continue;}
     if(i+1<lines.length && /^(?:\s*[-_=]{4,}\s*)$/.test(lines[i+1]) && t){
