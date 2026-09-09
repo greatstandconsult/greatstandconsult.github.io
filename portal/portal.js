@@ -1,386 +1,1253 @@
-/* GS_TABLE_FORMATTER_V37 */
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Great Stand Portal</title><link rel="stylesheet" href="portal.css?v=30.0"><style id="v264-course-builder-design">
-/* V26.4 GUARANTEED COURSE BUILDER STYLES - inline fallback */
-#courseAdminPanel{background:linear-gradient(180deg,#fff 0%,#f8fafc 100%)!important;border:0!important;overflow:hidden;position:relative!important}
-#courseAdminPanel:before{content:"";display:block;height:6px;margin:-26px -26px 22px;background:linear-gradient(90deg,#071a33,#d6ad55,#071a33)!important}
-#courseAdminPanel .builder-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding:4px 2px 6px}
-#courseAdminPanel .builder-head .badge{background:#eef4ff!important;color:#1e5ca8!important;border-radius:999px!important;padding:7px 11px!important;font-size:11px!important;display:inline-flex!important;align-items:center!important;gap:6px!important}
-#courseAdminPanel .builder-head h2{font-size:28px!important;letter-spacing:-.5px!important;margin:12px 0 5px!important;color:#071a33!important}
-#courseAdminPanel .builder-head .muted{max-width:720px;margin:0;color:#667085!important}
-#courseAdminPanel .builder-progress{display:flex;align-items:center;gap:8px;padding:12px 14px;overflow-x:auto;background:#f4f7fb!important;border:1px solid #e5eaf1!important;border-radius:16px!important;box-shadow:0 4px 14px rgba(7,26,51,.04)!important;margin-top:18px}
-#courseAdminPanel .builder-step{display:flex;align-items:center;gap:7px;white-space:nowrap;color:#8a94a6;font-size:.82rem;font-weight:700}
-#courseAdminPanel .builder-step span{width:34px;height:34px;min-width:34px;border-radius:50%;display:grid;place-items:center;background:#fff!important;border:1px solid #dce4ef!important;color:#56657a!important;font-weight:800;box-shadow:0 2px 7px rgba(7,26,51,.05)}
-#courseAdminPanel .builder-step.active{color:#071a33!important}
-#courseAdminPanel .builder-step.active span{background:#071a33!important;color:#fff!important;border-color:#071a33!important}
-#courseAdminPanel .builder-line{height:1px;background:#dce3ec!important;min-width:22px;flex:1}
-#courseAdminPanel .quick-builder{display:grid;gap:14px;margin-top:18px}
-#courseAdminPanel .builder-card{border:1px solid #e2e8f0!important;border-radius:20px!important;padding:20px!important;background:#fff!important;box-shadow:0 8px 24px rgba(7,26,51,.06)!important}
-#courseAdminPanel .builder-card-title>div{display:flex;align-items:flex-start;gap:12px}
-#courseAdminPanel .builder-number{width:40px;height:40px;min-width:40px;border-radius:13px;background:#fff8e8!important;color:#7a5a08!important;border:1px solid #f0dfad!important;display:grid;place-items:center;font-weight:900;box-shadow:0 3px 8px rgba(122,90,8,.08)}
-#courseAdminPanel .builder-card-title h3{margin:0 0 3px!important;font-size:19px!important;color:#071a33!important}
-#courseAdminPanel .builder-card-title p{margin:0;color:#667085!important;font-size:13px}
-#courseAdminPanel .builder-row{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:16px}
-#courseAdminPanel .builder-card select,#courseAdminPanel .builder-card input:not([type=file]),#courseAdminPanel .builder-card textarea{appearance:none!important;-webkit-appearance:none!important;width:100%!important;box-sizing:border-box!important;border:1px solid #cfd8e3!important;background:#fbfcfe!important;color:#13243d!important;border-radius:12px!important;padding:13px 14px!important;font-size:15px!important;outline:none!important}
-#courseAdminPanel .builder-card select{background-image:linear-gradient(45deg,transparent 50%,#667085 50%),linear-gradient(135deg,#667085 50%,transparent 50%)!important;background-position:calc(100% - 19px) 50%,calc(100% - 14px) 50%!important;background-size:5px 5px,5px 5px!important;background-repeat:no-repeat!important;padding-right:40px!important}
-#courseAdminPanel .builder-card select:focus,#courseAdminPanel .builder-card input:focus,#courseAdminPanel .builder-card textarea:focus{border-color:#8ca9d3!important;box-shadow:0 0 0 4px rgba(30,92,168,.09)!important;background:#fff!important}
-#courseAdminPanel .builder-card .primary-btn,#courseAdminPanel .builder-card .secondary-btn{width:auto!important;margin-top:0!important;border-radius:12px!important;min-height:46px!important}
-#courseAdminPanel .builder-card .primary-btn{background:#071a33!important;color:#fff!important;box-shadow:0 6px 14px rgba(7,26,51,.14)!important}
-#courseAdminPanel .builder-card .secondary-btn{background:#fff!important;color:#071a33!important;border:1px solid #d7dce5!important}
-#courseAdminPanel .builder-new{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:12px;padding:14px;border-radius:15px;background:#f7f9fc!important;border:1px dashed #cdd7e4!important}
-#courseAdminPanel .builder-card textarea{min-height:220px!important;margin-top:14px!important;resize:vertical!important;line-height:1.6!important}
-#courseAdminPanel .builder-card input[type=file]{width:100%!important;box-sizing:border-box!important;padding:12px!important;border:1px dashed #c7d1df!important;border-radius:12px!important;background:#f8fafc!important;cursor:pointer!important;margin-top:8px!important}
-#courseAdminPanel .builder-card input[type=file]::file-selector-button{border:0;background:#071a33;color:#fff;border-radius:9px;padding:9px 12px;margin-right:10px;font-weight:700}
-#courseAdminPanel .upload-help{display:block;margin-top:7px;color:#7a8494;font-size:12px}
-#courseAdminPanel .builder-publish{display:flex;justify-content:flex-end;margin-top:14px}
-#courseAdminPanel .course-builder-tip{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:15px 16px;border-radius:16px;background:linear-gradient(90deg,#fffaf0,#fff)!important;border:1px solid #ead9a8!important;box-shadow:0 4px 12px rgba(7,26,51,.03)}
-#courseAdminPanel .course-builder-tip b{color:#6f5410}
-#courseAdminPanel .course-builder-tip span{color:#5f6672}
-@media(max-width:700px){#courseAdminPanel{padding:18px!important;margin-left:0!important;margin-right:0!important}#courseAdminPanel:before{margin:-18px -18px 18px!important}.builder-head{display:block!important}.builder-head h2{font-size:24px!important}.builder-row,.builder-new{grid-template-columns:1fr!important}.builder-row .secondary-btn,.builder-new .primary-btn{width:100%!important}.builder-card{padding:16px!important;border-radius:17px!important}.builder-progress{gap:5px!important;padding:10px!important}.builder-step span{width:32px!important;height:32px!important;min-width:32px!important}.builder-step b{display:none}.builder-line{min-width:12px!important}.builder-publish .primary-btn{width:100%!important}.course-builder-tip{flex-direction:column!important;font-size:13px}}
+/* GS_REAL_TABLE_V371 */
+/* GREAT STAND PORTAL V27 - Course Builder Wizard */
+import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {createClient} from "https://esm.sh/@supabase/supabase-js@2"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+const $=id=>document.getElementById(id),loginView=$("loginView"),dashboardView=$("dashboardView"),logoutBtn=$("logoutBtn"),adminPanel=$("adminPanel"),noteForm=$("noteForm"),notesList=$("notesList");
+const SUPABASE_URL="https://njwjjtxvckemejaezwtd.supabase.co";
+const SUPABASE_ANON_KEY="sb_publishable_bCsJSYS7ggDTnwvAYW_JUA_HJvtGl5f";
+const SUPABASE_BUCKET="materials";
+const supabase=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginMessage").textContent="Logging in...";try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(err){console.error(err);$("loginMessage").textContent="Login failed: "+(err.code||err.message)}}); logoutBtn.addEventListener("click",()=>signOut(auth));
+async function getCount(n){try{return(await getDocs(collection(db,n))).size}catch(e){console.error(e);return 0}}
+async function loadNotes(){notesList.innerHTML='<p class="muted">Loading notes...</p>';try{let s;try{s=await getDocs(query(collection(db,"notes"),orderBy("createdAt","desc")))}catch(e){s=await getDocs(collection(db,"notes"))}if(s.empty){notesList.innerHTML='<p class="muted">No notes published yet.</p>';return}notesList.innerHTML="";s.forEach(d=>{let n=d.data(),c=document.createElement("article");c.className="note-card";let h=document.createElement("h3");h.textContent=n.title||"Untitled Note";let sub=document.createElement("p");sub.className="subject";sub.textContent=n.subject||"General";let body=document.createElement("div");body.className="note-content";body.textContent=n.content||"";c.append(h,sub,body);notesList.appendChild(c)})}catch(e){console.error(e);notesList.innerHTML='<p class="message">Could not load notes.</p>'}}
+noteForm.addEventListener("submit",async e=>{e.preventDefault();$("noteMessage").textContent="Publishing...";try{await addDoc(collection(db,"notes"),{title:$("noteTitle").value.trim(),subject:$("noteSubject").value.trim(),category:$("noteCategory").value,content:$("noteContent").value.trim(),createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});noteForm.reset();$("noteMessage").textContent="Note published successfully ✅";$("notesCount").textContent=await getCount("notes");await loadNotes();await loadAssignments();await loadTests();await loadStudentResultsIfNeeded();await loadLearningCentre()}catch(e){console.error(e);$("noteMessage").textContent="Could not publish note: "+(e.code||e.message)}});
 
-/* V27 COURSE BUILDER WIZARD */
-#courseAdminPanel .builder-progress{display:flex!important;align-items:center!important;gap:8px!important;padding:12px 14px!important;overflow-x:auto!important;background:#f4f7fb!important;border:1px solid #e5eaf1!important;border-radius:16px!important;box-shadow:0 4px 14px rgba(7,26,51,.04)!important;margin-top:18px!important}
-#courseAdminPanel .builder-step{display:flex!important;align-items:center!important;gap:7px!important;white-space:nowrap!important;color:#8a94a6!important;font-size:.82rem!important;font-weight:700!important;border:0!important;background:transparent!important;padding:0!important;cursor:pointer!important}
-#courseAdminPanel .builder-step span{width:34px!important;height:34px!important;min-width:34px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:#fff!important;border:1px solid #dce4ef!important;color:#56657a!important;font-weight:800!important;box-shadow:0 2px 7px rgba(7,26,51,.05)!important}
-#courseAdminPanel .builder-step.active{color:#071a33!important}.builder-step.active span{background:#071a33!important;color:#fff!important;border-color:#071a33!important}.builder-step.done span{background:#dff6ea!important;color:#067647!important;border-color:#b7e4cb!important}.builder-step.locked{opacity:.55!important;cursor:not-allowed!important}
-#courseAdminPanel .builder-line{height:1px!important;background:#dce3ec!important;min-width:22px!important;flex:1!important}
-#courseAdminPanel .builder-step-card{transition:box-shadow .2s ease,transform .2s ease,border-color .2s ease!important}.builder-step-card.locked{opacity:.7!important}.builder-step-card.active{border-color:#cfdbea!important;box-shadow:0 12px 30px rgba(7,26,51,.08)!important}.builder-step-card.collapsed{padding:15px 18px!important}.builder-step-card.collapsed .builder-step-body{display:none!important}.builder-step-card.collapsed .builder-card-title{align-items:center!important}.builder-step-card.locked .builder-step-body{display:none!important}
-#courseAdminPanel .builder-card-title{display:flex!important;justify-content:space-between!important;align-items:flex-start!important;gap:12px!important}.builder-edit-btn{border:1px solid #d7dce5!important;background:#fff!important;color:#071a33!important;border-radius:10px!important;padding:8px 12px!important;font-weight:800!important;cursor:pointer!important}.builder-edit-btn:hover{border-color:#d6ad55!important;background:#fffaf0!important}
-#courseAdminPanel .builder-summary{margin:14px 0 0 52px!important;padding:11px 13px!important;background:#f7f9fc!important;border:1px solid #e5eaf1!important;border-radius:11px!important;color:#344054!important;font-size:14px!important}.builder-summary b{color:#071a33!important}.builder-summary small{display:block;color:#667085!important;margin-top:2px!important}
-#courseAdminPanel .builder-continue{display:flex!important;justify-content:flex-end!important;margin-top:14px!important}.builder-continue .primary-btn{width:auto!important;margin-top:0!important;padding:12px 18px!important}.builder-continue .primary-btn:disabled{opacity:.45!important;cursor:not-allowed!important}
-#courseAdminPanel .builder-context{display:flex!important;flex-wrap:wrap!important;gap:7px 10px!important;margin:15px 0 4px!important;padding:12px 14px!important;background:#f7f9fc!important;border:1px solid #e5eaf1!important;border-radius:12px!important;color:#667085!important;font-size:12px!important}.builder-context b{color:#071a33!important;margin-right:6px!important}
-#courseAdminPanel .builder-publish{display:flex!important;justify-content:flex-end!important;gap:10px!important;margin-top:15px!important}.builder-publish .primary-btn,.builder-publish .secondary-btn{width:auto!important;margin-top:0!important;min-height:46px!important}
-#courseAdminPanel .draft-badge{display:inline-block!important;margin-left:7px!important;padding:3px 7px!important;border-radius:999px!important;background:#fff4d6!important;color:#7a5a08!important;font-size:10px!important;font-weight:800!important}.published-badge{display:inline-block!important;margin-left:7px!important;padding:3px 7px!important;border-radius:999px!important;background:#e7f7ee!important;color:#067647!important;font-size:10px!important;font-weight:800!important}
-@media(max-width:700px){#courseAdminPanel .builder-progress{padding:10px!important}.builder-step b{display:none!important}.builder-line{min-width:14px!important}.builder-step-card.collapsed{padding:13px 14px!important}.builder-summary{margin-left:0!important}.builder-publish{flex-direction:column!important}.builder-publish .primary-btn,.builder-publish .secondary-btn{width:100%!important}.builder-continue .primary-btn{width:100%!important}.builder-context{font-size:11px!important}}
+const assignmentAdminPanel=$("assignmentAdminPanel"),assignmentForm=$("assignmentForm"),assignmentsList=$("assignmentsList");
+const assignmentModal=$("assignmentModal"),closeAssignmentBtn=$("closeAssignmentBtn"),submissionForm=$("submissionForm");
+let currentAssignmentId=null,currentStudentProfile=null;
 
-/* V28 RICH LESSON EDITOR */
-.rich-editor-wrap{border:1px solid #d9e0e8;border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 8px 24px rgba(10,30,55,.05);margin:8px 0 16px}.rich-toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:10px;background:#f7f9fc;border-bottom:1px solid #e2e7ee}.rich-tool,.rich-select{min-height:38px;border:1px solid #d7dee8;background:#fff;color:#10243b;border-radius:9px;padding:7px 10px;font-weight:700;cursor:pointer}.rich-tool:hover,.rich-select:hover{border-color:#c49a35;background:#fffaf0}.rich-tool:focus,.rich-select:focus{outline:2px solid rgba(196,154,53,.25);border-color:#c49a35}.rich-select{font-weight:600;max-width:150px}.rich-divider{width:1px;height:26px;background:#d9e0e8;margin:0 3px}.rich-editor{min-height:340px;padding:18px 18px 22px;font-size:16px;line-height:1.75;color:#17283b;outline:none;overflow-wrap:anywhere}.rich-editor:empty:before{content:attr(data-placeholder);color:#9aa6b5;pointer-events:none}.rich-editor h2{font-size:1.45rem;line-height:1.25;margin:1.2em 0 .5em;color:#0b2340}.rich-editor h3{font-size:1.2rem;line-height:1.3;margin:1.15em 0 .45em;color:#173b61}.rich-editor h4{font-size:1.05rem;margin:1em 0 .35em;color:#294d70}.rich-editor p{margin:.65em 0}.rich-editor ul,.rich-editor ol{padding-left:1.7rem}.rich-editor blockquote{border-left:4px solid #c49a35;background:#fbf7ed;margin:1em 0;padding:10px 14px;color:#5c4a23;border-radius:0 10px 10px 0}.rich-editor a{color:#0b5cad;text-decoration:underline}.rich-editor code{background:#f1f3f6;padding:2px 5px;border-radius:5px}.rich-editor-help{padding:8px 14px 10px;font-size:12px;color:#7b8796;background:#fbfcfe;border-top:1px solid #edf0f4}.lesson-body h2,.lesson-body h3,.lesson-body h4{color:#0b2340;margin:1.2em 0 .5em}.lesson-body p{margin:.7em 0}.lesson-body ul,.lesson-body ol{padding-left:1.7rem}.lesson-body blockquote{border-left:4px solid #c49a35;background:#fbf7ed;padding:10px 14px;border-radius:0 10px 10px 0}.lesson-body a{color:#0b5cad;text-decoration:underline}.lesson-body code{background:#f1f3f6;padding:2px 5px;border-radius:5px}@media(max-width:600px){.rich-toolbar{gap:5px;padding:8px}.rich-tool,.rich-select{min-height:36px;padding:6px 8px;font-size:13px}.rich-select{max-width:125px}.rich-editor{min-height:300px;padding:14px;font-size:15px}.rich-divider{display:none}}
-
-/* V29 rich editor: sticky toolbar + lesson media */
-#qbLessonToolbar{position:sticky;top:0;z-index:20;box-shadow:0 3px 10px rgba(10,30,55,.06)}
-#qbLessonToolbar .rich-tool{min-width:40px}
-#qbLessonContent .lesson-media{margin:18px 0;text-align:center}
-#qbLessonContent .image-media img{display:block;max-width:100%;height:auto;margin:0 auto;border-radius:12px;box-shadow:0 5px 18px rgba(10,30,55,.10)}
-#qbLessonContent .image-media figcaption{font-size:12px;color:#7b8796;margin-top:7px}
-#qbLessonContent .video-media{position:relative;aspect-ratio:16/9;max-width:760px;margin-left:auto;margin-right:auto}
-#qbLessonContent .video-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:12px}
-.lesson-body .lesson-media{margin:20px 0}
-.lesson-body .image-media img{display:block;max-width:100%;height:auto;margin:0 auto;border-radius:12px}
-.lesson-body .image-media figcaption{text-align:center;font-size:12px;color:#7b8796;margin-top:7px}
-.lesson-body .video-media{position:relative;aspect-ratio:16/9;max-width:820px;margin:20px auto}
-.lesson-body .video-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:12px}
-@media(max-width:600px){#qbLessonToolbar{top:0}.rich-tool{min-width:36px}.rich-select{max-width:118px}}
-</style>
-<style id="v31-learning-click-fix">
-#learningCentrePanel, #learningPathPanel, #learningPathContent, #learningCourseGrid { position: relative; }
-#learningCourseGrid .learning-course-card, #learningCourseGrid .course-open-btn, #learningPathContent .path-card { position: relative !important; z-index: 30 !important; pointer-events: auto !important; }
-#learningPathPanel { z-index: 40 !important; }
-</style>
-
-<style id="gs-table-v37">
-/* GREAT STAND — organized lesson tables */
-.lesson-table-wrap{
-  width:100%;
-  overflow-x:auto;
-  margin:14px 0 20px;
-  -webkit-overflow-scrolling:touch;
+function closeAssignment(){
+  assignmentModal.classList.add("hidden");
+  currentAssignmentId=null;
+  submissionForm.reset();
+  $("submissionMessage").textContent="";
 }
-.lesson-table{
-  width:100%;
-  min-width:520px;
-  border-collapse:separate;
-  border-spacing:0;
-  border:1px solid #d8dee8;
-  border-radius:10px;
-  overflow:hidden;
-  background:#fff;
-  font-size:14px;
-  line-height:1.5;
+closeAssignmentBtn.addEventListener("click",closeAssignment);
+assignmentModal.addEventListener("click",e=>{if(e.target===assignmentModal)closeAssignment()});
+
+async function openAssignment(id,a){
+  currentAssignmentId=id;
+  $("openAssignmentTitle").textContent=a.title||"Assignment";
+  $("openAssignmentSubject").textContent=a.subject||"General";
+  $("openAssignmentContent").textContent=a.content||"";
+  if(a.deadline){
+    const dl=a.deadline?.toDate?a.deadline.toDate():new Date(a.deadline);
+    $("openAssignmentDeadline").textContent="Deadline: "+(isNaN(dl.getTime())?"Not specified":dl.toLocaleString());
+  }else $("openAssignmentDeadline").textContent="No deadline specified.";
+  $("submissionMessage").textContent="";
+  $("submissionAnswer").value="";
+  const role=(window.currentUserRole||"student").toLowerCase();
+  submissionForm.style.display=role==="student"?"block":"none";
+  assignmentModal.classList.remove("hidden");
 }
-.lesson-table th,
-.lesson-table td{
-  padding:10px 12px;
-  border-right:1px solid #d8dee8;
-  border-bottom:1px solid #d8dee8;
-  text-align:left;
-  vertical-align:top;
-  white-space:normal;
-  overflow-wrap:anywhere;
-  word-break:normal;
+submissionForm.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!currentAssignmentId||!auth.currentUser)return;
+  $("submissionMessage").textContent="Submitting...";
+  try{
+    await addDoc(collection(db,"submissions"),{
+      assignmentId:currentAssignmentId,
+      studentId:auth.currentUser.uid,
+      studentEmail:auth.currentUser.email||"",
+      answer:$("submissionAnswer").value.trim(),
+      submittedAt:serverTimestamp()
+    });
+    $("submissionMessage").className="message submission-success";
+    $("submissionMessage").textContent="Assignment submitted successfully ✅";
+    $("submissionAnswer").disabled=true;
+  }catch(e){
+    console.error(e);
+    $("submissionMessage").className="message submission-error";
+    $("submissionMessage").textContent="Could not submit assignment: "+(e.code||e.message);
+  }
+});
+async function loadAssignments(){
+  assignmentsList.innerHTML='<p class="muted">Loading assignments...</p>';
+  try{
+    let s;
+    try{s=await getDocs(query(collection(db,"assignments"),orderBy("createdAt","desc")))}
+    catch(e){s=await getDocs(collection(db,"assignments"))}
+    if(s.empty){assignmentsList.innerHTML='<p class="muted">No assignments published yet.</p>';return}
+    assignmentsList.innerHTML="";
+    s.forEach(d=>{
+      const a=d.data(), c=document.createElement("article");
+      c.className="note-card";
+      const h=document.createElement("h3"); h.textContent=a.title||"Untitled Assignment";
+      const sub=document.createElement("p"); sub.className="subject"; sub.textContent=a.subject||"General";
+      const body=document.createElement("div"); body.className="note-content"; body.textContent=a.content||"";
+      const actions=document.createElement("div"); actions.className="assignment-actions";
+      const btn=document.createElement("button"); btn.type="button"; btn.className="primary-btn open-assignment-btn"; btn.textContent="Open Assignment";
+      btn.addEventListener("click",()=>openAssignment(d.id,a));
+      actions.appendChild(btn);
+      c.append(h,sub,body);
+      if(a.deadline){
+        const dl=document.createElement("p"); dl.className="muted";
+        const date=a.deadline?.toDate?a.deadline.toDate():new Date(a.deadline);
+        dl.textContent="Deadline: "+(isNaN(date.getTime())?"Not specified":date.toLocaleString());
+        c.append(dl);
+      }
+      if(isAdminRole()){
+        const del=document.createElement("button"); del.type="button"; del.className="secondary-btn"; del.textContent="Delete";
+        del.addEventListener("click",async()=>{if(!confirm("Delete this assignment and its student submissions/results? This cannot be undone."))return;del.disabled=true;try{const subs=await getDocs(query(collection(db,"submissions"),where("assignmentId","==",d.id)));for(const sd of subs.docs)await deleteDoc(doc(db,"submissions",sd.id));const results=await getDocs(query(collection(db,"results"),where("assignmentId","==",d.id)));for(const rd of results.docs)await deleteDoc(doc(db,"results",rd.id));await deleteDoc(doc(db,"assignments",d.id));await loadAssignments();await loadLearningCentre();$("assignmentsCount").textContent=await getCount("assignments");await loadAdminResultsIfNeeded();$("resultsCount").textContent=await getCount("results") }catch(e){console.error(e);alert("Could not delete assignment: "+(e.code||e.message));del.disabled=false}});
+        actions.appendChild(del);
+      }
+      c.append(actions);
+      assignmentsList.appendChild(c);
+    });
+  }catch(e){
+    console.error(e);
+    assignmentsList.innerHTML='<p class="message">Could not load assignments: '+(e.code||e.message)+'</p>';
+  }
 }
-.lesson-table th{
-  font-weight:800;
-  background:#f4f6fa;
+async function loadSubmissions(){
+  const list=$("submissionsList"); list.innerHTML='<p class="muted">Loading submissions...</p>';
+  try{
+    const s=await getDocs(collection(db,"submissions"));
+    if(s.empty){list.innerHTML='<p class="muted">No student submissions yet.</p>';return}
+    const cache={}; list.innerHTML="";
+    for(const d of s.docs){
+      const sub=d.data(); let title="Assignment";
+      if(sub.assignmentId){try{if(!cache[sub.assignmentId]){const ad=await getDoc(doc(db,"assignments",sub.assignmentId));cache[sub.assignmentId]=ad.exists()?ad.data():null}if(cache[sub.assignmentId])title=cache[sub.assignmentId].title||title}catch(e){console.error(e)}}
+      const card=document.createElement("article");card.className="submission-card";
+      const h=document.createElement("h3");h.textContent=title;
+      const meta=document.createElement("div");meta.className="submission-meta";meta.textContent="Student: "+(sub.studentEmail||sub.studentId||"Unknown");
+      const time=document.createElement("div");time.className="submission-meta";time.textContent=sub.submittedAt?.toDate?"Submitted: "+sub.submittedAt.toDate().toLocaleString():"Submitted: Pending timestamp";
+      const answer=document.createElement("div");answer.className="submission-answer";answer.textContent=sub.answer||"(No answer provided)";
+      const box=document.createElement("div");box.className="marking-box";
+      const grid=document.createElement("div");grid.className="marking-grid";
+      const score=document.createElement("input");score.type="number";score.min="0";score.max="100";score.step="1";score.placeholder="Score / 100";score.value=sub.score!==undefined?sub.score:"";
+      const feedback=document.createElement("textarea");feedback.rows=4;feedback.placeholder="Feedback for the student...";feedback.value=sub.feedback||"";grid.append(score,feedback);
+      const btn=document.createElement("button");btn.type="button";btn.className="primary-btn mark-btn";btn.textContent=sub.markedAt?"Update Mark":"Save Mark";
+      const msg=document.createElement("p");msg.className="message";
+      btn.addEventListener("click",async()=>{const value=Number(score.value);if(score.value===""||Number.isNaN(value)||value<0||value>100){msg.textContent="Enter a score from 0 to 100.";return}btn.disabled=true;msg.textContent="Saving mark...";try{await updateDoc(doc(db,"submissions",d.id),{score:value,feedback:feedback.value.trim(),markedAt:serverTimestamp(),markedBy:auth.currentUser.uid});const rs=await getDocs(collection(db,"results"));let rid=null;rs.forEach(rd=>{if(rd.data().submissionId===d.id)rid=rd.id});const data={submissionId:d.id,assignmentId:sub.assignmentId||"",assignmentTitle:title,studentId:sub.studentId,studentEmail:sub.studentEmail||"",score:value,feedback:feedback.value.trim(),updatedAt:serverTimestamp(),markedBy:auth.currentUser.uid};if(rid)await updateDoc(doc(db,"results",rid),data);else await addDoc(collection(db,"results"),{...data,createdAt:serverTimestamp()});msg.className="message submission-success";msg.textContent="Mark saved successfully ✅";btn.textContent="Update Mark";await loadStudentResultsIfNeeded()}catch(e){console.error(e);msg.className="message submission-error";msg.textContent="Could not save mark: "+(e.code||e.message)}finally{btn.disabled=false}});
+      box.append(grid,btn,msg);card.append(h,meta,time,answer,box);list.appendChild(card);
+    }
+  }catch(e){console.error(e);list.innerHTML='<p class="message">Could not load submissions: '+(e.code||e.message)+'</p>'}
 }
-.lesson-table tr:last-child td{border-bottom:0}
-.lesson-table th:last-child,
-.lesson-table td:last-child{border-right:0}
-.lesson-table tbody tr:nth-child(even) td{background:#fafbfc}
-@media(max-width:600px){
-  .lesson-table{min-width:460px;font-size:13px}
-  .lesson-table th,.lesson-table td{padding:8px 9px}
+async function loadStudentResultsIfNeeded(){
+  if((window.currentUserRole||"student").toLowerCase()!=="student")return;
+  const list=$("studentResultsList");
+  list.innerHTML='<p class="muted">Loading results...</p>';
+  try{
+    if(!auth.currentUser){list.innerHTML='<p class="muted">Please log in to view results.</p>';return}
+    const q=query(collection(db,"results"),where("studentId","==",auth.currentUser.uid));
+    const s=await getDocs(q);
+    list.innerHTML="";
+    if(s.empty){list.innerHTML='<p class="muted">No results available yet.</p>';return}
+    s.forEach(d=>{
+      const r=d.data();
+      const c=document.createElement("article");c.className="result-card";
+      const h=document.createElement("h3");h.textContent=r.resultType==="cbt"?(r.testTitle||"CBT Test"):(r.assignmentTitle||"Assignment Result");
+      const type=document.createElement("p");type.className="submission-meta";type.textContent=r.resultType==="cbt"?"CBT Test":"Assignment";
+      const sc=document.createElement("div");sc.className="score";sc.textContent=String(r.score??0)+"/100";
+      const fb=document.createElement("div");fb.className="feedback";fb.textContent=r.resultType==="cbt"?((r.correctAnswers??0)+" / "+(r.totalQuestions??0)+" correct"): (r.feedback||"No feedback provided.");
+      c.append(h,type,sc,fb);
+      if(r.resultType==="cbt"){
+        const corrections=r.corrections||[];
+        if(corrections.length){
+          const btn=document.createElement("button");btn.type="button";btn.className="secondary-btn correction-toggle";btn.textContent="📖 View Corrections";
+          const box=document.createElement("div");box.className="corrections-result-box hidden";
+          corrections.forEach((q,i)=>{
+            const item=document.createElement("div");item.className="correction-result-item";
+            const qh=document.createElement("h4");qh.textContent=(i+1)+". "+q.text;
+            const yours=document.createElement("p");yours.className=q.yourAnswer===q.correct?"correction-correct":"correction-wrong";yours.textContent="Your answer: "+(q.yourAnswer?(q.yourAnswer+". "+(q.options?.[q.yourAnswer]||"")):"Not answered");
+            const correct=document.createElement("p");correct.className="correction-answer";correct.textContent="Correct answer: "+q.correct+". "+(q.options?.[q.correct]||"");
+            item.append(qh,yours,correct);
+            if(q.explanation){const exp=document.createElement("p");exp.className="correction-explanation";exp.textContent="Correction: "+q.explanation;item.appendChild(exp)}
+            box.appendChild(item);
+          });
+          btn.addEventListener("click",()=>{box.classList.toggle("hidden");btn.textContent=box.classList.contains("hidden")?"📖 View Corrections":"📕 Hide Corrections"});
+          c.append(btn,box);
+        }
+      }
+      list.appendChild(c);
+    });
+  }catch(e){
+    console.error(e);
+    list.innerHTML='<p class="message">Could not load results: '+(e.code||e.message)+'</p>';
+  }
 }
-</style>
 
-</head><body><div id="gsNavOverlay" class="gs-nav-overlay"></div>
-<aside id="gsSideNav" class="gs-side-nav" aria-label="Portal navigation">
-  <div class="gs-nav-head"><div class="gs-nav-brand"><div class="gs-nav-logo">G</div><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div><button id="gsNavClose" class="gs-nav-close" type="button" aria-label="Close navigation">×</button></div>
-  <div class="gs-nav-user"><span id="gsNavRole">PORTAL</span><b id="gsNavName">Welcome</b></div>
-  <nav id="gsNavLinks"></nav>
-  <button id="gsNavLogout" class="gs-nav-logout" type="button"><span>↪</span> Logout</button>
-</aside>
-<header class="topbar"><button id="gsMenuBtn" class="gs-menu-btn" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><div class="brand"><span class="brand-mark">G</span><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div><button id="logoutBtn" class="logout hidden">Logout</button></header><main><section id="loginView" class="card login-card"><div class="badge">GREAT STAND PORTAL</div><h1>Welcome Back</h1><p class="intro">Sign in to access your portal.</p><form id="loginForm"><label>Email Address</label><input id="email" type="email" required><label>Password</label><input id="password" type="password" required><button class="primary-btn" type="submit">Login</button><p id="loginMessage" class="message"></p></form></section><section id="dashboardView" class="hidden"><div class="welcome"><span class="badge">GREAT STAND PORTAL</span><h1 id="welcomeTitle">Dashboard</h1><p id="roleText"></p></div><div class="stats"><div class="stat-card">📚<strong id="notesCount">0</strong><p>Notes</p></div><div class="stat-card">📝<strong id="assignmentsCount">0</strong><p>Assignments</p></div><div class="stat-card">💻<strong id="testsCount">0</strong><p>Tests</p></div><div class="stat-card">🏆<strong id="resultsCount">0</strong><p>Results</p></div><div class="stat-card admin-stat">👨‍🎓<strong id="studentsCount">0</strong><p>Students</p></div></div>
-<div id="studentQuickPanel" class="student-quick-panel portal-section">
-  <div class="student-quick-head"><div><span class="badge">YOUR LEARNING SPACE</span><h2>What would you like to do?</h2><p class="muted">Jump straight to your lessons, assignments, tests or study materials.</p></div><div class="student-category-pill" id="studentCategoryPill">STUDENT</div></div>
-  <div class="student-quick-grid">
-    <button class="quick-action" data-target="learningCentrePanel"><span>🎓</span><b>My Courses</b><small>Browse your subjects</small></button>
-    <button class="quick-action" data-target="notesPanel"><span>📖</span><b>My Notes</b><small>Read published lessons</small></button>
-    <button class="quick-action" data-target="assignmentsPanel"><span>📝</span><b>Assignments</b><small>View & submit work</small></button>
-    <button class="quick-action" data-target="testsPanel"><span>🧠</span><b>CBT / Tests</b><small>Practice & get scored</small></button>
-    <button class="quick-action" data-target="materialsPanel"><span>📚</span><b>Study Materials</b><small>View or download PDFs</small></button>
-    <button class="quick-action" data-target="studentResultsPanel"><span>🏆</span><b>My Results</b><small>Check your performance</small></button>
-  </div>
-</div><div id="learningCentrePanel" class="panel portal-section learning-centre-panel">
-  <div class="learning-head">
-    <div><span class="badge">GREAT STAND LEARNING CENTRE</span><h2>📚 My Courses</h2><p class="muted">Your JAMB and WAEC learning space — subjects, notes, assignments and CBT tests in one place.</p></div>
-    <button id="refreshLearningBtn" class="secondary-btn" type="button">↻ Refresh</button>
-  </div>
-  <div class="learning-tabs" role="tablist" aria-label="Course categories">
-    <button class="learning-tab active" data-learning-filter="all" type="button">All Courses</button>
-    <button class="learning-tab" data-learning-filter="JAMB" type="button">JAMB</button>
-    <button class="learning-tab" data-learning-filter="WAEC" type="button">WAEC</button>
-  </div>
-  <div id="learningCourseGrid" class="learning-course-grid">
-    <div class="learning-empty"><div>📚</div><h3>Loading your courses...</h3><p class="muted">Please wait while we organize your learning resources.</p></div>
-  </div>
-</div>
-<div id="adminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📚 Manage Notes</h2><p class="muted">Admins and Superadmins can publish notes for students.</p><form id="noteForm"><label>Note Title</label><input id="noteTitle" required placeholder="e.g. JAMB English: Parts of Speech"><label>Subject</label><input id="noteSubject" required placeholder="e.g. English Language"><label>Category</label><select id="noteCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General" selected>General</option></select><label>Note Content</label><textarea id="noteContent" required placeholder="Type or paste the lesson note here..."></textarea><button class="primary-btn" type="submit">Publish Note</button><p id="noteMessage" class="message"></p></form></div><div id="learningPathPanel" class="panel portal-section hidden-learning-path">
-  <div class="learning-path-head"><button id="learningBackBtn" class="secondary-btn" type="button">← Back</button><div><span class="badge">LESSON CENTRE</span><h2 id="learningPathTitle">Learning</h2><p id="learningPathSubtitle" class="muted">Choose a subject, topic or lesson.</p></div></div>
-  <div id="learningPathContent" class="learning-path-content"></div>
-</div>
-<div id="notesPanel" class="panel portal-section"><h2>📖 Available Notes</h2><div id="notesList"><p class="muted">Loading notes...</p></div></div>
-<div id="assignmentAdminPanel" class="panel admin-panel portal-section" style="display:none">
-  <h2>📝 Manage Assignments</h2>
-  <p class="muted">Admins and Superadmins can create assignments for students.</p>
-  <form id="assignmentForm">
-    <label>Assignment Title</label>
-    <input id="assignmentTitle" required placeholder="e.g. JAMB English Practice">
-    <label>Subject</label>
-    <input id="assignmentSubject" required placeholder="e.g. English Language">
-    <label>Category</label><select id="assignmentCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General" selected>General</option></select>
-    <label>Instructions / Questions</label>
-    <textarea id="assignmentContent" required placeholder="Type the assignment questions or instructions here..."></textarea>
-    <label>Deadline (optional)</label>
-    <input id="assignmentDeadline" type="datetime-local">
-    <button class="primary-btn" type="submit">Publish Assignment</button>
-    <p id="assignmentMessage" class="message"></p>
-  </form>
-</div>
-<div id="studentAdminPanel" class="panel admin-panel portal-section" style="display:none">
-  <h2>👨‍🎓 Manage Students</h2>
-  <p class="muted">Admins and Superadmins can register and manage student accounts.</p>
-  <form id="studentForm">
-    <label>Student Full Name</label><input id="studentName" required placeholder="e.g. Test Student">
-    <label>Email Address</label><input id="studentEmail" type="email" required placeholder="student@example.com">
-    <label>Temporary Password</label><input id="studentPassword" type="password" minlength="6" required placeholder="Minimum 6 characters">
-    <label>Category</label><select id="studentCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="JAMB & WAEC" selected>JAMB & WAEC</option></select>
-    <label>Class / Level (optional)</label><input id="studentLevel" placeholder="e.g. SS3 / UTME 2027">
-    <button class="primary-btn" type="submit">Create Student Account</button>
-    <p id="studentMessage" class="message"></p>
-  </form>
-  <div class="student-list-head"><h3>Registered Students</h3></div>
-  <div id="studentsList"><p class="muted">Loading students...</p></div>
-</div>
-<div id="testAdminPanel" class="panel admin-panel portal-section" style="display:none">
-  <h2>💻 Manage CBT Tests</h2>
-  <p class="muted">Create multiple-choice practice tests for students.</p>
-  <form id="testForm">
-    <label>Test Title</label>
-    <input id="testTitle" required placeholder="e.g. JAMB English Practice Test 1">
-    <label>Subject</label>
-    <input id="testSubject" required placeholder="e.g. English Language">
-    <label>Category</label><select id="testCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General" selected>General</option></select>
-    <label>Duration (minutes)</label>
-    <input id="testDuration" type="number" min="1" max="180" value="30" required>
-    <div class="cbt-create-tabs">
-      <button id="manualCbtTab" class="secondary-btn cbt-tab active" type="button">✍️ Add Manually</button>
-      <button id="pasteCbtTab" class="secondary-btn cbt-tab" type="button">📋 Paste Questions</button>
-      <button id="csvCbtTab" class="secondary-btn cbt-tab" type="button">📊 Paste CSV</button>
-    </div>
-    <div id="manualCbtMode">
-      <div id="questionBuilder"></div>
-      <button id="addQuestionBtn" class="secondary-btn" type="button">＋ Add Question</button>
-    </div>
-    <div id="pasteCbtMode" class="cbt-import-mode hidden">
-      <p class="muted">Paste 50, 100, 150+ questions using the format below. We recognize ANSWER:, Answer =, Correct Answer:, etc.</p>
-      <textarea id="bulkQuestionsText" class="bulk-question-input" placeholder="1. What is the capital of Nigeria?
-A. Lagos
-B. Abuja
-C. Kano
-D. Ibadan
-ANSWER: B
 
-2. Which is a prime number?
-A. 12
-B. 15
-C. 17
-D. 21
-ANSWER: C"></textarea>
-      <button id="parseBulkQuestionsBtn" class="secondary-btn" type="button">🔍 Preview & Parse Questions</button>
-      <div id="bulkParseMessage" class="message"></div>
-      <div id="bulkQuestionsPreview"></div>
-    </div>
-    <div id="csvCbtMode" class="cbt-import-mode hidden">
-      <p class="muted">Paste CSV with columns: question,A,B,C,D,answer. The first row may be a header.</p>
-      <textarea id="csvQuestionsText" class="bulk-question-input" placeholder="question,A,B,C,D,answer
-What is 2+2?,1,2,3,4,D
-Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
-      <button id="parseCsvQuestionsBtn" class="secondary-btn" type="button">🔍 Preview & Parse CSV</button>
-      <div id="csvParseMessage" class="message"></div>
-      <div id="csvQuestionsPreview"></div>
-    </div>
-    <button class="primary-btn" type="submit">Publish CBT Test</button>
-    <p id="testMessage" class="message"></p>
-  </form>
-</div>
-<div id="testsPanel" class="panel portal-section">
-  <h2>💻 Available CBT Tests</h2>
-  <div id="testsList"><p class="muted">Loading tests...</p></div>
-  <div id="testModal" class="assignment-modal hidden">
-    <div class="assignment-modal-card cbt-modal-card">
-      <button id="closeTestBtn" class="close-btn" type="button">×</button>
-      <div class="cbt-head"><div><span class="badge">GREAT STAND CBT</span><h2 id="openTestTitle">Test</h2><p id="openTestSubject" class="subject"></p></div><div id="testTimer" class="test-timer">00:00</div></div>
-      <div id="testProgress" class="cbt-progress"></div>
-      <div id="testQuestionArea"></div>
-      <div class="cbt-nav"><button id="prevQuestionBtn" class="secondary-btn" type="button">← Previous</button><button id="nextQuestionBtn" class="primary-btn cbt-next" type="button">Next →</button><button id="submitTestBtn" class="primary-btn cbt-submit hidden" type="button">Submit Test</button></div>
-      <p id="testSubmitMessage" class="message"></p>
-    </div>
+assignmentForm.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!isAdminRole()){ $("assignmentMessage").textContent="Only admins can publish assignments."; return; }
+  $("assignmentMessage").textContent="Publishing...";
+  try{
+    const deadline=$("assignmentDeadline").value;
+    await addDoc(collection(db,"assignments"),{
+      title:$("assignmentTitle").value.trim(),
+      subject:$("assignmentSubject").value.trim(),
+      category:$("assignmentCategory").value,
+      content:$("assignmentContent").value.trim(),
+      deadline:deadline?new Date(deadline):null,
+      createdAt:serverTimestamp(),
+      createdBy:auth.currentUser.uid
+    });
+    assignmentForm.reset();
+    $("assignmentMessage").textContent="Assignment published successfully ✅";
+    $("assignmentsCount").textContent=await getCount("assignments");
+    await loadAssignments();
+  }catch(e){
+    console.error(e);
+    $("assignmentMessage").textContent="Could not publish assignment: "+(e.code||e.message);
+  }
+});
+
+
+// ===== CBT / TEST SYSTEM (V14) =====
+const testAdminPanel=$('testAdminPanel'),testForm=$('testForm'),questionBuilder=$('questionBuilder'),testsList=$('testsList'),testModal=$('testModal');
+function isAdminRole(){const r=String(window.currentUserRole||"student").trim().toLowerCase();return r==="admin"||r==="superadmin";}
+function setAdminPanelsVisible(show){["adminPanel","assignmentAdminPanel","testAdminPanel","studentAdminPanel","submissionsAdminPanel","testResultsAdminPanel","materialsAdminPanel","courseAdminPanel"].forEach(id=>{const el=$(id);if(el)el.style.display=show?"block":"none";});}
+setAdminPanelsVisible(false);
+let questionCount=0,currentTest=null,currentQuestionIndex=0,testAnswers=[],testTimerInterval=null,testAutoSubmitTimeout=null,testSecondsLeft=0;
+function addQuestion(){
+  questionCount++;
+  const n=questionCount,wrap=document.createElement('div');wrap.className='question-builder-card';wrap.dataset.question=n;
+  wrap.innerHTML=`<div class="question-builder-head"><strong>Question ${n}</strong><button type="button" class="remove-question secondary-btn">Remove</button></div>
+  <label>Question</label><textarea class="q-text" required placeholder="Enter question ${n}..."></textarea>
+  <div class="options-grid">
+    <input class="q-option" data-option="A" required placeholder="Option A">
+    <input class="q-option" data-option="B" required placeholder="Option B">
+    <input class="q-option" data-option="C" required placeholder="Option C">
+    <input class="q-option" data-option="D" required placeholder="Option D">
   </div>
-</div>
-<div id="courseAdminPanel" class="panel admin-panel portal-section" style="display:none">
-  <div class="builder-head">
-    <div><span class="badge">COURSE BUILDER</span><h2>🎓 Build Your Learning Centre</h2><p class="muted">Build your course step by step. You can return to any completed step and edit it.</p></div>
-  </div>
+  <label>Correct Answer</label><select class="q-answer" required><option value="">Select correct option</option><option>A</option><option>B</option><option>C</option><option>D</option></select>
+  <label>Explanation / Correction (optional)</label><textarea class="q-explanation" placeholder="Optional explanation shown after the test..."></textarea>`;
+  wrap.querySelector('.remove-question').addEventListener('click',()=>{wrap.remove();renumberQuestions()});
+  questionBuilder.appendChild(wrap);
+}
+function renumberQuestions(){[...questionBuilder.children].forEach((el,i)=>{el.dataset.question=i+1;el.querySelector('strong').textContent='Question '+(i+1)})}
+$('addQuestionBtn').addEventListener('click',addQuestion); addQuestion();
+let bulkParsedQuestions=[];
+let csvParsedQuestions=[];
+let cbtCreateMode="manual";
+function collectQuestions(){
+  if(cbtCreateMode==="paste")return bulkParsedQuestions;
+  if(cbtCreateMode==="csv")return csvParsedQuestions;
+  return [...questionBuilder.children].map(card=>({text:card.querySelector('.q-text').value.trim(),options:Object.fromEntries([...card.querySelectorAll('.q-option')].map(x=>[x.dataset.option,x.value.trim()])),correct:card.querySelector('.q-answer').value,explanation:(card.querySelector('.q-explanation')?.value||'').trim()})).filter(q=>q.text)
+}
 
-  <div class="builder-progress" id="qbProgress" aria-label="Course builder progress">
-    <button class="builder-step active" data-qb-step="1" type="button"><span>1</span><b>Course</b></button><div class="builder-line"></div>
-    <button class="builder-step" data-qb-step="2" type="button"><span>2</span><b>Subject</b></button><div class="builder-line"></div>
-    <button class="builder-step" data-qb-step="3" type="button"><span>3</span><b>Topic</b></button><div class="builder-line"></div>
-    <button class="builder-step" data-qb-step="4" type="button"><span>4</span><b>Lesson</b></button>
-  </div>
+function normalizeAnswer(v){const m=String(v||'').trim().toUpperCase().match(/[ABCD]/);return m?m[0]:''}
+function parsePastedQuestions(raw){
+  const lines=String(raw||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(x=>x!=='');
+  const out=[]; let current=null; let lastField='text';
+  const finish=()=>{if(current&&current.text){current.text=current.text.trim();current.correct=normalizeAnswer(current.correct);if(!current.explanation)current.explanation='';out.push(current)}current=null};
+  for(const line of lines){
+    const qm=line.match(/^(\d+)[\.)]\s*(.+)$/);
+    if(qm){finish();current={text:qm[2].trim(),options:{A:'',B:'',C:'',D:''},correct:'',explanation:''};lastField='text';continue}
+    if(!current)continue;
+    const om=line.match(/^([ABCD])[\.)\:\-]\s*(.+)$/i);
+    if(om){const letter=om[1].toUpperCase();current.options[letter]=om[2].trim();lastField=letter;continue}
+    const am=line.match(/^(?:ANSWER|ANS|CORRECT\s*ANSWER|CORRECT)\s*[:=\-]?\s*([ABCD])\b/i);
+    if(am){current.correct=normalizeAnswer(am[1]);lastField='answer';continue}
+    const em=line.match(/^(?:EXPLANATION|CORRECTION)\s*[:=\-]?\s*(.*)$/i);
+    if(em){current.explanation=em[1].trim();lastField='explanation';continue}
+    if(lastField==='text')current.text+=' '+line;
+    else if(lastField==='explanation')current.explanation+=' '+line;
+    else if(lastField==='answer'){continue}
+    else if(current.options[lastField])current.options[lastField]+=' '+line;
+  }
+  finish();
+  return out;
+}
+function validateImportedQuestions(qs){
+  if(!qs.length)return 'No questions were detected. Make sure each question starts with 1., 2., 3., etc.';
+  const bad=qs.findIndex(q=>!q.text||!q.options.A||!q.options.B||!q.options.C||!q.options.D||!normalizeAnswer(q.correct));
+  if(bad>=0)return `Question ${bad+1} is incomplete. Check the question, A-D options and ANSWER.`;
+  return '';
+}
+function renderImportedPreview(containerId,qs){
+  const box=$(containerId);box.innerHTML='';
+  const head=document.createElement('div');head.className='import-preview-head';head.innerHTML=`<strong>${qs.length} question${qs.length===1?'':'s'} detected</strong><span>Ready to publish</span>`;box.appendChild(head);
+  qs.slice(0,8).forEach((q,i)=>{const c=document.createElement('div');c.className='import-preview-card';c.innerHTML=`<strong>${i+1}. ${q.text}</strong><div>A. ${q.options.A}</div><div>B. ${q.options.B}</div><div>C. ${q.options.C}</div><div>D. ${q.options.D}</div><div class="preview-answer">Answer: ${q.correct}</div>`;box.appendChild(c)});
+  if(qs.length>8){const more=document.createElement('p');more.className='muted';more.textContent=`Showing first 8 of ${qs.length} questions.`;box.appendChild(more)}
+}
+function parseCsvLine(line){
+  const cells=[];let cur='',quoted=false;
+  for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){if(quoted&&line[i+1]==='"'){cur+='"';i++;}else quoted=!quoted;}else if(ch===','&&!quoted){cells.push(cur.trim());cur='';}else cur+=ch;}cells.push(cur.trim());return cells;
+}
+function parseCsvQuestions(raw){
+  const lines=String(raw||'').replace(/\r/g,'').split('\n').filter(x=>x.trim()!=='');
+  if(!lines.length)return [];
+  let rows=lines.map(parseCsvLine);const first=rows[0].map(x=>x.toLowerCase());
+  if(first.includes('question')||first.includes('answer'))rows=rows.slice(1);
+  return rows.map(r=>({text:r[0]||'',options:{A:r[1]||'',B:r[2]||'',C:r[3]||'',D:r[4]||''},correct:normalizeAnswer(r[5]||''),explanation:r[6]||''})).filter(q=>q.text);
+}
+function setCbtMode(mode){
+  cbtCreateMode=mode;
+  $('manualCbtMode').classList.toggle('hidden',mode!=='manual');
+  $('pasteCbtMode').classList.toggle('hidden',mode!=='paste');
+  $('csvCbtMode').classList.toggle('hidden',mode!=='csv');
+  // Disable required manual fields when using Paste/CSV so they cannot block Publish.
+  questionBuilder.querySelectorAll('input,textarea,select').forEach(el=>{
+    if(mode==='manual'){
+      el.disabled=false;
+      el.required=true;
+    }else{
+      el.disabled=true;
+      el.required=false;
+    }
+  });
+  ['manualCbtTab','pasteCbtTab','csvCbtTab'].forEach(id=>$(id).classList.remove('active'));
+  $(mode==='manual'?'manualCbtTab':mode==='paste'?'pasteCbtTab':'csvCbtTab').classList.add('active');
+}
+$('manualCbtTab').addEventListener('click',()=>setCbtMode('manual'));
+$('pasteCbtTab').addEventListener('click',()=>setCbtMode('paste'));
+$('csvCbtTab').addEventListener('click',()=>setCbtMode('csv'));
+$('parseBulkQuestionsBtn').addEventListener('click',()=>{
+  bulkParsedQuestions=parsePastedQuestions($('bulkQuestionsText').value);
+  const error=validateImportedQuestions(bulkParsedQuestions);$('bulkParseMessage').textContent=error||'Questions parsed successfully ✅';$('bulkParseMessage').className='message '+(error?'submission-error':'submission-success');
+  if(!error)renderImportedPreview('bulkQuestionsPreview',bulkParsedQuestions);else $('bulkQuestionsPreview').innerHTML='';
+});
+$('parseCsvQuestionsBtn').addEventListener('click',()=>{
+  csvParsedQuestions=parseCsvQuestions($('csvQuestionsText').value);
+  const error=validateImportedQuestions(csvParsedQuestions);$('csvParseMessage').textContent=error||'CSV questions parsed successfully ✅';$('csvParseMessage').className='message '+(error?'submission-error':'submission-success');
+  if(!error)renderImportedPreview('csvQuestionsPreview',csvParsedQuestions);else $('csvQuestionsPreview').innerHTML='';
+});
+setCbtMode('manual');
+testForm.addEventListener('submit',async e=>{e.preventDefault();if(!isAdminRole()){ $('testMessage').textContent='Only admins can publish CBT tests.'; return; }$('testMessage').textContent='Publishing CBT test...';try{const questions=collectQuestions();if(!questions.length)throw new Error('Add at least one question.');if(questions.some(q=>!q.text||Object.values(q.options).some(v=>!v)||!q.correct))throw new Error('Complete every question, all four options, and the correct answer.');await addDoc(collection(db,'tests'),{title:$('testTitle').value.trim(),subject:$('testSubject').value.trim(),category:$('testCategory').value,duration:Number($('testDuration').value),questions,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});testForm.reset();questionBuilder.innerHTML='';questionCount=0;addQuestion();bulkParsedQuestions=[];csvParsedQuestions=[];$('bulkQuestionsPreview').innerHTML='';$('csvQuestionsPreview').innerHTML='';$('bulkParseMessage').textContent='';$('csvParseMessage').textContent='';setCbtMode('manual');$('testDuration').value=30;$('testMessage').className='message submission-success';$('testMessage').textContent='CBT test published successfully ✅';$('testsCount').textContent=await getCount('tests');await loadTests()}catch(e){console.error(e);$('testMessage').className='message submission-error';$('testMessage').textContent='Could not publish test: '+(e.code||e.message)}});
+async function loadTests(){testsList.innerHTML='<p class="muted">Loading tests...</p>';try{let s;try{s=await getDocs(query(collection(db,'tests'),orderBy('createdAt','desc')))}catch(e){s=await getDocs(collection(db,'tests'))}if(s.empty){testsList.innerHTML='<p class="muted">No CBT tests published yet.</p>';return}testsList.innerHTML='';s.forEach(d=>{const t=d.data(),card=document.createElement('article');card.className='note-card test-card';const h=document.createElement('h3');h.textContent=t.title||'Untitled Test';const sub=document.createElement('p');sub.className='subject';sub.textContent=(t.subject||'General')+' • '+(t.questions?.length||0)+' questions • '+(t.duration||30)+' mins';const actions=document.createElement('div');actions.className='card-actions';const btn=document.createElement('button');btn.type='button';btn.className='primary-btn open-assignment-btn';btn.textContent=(window.currentUserRole||'student')==='student'?'Start Test':'Preview Test';btn.addEventListener('click',()=>openTest(d.id,t));actions.appendChild(btn);if(isAdminRole()){const del=document.createElement('button');del.type='button';del.className='secondary-btn';del.textContent='Delete';del.addEventListener('click',async()=>{if(!confirm('Delete this CBT test and its student results? This cannot be undone.'))return;del.disabled=true;try{const results=await getDocs(query(collection(db,'results'),where('testId','==',d.id)));for(const rd of results.docs)await deleteDoc(doc(db,'results',rd.id));await deleteDoc(doc(db,'tests',d.id));await loadTests();await loadLearningCentre();$('testsCount').textContent=await getCount('tests');if(isAdminRole()){await loadCbtResultsIfNeeded();await loadAdminResultsIfNeeded();$('resultsCount').textContent=await getCount('results')}}catch(e){console.error(e);alert('Could not delete test: '+(e.code||e.message));del.disabled=false}});actions.appendChild(del)}card.append(h,sub,actions);testsList.appendChild(card)})}catch(e){console.error(e);testsList.innerHTML='<p class="message">Could not load tests: '+(e.code||e.message)+'</p>'}}
+function closeTest(){clearInterval(testTimerInterval);testTimerInterval=null;if(testAutoSubmitTimeout){clearTimeout(testAutoSubmitTimeout);testAutoSubmitTimeout=null}currentTest=null;testModal.classList.add('hidden');$('testSubmitMessage').textContent=''}
+$('closeTestBtn').addEventListener('click',closeTest);testModal.addEventListener('click',e=>{if(e.target===testModal)closeTest()});
+function renderQuestion(){if(!currentTest)return;const qs=currentTest.questions||[];const q=qs[currentQuestionIndex];$('testProgress').textContent=`Question ${currentQuestionIndex+1} of ${qs.length}`;const area=$('testQuestionArea');area.innerHTML='';const card=document.createElement('div');card.className='cbt-question-card';const title=document.createElement('h3');title.textContent=q.text;card.appendChild(title);const opts=document.createElement('div');opts.className='cbt-options';['A','B','C','D'].forEach(letter=>{const label=document.createElement('label');label.className='cbt-option';const radio=document.createElement('input');radio.type='radio';radio.name='currentQuestion';radio.value=letter;radio.checked=testAnswers[currentQuestionIndex]===letter;radio.addEventListener('change',()=>testAnswers[currentQuestionIndex]=letter);const span=document.createElement('span');span.textContent=letter+'. '+q.options[letter];label.append(radio,span);opts.appendChild(label)});card.appendChild(opts);area.appendChild(card);$('prevQuestionBtn').disabled=currentQuestionIndex===0;$('nextQuestionBtn').classList.toggle('hidden',currentQuestionIndex===qs.length-1);$('submitTestBtn').classList.toggle('hidden',currentQuestionIndex!==qs.length-1)}
+function startTimer(minutes){clearInterval(testTimerInterval);if(testAutoSubmitTimeout)clearTimeout(testAutoSubmitTimeout);testAutoSubmitTimeout=null;testSecondsLeft=Math.max(1,Number(minutes||30)*60);updateTimer();testAutoSubmitTimeout=setTimeout(()=>{testAutoSubmitTimeout=null;clearInterval(testTimerInterval);testTimerInterval=null;$('testSubmitMessage').textContent='Time is up. Submitting your test...';submitTest(true)},testSecondsLeft*1000);testTimerInterval=setInterval(()=>{testSecondsLeft--;if(testSecondsLeft<0)testSecondsLeft=0;updateTimer();if(testSecondsLeft<=0){clearInterval(testTimerInterval);testTimerInterval=null}},1000)}
+function updateTimer(){const m=Math.floor(testSecondsLeft/60).toString().padStart(2,'0'),s=(testSecondsLeft%60).toString().padStart(2,'0');$('testTimer').textContent=m+':'+s;$('testTimer').classList.toggle('timer-warning',testSecondsLeft<=60)}
+function openTest(id,t){currentTest={id,...t};currentQuestionIndex=0;testAnswers=new Array((t.questions||[]).length);$('submitTestBtn').dataset.submitted='false';$('submitTestBtn').disabled=false;$('submitTestBtn').textContent='Submit Test';$('openTestTitle').textContent=t.title||'Test';$('openTestSubject').textContent=(t.subject||'General')+' • '+(t.questions?.length||0)+' questions';$('testSubmitMessage').textContent='';$('testModal').classList.remove('hidden');const isStudent=(window.currentUserRole||'student').toLowerCase()==='student';$('prevQuestionBtn').style.display=isStudent?'block':'none';$('nextQuestionBtn').style.display=isStudent?'block':'none';$('submitTestBtn').style.display=isStudent?'block':'none';if(isStudent){renderQuestion();startTimer(t.duration||30)}else{$('testTimer').textContent=(t.duration||30)+' min';$('testProgress').textContent='Preview';$('testQuestionArea').innerHTML='';(t.questions||[]).forEach((q,i)=>{const c=document.createElement('div');c.className='cbt-question-card';const h=document.createElement('h3');h.textContent=(i+1)+'. '+q.text;c.appendChild(h);['A','B','C','D'].forEach(x=>{const p=document.createElement('p');p.textContent=x+'. '+q.options[x]+(x===q.correct?' ✓':'');c.appendChild(p)});$('testQuestionArea').appendChild(c)})}}
+$('prevQuestionBtn').addEventListener('click',()=>{if(currentQuestionIndex>0){currentQuestionIndex--;renderQuestion()}});$('nextQuestionBtn').addEventListener('click',()=>{if(currentQuestionIndex<(currentTest.questions.length-1)){currentQuestionIndex++;renderQuestion()}});$('submitTestBtn').addEventListener('click',()=>submitTest(false));
+function showTestCorrections(){
+  if(!currentTest)return;
+  const qs=currentTest.questions||[];
+  $('testProgress').textContent='Corrections / Review';
+  $('testQuestionArea').innerHTML='';
+  qs.forEach((q,i)=>{
+    const card=document.createElement('div');card.className='cbt-question-card correction-card';
+    const h=document.createElement('h3');h.textContent=(i+1)+'. '+q.text;card.appendChild(h);
+    const yours=document.createElement('p');yours.className=testAnswers[i]===q.correct?'correction-correct':'correction-wrong';
+    yours.textContent='Your answer: '+(testAnswers[i]?testAnswers[i]+'. '+(q.options?.[testAnswers[i]]||''):'Not answered');card.appendChild(yours);
+    const correct=document.createElement('p');correct.className='correction-answer';correct.textContent='Correct answer: '+q.correct+'. '+(q.options?.[q.correct]||'');card.appendChild(correct);
+    if(q.explanation){const exp=document.createElement('p');exp.className='correction-explanation';exp.textContent='Correction: '+q.explanation;card.appendChild(exp)}
+    $('testQuestionArea').appendChild(card);
+  });
+  $('prevQuestionBtn').style.display='none';$('nextQuestionBtn').style.display='none';$('submitTestBtn').style.display='none';
+}
+async function submitTest(autoSubmit){
+  if(!currentTest||!auth.currentUser)return;
+  if(testAutoSubmitTimeout){clearTimeout(testAutoSubmitTimeout);testAutoSubmitTimeout=null}
+  if(String(window.currentUserRole||'student').toLowerCase()!=='student')return;
+  if($('submitTestBtn').dataset.submitted==='true')return;
+  clearInterval(testTimerInterval);testTimerInterval=null;
+  $('submitTestBtn').disabled=true;
+  $('testSubmitMessage').textContent=autoSubmit?'Submitting...':'Submitting test...';
+  try{
+    const qs=Array.isArray(currentTest.questions)?currentTest.questions:[];
+    const safeAnswers=qs.map((q,i)=>String(testAnswers[i]||'').trim());
+    let correct=0;
+    qs.forEach((q,i)=>{if(safeAnswers[i]===String(q.correct||'').trim())correct++});
+    const score=qs.length?Math.round(correct/qs.length*100):0;
+    const corrections=qs.map((q,i)=>({
+      text:String(q.text||''),
+      options:{
+        A:String(q.options?.A||''),
+        B:String(q.options?.B||''),
+        C:String(q.options?.C||''),
+        D:String(q.options?.D||'')
+      },
+      correct:String(q.correct||''),
+      yourAnswer:safeAnswers[i],
+      explanation:String(q.explanation||'')
+    }));
+    await addDoc(collection(db,'results'),{
+      resultType:'cbt',
+      testId:String(currentTest.id||''),
+      testTitle:String(currentTest.title||'CBT Test'),
+      subject:String(currentTest.subject||'General'),
+      studentId:String(auth.currentUser.uid||''),
+      studentEmail:String(auth.currentUser.email||''),
+      score:Number(score),
+      correctAnswers:Number(correct),
+      totalQuestions:Number(qs.length),
+      answers:safeAnswers,
+      corrections:corrections,
+      submittedAt:serverTimestamp(),
+      updatedAt:serverTimestamp(),
+      createdAt:serverTimestamp()
+    });
+    $('testSubmitMessage').className='message submission-success';
+    $('testSubmitMessage').textContent=`Test submitted successfully ✅ Score: ${score}/100 (${correct}/${qs.length})`;
+    $('submitTestBtn').textContent='Submitted';
+    $('submitTestBtn').dataset.submitted='true';
+    showTestCorrections();
+    await loadStudentResultsIfNeeded();
+    await loadCbtResultsIfNeeded();
+    await loadAdminResultsIfNeeded();
+  }catch(e){
+    console.error(e);
+    $('testSubmitMessage').className='message submission-error';
+    $('testSubmitMessage').textContent='Could not submit test: '+(e.code||e.message);
+  }finally{
+    $('submitTestBtn').disabled=false;
+  }
+}
+async function loadCbtResultsIfNeeded(){
+  const list=$("testResultsList");
+  if(!list||!isAdminRole())return;
+  list.innerHTML='<p class="muted">Loading CBT results...</p>';
+  try{
+    const s=await getDocs(collection(db,"results"));
+    const rows=s.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.resultType==="cbt");
+    if(!rows.length){list.innerHTML='<p class="muted">No CBT results yet.</p>';return}
+    list.innerHTML="";
+    rows.forEach(r=>{
+      const c=document.createElement("article");c.className="result-card";
+      const h=document.createElement("h3");h.textContent=r.testTitle||"CBT Test";
+      const meta=document.createElement("p");meta.className="submission-meta";meta.textContent="Student: "+(r.studentEmail||r.studentId||"Unknown");
+      const sc=document.createElement("div");sc.className="score";sc.textContent=String(r.score??0)+"/100";
+      const detail=document.createElement("div");detail.className="feedback";detail.textContent=(r.correctAnswers??0)+" / "+(r.totalQuestions??0)+" correct";
+      const del=document.createElement("button");del.type="button";del.className="secondary-btn delete-result-btn";del.textContent="🗑️ Delete Result";
+      del.addEventListener("click",async()=>{
+        if(!confirm("Delete this CBT result? This cannot be undone."))return;
+        del.disabled=true;
+        try{await deleteDoc(doc(db,"results",r.id));await loadCbtResultsIfNeeded();await loadAdminResultsIfNeeded();$("resultsCount").textContent=await getCount("results");}
+        catch(e){console.error(e);alert("Could not delete result: "+(e.code||e.message));del.disabled=false}
+      });
+      c.append(h,meta,sc,detail,del);list.appendChild(c);
+    });
+  }catch(e){console.error(e);list.innerHTML='<p class="message">Could not load CBT results: '+(e.code||e.message)+'</p>'}
+}
 
-  <div class="quick-builder" id="quickBuilder">
-    <div class="builder-card builder-step-card active" data-builder-step="1" id="qbStep1">
-      <div class="builder-card-title"><div><span class="builder-number">1</span><div><h3>Choose or create a course</h3><p class="muted">Example: JAMB Preparation</p></div></div><button class="builder-edit-btn hidden" id="qbEditCourse" type="button">Edit</button></div>
-      <div class="builder-summary hidden" id="qbCourseSummary"></div>
-      <div class="builder-step-body">
-        <div class="builder-row"><select id="qbCourse"></select><button id="qbNewCourse" class="secondary-btn" type="button">＋ New Course</button></div>
-        <div id="qbCourseNew" class="builder-new hidden"><input id="qbCourseName" placeholder="Course name e.g. JAMB Preparation"><select id="qbCourseCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General">General</option></select><button id="qbSaveCourse" class="primary-btn" type="button">Create Course</button></div>
-        <div class="builder-continue"><button id="qbContinue1" class="primary-btn" type="button">Continue to Subject →</button></div>
-      </div>
-      <p id="qbCourseMsg" class="message"></p>
-    </div>
 
-    <div class="builder-card builder-step-card locked" data-builder-step="2" id="qbStep2">
-      <div class="builder-card-title"><div><span class="builder-number">2</span><div><h3>Choose or create a subject</h3><p class="muted">Example: Mathematics</p></div></div><button class="builder-edit-btn hidden" id="qbEditSubject" type="button">Edit</button></div>
-      <div class="builder-summary hidden" id="qbSubjectSummary"></div>
-      <div class="builder-step-body">
-        <div class="builder-row"><select id="qbSubject"></select><button id="qbNewSubject" class="secondary-btn" type="button">＋ New Subject</button></div>
-        <div id="qbSubjectNew" class="builder-new hidden"><input id="qbSubjectName" placeholder="Subject name e.g. Mathematics"><button id="qbSaveSubject" class="primary-btn" type="button">Create Subject</button></div>
-        <div class="builder-continue"><button id="qbContinue2" class="primary-btn" type="button">Continue to Topic →</button></div>
-      </div>
-      <p id="qbSubjectMsg" class="message"></p>
-    </div>
+async function loadAdminResultsIfNeeded(){
+  const panel=$("adminResultsPanel"),list=$("adminResultsList");
+  if(!panel||!list||!isAdminRole())return;
+  list.innerHTML='<p class="muted">Loading recent results...</p>';
+  try{
+    const s=await getDocs(collection(db,"results"));
+    const rows=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+      const ta=(a.updatedAt?.toDate?a.updatedAt.toDate():new Date(a.updatedAt||0)).getTime();
+      const tb=(b.updatedAt?.toDate?b.updatedAt.toDate():new Date(b.updatedAt||0)).getTime();
+      return tb-ta;
+    });
+    if(!rows.length){list.innerHTML='<p class="muted">No recent results.</p>';return}
+    list.innerHTML="";
+    rows.forEach(r=>{
+      const c=document.createElement("article");c.className="result-card";
+      const h=document.createElement("h3");h.textContent=r.resultType==="cbt"?(r.testTitle||"CBT Test"):(r.assignmentTitle||"Assignment Result");
+      const meta=document.createElement("p");meta.className="submission-meta";meta.textContent=(r.resultType==="cbt"?"CBT":"Assignment")+" • Student: "+(r.studentEmail||r.studentId||"Unknown");
+      const sc=document.createElement("div");sc.className="score";sc.textContent=String(r.score??0)+"/100";
+      const detail=document.createElement("div");detail.className="feedback";detail.textContent=r.resultType==="cbt"?((r.correctAnswers??0)+" / "+(r.totalQuestions??0)+" correct"): (r.feedback||"No feedback provided.");
+      const del=document.createElement("button");del.type="button";del.className="secondary-btn delete-result-btn";del.textContent="🗑️ Delete Result";
+      del.addEventListener("click",async()=>{
+        if(!confirm("Delete this result? This cannot be undone."))return;
+        del.disabled=true;
+        try{await deleteDoc(doc(db,"results",r.id));await loadAdminResultsIfNeeded();await loadCbtResultsIfNeeded();$("resultsCount").textContent=await getCount("results");}
+        catch(e){console.error(e);alert("Could not delete result: "+(e.code||e.message));del.disabled=false}
+      });
+      c.append(h,meta,sc,detail,del);list.appendChild(c);
+    });
+  }catch(e){console.error(e);list.innerHTML='<p class="message">Could not load recent results: '+(e.code||e.message)+'</p>'}
+}
 
-    <div class="builder-card builder-step-card locked" data-builder-step="3" id="qbStep3">
-      <div class="builder-card-title"><div><span class="builder-number">3</span><div><h3>Choose or create a topic</h3><p class="muted">Example: Number Bases</p></div></div><button class="builder-edit-btn hidden" id="qbEditTopic" type="button">Edit</button></div>
-      <div class="builder-summary hidden" id="qbTopicSummary"></div>
-      <div class="builder-step-body">
-        <div class="builder-row"><select id="qbTopic"></select><button id="qbNewTopic" class="secondary-btn" type="button">＋ New Topic</button></div>
-        <div id="qbTopicNew" class="builder-new hidden"><input id="qbTopicName" placeholder="Topic title e.g. Number Bases"><button id="qbSaveTopic" class="primary-btn" type="button">Create Topic</button></div>
-        <div class="builder-continue"><button id="qbContinue3" class="primary-btn" type="button">Continue to Lesson →</button></div>
-      </div>
-      <p id="qbTopicMsg" class="message"></p>
-    </div>
 
-    <div class="builder-card builder-step-card locked" data-builder-step="4" id="qbStep4">
-      <div class="builder-card-title"><div><span class="builder-number">4</span><div><h3>Create the lesson</h3><p class="muted">Add your teaching content and an optional PDF.</p></div></div></div>
-      <div class="builder-context" id="qbLessonContext"><span>Course</span><b id="qbContextCourse">—</b><span>Subject</span><b id="qbContextSubject">—</b><span>Topic</span><b id="qbContextTopic">—</b></div>
-      <div class="builder-step-body">
-        <input id="qbLessonTitle" placeholder="Lesson title e.g. Introduction to Number Bases">
-        <div class="rich-editor-wrap">
-  <div class="rich-toolbar" id="qbLessonToolbar" role="toolbar" aria-label="Lesson formatting">
-    <button type="button" class="rich-tool" data-cmd="bold" title="Bold"><b>B</b></button>
-    <button type="button" class="rich-tool" data-cmd="italic" title="Italic"><i>I</i></button>
-    <button type="button" class="rich-tool" data-cmd="underline" title="Underline"><u>U</u></button>
-    <span class="rich-divider"></span>
-    <select class="rich-select" data-block title="Text style">
-      <option value="p">Normal</option>
-      <option value="h2">Heading</option>
-      <option value="h3">Subheading</option>
-      <option value="h4">Small heading</option>
-      <option value="blockquote">Quote</option>
-    </select>
-    <button type="button" class="rich-tool" data-cmd="insertUnorderedList" title="Bullet list">• List</button>
-    <button type="button" class="rich-tool" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
-    <span class="rich-divider"></span>
-    <button type="button" class="rich-tool" data-link title="Insert link">🔗</button>
-    <button type="button" class="rich-tool media-tool" id="qbInsertImage" title="Insert image">🖼️ Image</button>
-    <button type="button" class="rich-tool ai-format-tool" id="qbFormatAiNote" title="Convert AI commands into real formatting">✨ Format AI Note</button>
-    <button type="button" class="rich-tool" id="qbInsertTable" title="Insert table">▦ Table</button>
-    <button type="button" class="rich-tool" id="qbInsertCalc" title="Insert calculation">🧮 Calc</button>
-    <button type="button" class="rich-tool" id="qbInsertAnswer" title="Insert answer">✓ Answer</button>
-    <span class="rich-divider"></span>
-    <button type="button" class="rich-tool media-tool" id="qbInsertVideo" title="Insert YouTube video">▶ Video</button>
-    <button type="button" class="rich-tool" data-cmd="justifyLeft" title="Align left">≡</button>
-    <button type="button" class="rich-tool" data-cmd="justifyCenter" title="Center">≡</button>
-    <button type="button" class="rich-tool" data-cmd="justifyRight" title="Align right">≡</button>
-    <span class="rich-divider"></span>
-    <button type="button" class="rich-tool" data-cmd="undo" title="Undo">↶</button>
-    <button type="button" class="rich-tool" data-cmd="redo" title="Redo">↷</button>
-    <button type="button" class="rich-tool" data-cmd="removeFormat" title="Clear formatting">Tx</button>
-  </div>
-  <div id="qbLessonContent" class="rich-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Write your lesson here... Add explanations, examples, formulas, subtopics and practice questions."></div>
-  <div class="rich-editor-help"><b>Paste-friendly:</b> paste normal text, Markdown tables (<code>| A | B |</code>), <code>[table]...[/table]</code>, <code>[calc]...[/calc]</code>, <code>[answer]...[/answer]</code>, or calculation lines using <code>____</code>/<code>────</code>. The editor will format them automatically. Toolbar formatting, tables, calculations, answers, images and videos are saved with the lesson.</div>
-</div>
-        <label class="upload-label">Optional lesson PDF</label>
-        <input id="qbLessonFile" type="file" accept="application/pdf,.pdf">
-        <small class="upload-help">PDF only • Maximum 50 MB</small>
-        <div class="builder-publish"><button id="qbSaveDraft" class="secondary-btn" type="button">Save Draft</button><button id="qbPublishLesson" class="primary-btn" type="button">📖 Publish Lesson</button></div>
-      </div>
-      <p id="qbLessonMsg" class="message"></p>
-    </div>
-  </div>
 
-  <div class="course-builder-tip"><b>💡 Recommended workflow</b><span>Choose JAMB → Mathematics → Number Bases → create your lesson. Previous steps stay editable, while unpublished drafts remain hidden from students.</span></div>
+// ===== STUDY MATERIALS (V17) =====
+const materialsAdminPanel=$('materialsAdminPanel'),materialForm=$('materialForm'),materialsList=$('materialsList');
+let materialFilter='All';
+async function loadMaterials(){
+  if(!materialsList)return;
+  materialsList.innerHTML='<p class="muted">Loading study materials...</p>';
+  try{
+    let s;
+    try{s=await getDocs(query(collection(db,'materials'),orderBy('createdAt','desc')))}catch(e){s=await getDocs(collection(db,'materials'))}
+    const rows=s.docs.map(d=>({id:d.id,...d.data()})).filter(m=>materialFilter==='All'||String(m.category||'General')===materialFilter);
+    if(!rows.length){materialsList.innerHTML='<p class="muted">No study materials published yet.</p>';return}
+    materialsList.innerHTML='';
+    rows.forEach(m=>{
+      const c=document.createElement('article');c.className='material-card';
+      const h=document.createElement('h3');h.textContent=m.title||'Untitled Material';
+      const meta=document.createElement('p');meta.className='subject';meta.textContent=(m.category||'General')+' • '+(m.subject||'General');
+      const desc=document.createElement('p');desc.className='muted';desc.textContent=m.description||'Study material / PDF resource.';
+      const actions=document.createElement('div');actions.className='material-actions';
+      const open=document.createElement('a');open.className='primary-btn material-link';open.href=m.url||'#';open.target='_blank';open.rel='noopener noreferrer';open.textContent='👁️ View PDF';actions.appendChild(open);
+      if(m.storageProvider==='supabase' && m.storagePath){
+        const dl=document.createElement('button');dl.className='secondary-btn material-download-btn';dl.type='button';dl.textContent='⬇️ Download PDF';
+        dl.addEventListener('click',async()=>{
+          const oldText=dl.textContent;dl.disabled=true;dl.textContent='⏳ Downloading...';
+          try{
+            const filename=m.fileName||((m.title||'study-material')+'.pdf');
+            const {data:urlData,error:urlError}=supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(m.storagePath,{download:filename});
+            if(urlError)throw urlError;
+            const downloadUrl=urlData?.publicUrl;
+            if(!downloadUrl)throw new Error('Could not create download URL.');
+            const a=document.createElement('a');a.href=downloadUrl;a.download=filename;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
+          }catch(e){console.error('PDF download error:',e);alert('Could not download this PDF: '+(e?.message||e));}
+          finally{dl.disabled=false;dl.textContent=oldText;}
+        });
+        actions.appendChild(dl);
+      }
+      if(isAdminRole()){
+        const del=document.createElement('button');del.className='danger-btn';del.type='button';del.textContent='🗑 Delete';
+        del.addEventListener('click',async()=>{
+          if(!confirm('Delete this study material? This cannot be undone.'))return;
+          del.disabled=true;
+          try{
+            if(m.storageProvider==='supabase' && m.storagePath){
+              const {error:storageErr}=await supabase.storage.from(SUPABASE_BUCKET).remove([m.storagePath]);
+              if(storageErr)console.warn('Supabase storage delete warning:',storageErr);
+            }
+            await deleteDoc(doc(db,'materials',m.id));await loadMaterials();await loadLearningCentre();
+          }catch(e){console.error(e);alert('Could not delete material: '+(e.code||e.message));del.disabled=false}
+        });actions.appendChild(del);
+      }
+      c.append(h,meta,desc,actions);materialsList.appendChild(c);
+    });
+  }catch(e){console.error(e);materialsList.innerHTML='<p class="message">Could not load study materials: '+(e.code||e.message)+'</p>'}
+}
 
-  <div class="course-admin-list"><div class="builder-list-head"><div><h3>Current Learning Structure</h3><p class="muted">Everything you have created appears here.</p></div><button id="qbRefresh" class="secondary-btn" type="button">↻ Refresh</button></div><div id="courseAdminList"><p class="muted">Loading courses...</p></div></div>
-</div>
-<div id="testResultsAdminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📊 CBT Student Results</h2><p class="muted">View students' automatically marked CBT scores.</p><div id="testResultsList"><p class="muted">Loading CBT results...</p></div></div>
-<div id="materialsAdminPanel" class="panel admin-panel portal-section" style="display:none">
-  <h2>📚 Manage Study Materials</h2>
-  <p class="muted">Upload PDF study materials directly from your phone or computer. No external links required.</p>
-  <form id="materialForm">
-    <label>Material Title</label><input id="materialTitle" required placeholder="e.g. JAMB English Past Questions 2026">
-    <label>Subject</label><input id="materialSubject" required placeholder="e.g. English Language">
-    <label>Category</label><select id="materialCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General" selected>General</option></select>
-    <label>Description (optional)</label><textarea id="materialDescription" class="short-textarea" placeholder="Briefly describe this material..."></textarea>
-    <label>PDF / Material File</label><input id="materialFile" type="file" accept="application/pdf,.pdf" required><small class="upload-help">PDF only • Maximum 50 MB</small>
-    <button class="primary-btn" type="submit">Publish Study Material</button>
-    <p id="materialMessage" class="message"></p>
-  </form>
-</div>
-<div id="materialsPanel" class="panel portal-section">
-  <h2>📚 Study Materials</h2>
-  <div class="material-filters">
-    <button class="secondary-btn material-filter active" data-filter="All" type="button">All</button>
-    <button class="secondary-btn material-filter" data-filter="JAMB" type="button">JAMB</button>
-    <button class="secondary-btn material-filter" data-filter="WAEC" type="button">WAEC</button>
-    <button class="secondary-btn material-filter" data-filter="General" type="button">Other</button>
-  </div>
-  <div id="materialsList"><p class="muted">Loading study materials...</p></div>
-</div>
-<div id="assignmentsPanel" class="panel portal-section">
-  <h2>📝 Available Assignments</h2>
-  <div id="assignmentsList"><p class="muted">Loading assignments...</p></div><div id="assignmentModal" class="assignment-modal hidden"><div class="assignment-modal-card"><button id="closeAssignmentBtn" class="close-btn" type="button">×</button><h2 id="openAssignmentTitle">Assignment</h2><p id="openAssignmentSubject" class="subject"></p><div id="openAssignmentContent" class="note-content"></div><p id="openAssignmentDeadline" class="muted"></p><form id="submissionForm"><label>Your Answer</label><textarea id="submissionAnswer" required placeholder="Type your answer here..."></textarea><button class="primary-btn" type="submit">Submit Assignment</button><p id="submissionMessage" class="message"></p></form></div></div>
-</div>
-<div id="submissionsAdminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📥 Student Submissions</h2><p class="muted">Admins and Superadmins can review submitted assignments.</p><div id="submissionsList"><p class="muted">Loading submissions...</p></div></div><div id="studentResultsPanel" class="panel portal-section"><h2>🏆 My Results</h2><p class="muted">Your marked assignment results will appear here.</p><div id="studentResultsList"><p class="muted">Loading results...</p></div></div><div id="statusPanel" class="panel portal-section"><h2>Portal Status</h2><p id="statusText">Loading...</p></div><div id="featuresPanel" class="panel portal-section"><h2>What you can do here</h2><div class="features"><div><strong>📚 Learning Materials</strong><p>Access notes and study materials.</p></div><div><strong>📝 Assignments</strong><p>Receive and submit assignments.</p></div><div><strong>💻 CBT Tests</strong><p>Take online tests and examinations.</p></div><div><strong>🏆 Results</strong><p>View your scores and academic performance.</p></div></div></div></section><div id="courseModal" class="course-modal hidden" role="dialog" aria-modal="true" aria-labelledby="courseModalTitle"><div class="course-modal-card"><button id="closeCourseModal" class="close-btn" type="button">×</button><div class="course-modal-hero"><span id="courseModalIcon" class="course-modal-icon">📚</span><div><span id="courseModalCategory" class="course-category">COURSE</span><h2 id="courseModalTitle">Course</h2><p id="courseModalSubtitle" class="muted">Learning resources</p></div></div><div id="courseModalStats" class="course-modal-stats"></div><div id="courseModalResources" class="course-modal-resources"></div></div></div></main><footer>© 2026 Great Stand Educational Consult. Guiding Students. Building Futures.</footer><script type="module" src="portal.js?v=37.0"></script></body></html>
+materialForm?.addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!isAdminRole()){ $('materialMessage').textContent='Only admins can publish study materials.';return; }
+  const file=$('materialFile')?.files?.[0];
+  if(!file){$('materialMessage').className='message submission-error';$('materialMessage').textContent='Please select a PDF file.';return;}
+  const looksLikePdf=file.type==='application/pdf' || !file.type || file.type==='application/octet-stream' || /\.pdf$/i.test(file.name);
+  if(!looksLikePdf){ $('materialMessage').className='message submission-error';$('materialMessage').textContent='Only PDF files are supported for now.';return; }
+  if(file.size>50*1024*1024){ $('materialMessage').className='message submission-error';$('materialMessage').textContent='File is too large. Maximum size is 50 MB on the free storage plan.';return; }
+  const submitBtn=materialForm.querySelector('button[type="submit"]');if(submitBtn)submitBtn.disabled=true;
+  $('materialMessage').className='message';$('materialMessage').textContent='Uploading PDF to free storage...';
+  let uploadedPath=null;
+  try{
+    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    const storagePath='materials/'+auth.currentUser.uid+'/'+Date.now()+'_'+safeName;
+    uploadedPath=storagePath;
+    const {error:uploadError}=await supabase.storage.from(SUPABASE_BUCKET).upload(storagePath,file,{contentType:'application/pdf',upsert:false,cacheControl:'3600'});
+    if(uploadError)throw uploadError;
+    const {data:urlData}=supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(storagePath);
+    const url=urlData?.publicUrl;
+    if(!url)throw new Error('Could not create the public download link.');
+    await addDoc(collection(db,'materials'),{title:$('materialTitle').value.trim(),subject:$('materialSubject').value.trim(),category:$('materialCategory').value,description:$('materialDescription').value.trim(),url,storagePath,fileName:file.name,fileSize:file.size,storageProvider:'supabase',createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
+    materialForm.reset();$('materialCategory').value='General';$('materialMessage').className='message submission-success';$('materialMessage').textContent='Study material uploaded and published successfully ✅';await loadMaterials();await loadLearningCentre();
+  }catch(e){
+    console.error(e);
+    if(uploadedPath){try{await supabase.storage.from(SUPABASE_BUCKET).remove([uploadedPath])}catch(cleanErr){console.warn('Upload cleanup warning:',cleanErr)}}
+    const msg=e?.message||e?.error_description||e?.error||'Unknown error';
+    $('materialMessage').className='message submission-error';
+    $('materialMessage').textContent='Could not upload material: '+msg+' — check that the Supabase “materials” bucket exists and allows uploads.';
+  }finally{if(submitBtn)submitBtn.disabled=false;}
+});
+
+document.querySelectorAll('.material-filter').forEach(btn=>btn.addEventListener('click',()=>{materialFilter=btn.dataset.filter;document.querySelectorAll('.material-filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');loadMaterials()}));
+
+const studentAdminPanel=$("studentAdminPanel"),studentForm=$("studentForm"),studentsList=$("studentsList"),studentMessage=$("studentMessage");
+const firebaseConfigForStudentCreation={apiKey:"AIzaSyCX_ZC18wviACEbGwTLBQiD95HVZg2oxDY",authDomain:"great-stand-consult.firebaseapp.com",projectId:"great-stand-consult",storageBucket:"great-stand-consult.firebasestorage.app",messagingSenderId:"759290092567",appId:"1:759290092567:web:4e873f1ad166cb54d11052",measurementId:"G-BPTN65KHK7"};
+let studentCreatorApp=null,studentCreatorAuth=null;
+function getStudentCreatorAuth(){
+  if(!studentCreatorApp){
+    const name="studentCreator";
+    studentCreatorApp=getApps().find(a=>a.name===name)||initializeApp(firebaseConfigForStudentCreation,name);
+    studentCreatorAuth=getAuth(studentCreatorApp);
+  }
+  return studentCreatorAuth;
+}
+async function loadStudents(){
+  if(!isAdminRole())return;
+  studentsList.innerHTML='<p class="muted">Loading students...</p>';
+  try{
+    const s=await getDocs(query(collection(db,"users"),where("role","==","student")));
+    const docs=s.docs.sort((a,b)=>String(a.data().name||"").localeCompare(String(b.data().name||"")));
+    if(!docs.length){studentsList.innerHTML='<p class="muted">No students registered yet.</p>';return;}
+    studentsList.innerHTML="";
+    docs.forEach(d=>{
+      const st=d.data(),card=document.createElement("article");card.className="student-card";
+      const h=document.createElement("h3");h.textContent=st.name||"Unnamed Student";
+      const meta=document.createElement("p");meta.className="student-meta";meta.textContent=(st.email||"No email")+" • "+(st.category||"JAMB & WAEC")+(st.level?" • "+st.level:"");
+      const status=document.createElement("span");status.className=st.active===false?"status-badge inactive":"status-badge active";status.textContent=st.active===false?"Inactive":"Active";
+      const actions=document.createElement("div");actions.className="card-actions";
+      const toggle=document.createElement("button");toggle.type="button";toggle.className="secondary-btn";toggle.textContent=st.active===false?"Activate":"Deactivate";
+      toggle.addEventListener("click",async()=>{toggle.disabled=true;try{await updateDoc(doc(db,"users",d.id),{active:st.active===false});await loadStudents();}catch(e){console.error(e);alert("Could not update student: "+(e.code||e.message));toggle.disabled=false}});
+      actions.appendChild(toggle);card.append(h,meta,status,actions);studentsList.appendChild(card);
+    });
+  }catch(e){console.error(e);studentsList.innerHTML='<p class="message">Could not load students: '+(e.code||e.message)+'</p>';}
+}
+studentForm.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!isAdminRole()||!auth.currentUser)return;
+  studentMessage.textContent="Creating student account...";studentMessage.className="message";
+  const name=$("studentName").value.trim(),email=$("studentEmail").value.trim(),password=$("studentPassword").value,category=$("studentCategory").value,level=$("studentLevel").value.trim();
+  if(password.length<6){studentMessage.textContent="Password must be at least 6 characters.";return;}
+  try{
+    const sa=getStudentCreatorAuth();
+    const cred=await createUserWithEmailAndPassword(sa,email,password);
+    await (async()=>{const uid=cred.user.uid;await setDoc(doc(db,"users",uid),{name,email,role:"student",category,level,active:true,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});})();
+    await signOut(sa);
+    studentForm.reset();studentMessage.className="message submission-success";studentMessage.textContent="Student account created successfully ✅";
+    await loadStudents();
+    const count=await getDocs(query(collection(db,"users"),where("role","==","student")));$("studentsCount").textContent=count.size;
+  }catch(e){console.error(e);studentMessage.className="message submission-error";studentMessage.textContent="Could not create student: "+(e.code||e.message);}
+});
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){
+    loginView.classList.remove("hidden");
+    dashboardView.classList.add("hidden");
+    logoutBtn.classList.add("hidden");
+    setAdminPanelsVisible(false);
+    return;
+  }
+
+  loginView.classList.add("hidden");
+  dashboardView.classList.remove("hidden");
+  logoutBtn.classList.remove("hidden");
+
+  try{
+    const s=await getDoc(doc(db,"users",user.uid));
+
+    if(!s.exists()){
+      setAdminPanelsVisible(false);
+      $("welcomeTitle").textContent="PROFILE NOT FOUND";
+      return;
+    }
+
+    const p=s.data();
+    currentStudentProfile=p;
+    const role=String(p.role||"student").trim().toLowerCase();
+    const allowed=role==="admin"||role==="superadmin";
+
+    window.currentUserRole=role;
+    const studentQuick=$("studentQuickPanel");
+    const adminStat=document.querySelector(".admin-stat");
+    if(studentQuick)studentQuick.style.display=role==="student"?"block":"none";
+    if(adminStat)adminStat.style.display=role==="student"?"none":"block";
+    if(role==="student"){
+      const cat=String(p.category||"Student").replace(/\s+/g," ").trim();
+      $("studentCategoryPill").textContent=cat.toUpperCase();
+      learningFilter = cat.toUpperCase()==="JAMB" || cat.toUpperCase()==="WAEC" ? cat.toUpperCase() : "all";
+      document.querySelectorAll(".learning-tab").forEach(b=>b.classList.toggle("active",(b.dataset.learningFilter||"all").toUpperCase()===learningFilter.toUpperCase()));
+    }
+
+    if(p.active===false){
+      await signOut(auth);
+      loginView.classList.remove("hidden");
+      dashboardView.classList.add("hidden");
+      logoutBtn.classList.add("hidden");
+      $("loginMessage").textContent="This student account is currently inactive. Please contact Great Stand Educational Consult.";
+      return;
+    }
+
+    $("welcomeTitle").textContent="Welcome, "+(p.name||user.email);
+    $("roleText").textContent="Signed in as "+role;
+    $("statusText").textContent=role==="superadmin"
+      ?"SUPERADMIN ACCOUNT DETECTED ✅"
+      :role==="admin"
+      ?"ADMIN ACCOUNT DETECTED ✅"
+      :"Student account detected.";
+
+    // Set admin panels immediately after role is confirmed.
+    // This is intentionally before loading dashboard data so a later
+    // non-critical loading error cannot hide the panels.
+    setAdminPanelsVisible(allowed);
+    if(allowed){ const cp=$("courseAdminPanel"); if(cp) cp.style.display="block"; }
+    if(window.gsRefreshNavigation) window.gsRefreshNavigation();
+
+    try{$("notesCount").textContent=await getCount("notes")}catch(e){}
+    try{$("assignmentsCount").textContent=await getCount("assignments")}catch(e){}
+    try{$("testsCount").textContent=await getCount("tests")}catch(e){}
+    try{$("resultsCount").textContent=await getCount("results")}catch(e){}
+
+    try{await loadNotes()}catch(e){console.error("Notes:",e)}
+    try{await loadAssignments()}catch(e){console.error("Assignments:",e)}
+    try{await loadTests()}catch(e){console.error("Tests:",e)}
+    try{await loadMaterials();await loadLearningCentre()}catch(e){console.error("Materials:",e)}
+    try{await loadLearningCentre()}catch(e){console.error("Learning Centre:",e)}
+
+    if(allowed){
+      try{await loadSubmissions()}catch(e){console.error("Submissions:",e)}
+      try{await loadCbtResultsIfNeeded()}catch(e){console.error("CBT results:",e)}
+      try{await loadAdminResultsIfNeeded()}catch(e){console.error("Admin results:",e)}
+      try{await loadStudents()}catch(e){console.error("Students:",e)}
+      try{
+        $("studentsCount").textContent=
+          (await getDocs(query(collection(db,"users"),where("role","==","student")))).size;
+      }catch(e){
+        $("studentsCount").textContent="0";
+      }
+    }
+
+    try{await loadStudentResultsIfNeeded()}catch(e){console.error("Student results:",e)}
+
+  }catch(e){
+    console.error(e);
+    // Do NOT hide already-authorized admin panels because of a
+    // non-role-related Firestore/data loading problem.
+    $("statusText").textContent="Firestore error: "+(e.code||e.message);
+  }
+});
+/* V20.3 role-aware navigation layer — visual/navigation only; Firebase/Auth logic is untouched. */
+
+// ===== V21 LEARNING CENTRE =====
+const learningCourseGrid=$('learningCourseGrid');
+let learningFilter='all';
+const learningStore={notes:[],assignments:[],tests:[],materials:[]};
+function normalizeText(v){return String(v||'').trim()}
+function courseKey(category,subject){return (normalizeText(category)||'General')+'::'+(normalizeText(subject)||'General')}
+function courseCategory(row){const c=normalizeText(row.category).toUpperCase();return c==='JAMB'||c==='WAEC'?''+c:(normalizeText(row.category)||'General')}
+function makeLearningCourse(category,subject){return {category:category||'General',subject:subject||'General',notes:0,assignments:0,tests:0,materials:0}}
+function renderLearningCentre(){
+  if(!learningCourseGrid)return;
+  const map=new Map();
+  const add=(category,subject,type)=>{const key=courseKey(category,subject);if(!map.has(key))map.set(key,makeLearningCourse(category,subject));map.get(key)[type]++};
+  learningStore.notes.forEach(n=>add(courseCategory(n),normalizeText(n.subject)||'General','notes'));
+  learningStore.assignments.forEach(a=>add(courseCategory(a),normalizeText(a.subject)||'General','assignments'));
+  learningStore.tests.forEach(t=>add(courseCategory(t),normalizeText(t.subject)||'General','tests'));
+  learningStore.materials.forEach(m=>add(courseCategory(m),normalizeText(m.subject)||'General','materials'));
+  let rows=[...map.values()];
+  if(learningFilter!=='all')rows=rows.filter(x=>x.category===learningFilter);
+  if(learningFilter==='all'){
+    const tracks=['JAMB','WAEC'].map(cat=>({category:cat,subject:cat==='JAMB'?'JAMB Preparation':'WAEC Preparation',notes:learningStore.notes.filter(x=>courseCategory(x)===cat).length,assignments:learningStore.assignments.filter(x=>courseCategory(x)===cat).length,tests:learningStore.tests.filter(x=>courseCategory(x)===cat).length,materials:learningStore.materials.filter(x=>courseCategory(x)===cat).length,track:true}));
+    rows=[...tracks,...rows.filter(x=>x.category!=='JAMB'&&x.category!=='WAEC')];
+  }
+  if(!rows.length){learningCourseGrid.innerHTML='<div class="learning-empty"><div>📚</div><h3>No courses yet</h3><p class="muted">Courses will appear here when learning resources are published for your JAMB or WAEC category.</p></div>';return}
+  rows.sort((a,b)=>a.category.localeCompare(b.category)||a.subject.localeCompare(b.subject));
+  learningCourseGrid.innerHTML='';
+  rows.forEach(c=>{
+    const total=c.notes+c.assignments+c.tests+c.materials;
+    const card=document.createElement('article');card.className='learning-course-card'+(c.track?' learning-track-card':'');
+    const icon=c.category==='JAMB'?'🎯':c.category==='WAEC'?'🎓':'📘';
+    card.innerHTML=`<div class="learning-course-top"><span class="course-icon">${icon}</span><span class="course-category ${c.category.toLowerCase()}">${c.category}</span></div><h3>${c.subject}</h3><p class="muted">${total} learning resource${total===1?'':'s'} available</p><div class="course-resource-row"><span>📖 ${c.notes} Notes</span><span>📝 ${c.assignments} Assignments</span><span>🧠 ${c.tests} Tests</span><span>📚 ${c.materials} Materials</span></div><div class="course-actions"><button class="primary-btn course-open-btn" type="button">Open Course →</button></div>`;
+    card.querySelector('.course-open-btn').addEventListener('click',()=>openCourseResources(c));
+    learningCourseGrid.appendChild(card);
+  });
+}
+function openCourseResources(course){
+  const modal=$('courseModal'); if(!modal)return;
+  $('courseModalTitle').textContent=course.subject||'Course';
+  $('courseModalCategory').textContent=(course.category||'General').toUpperCase();
+  $('courseModalSubtitle').textContent=course.track ? 'Preparation track' : 'Your learning resources for this subject';
+  const icon=course.category==='JAMB'?'🎓':course.category==='WAEC'?'📘':'📚';
+  $('courseModalIcon').textContent=icon;
+  $('courseModalStats').innerHTML=`<div><b>${course.notes}</b><span>Notes</span></div><div><b>${course.assignments}</b><span>Assignments</span></div><div><b>${course.tests}</b><span>CBT Tests</span></div><div><b>${course.materials}</b><span>Materials</span></div>`;
+  const resources=[];
+  const same=(r)=>course.track ? courseCategory(r)===course.category : (courseCategory(r)===course.category && (normalizeText(r.subject)||'General')===course.subject);
+  [
+    [learningStore.notes,'notesPanel','📖','Notes','Read your published lessons'],
+    [learningStore.assignments,'assignmentsPanel','📝','Assignments','Open and submit your work'],
+    [learningStore.tests,'testsPanel','🧠','CBT / Tests','Take practice tests and get scored'],
+    [learningStore.materials,'materialsPanel','📚','Study Materials','View or download PDF materials']
+  ].forEach(([arr,target,ico,title,desc])=>{ const count=arr.filter(same).length; if(count)resources.push({target,ico,title,desc,count}); });
+  if(!resources.length){
+    $('courseModalResources').innerHTML='<div class="course-empty">No resources have been added to this course yet.<br><small>Check back when your tutor publishes new materials.</small></div>';
+  }else{
+    $('courseModalResources').innerHTML=resources.map(r=>`<button class="course-resource-btn" data-target="${r.target}" type="button"><span>${r.ico}</span><div><b>${r.title}</b><small>${r.count} available • ${r.desc}</small></div><strong>›</strong></button>`).join('');
+    $('courseModalResources').querySelectorAll('.course-resource-btn').forEach(btn=>btn.addEventListener('click',()=>{modal.classList.add('hidden'); if(window.gsShowSection)window.gsShowSection(btn.dataset.target)}));
+  }
+  modal.classList.remove('hidden');
+}
+async function loadLearningCentre(){
+  if(!learningCourseGrid)return;
+  learningCourseGrid.innerHTML='<div class="learning-empty"><div>⏳</div><h3>Organizing your courses...</h3><p class="muted">Loading notes, assignments, tests and materials.</p></div>';
+  try{
+    const [ns,as,ts,ms]=await Promise.all([getDocs(collection(db,'notes')),getDocs(collection(db,'assignments')),getDocs(collection(db,'tests')),getDocs(collection(db,'materials'))]);
+    learningStore.notes=ns.docs.map(d=>d.data());
+    learningStore.assignments=as.docs.map(d=>d.data());
+    learningStore.tests=ts.docs.map(d=>d.data());
+    learningStore.materials=ms.docs.map(d=>d.data());
+    renderLearningCentre();
+  }catch(e){console.error('Learning Centre:',e);learningCourseGrid.innerHTML='<div class="learning-empty"><div>⚠️</div><h3>Could not load courses</h3><p class="muted">Please refresh and try again.</p></div>'}
+}
+
+document.querySelectorAll('.learning-tab').forEach(btn=>btn.addEventListener('click',()=>{learningFilter=btn.dataset.learningFilter||'all';document.querySelectorAll('.learning-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderLearningCentre()}));
+$('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
+
+(function(){
+  const menuBtn=document.getElementById("gsMenuBtn"), sideNav=document.getElementById("gsSideNav"), overlay=document.getElementById("gsNavOverlay"), links=document.getElementById("gsNavLinks"), navLogout=document.getElementById("gsNavLogout"), navClose=document.getElementById("gsNavClose"), nameEl=document.getElementById("gsNavName"), roleEl=document.getElementById("gsNavRole");
+  function closeNav(){sideNav?.classList.remove("open");overlay?.classList.remove("show");menuBtn?.setAttribute("aria-expanded","false")}
+  function openNav(){sideNav?.classList.add("open");overlay?.classList.add("show");menuBtn?.setAttribute("aria-expanded","true")}
+  menuBtn?.addEventListener("click",()=>sideNav?.classList.contains("open")?closeNav():openNav());
+  overlay?.addEventListener("click",closeNav); navClose?.addEventListener("click",closeNav);
+  navLogout?.addEventListener("click",()=>{document.getElementById("logoutBtn")?.click();closeNav()});
+
+  const studentGroups=[
+    {heading:"STUDENT MENU",items:[["⌂","Dashboard","dashboardView"],["🎓","My Courses","learningCentrePanel"],["🧠","CBT / Tests","testsPanel"],["▤","Assignments","assignmentsPanel"],["▱","Study Materials","materialsPanel"],["▥","My Results","studentResultsPanel"],["●","Notifications","statusPanel"],["◉","My Profile","statusPanel"]]},
+    {heading:"QUICK LINKS",items:[["📚","My Notes","notesPanel","View and read your notes"],["📝","Assignments","assignmentsPanel","View and submit assignments"],["🧠","CBT / Tests","testsPanel","Start and take your tests"],["📖","Study Materials","materialsPanel","Access your study resources"]]}
+  ];
+  const adminGroups=[
+    {heading:"ADMIN MENU",items:[["⌂","Dashboard","dashboardView"],["👨‍🎓","Manage Students","studentAdminPanel"],["🎓","Manage Courses & Lessons","courseAdminPanel"],["📚","Manage Notes","adminPanel"],["📝","Manage Assignments","assignmentAdminPanel"],["🧠","Manage CBT / Tests","testAdminPanel"],["📖","Manage Study Materials","materialsAdminPanel"],["📊","CBT Results","testResultsAdminPanel"],["📥","Submissions","submissionsAdminPanel"]]},
+    {heading:"STUDENT VIEW",items:[["🎓","Learning Centre","learningCentrePanel"],["📚","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📖","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]]}
+  ];
+  const superadminGroups=[
+    {heading:"SUPERADMIN CONTROL",items:[["⌂","Dashboard","dashboardView"],["👨‍🎓","Manage Students","studentAdminPanel"],["🎓","Manage Courses & Lessons","courseAdminPanel"],["📚","Manage Notes","adminPanel"],["📝","Manage Assignments","assignmentAdminPanel"],["🧠","Manage CBT / Tests","testAdminPanel"],["📖","Manage Study Materials","materialsAdminPanel"],["📊","CBT Results","testResultsAdminPanel"],["📥","Submissions","submissionsAdminPanel"]]},
+    {heading:"STUDENT PORTAL VIEW",items:[["🎓","Learning Centre","learningCentrePanel"],["📚","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📖","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]]}
+  ];
+  function addHeading(text){const h=document.createElement("div");h.className="gs-nav-section-title";h.textContent=text;links.appendChild(h)}
+  function addItem(item){const [icon,label,target,sub]=item,btn=document.createElement("button");btn.type="button";btn.className="gs-nav-link";btn.innerHTML='<span>'+icon+'</span><div class="gs-nav-copy"><b>'+label+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div>';btn.dataset.target=target;btn.addEventListener("click",()=>{showSection(target);links.querySelectorAll(".gs-nav-link").forEach(x=>x.classList.remove("active"));btn.classList.add("active");closeNav()});links.appendChild(btn)}
+  function buildNav(){if(!links)return;const role=String(window.currentUserRole||currentStudentProfile?.role||"student").trim().toLowerCase(),isSuper=role==="superadmin",isAdmin=role==="admin"||isSuper,groups=isSuper?superadminGroups:(isAdmin?adminGroups:studentGroups);links.innerHTML="";groups.forEach(g=>{addHeading(g.heading);g.items.forEach(addItem)});const first=links.querySelector(".gs-nav-link");first?.classList.add("active");if(nameEl){const n=document.getElementById("welcomeTitle")?.textContent||"Welcome";nameEl.textContent=n.replace(/^Welcome,\s*/i,"")||"Welcome"}if(roleEl){roleEl.textContent=isSuper?"SUPERADMIN":isAdmin?"ADMIN":"STUDENT";roleEl.className="gs-nav-role-badge "+(isSuper?"superadmin":isAdmin?"admin":"student")}sideNav?.classList.toggle("gs-superadmin",isSuper)}
+  function allSections(){return Array.from(document.querySelectorAll(".portal-section"))}
+  function showSection(target){const dash=document.getElementById("dashboardView");if(target==="dashboardView"){allSections().forEach(el=>el.classList.add("gs-section-hidden"));window.scrollTo({top:0,behavior:"smooth"});return}allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));const el=document.getElementById(target);if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)}
+  window.gsShowSection=showSection;window.gsBuildNav=buildNav;window.gsRefreshNavigation=buildNav;
+  document.addEventListener("DOMContentLoaded",()=>{buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))});
+  let lastRole="";setInterval(()=>{const role=String(window.currentUserRole||"").trim().toLowerCase();if(role&&role!==lastRole){lastRole=role;buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))}},500);
+})();
+document.querySelectorAll(".quick-action").forEach(btn=>btn.addEventListener("click",()=>{if(window.gsShowSection)window.gsShowSection(btn.dataset.target)}));
+$("closeCourseModal")?.addEventListener("click",()=>$("courseModal").classList.add("hidden"));
+$("courseModal")?.addEventListener("click",e=>{if(e.target===$("courseModal"))$("courseModal").classList.add("hidden")});
+
+
+// ===== V25 COURSE → SUBJECT → TOPIC → LESSON LEARNING SYSTEM =====
+const courseAdminPanel=$('courseAdminPanel'), courseForm=$('courseForm'), subjectForm=$('subjectForm'), topicForm=$('topicForm'), lessonForm=$('lessonForm');
+const learningPathPanel=$('learningPathPanel'), learningPathContent=$('learningPathContent'), learningPathTitle=$('learningPathTitle'), learningPathSubtitle=$('learningPathSubtitle');
+const courseData={courses:[],subjects:[],topics:[],lessons:[]};
+let learningTrail=[];
+function fsDate(v){try{return v?.toDate?v.toDate():new Date(v)}catch(e){return null}}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+async function readCollectionSafe(name){
+  try{return await getDocs(collection(db,name))}
+  catch(e){console.error('Could not read '+name,e);return null}
+}
+async function loadCourseStructure(){
+  if(!courseAdminPanel && !learningPathPanel)return;
+  try{
+    const [cs,ss,ts,ls]=await Promise.all([
+      readCollectionSafe('courses'),readCollectionSafe('subjects'),
+      readCollectionSafe('topics'),readCollectionSafe('lessons')
+    ]);
+    courseData.courses=cs?cs.docs.map(d=>({id:d.id,...d.data()})):[];
+    courseData.subjects=ss?ss.docs.map(d=>({id:d.id,...d.data()})):[];
+    courseData.topics=ts?ts.docs.map(d=>({id:d.id,...d.data()})):[];
+    courseData.lessons=ls?ls.docs.map(d=>({id:d.id,...d.data()})):[];
+    populateCourseSelectors(); renderCourseAdminList();
+    if(!cs && courseAdminPanel)$('courseAdminList').innerHTML='<p class="message">Could not read courses. Please check that you are logged in and that the Firestore courses rule is published.</p>';
+  }catch(e){console.error('Course structure:',e); if(courseAdminPanel)$('courseAdminList').innerHTML='<p class="message">Could not load course structure: '+(e.code||e.message)+'</p>'}
+}
+function populateCourseSelectors(){
+  const c=$('subjectCourse'), s=$('topicSubject'), t=$('lessonTopic'); if(!c||!s||!t)return;
+  c.innerHTML=courseData.courses.length?courseData.courses.map(x=>`<option value="${x.id}">${esc(x.name)} (${esc(x.category||'General')})</option>`).join(''):'<option value="">Create a course first</option>';
+  s.innerHTML=courseData.subjects.length?courseData.subjects.map(x=>{const c0=courseData.courses.find(c=>c.id===x.courseId);return `<option value="${x.id}">${esc(x.name)} — ${esc(c0?.name||'Course')}</option>`}).join(''):'<option value="">Create a subject first</option>';
+  t.innerHTML=courseData.topics.length?courseData.topics.map(x=>{const s0=courseData.subjects.find(s=>s.id===x.subjectId);return `<option value="${x.id}">${esc(x.name)} — ${esc(s0?.name||'Subject')}</option>`}).join(''):'<option value="">Create a topic first</option>';
+}
+function renderCourseAdminList(){
+  const box=$('courseAdminList'); if(!box)return;
+  if(!courseData.courses.length){box.innerHTML='<p class="muted">No courses created yet.</p>';return}
+  box.innerHTML=courseData.courses.map(c=>{const subs=courseData.subjects.filter(s=>s.courseId===c.id); return `<div class="admin-course-block"><div class="admin-course-title"><b>🎓 ${esc(c.name)}</b><span>${esc(c.category||'General')}</span></div>${subs.length?subs.map(s=>{const tops=courseData.topics.filter(t=>t.subjectId===s.id);return `<div class="admin-subject-block"><b>📘 ${esc(s.name)}</b>${tops.length?'<ul>'+tops.map(t=>{const ls=courseData.lessons.filter(l=>l.topicId===t.id);return `<li>📌 ${esc(t.name)} <small>${ls.length} lesson${ls.length===1?'':'s'}</small></li>`}).join('')+'</ul>':'<small class="muted">No topics yet</small>'}</div>`}).join(''):'<p class="muted">No subjects yet.</p>'}</div>`}).join('');
+}
+async function addStructureDoc(col,payload,msgEl,form){
+  msgEl.className='message'; msgEl.textContent='Saving...';
+  try{await addDoc(collection(db,col),{...payload,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid}); msgEl.className='message submission-success';msgEl.textContent='Saved successfully ✅';form.reset();await loadCourseStructure();await loadLearningCentre();}
+  catch(e){console.error(e);msgEl.className='message submission-error';msgEl.textContent='Could not save: '+(e.code||e.message)}
+}
+courseForm?.addEventListener('submit',e=>{e.preventDefault();addStructureDoc('courses',{name:$('courseName').value.trim(),category:$('courseCategory').value},$('courseMessage'),courseForm)});
+subjectForm?.addEventListener('submit',e=>{e.preventDefault();if(!$('subjectCourse').value)return;addStructureDoc('subjects',{name:$('subjectName').value.trim(),courseId:$('subjectCourse').value},$('subjectMessage'),subjectForm)});
+topicForm?.addEventListener('submit',e=>{e.preventDefault();if(!$('topicSubject').value)return;addStructureDoc('topics',{name:$('topicName').value.trim(),subjectId:$('topicSubject').value},$('topicMessage'),topicForm)});
+lessonForm?.addEventListener('submit',e=>{e.preventDefault();if(!$('lessonTopic').value)return;addStructureDoc('lessons',{title:$('lessonTitle').value.trim(),content:$('lessonContent').value.trim(),pdfUrl:$('lessonPdfUrl').value.trim(),topicId:$('lessonTopic').value},$('lessonMessage'),lessonForm)});
+function openLearningPath(type,id){
+  learningTrail.push({type,id});
+  const c=courseData.courses.find(x=>x.id===id), s=courseData.subjects.find(x=>x.id===id), t=courseData.topics.find(x=>x.id===id), l=courseData.lessons.find(x=>x.id===id);
+  if(type==='course'){
+    learningPathTitle.textContent=c?.name||'Course';learningPathSubtitle.textContent='Choose a subject';
+    const rows=courseData.subjects.filter(x=>x.courseId===id); renderPathCards(rows,'subject');
+  }else if(type==='subject'){
+    learningPathTitle.textContent=s?.name||'Subject';learningPathSubtitle.textContent='Choose a topic';
+    const rows=courseData.topics.filter(x=>x.subjectId===id);renderPathCards(rows,'topic');
+  }else if(type==='topic'){
+    learningPathTitle.textContent=t?.name||'Topic';learningPathSubtitle.textContent='Choose a lesson';
+    const rows=publishedLessons().filter(x=>x.topicId===id);renderPathCards(rows,'lesson');
+  }else if(type==='lesson'){
+    learningPathTitle.textContent=l?.title||'Lesson';learningPathSubtitle.textContent='Lesson';
+    const lessonHtml=String(l?.contentFormat||'').toLowerCase()==='html'?sanitizeRichHtml(l?.content||''):esc(l?.content||'').replace(/\n/g,'<br>'); learningPathContent.innerHTML=`<article class="lesson-view"><div class="lesson-badge">LESSON</div><div class="lesson-body">${lessonHtml}</div>${l?.pdfUrl?`<div class="lesson-file-actions"><a class="primary-btn" href="${esc(l.pdfUrl)}" target="_blank" rel="noopener">📖 View PDF</a><a class="secondary-btn" href="${esc(l.pdfUrl)}" download>⬇️ Download PDF</a></div>`:''}</article>`;
+  }
+  // Navigation hides every portal section when switching views. The lesson path is a separate section, so explicitly remove both hidden states before opening it.
+  learningPathPanel?.classList.remove('hidden','gs-section-hidden');
+  learningPathPanel?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+window.openLearningPath=openLearningPath;
+function renderPathCards(rows,type){
+  if(!rows.length){learningPathContent.innerHTML=`<div class="learning-empty"><div>📚</div><h3>No ${type}s yet</h3><p class="muted">Your tutor will add content here.</p></div>`;return}
+  learningPathContent.innerHTML=rows.map(x=>{const count=type==='subject'?courseData.topics.filter(t=>t.subjectId===x.id).length:type==='topic'?courseData.lessons.filter(l=>l.topicId===x.id).length:0;return `<button class="path-card" type="button" data-id="${esc(x.id)}" data-type="${esc(type)}" style="position:relative;z-index:20;pointer-events:auto;cursor:pointer;"><span>${type==='subject'?'📘':type==='topic'?'📌':'📖'}</span><div><b>${esc(x.name||x.title)}</b><small>${type==='lesson'?'Open lesson':count+' '+(type==='subject'?'topics':'lessons')}</small></div><strong>›</strong></button>`}).join('');
+  learningPathContent.querySelectorAll('.path-card').forEach(b=>{b.onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();openLearningPath(b.dataset.type,b.dataset.id)}});
+}
+function publishedLessons(){return courseData.lessons.filter(l=>String(l.status||'published').toLowerCase()==='published' || !l.status)}
+function renderLearningCoursesV25(){
+  if(!learningCourseGrid)return;
+  let rows=courseData.courses.filter(c=>learningFilter==='all'||c.category===learningFilter);
+  if(!rows.length){learningCourseGrid.innerHTML='<div class="learning-empty"><div>🎓</div><h3>No courses yet</h3><p class="muted">Your tutor will publish courses here.</p></div>';return}
+  const liveLessons=publishedLessons();
+  learningCourseGrid.innerHTML=rows.map(c=>{const subs=courseData.subjects.filter(s=>s.courseId===c.id),topics=subs.reduce((n,s)=>n+courseData.topics.filter(t=>t.subjectId===s.id).length,0),lessons=liveLessons.filter(l=>l.courseId===c.id).length;return `<article class="learning-course-card learning-track-card"><div class="learning-course-top"><span class="course-icon">${c.category==='JAMB'?'🎓':c.category==='WAEC'?'📘':'📚'}</span><span class="course-category ${String(c.category||'general').toLowerCase()}">${esc(c.category||'General')}</span></div><h3>${esc(c.name)}</h3><p class="muted">${subs.length} subject${subs.length===1?'':'s'} • ${topics} topics • ${lessons} lessons</p><div class="course-resource-row"><span>📘 ${subs.length} Subjects</span><span>📌 ${topics} Topics</span><span>📖 ${lessons} Lessons</span></div><div class="course-actions"><button class="primary-btn" type="button" data-course-id="${c.id}">Open Course →</button></div></article>`}).join('');
+  learningCourseGrid.querySelectorAll('[data-course-id]').forEach(b=>b.addEventListener('click',()=>{learningPathPanel?.classList.remove('hidden');openLearningPath('course',b.dataset.courseId)}));
+}
+$('learningBackBtn')?.addEventListener('click',()=>{learningTrail.pop();const prev=learningTrail[learningTrail.length-1];if(prev)openLearningPath(prev.type,prev.id);else{learningPathPanel?.classList.add('hidden');learningTrail=[];$('learningCentrePanel')?.scrollIntoView({behavior:'smooth'})}});
+// Override course rendering/loading so V25 courses are first-class while preserving V24 resources.
+const _v24RenderLearningCentre=renderLearningCentre;
+renderLearningCentre=function(){ if(courseData.courses.length){renderLearningCoursesV25()} else {_v24RenderLearningCentre()} };
+const _v24LoadLearningCentre=loadLearningCentre;
+loadLearningCentre=async function(){await _v24LoadLearningCentre();await loadCourseStructure();if(courseData.courses.length)renderLearningCoursesV25();};
+
+// ===== V27 COURSE BUILDER WIZARD =====
+const qbCourse=$('qbCourse'),qbSubject=$('qbSubject'),qbTopic=$('qbTopic');
+let qbCurrentStep=1;
+function qbSetMsg(id,text,ok=false){const el=$(id);if(!el)return;el.className='message '+(ok?'submission-success':'');el.textContent=text||''}
+function qbToggle(id){$(id)?.classList.toggle('hidden')}
+function qbSelectedCourse(){return courseData.courses.find(c=>c.id===qbCourse?.value)}
+function qbSelectedSubject(){return courseData.subjects.find(s=>s.id===qbSubject?.value)}
+function qbSelectedTopic(){return courseData.topics.find(t=>t.id===qbTopic?.value)}
+function qbUpdateContext(){const c=qbSelectedCourse(),s=qbSelectedSubject(),t=qbSelectedTopic();if($('qbContextCourse'))$('qbContextCourse').textContent=c?.name||'—';if($('qbContextSubject'))$('qbContextSubject').textContent=s?.name||'—';if($('qbContextTopic'))$('qbContextTopic').textContent=t?.name||'—'}
+function qbCanStep(step){if(step===1)return true;if(step===2)return !!qbSelectedCourse();if(step===3)return !!qbSelectedCourse()&&!!qbSelectedSubject();if(step===4)return !!qbSelectedCourse()&&!!qbSelectedSubject()&&!!qbSelectedTopic();return false}
+function qbSummary(step){const c=qbSelectedCourse(),s=qbSelectedSubject(),t=qbSelectedTopic();if(step===1)return c?`<b>${esc(c.name)}</b><small>${esc(c.category||'General')} course</small>`:'';if(step===2)return s?`<b>${esc(s.name)}</b><small>Subject in ${esc(c?.name||'Course')}</small>`:'';if(step===3)return t?`<b>${esc(t.name)}</b><small>Topic in ${esc(s?.name||'Subject')}</small>`:'';return ''}
+function qbRefreshSummaries(){
+  [['qbCourseSummary',1,'qbEditCourse'],['qbSubjectSummary',2,'qbEditSubject'],['qbTopicSummary',3,'qbEditTopic']].forEach(([sid,step,eid])=>{const el=$(sid),edit=$(eid),txt=qbSummary(step);if(el){el.innerHTML=txt;el.classList.toggle('hidden',!txt)}if(edit)edit.classList.toggle('hidden',!txt)});
+  qbUpdateContext();
+}
+function qbSetStep(step,force=false){
+  if(!force&&!qbCanStep(step))return;
+  qbCurrentStep=step;
+  document.querySelectorAll('#courseAdminPanel .builder-step-card').forEach(card=>{const n=Number(card.dataset.builderStep);card.classList.toggle('active',n===step);card.classList.toggle('locked',n>step&&!qbCanStep(n));card.classList.toggle('collapsed',n<step&&qbCanStep(n));});
+  document.querySelectorAll('#courseAdminPanel [data-qb-step]').forEach(btn=>{const n=Number(btn.dataset.qbStep);btn.classList.toggle('active',n===step);btn.classList.toggle('done',n<step&&qbCanStep(n));btn.classList.toggle('locked',n>step&&!qbCanStep(n));btn.disabled=n>step&&!qbCanStep(n)});
+  qbRefreshSummaries();
+  const card=$('qbStep'+step);if(card)card.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function refreshQuickBuilder(){
+  if(!qbCourse)return;
+  qbCourse.innerHTML=courseData.courses.length?courseData.courses.map(c=>`<option value="${esc(c.id)}">${esc(c.name)} — ${esc(c.category||'General')}</option>`).join(''):'<option value="">No courses yet — create one</option>';
+  refreshQBSubjects();qbSetStep(Math.min(qbCurrentStep,1),true);
+}
+function refreshQBSubjects(){
+  if(!qbSubject)return;
+  const cid=qbCourse?.value,rows=courseData.subjects.filter(s=>s.courseId===cid);
+  qbSubject.innerHTML=rows.length?rows.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join(''):'<option value="">No subjects yet — create one</option>';
+  refreshQBTopics();qbRefreshSummaries();
+}
+function refreshQBTopics(){
+  if(!qbTopic)return;
+  const sid=qbSubject?.value,rows=courseData.topics.filter(t=>t.subjectId===sid);
+  qbTopic.innerHTML=rows.length?rows.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join(''):'<option value="">No topics yet — create one</option>';
+  qbRefreshSummaries();
+}
+function renderCourseAdminListV27(){
+  const box=$('courseAdminList');if(!box)return;
+  if(!courseData.courses.length){box.innerHTML='<div class="learning-empty"><div>🎓</div><h3>No courses yet</h3><p class="muted">Start with a course above.</p></div>';return;}
+  box.innerHTML=courseData.courses.map(c=>{
+    const subs=courseData.subjects.filter(s=>s.courseId===c.id);
+    return `<div class="admin-course-block"><div class="admin-course-title"><b>🎓 ${esc(c.name)}</b><span>${esc(c.category||'General')}</span></div>${subs.length?subs.map(s=>{
+      const tops=courseData.topics.filter(t=>t.subjectId===s.id);
+      return `<div class="admin-subject-block"><div class="admin-course-title"><b>📘 ${esc(s.name)}</b><span>${tops.length} topic${tops.length===1?'':'s'}</span></div>${tops.length?tops.map(t=>{const ls=courseData.lessons.filter(l=>l.topicId===t.id);return `<div class="admin-topic-block"><div class="admin-course-title"><b>📌 ${esc(t.name)}</b><span>${ls.length} lesson${ls.length===1?'':'s'}</span></div>${ls.length?ls.map(l=>`<div class="lesson-row"><div><b>📖 ${esc(l.title||'Untitled Lesson')}</b>${String(l.status||'published').toLowerCase()==='draft'?'<span class="draft-badge">DRAFT</span>':'<span class="published-badge">PUBLISHED</span>'}${l.pdfUrl?'<small> • PDF attached</small>':''}</div><div class="lesson-row-actions"><button type="button" class="secondary-btn admin-delete-mini" data-del-type="lesson" data-del-id="${esc(l.id)}">Delete</button></div></div>`).join(''):'<small class="muted">No lessons yet</small>'}</div>`}).join(''):'<small class="muted">No topics yet</small>'}</div>`;
+    }).join(''):'<p class="muted">No subjects yet.</p>'}</div>`;
+  }).join('');
+  box.querySelectorAll('[data-del-type="lesson"]').forEach(btn=>btn.addEventListener('click',()=>qbDeleteLesson(btn.dataset.delId)));
+}
+async function qbReload(){await loadCourseStructure();refreshQuickBuilder();renderCourseAdminListV27()}
+qbCourse?.addEventListener('change',()=>{refreshQBSubjects();qbSetStep(2);});
+qbSubject?.addEventListener('change',()=>{refreshQBTopics();qbSetStep(3);});
+qbTopic?.addEventListener('change',()=>{qbRefreshSummaries();qbSetStep(4);});
+$('qbNewCourse')?.addEventListener('click',()=>qbToggle('qbCourseNew'));
+$('qbNewSubject')?.addEventListener('click',()=>qbToggle('qbSubjectNew'));
+$('qbNewTopic')?.addEventListener('click',()=>qbToggle('qbTopicNew'));
+$('qbContinue1')?.addEventListener('click',()=>{if(qbCanStep(2))qbSetStep(2);else qbSetMsg('qbCourseMsg','Create or select a course first.')});
+$('qbContinue2')?.addEventListener('click',()=>{if(qbCanStep(3))qbSetStep(3);else qbSetMsg('qbSubjectMsg','Create or select a subject first.')});
+$('qbContinue3')?.addEventListener('click',()=>{if(qbCanStep(4))qbSetStep(4);else qbSetMsg('qbTopicMsg','Create or select a topic first.')});
+$('qbEditCourse')?.addEventListener('click',()=>qbSetStep(1,true));
+$('qbEditSubject')?.addEventListener('click',()=>qbSetStep(2,true));
+$('qbEditTopic')?.addEventListener('click',()=>qbSetStep(3,true));
+document.querySelectorAll('#courseAdminPanel [data-qb-step]').forEach(btn=>btn.addEventListener('click',()=>{const n=Number(btn.dataset.qbStep);if(qbCanStep(n))qbSetStep(n,true)}));
+$('qbSaveCourse')?.addEventListener('click',async()=>{
+  const name=$('qbCourseName').value.trim(),category=$('qbCourseCategory').value;
+  if(!name){qbSetMsg('qbCourseMsg','Enter a course name.');return}
+  qbSetMsg('qbCourseMsg','Creating course...');
+  try{const ref=await addDoc(collection(db,'courses'),{name,category,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbCourseName').value='';$('qbCourseNew').classList.add('hidden');await qbReload();qbCourse.value=ref.id;refreshQBSubjects();qbSetStep(2,true);qbSetMsg('qbCourseMsg','Course created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbCourseMsg','Could not create course: '+(e.code||e.message))}
+});
+$('qbSaveSubject')?.addEventListener('click',async()=>{
+  const courseId=qbCourse?.value,name=$('qbSubjectName').value.trim();
+  if(!courseId){qbSetMsg('qbSubjectMsg','Create or select a course first.');return}
+  if(!name){qbSetMsg('qbSubjectMsg','Enter a subject name.');return}
+  qbSetMsg('qbSubjectMsg','Creating subject...');
+  try{const ref=await addDoc(collection(db,'subjects'),{name,courseId,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbSubjectName').value='';$('qbSubjectNew').classList.add('hidden');await qbReload();qbCourse.value=courseId;refreshQBSubjects();qbSubject.value=ref.id;refreshQBTopics();qbSetStep(3,true);qbSetMsg('qbSubjectMsg','Subject created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbSubjectMsg','Could not create subject: '+(e.code||e.message))}
+});
+$('qbSaveTopic')?.addEventListener('click',async()=>{
+  const subjectId=qbSubject?.value,name=$('qbTopicName').value.trim();
+  if(!subjectId){qbSetMsg('qbTopicMsg','Create or select a subject first.');return}
+  if(!name){qbSetMsg('qbTopicMsg','Enter a topic title.');return}
+  qbSetMsg('qbTopicMsg','Creating topic...');
+  try{const ref=await addDoc(collection(db,'topics'),{name,subjectId,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbTopicName').value='';$('qbTopicNew').classList.add('hidden');await qbReload();qbSubject.value=subjectId;refreshQBTopics();qbTopic.value=ref.id;qbRefreshSummaries();qbSetStep(4,true);qbSetMsg('qbTopicMsg','Topic created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbTopicMsg','Could not create topic: '+(e.code||e.message))}
+});
+
+// ===== V28 RICH TEXT EDITOR =====
+function qbEditorText(){
+  return ($('qbLessonContent')?.innerText || $('qbLessonContent')?.textContent || '').replace(/\u00a0/g,' ').trim();
+}
+function sanitizeRichHtml(html){
+  const template=document.createElement('template');
+  template.innerHTML=String(html||'');
+  const allowed=new Set(['B','STRONG','I','EM','U','H2','H3','H4','P','BR','UL','OL','LI','BLOCKQUOTE','A','CODE','PRE','SUB','SUP','DIV','SPAN','IMG','FIGURE','FIGCAPTION','IFRAME','TABLE','THEAD','TBODY','TR','TH','TD']);
+  const walk=node=>{
+    [...node.childNodes].forEach(child=>{
+      if(child.nodeType===Node.ELEMENT_NODE){
+        if(!allowed.has(child.tagName)){
+          const frag=document.createDocumentFragment();
+          while(child.firstChild)frag.appendChild(child.firstChild);
+          child.replaceWith(frag); return;
+        }
+        const tag=child.tagName;
+        const keep=new Set(tag==='A'?['href','target','rel']:tag==='IMG'?['src','alt','title']:tag==='IFRAME'?['src','title','allow','allowfullscreen','frameborder']:[]);
+        [...child.attributes].forEach(attr=>{if(!keep.has(attr.name.toLowerCase()))child.removeAttribute(attr.name)});
+        if(tag==='A'){
+          const href=child.getAttribute('href')||'';
+          if(!/^https?:\/\//i.test(href)){child.removeAttribute('href')}else{child.setAttribute('target','_blank');child.setAttribute('rel','noopener noreferrer')}
+        }
+        if(tag==='IMG'){
+          const src=child.getAttribute('src')||'';
+          if(!/^https?:\/\//i.test(src)){child.remove();return}
+          child.setAttribute('loading','lazy');
+        }
+        if(tag==='IFRAME'){
+          const src=child.getAttribute('src')||'';
+          if(!/^https:\/\/(www\.)?(youtube\.com|youtube-nocookie\.com)\//i.test(src)){child.remove();return}
+          child.setAttribute('loading','lazy');
+          child.setAttribute('allow','accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+          child.setAttribute('allowfullscreen','');
+        }
+        walk(child);
+      }else if(child.nodeType!==Node.TEXT_NODE){child.remove()}
+    });
+  };
+  walk(template.content);
+  return template.innerHTML.trim();
+}
+function qbRichExec(cmd,value=null){
+  $('qbLessonContent')?.focus();
+  try{document.execCommand(cmd,false,value)}catch(e){console.warn('Formatting command failed',cmd,e)}
+}
+
+// Fast formatting shortcuts: admins can format while typing without returning to the toolbar.
+document.getElementById('qbLessonContent')?.addEventListener('keydown',e=>{
+  if(!(e.ctrlKey||e.metaKey))return;
+  const k=e.key.toLowerCase();
+  if(['b','i','u'].includes(k)){e.preventDefault();qbRichExec(k==='b'?'bold':k==='i'?'italic':'underline');}
+});
+document.querySelectorAll('#qbLessonToolbar [data-cmd]').forEach(btn=>btn.addEventListener('mousedown',e=>e.preventDefault()));
+document.querySelectorAll('#qbLessonToolbar [data-cmd]').forEach(btn=>btn.addEventListener('click',()=>qbRichExec(btn.dataset.cmd)));
+$('qbLessonToolbar [data-block]')?.addEventListener('change',e=>{
+  const value=e.target.value;
+  $('qbLessonContent')?.focus();
+  qbRichExec('formatBlock',value);
+  e.target.value='p';
+});
+$('qbLessonToolbar [data-link]')?.addEventListener('mousedown',e=>e.preventDefault());
+$('qbLessonToolbar [data-link]')?.addEventListener('click',()=>{
+  const url=prompt('Enter the full link (https://...)');
+  if(url && /^https?:\/\//i.test(url.trim()))qbRichExec('createLink',url.trim());
+});
+
+function qbYoutubeEmbed(url){
+  try{
+    const u=new URL(url); let id='';
+    if(u.hostname==='youtu.be') id=u.pathname.slice(1);
+    if(u.hostname.includes('youtube.com')) id=u.searchParams.get('v')||u.pathname.split('/').filter(Boolean).pop();
+    id=(id||'').replace(/[^a-zA-Z0-9_-]/g,'');
+    return id?`https://www.youtube-nocookie.com/embed/${id}`:'';
+  }catch(e){return ''}
+}
+function qbInsertHtml(html){const editor=$('qbLessonContent');if(!editor)return;editor.focus();document.execCommand('insertHTML',false,html);}
+function qbInsertImage(){
+  const url=prompt('Paste the image URL (https://...)');
+  if(!url||!/^https?:\/\//i.test(url.trim()))return;
+  const alt=prompt('Image description (optional)')||'Lesson image';
+  qbInsertHtml(`<figure class="lesson-media image-media"><img src="${esc(url.trim())}" alt="${esc(alt)}"><figcaption>${esc(alt)}</figcaption></figure><p><br></p>`);
+}
+function qbInsertVideo(){
+  const url=prompt('Paste a YouTube video link (https://youtube.com/... or https://youtu.be/...)');
+  const embed=qbYoutubeEmbed((url||'').trim());
+  if(!embed){if(url)alert('Please enter a valid YouTube link.');return}
+  qbInsertHtml(`<div class="lesson-media video-media"><iframe src="${embed}" title="Lesson video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><p><br></p>`);
+}
+$('qbInsertImage')?.addEventListener('click',qbInsertImage);
+$('qbInsertVideo')?.addEventListener('click',qbInsertVideo);
+
+// ===== V32 PASTE-FRIENDLY TABLE + CALCULATION BLOCKS =====
+function htmlEscText(v){return esc(String(v??''));}
+function linesToPreHtml(text){return htmlEscText(text).replace(/\n/g,'<br>');}
+function parsePipeTable(lines){
+  return parseLooseTable(lines);
+}
+function parseLooseTable(lines){
+  const clean=lines.map(x=>String(x).trim()).filter(Boolean);
+  if(clean.length<2)return '';
+
+  let rows=clean.map(x=>{
+    const s=x.replace(/^\|/,'').replace(/\|$/,'').trim();
+    return s.split(/\s*\|\s*|\t+/).map(c=>c.trim());
+  });
+
+  const isSep=r=>r.length>0 && r.every(c=>/^:?-{3,}:?$/.test(c));
+  const header=rows[0];
+  if(!header || header.length<2)return '';
+
+  let body=rows.slice(1);
+  if(body.length && isSep(body[0])) body=body.slice(1);
+
+  const width=header.length;
+  const normalized=body.map(r=>{
+    const out=[];
+    for(let i=0;i<width;i++) out.push(r[i]||'');
+    return out;
+  });
+
+  const head='<thead><tr>'+header.map(c=>`<th>${aiInlineFormat(c)}</th>`).join('')+'</tr></thead>';
+  const bodyHtml=normalized.map(r=>
+    '<tr>'+r.map(c=>`<td>${aiInlineFormat(c)}</td>`).join('')+'</tr>'
+  ).join('');
+
+  return `<div class="lesson-table-wrap"><table class="lesson-table">${head}<tbody>${bodyHtml}</tbody></table></div>`;
+}
+function aiInlineFormat(text){
+  let s=htmlEscText(String(text??''));
+  const stash=[];
+  s=s.replace(/`([^`]+)`/g,(_,x)=>{const k=`@@CODE${stash.length}@@`;stash.push(`<code>${x}</code>`);return k;});
+  s=s.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
+  s=s.replace(/__([^_\n]+)__/g,'<u>$1</u>');
+  s=s.replace(/\*([^*\n]+)\*/g,'<em>$1</em>');
+  s=s.replace(/\b([A-Za-z0-9]+)\^([A-Za-z0-9+-]+)\b/g,'$1<sup>$2</sup>');
+  s=s.replace(/@@CODE(\d+)@@/g,(_,i)=>stash[Number(i)]||'');
+  return s;
+}
+function aiFormatPlainBlock(lines){
+  return lines.map(line=>{
+    const t=line.trim();
+    if(!t)return '<p><br></p>';
+    if(/^###\s+/.test(t))return `<h4>${aiInlineFormat(t.replace(/^###\s+/,''))}</h4>`;
+    if(/^##\s+/.test(t))return `<h3>${aiInlineFormat(t.replace(/^##\s+/,''))}</h3>`;
+    if(/^#\s+/.test(t))return `<h2>${aiInlineFormat(t.replace(/^#\s+/,''))}</h2>`;
+    if(/^[-•*]\s+/.test(t))return `<p>• ${aiInlineFormat(t.replace(/^[-•*]\s+/,''))}</p>`;
+    if(/^\d+[.)]\s+/.test(t))return `<p>${aiInlineFormat(t)}</p>`;
+    return `<p>${aiInlineFormat(t)}</p>`;
+  }).join('');
+}
+function formatAiLessonText(text){
+  const src=String(text||'').replace(/\r\n?/g,'\n');
+  if(!src.trim())return '';
+  const lines=src.split('\n'); let out='',i=0,plain=[]; let firstContentSeen=false;
+  const flush=()=>{if(!plain.length)return;
+    while(plain.length && !plain[0].trim())plain.shift();
+    if(!firstContentSeen && plain.length && /^[A-Z][A-Z0-9 &'’()\-]{2,70}$/.test(plain[0].trim())){
+      out+=`<h2>${aiInlineFormat(plain.shift().trim())}</h2>`;
+      firstContentSeen=true;
+    }
+    if(plain.length){
+      // Treat standalone ALL-CAPS lines later in the lesson as subheadings.
+      const chunks=[];
+      plain.forEach(line=>{
+        const t=line.trim();
+        const labeled=/^(?:DEFINITION|MEANING|INTRODUCTION|RULES?|TYPES?|EXAMPLES?|WORKED EXAMPLES?|IMPORTANT NOTES?|KEY POINTS?|EXAM TIPS?|COMMON ERRORS?|PRACTICE QUESTIONS?|QUESTIONS?|ANSWERS?|SUMMARY|CONCLUSION)\s*:??$/i.test(t);
+        if((/^[A-Z][A-Z0-9 &'’()\-]{2,60}$/.test(t) && t.split(/\s+/).length<=8) || labeled){
+          if(chunks.length){out+=aiFormatPlainBlock(chunks);chunks.length=0;}
+          out+=`<h3>${aiInlineFormat(t.replace(/:$/,''))}</h3>`;
+        }else chunks.push(line);
+      });
+      if(chunks.length)out+=aiFormatPlainBlock(chunks);
+      firstContentSeen=true;
+    } else if(!firstContentSeen) firstContentSeen=true;
+    plain=[];
+  };
+  while(i<lines.length){
+    const raw=lines[i], t=raw.trim();
+    if(/^\[table\]/i.test(t)){
+      flush(); let inline=t.replace(/^\[table\]/i,'').replace(/\[\/table\].*$/i,'').trim(); let block=[]; if(inline)block.push(inline); i++;
+      while(i<lines.length&&!/^\[\/table\]/i.test(lines[i].trim())){block.push(lines[i]);i++;}
+      if(i<lines.length)i++;
+      out+=parseLooseTable(block)||aiFormatPlainBlock(block); firstContentSeen=true; continue;
+    }
+    if(/^\[calc\]/i.test(t)){
+      flush(); let block=[]; i++;
+      while(i<lines.length&&!/^\[\/calc\]/i.test(lines[i].trim())){block.push(lines[i]);i++;}
+      if(i<lines.length)i++;
+      out+=`<div class="calc-block"><pre>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</pre></div>`; firstContentSeen=true; continue;
+    }
+    if(/^\[answer\]/i.test(t)){
+      flush(); let block=[]; i++;
+      while(i<lines.length&&!/^\[\/answer\]/i.test(lines[i].trim())){block.push(lines[i]);i++;}
+      if(i<lines.length)i++;
+      out+=`<div class="answer-block"><b>Answer</b><div>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</div></div>`; firstContentSeen=true; continue;
+    }
+    if(/^\s*\|.*\|\s*$/.test(raw)){
+      let j=i, block=[];
+      while(j<lines.length && /^\s*\|.*\|\s*$/.test(lines[j])){block.push(lines[j]);j++;}
+      if(block.length>=2){
+        const table=parseLooseTable(block);
+        if(table){flush();out+=table;firstContentSeen=true;i=j;continue;}
+      }
+    }
+    if(/^#{1,3}\s+/.test(t)){flush();const m=t.match(/^(#{1,3})\s+(.+)$/);const tag=m[1].length===1?'h2':m[1].length===2?'h3':'h4';out+=`<${tag}>${aiInlineFormat(m[2])}</${tag}>`;firstContentSeen=true;i++;continue;}
+    if(i+1<lines.length && /^(?:\s*[-_=]{4,}\s*)$/.test(lines[i+1]) && t){
+      flush();let block=[raw,lines[i+1]];i+=2;while(i<lines.length&&lines[i].trim()&&!/^\[/.test(lines[i].trim())){block.push(lines[i]);i++;}
+      out+=`<div class="calc-block"><pre>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</pre></div>`;firstContentSeen=true;continue;
+    }
+    if(/^\s*(?:FORMATTING|TABLES|CALCULATIONS|ANSWERS)\s*:\s*$/i.test(t)){flush();i++;continue;}
+    plain.push(raw);i++;
+  }
+  flush();return out;
+}
+function qbFormatAiNote(){
+  const editor=$('qbLessonContent');if(!editor)return;
+  const text=editor.innerText||editor.textContent||'';
+  if(!text.trim()){alert('Paste or type the AI lesson first.');return;}
+  const html=formatAiLessonText(text);
+  if(html){editor.innerHTML=html;editor.focus();qbSetMsg('qbLessonMsg','AI formatting applied successfully ✨');}
+}
+$('qbFormatAiNote')?.addEventListener('click',qbFormatAiNote);
+
+// V36: Keep pasted AI text as RAW text until the user presses "Format AI Note".
+// This is intentional: converting during paste can destroy [table]/[calc]/[answer]
+// markers before the formatter gets a chance to see them. The browser's normal paste
+// behavior is therefore used here.
+function pasteAsRawAiLesson(e){
+  const text=e.clipboardData?.getData('text/plain');
+  if(!text)return;
+  // Let the browser paste the exact text. The Format AI Note button is the
+  // authoritative conversion step.
+}
+$('qbLessonContent')?.addEventListener('paste',pasteAsRawAiLesson);
+function qbInsertTable(){
+  const editor=$('qbLessonContent'); if(!editor)return;
+  const rows=Number(prompt('How many rows?', '3'))||3;
+  const cols=Number(prompt('How many columns?', '3'))||3;
+  const r=Math.max(2,Math.min(20,rows));
+  const c=Math.max(2,Math.min(10,cols));
+  let h='<div class="lesson-table-wrap"><table class="lesson-table"><thead><tr>';
+  for(let j=0;j<c;j++) h+='<th contenteditable="true">Header '+(j+1)+'</th>';
+  h+='</tr></thead><tbody>';
+  for(let i=1;i<r;i++){
+    h+='<tr>';
+    for(let j=0;j<c;j++) h+='<td contenteditable="true">Text</td>';
+    h+='</tr>';
+  }
+  h+='</tbody></table></div><p><br></p>';
+  editor.insertAdjacentHTML('beforeend',h);
+  editor.focus();
+}
+function qbInsertCalc(){qbInsertHtml('<div class="calc-block"><pre>Write your calculation here...\n------------------------------\nAnswer = </pre></div><p><br></p>');}
+function qbInsertAnswer(){qbInsertHtml('<div class="answer-block"><b>Answer</b><div>Write the final answer here.</div></div><p><br></p>');}
+$('qbInsertTable')?.addEventListener('click',qbInsertTable);
+$('qbInsertCalc')?.addEventListener('click',qbInsertCalc);
+$('qbInsertAnswer')?.addEventListener('click',qbInsertAnswer);
+
+async function qbSaveLesson(status){
+  const topicId=qbTopic?.value,title=$('qbLessonTitle').value.trim(),rawHtml=$('qbLessonContent')?.innerHTML||'',editorText=$('qbLessonContent')?.innerText||$('qbLessonContent')?.textContent||'',formattedHtml=/\[\/?(?:table|calc|answer)\]/i.test(editorText)||/\*\*[^*]+\*\*/.test(editorText)||/__[^_]+__/.test(editorText)?formatAiLessonText(editorText):rawHtml,content=sanitizeRichHtml(formattedHtml),file=$('qbLessonFile')?.files?.[0];
+  if(!topicId){qbSetMsg('qbLessonMsg','Create or select a topic first.');return}
+  if(!title||!qbEditorText()){qbSetMsg('qbLessonMsg','Enter both a lesson title and lesson content.');return}
+  if(file && (file.type!=='application/pdf' && !/\.pdf$/i.test(file.name))){qbSetMsg('qbLessonMsg','Only PDF files are allowed.');return}
+  if(file && file.size>50*1024*1024){qbSetMsg('qbLessonMsg','PDF must be 50 MB or smaller.');return}
+  const topic=courseData.topics.find(t=>t.id===topicId),subject=courseData.subjects.find(s=>s.id===topic?.subjectId),course=courseData.courses.find(c=>c.id===subject?.courseId);
+  const btn=status==='draft'?$('qbSaveDraft'):$('qbPublishLesson');btn.disabled=true;qbSetMsg('qbLessonMsg',file&&status==='published'?'Uploading PDF and publishing lesson...':status==='draft'?'Saving draft...':'Publishing lesson...');
+  let uploadedPath='';
+  try{
+    let pdfUrl='';
+    if(file){const safeName=file.name.replace(/[^a-zA-Z0-9._-]+/g,'_');uploadedPath='materials/lessons/'+auth.currentUser.uid+'/'+Date.now()+'_'+safeName;const {error}=await supabase.storage.from(SUPABASE_BUCKET).upload(uploadedPath,file,{contentType:'application/pdf',upsert:false,cacheControl:'3600'});if(error)throw error;const {data}=supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(uploadedPath);pdfUrl=data.publicUrl}
+    await addDoc(collection(db,'lessons'),{title,content,pdfUrl,storagePath:uploadedPath||'',storageProvider:uploadedPath?'supabase':'',topicId,subjectId:subject?.id||'',courseId:course?.id||'',category:course?.category||'General',status,contentFormat:'html',createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
+    $('qbLessonTitle').value='';$('qbLessonContent').innerHTML='';if($('qbLessonFile'))$('qbLessonFile').value='';await qbReload();qbSetMsg('qbLessonMsg',status==='draft'?'Draft saved successfully ✅':'Lesson published successfully ✅',true);
+  }catch(e){console.error(e);if(uploadedPath){try{await supabase.storage.from(SUPABASE_BUCKET).remove([uploadedPath])}catch(cleanErr){console.warn(cleanErr)}}qbSetMsg('qbLessonMsg','Could not '+(status==='draft'?'save draft':'publish lesson')+': '+(e.code||e.message))}finally{btn.disabled=false}
+}
+$('qbSaveDraft')?.addEventListener('click',()=>qbSaveLesson('draft'));
+$('qbPublishLesson')?.addEventListener('click',()=>qbSaveLesson('published'));
+async function qbDeleteLesson(id){
+  const lesson=courseData.lessons.find(l=>l.id===id);if(!lesson)return;
+  if(!confirm('Delete this lesson? This cannot be undone.'))return;
+  try{if(lesson.storagePath)await supabase.storage.from(SUPABASE_BUCKET).remove([lesson.storagePath]);await deleteDoc(doc(db,'lessons',id));await qbReload();await loadLearningCentre();alert('Lesson deleted successfully.')}catch(e){console.error(e);alert('Could not delete lesson: '+(e.code||e.message))}
+}
+$('qbRefresh')?.addEventListener('click',qbReload);
+const _v25RenderCourseAdminList=renderCourseAdminList;renderCourseAdminList=function(){renderCourseAdminListV27()};
+const _v25LoadCourseStructure=loadCourseStructure;loadCourseStructure=async function(){await _v25LoadCourseStructure();refreshQuickBuilder();renderCourseAdminListV27()};
+qbSetStep(1,true);
