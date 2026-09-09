@@ -471,11 +471,12 @@ async function loadMaterials(){
         dl.addEventListener('click',async()=>{
           const oldText=dl.textContent;dl.disabled=true;dl.textContent='⏳ Downloading...';
           try{
-            const {data,error}=await supabase.storage.from(SUPABASE_BUCKET).download(m.storagePath);
-            if(error)throw error;
-            const blobUrl=URL.createObjectURL(data);
-            const a=document.createElement('a');a.href=blobUrl;a.download=m.fileName||((m.title||'study-material')+'.pdf');document.body.appendChild(a);a.click();a.remove();
-            setTimeout(()=>URL.revokeObjectURL(blobUrl),5000);
+            const filename=m.fileName||((m.title||'study-material')+'.pdf');
+            const {data:urlData,error:urlError}=supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(m.storagePath,{download:filename});
+            if(urlError)throw urlError;
+            const downloadUrl=urlData?.publicUrl;
+            if(!downloadUrl)throw new Error('Could not create download URL.');
+            const a=document.createElement('a');a.href=downloadUrl;a.download=filename;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
           }catch(e){console.error('PDF download error:',e);alert('Could not download this PDF: '+(e?.message||e));}
           finally{dl.disabled=false;dl.textContent=oldText;}
         });
