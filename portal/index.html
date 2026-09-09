@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Great Stand Portal</title><link rel="stylesheet" href="portal.css?v=26.3"><style id="v264-course-builder-design">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Great Stand Portal</title><link rel="stylesheet" href="portal.css?v=27.0"><style id="v264-course-builder-design">
 /* V26.4 GUARANTEED COURSE BUILDER STYLES - inline fallback */
 #courseAdminPanel{background:linear-gradient(180deg,#fff 0%,#f8fafc 100%)!important;border:0!important;overflow:hidden;position:relative!important}
 #courseAdminPanel:before{content:"";display:block;height:6px;margin:-26px -26px 22px;background:linear-gradient(90deg,#071a33,#d6ad55,#071a33)!important}
@@ -35,6 +35,21 @@
 #courseAdminPanel .course-builder-tip b{color:#6f5410}
 #courseAdminPanel .course-builder-tip span{color:#5f6672}
 @media(max-width:700px){#courseAdminPanel{padding:18px!important;margin-left:0!important;margin-right:0!important}#courseAdminPanel:before{margin:-18px -18px 18px!important}.builder-head{display:block!important}.builder-head h2{font-size:24px!important}.builder-row,.builder-new{grid-template-columns:1fr!important}.builder-row .secondary-btn,.builder-new .primary-btn{width:100%!important}.builder-card{padding:16px!important;border-radius:17px!important}.builder-progress{gap:5px!important;padding:10px!important}.builder-step span{width:32px!important;height:32px!important;min-width:32px!important}.builder-step b{display:none}.builder-line{min-width:12px!important}.builder-publish .primary-btn{width:100%!important}.course-builder-tip{flex-direction:column!important;font-size:13px}}
+
+/* V27 COURSE BUILDER WIZARD */
+#courseAdminPanel .builder-progress{display:flex!important;align-items:center!important;gap:8px!important;padding:12px 14px!important;overflow-x:auto!important;background:#f4f7fb!important;border:1px solid #e5eaf1!important;border-radius:16px!important;box-shadow:0 4px 14px rgba(7,26,51,.04)!important;margin-top:18px!important}
+#courseAdminPanel .builder-step{display:flex!important;align-items:center!important;gap:7px!important;white-space:nowrap!important;color:#8a94a6!important;font-size:.82rem!important;font-weight:700!important;border:0!important;background:transparent!important;padding:0!important;cursor:pointer!important}
+#courseAdminPanel .builder-step span{width:34px!important;height:34px!important;min-width:34px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:#fff!important;border:1px solid #dce4ef!important;color:#56657a!important;font-weight:800!important;box-shadow:0 2px 7px rgba(7,26,51,.05)!important}
+#courseAdminPanel .builder-step.active{color:#071a33!important}.builder-step.active span{background:#071a33!important;color:#fff!important;border-color:#071a33!important}.builder-step.done span{background:#dff6ea!important;color:#067647!important;border-color:#b7e4cb!important}.builder-step.locked{opacity:.55!important;cursor:not-allowed!important}
+#courseAdminPanel .builder-line{height:1px!important;background:#dce3ec!important;min-width:22px!important;flex:1!important}
+#courseAdminPanel .builder-step-card{transition:box-shadow .2s ease,transform .2s ease,border-color .2s ease!important}.builder-step-card.locked{opacity:.7!important}.builder-step-card.active{border-color:#cfdbea!important;box-shadow:0 12px 30px rgba(7,26,51,.08)!important}.builder-step-card.collapsed{padding:15px 18px!important}.builder-step-card.collapsed .builder-step-body{display:none!important}.builder-step-card.collapsed .builder-card-title{align-items:center!important}.builder-step-card.locked .builder-step-body{display:none!important}
+#courseAdminPanel .builder-card-title{display:flex!important;justify-content:space-between!important;align-items:flex-start!important;gap:12px!important}.builder-edit-btn{border:1px solid #d7dce5!important;background:#fff!important;color:#071a33!important;border-radius:10px!important;padding:8px 12px!important;font-weight:800!important;cursor:pointer!important}.builder-edit-btn:hover{border-color:#d6ad55!important;background:#fffaf0!important}
+#courseAdminPanel .builder-summary{margin:14px 0 0 52px!important;padding:11px 13px!important;background:#f7f9fc!important;border:1px solid #e5eaf1!important;border-radius:11px!important;color:#344054!important;font-size:14px!important}.builder-summary b{color:#071a33!important}.builder-summary small{display:block;color:#667085!important;margin-top:2px!important}
+#courseAdminPanel .builder-continue{display:flex!important;justify-content:flex-end!important;margin-top:14px!important}.builder-continue .primary-btn{width:auto!important;margin-top:0!important;padding:12px 18px!important}.builder-continue .primary-btn:disabled{opacity:.45!important;cursor:not-allowed!important}
+#courseAdminPanel .builder-context{display:flex!important;flex-wrap:wrap!important;gap:7px 10px!important;margin:15px 0 4px!important;padding:12px 14px!important;background:#f7f9fc!important;border:1px solid #e5eaf1!important;border-radius:12px!important;color:#667085!important;font-size:12px!important}.builder-context b{color:#071a33!important;margin-right:6px!important}
+#courseAdminPanel .builder-publish{display:flex!important;justify-content:flex-end!important;gap:10px!important;margin-top:15px!important}.builder-publish .primary-btn,.builder-publish .secondary-btn{width:auto!important;margin-top:0!important;min-height:46px!important}
+#courseAdminPanel .draft-badge{display:inline-block!important;margin-left:7px!important;padding:3px 7px!important;border-radius:999px!important;background:#fff4d6!important;color:#7a5a08!important;font-size:10px!important;font-weight:800!important}.published-badge{display:inline-block!important;margin-left:7px!important;padding:3px 7px!important;border-radius:999px!important;background:#e7f7ee!important;color:#067647!important;font-size:10px!important;font-weight:800!important}
+@media(max-width:700px){#courseAdminPanel .builder-progress{padding:10px!important}.builder-step b{display:none!important}.builder-line{min-width:14px!important}.builder-step-card.collapsed{padding:13px 14px!important}.builder-summary{margin-left:0!important}.builder-publish{flex-direction:column!important}.builder-publish .primary-btn,.builder-publish .secondary-btn{width:100%!important}.builder-continue .primary-btn{width:100%!important}.builder-context{font-size:11px!important}}
 </style></head><body><div id="gsNavOverlay" class="gs-nav-overlay"></div>
 <aside id="gsSideNav" class="gs-side-nav" aria-label="Portal navigation">
   <div class="gs-nav-head"><div class="gs-nav-brand"><div class="gs-nav-logo">G</div><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div><button id="gsNavClose" class="gs-nav-close" type="button" aria-label="Close navigation">×</button></div>
@@ -172,48 +187,68 @@ Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
 </div>
 <div id="courseAdminPanel" class="panel admin-panel portal-section" style="display:none">
   <div class="builder-head">
-    <div><span class="badge">COURSE BUILDER</span><h2>🎓 Build Your Learning Centre</h2><p class="muted">Create a complete learning path from your phone: course → subject → topic → lesson.</p></div>
+    <div><span class="badge">COURSE BUILDER</span><h2>🎓 Build Your Learning Centre</h2><p class="muted">Build your course step by step. You can return to any completed step and edit it.</p></div>
+  </div>
+
+  <div class="builder-progress" id="qbProgress" aria-label="Course builder progress">
+    <button class="builder-step active" data-qb-step="1" type="button"><span>1</span><b>Course</b></button><div class="builder-line"></div>
+    <button class="builder-step" data-qb-step="2" type="button"><span>2</span><b>Subject</b></button><div class="builder-line"></div>
+    <button class="builder-step" data-qb-step="3" type="button"><span>3</span><b>Topic</b></button><div class="builder-line"></div>
+    <button class="builder-step" data-qb-step="4" type="button"><span>4</span><b>Lesson</b></button>
   </div>
 
   <div class="quick-builder" id="quickBuilder">
-    <div class="builder-progress"><div class="builder-step active"><span>1</span><b>Course</b></div><div class="builder-line"></div><div class="builder-step"><span>2</span><b>Subject</b></div><div class="builder-line"></div><div class="builder-step"><span>3</span><b>Topic</b></div><div class="builder-line"></div><div class="builder-step"><span>4</span><b>Lesson</b></div></div>
-
-    <div class="builder-card">
-      <div class="builder-card-title"><div><span class="builder-number">1</span><div><h3>Choose or create a course</h3><p class="muted">Example: JAMB Preparation</p></div></div></div>
-      <div class="builder-row"><select id="qbCourse"></select><button id="qbNewCourse" class="secondary-btn" type="button">＋ New Course</button></div>
-      <div id="qbCourseNew" class="builder-new hidden"><input id="qbCourseName" placeholder="Course name e.g. JAMB Preparation"><select id="qbCourseCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General">General</option></select><button id="qbSaveCourse" class="primary-btn" type="button">Create Course</button></div>
+    <div class="builder-card builder-step-card active" data-builder-step="1" id="qbStep1">
+      <div class="builder-card-title"><div><span class="builder-number">1</span><div><h3>Choose or create a course</h3><p class="muted">Example: JAMB Preparation</p></div></div><button class="builder-edit-btn hidden" id="qbEditCourse" type="button">Edit</button></div>
+      <div class="builder-summary hidden" id="qbCourseSummary"></div>
+      <div class="builder-step-body">
+        <div class="builder-row"><select id="qbCourse"></select><button id="qbNewCourse" class="secondary-btn" type="button">＋ New Course</button></div>
+        <div id="qbCourseNew" class="builder-new hidden"><input id="qbCourseName" placeholder="Course name e.g. JAMB Preparation"><select id="qbCourseCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General">General</option></select><button id="qbSaveCourse" class="primary-btn" type="button">Create Course</button></div>
+        <div class="builder-continue"><button id="qbContinue1" class="primary-btn" type="button">Continue to Subject →</button></div>
+      </div>
       <p id="qbCourseMsg" class="message"></p>
     </div>
 
-    <div class="builder-card">
-      <div class="builder-card-title"><div><span class="builder-number">2</span><div><h3>Choose or create a subject</h3><p class="muted">Example: Mathematics</p></div></div></div>
-      <div class="builder-row"><select id="qbSubject"></select><button id="qbNewSubject" class="secondary-btn" type="button">＋ New Subject</button></div>
-      <div id="qbSubjectNew" class="builder-new hidden"><input id="qbSubjectName" placeholder="Subject name e.g. Mathematics"><button id="qbSaveSubject" class="primary-btn" type="button">Create Subject</button></div>
+    <div class="builder-card builder-step-card locked" data-builder-step="2" id="qbStep2">
+      <div class="builder-card-title"><div><span class="builder-number">2</span><div><h3>Choose or create a subject</h3><p class="muted">Example: Mathematics</p></div></div><button class="builder-edit-btn hidden" id="qbEditSubject" type="button">Edit</button></div>
+      <div class="builder-summary hidden" id="qbSubjectSummary"></div>
+      <div class="builder-step-body">
+        <div class="builder-row"><select id="qbSubject"></select><button id="qbNewSubject" class="secondary-btn" type="button">＋ New Subject</button></div>
+        <div id="qbSubjectNew" class="builder-new hidden"><input id="qbSubjectName" placeholder="Subject name e.g. Mathematics"><button id="qbSaveSubject" class="primary-btn" type="button">Create Subject</button></div>
+        <div class="builder-continue"><button id="qbContinue2" class="primary-btn" type="button">Continue to Topic →</button></div>
+      </div>
       <p id="qbSubjectMsg" class="message"></p>
     </div>
 
-    <div class="builder-card">
-      <div class="builder-card-title"><div><span class="builder-number">3</span><div><h3>Choose or create a topic</h3><p class="muted">Example: Number Bases</p></div></div></div>
-      <div class="builder-row"><select id="qbTopic"></select><button id="qbNewTopic" class="secondary-btn" type="button">＋ New Topic</button></div>
-      <div id="qbTopicNew" class="builder-new hidden"><input id="qbTopicName" placeholder="Topic title e.g. Number Bases"><button id="qbSaveTopic" class="primary-btn" type="button">Create Topic</button></div>
+    <div class="builder-card builder-step-card locked" data-builder-step="3" id="qbStep3">
+      <div class="builder-card-title"><div><span class="builder-number">3</span><div><h3>Choose or create a topic</h3><p class="muted">Example: Number Bases</p></div></div><button class="builder-edit-btn hidden" id="qbEditTopic" type="button">Edit</button></div>
+      <div class="builder-summary hidden" id="qbTopicSummary"></div>
+      <div class="builder-step-body">
+        <div class="builder-row"><select id="qbTopic"></select><button id="qbNewTopic" class="secondary-btn" type="button">＋ New Topic</button></div>
+        <div id="qbTopicNew" class="builder-new hidden"><input id="qbTopicName" placeholder="Topic title e.g. Number Bases"><button id="qbSaveTopic" class="primary-btn" type="button">Create Topic</button></div>
+        <div class="builder-continue"><button id="qbContinue3" class="primary-btn" type="button">Continue to Lesson →</button></div>
+      </div>
       <p id="qbTopicMsg" class="message"></p>
     </div>
 
-    <div class="builder-card builder-lesson-card">
+    <div class="builder-card builder-step-card locked" data-builder-step="4" id="qbStep4">
       <div class="builder-card-title"><div><span class="builder-number">4</span><div><h3>Create the lesson</h3><p class="muted">Add your teaching content and an optional PDF.</p></div></div></div>
-      <input id="qbLessonTitle" placeholder="Lesson title e.g. Introduction to Number Bases">
-      <textarea id="qbLessonContent" placeholder="Write the lesson here...
+      <div class="builder-context" id="qbLessonContext"><span>Course</span><b id="qbContextCourse">—</b><span>Subject</span><b id="qbContextSubject">—</b><span>Topic</span><b id="qbContextTopic">—</b></div>
+      <div class="builder-step-body">
+        <input id="qbLessonTitle" placeholder="Lesson title e.g. Introduction to Number Bases">
+        <textarea id="qbLessonContent" placeholder="Write the lesson here...
 
 You can include explanations, examples, formulas and practice questions."></textarea>
-      <label class="upload-label">Optional lesson PDF</label>
-      <input id="qbLessonFile" type="file" accept="application/pdf,.pdf">
-      <small class="upload-help">PDF only • Maximum 50 MB</small>
-      <div class="builder-publish"><button id="qbPublishLesson" class="primary-btn" type="button">📖 Publish Lesson</button></div>
+        <label class="upload-label">Optional lesson PDF</label>
+        <input id="qbLessonFile" type="file" accept="application/pdf,.pdf">
+        <small class="upload-help">PDF only • Maximum 50 MB</small>
+        <div class="builder-publish"><button id="qbSaveDraft" class="secondary-btn" type="button">Save Draft</button><button id="qbPublishLesson" class="primary-btn" type="button">📖 Publish Lesson</button></div>
+      </div>
       <p id="qbLessonMsg" class="message"></p>
     </div>
   </div>
 
-  <div class="course-builder-tip"><b>💡 Recommended workflow</b><span>Choose JAMB → Mathematics → Number Bases → publish your first lesson. Then repeat the last two steps for the next topic.</span></div>
+  <div class="course-builder-tip"><b>💡 Recommended workflow</b><span>Choose JAMB → Mathematics → Number Bases → create your lesson. Previous steps stay editable, while unpublished drafts remain hidden from students.</span></div>
 
   <div class="course-admin-list"><div class="builder-list-head"><div><h3>Current Learning Structure</h3><p class="muted">Everything you have created appears here.</p></div><button id="qbRefresh" class="secondary-btn" type="button">↻ Refresh</button></div><div id="courseAdminList"><p class="muted">Loading courses...</p></div></div>
 </div>
@@ -245,4 +280,4 @@ You can include explanations, examples, formulas and practice questions."></text
   <h2>📝 Available Assignments</h2>
   <div id="assignmentsList"><p class="muted">Loading assignments...</p></div><div id="assignmentModal" class="assignment-modal hidden"><div class="assignment-modal-card"><button id="closeAssignmentBtn" class="close-btn" type="button">×</button><h2 id="openAssignmentTitle">Assignment</h2><p id="openAssignmentSubject" class="subject"></p><div id="openAssignmentContent" class="note-content"></div><p id="openAssignmentDeadline" class="muted"></p><form id="submissionForm"><label>Your Answer</label><textarea id="submissionAnswer" required placeholder="Type your answer here..."></textarea><button class="primary-btn" type="submit">Submit Assignment</button><p id="submissionMessage" class="message"></p></form></div></div>
 </div>
-<div id="submissionsAdminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📥 Student Submissions</h2><p class="muted">Admins and Superadmins can review submitted assignments.</p><div id="submissionsList"><p class="muted">Loading submissions...</p></div></div><div id="studentResultsPanel" class="panel portal-section"><h2>🏆 My Results</h2><p class="muted">Your marked assignment results will appear here.</p><div id="studentResultsList"><p class="muted">Loading results...</p></div></div><div id="statusPanel" class="panel portal-section"><h2>Portal Status</h2><p id="statusText">Loading...</p></div><div id="featuresPanel" class="panel portal-section"><h2>What you can do here</h2><div class="features"><div><strong>📚 Learning Materials</strong><p>Access notes and study materials.</p></div><div><strong>📝 Assignments</strong><p>Receive and submit assignments.</p></div><div><strong>💻 CBT Tests</strong><p>Take online tests and examinations.</p></div><div><strong>🏆 Results</strong><p>View your scores and academic performance.</p></div></div></div></section><div id="courseModal" class="course-modal hidden" role="dialog" aria-modal="true" aria-labelledby="courseModalTitle"><div class="course-modal-card"><button id="closeCourseModal" class="close-btn" type="button">×</button><div class="course-modal-hero"><span id="courseModalIcon" class="course-modal-icon">📚</span><div><span id="courseModalCategory" class="course-category">COURSE</span><h2 id="courseModalTitle">Course</h2><p id="courseModalSubtitle" class="muted">Learning resources</p></div></div><div id="courseModalStats" class="course-modal-stats"></div><div id="courseModalResources" class="course-modal-resources"></div></div></div></main><footer>© 2026 Great Stand Educational Consult. Guiding Students. Building Futures.</footer><script type="module" src="portal.js?v=26.3"></script></body></html>
+<div id="submissionsAdminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📥 Student Submissions</h2><p class="muted">Admins and Superadmins can review submitted assignments.</p><div id="submissionsList"><p class="muted">Loading submissions...</p></div></div><div id="studentResultsPanel" class="panel portal-section"><h2>🏆 My Results</h2><p class="muted">Your marked assignment results will appear here.</p><div id="studentResultsList"><p class="muted">Loading results...</p></div></div><div id="statusPanel" class="panel portal-section"><h2>Portal Status</h2><p id="statusText">Loading...</p></div><div id="featuresPanel" class="panel portal-section"><h2>What you can do here</h2><div class="features"><div><strong>📚 Learning Materials</strong><p>Access notes and study materials.</p></div><div><strong>📝 Assignments</strong><p>Receive and submit assignments.</p></div><div><strong>💻 CBT Tests</strong><p>Take online tests and examinations.</p></div><div><strong>🏆 Results</strong><p>View your scores and academic performance.</p></div></div></div></section><div id="courseModal" class="course-modal hidden" role="dialog" aria-modal="true" aria-labelledby="courseModalTitle"><div class="course-modal-card"><button id="closeCourseModal" class="close-btn" type="button">×</button><div class="course-modal-hero"><span id="courseModalIcon" class="course-modal-icon">📚</span><div><span id="courseModalCategory" class="course-category">COURSE</span><h2 id="courseModalTitle">Course</h2><p id="courseModalSubtitle" class="muted">Learning resources</p></div></div><div id="courseModalStats" class="course-modal-stats"></div><div id="courseModalResources" class="course-modal-resources"></div></div></div></main><footer>© 2026 Great Stand Educational Consult. Guiding Students. Building Futures.</footer><script type="module" src="portal.js?v=27.0"></script></body></html>

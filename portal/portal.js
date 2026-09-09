@@ -1,4 +1,4 @@
-/* GREAT STAND PORTAL V26.1 - Admin Course Builder Visibility Fix */
+/* GREAT STAND PORTAL V27 - Course Builder Wizard */
 import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {createClient} from "https://esm.sh/@supabase/supabase-js@2"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const $=id=>document.getElementById(id),loginView=$("loginView"),dashboardView=$("dashboardView"),logoutBtn=$("logoutBtn"),adminPanel=$("adminPanel"),noteForm=$("noteForm"),notesList=$("notesList");
 const SUPABASE_URL="https://njwjjtxvckemejaezwtd.supabase.co";
@@ -838,7 +838,7 @@ function openLearningPath(type,id){
     const rows=courseData.topics.filter(x=>x.subjectId===id);renderPathCards(rows,'topic');
   }else if(type==='topic'){
     learningPathTitle.textContent=t?.name||'Topic';learningPathSubtitle.textContent='Choose a lesson';
-    const rows=courseData.lessons.filter(x=>x.topicId===id);renderPathCards(rows,'lesson');
+    const rows=publishedLessons().filter(x=>x.topicId===id);renderPathCards(rows,'lesson');
   }else if(type==='lesson'){
     learningPathTitle.textContent=l?.title||'Lesson';learningPathSubtitle.textContent='Lesson';
     learningPathContent.innerHTML=`<article class="lesson-view"><div class="lesson-badge">LESSON</div><div class="lesson-body">${esc(l?.content||'').replace(/\n/g,'<br>')}</div>${l?.pdfUrl?`<div class="lesson-file-actions"><a class="primary-btn" href="${esc(l.pdfUrl)}" target="_blank" rel="noopener">📖 View PDF</a><a class="secondary-btn" href="${esc(l.pdfUrl)}" download>⬇️ Download PDF</a></div>`:''}</article>`;
@@ -850,11 +850,13 @@ function renderPathCards(rows,type){
   learningPathContent.innerHTML=rows.map(x=>{const count=type==='subject'?courseData.topics.filter(t=>t.subjectId===x.id).length:type==='topic'?courseData.lessons.filter(l=>l.topicId===x.id).length:0;return `<button class="path-card" type="button" data-id="${x.id}" data-type="${type}"><span>${type==='subject'?'📘':type==='topic'?'📌':'📖'}</span><div><b>${esc(x.name||x.title)}</b><small>${type==='lesson'?'Open lesson':count+' '+(type==='subject'?'topics':'lessons')}</small></div><strong>›</strong></button>`}).join('');
   learningPathContent.querySelectorAll('.path-card').forEach(b=>b.addEventListener('click',()=>openLearningPath(b.dataset.type,b.dataset.id)));
 }
+function publishedLessons(){return courseData.lessons.filter(l=>String(l.status||'published').toLowerCase()!=='draft')}
 function renderLearningCoursesV25(){
   if(!learningCourseGrid)return;
   let rows=courseData.courses.filter(c=>learningFilter==='all'||c.category===learningFilter);
   if(!rows.length){learningCourseGrid.innerHTML='<div class="learning-empty"><div>🎓</div><h3>No courses yet</h3><p class="muted">Your tutor will publish courses here.</p></div>';return}
-  learningCourseGrid.innerHTML=rows.map(c=>{const subs=courseData.subjects.filter(s=>s.courseId===c.id),topics=subs.reduce((n,s)=>n+courseData.topics.filter(t=>t.subjectId===s.id).length,0),lessons=topics?courseData.lessons.filter(l=>courseData.topics.some(t=>t.subjectId&&subs.some(s=>s.id===t.subjectId)&&t.id===l.topicId)).length:0;return `<article class="learning-course-card learning-track-card"><div class="learning-course-top"><span class="course-icon">${c.category==='JAMB'?'🎓':c.category==='WAEC'?'📘':'📚'}</span><span class="course-category ${String(c.category||'general').toLowerCase()}">${esc(c.category||'General')}</span></div><h3>${esc(c.name)}</h3><p class="muted">${subs.length} subject${subs.length===1?'':'s'} • ${topics} topics • ${lessons} lessons</p><div class="course-resource-row"><span>📘 ${subs.length} Subjects</span><span>📌 ${topics} Topics</span><span>📖 ${lessons} Lessons</span></div><div class="course-actions"><button class="primary-btn" type="button" data-course-id="${c.id}">Open Course →</button></div></article>`}).join('');
+  const liveLessons=publishedLessons();
+  learningCourseGrid.innerHTML=rows.map(c=>{const subs=courseData.subjects.filter(s=>s.courseId===c.id),topics=subs.reduce((n,s)=>n+courseData.topics.filter(t=>t.subjectId===s.id).length,0),lessons=liveLessons.filter(l=>l.courseId===c.id).length;return `<article class="learning-course-card learning-track-card"><div class="learning-course-top"><span class="course-icon">${c.category==='JAMB'?'🎓':c.category==='WAEC'?'📘':'📚'}</span><span class="course-category ${String(c.category||'general').toLowerCase()}">${esc(c.category||'General')}</span></div><h3>${esc(c.name)}</h3><p class="muted">${subs.length} subject${subs.length===1?'':'s'} • ${topics} topics • ${lessons} lessons</p><div class="course-resource-row"><span>📘 ${subs.length} Subjects</span><span>📌 ${topics} Topics</span><span>📖 ${lessons} Lessons</span></div><div class="course-actions"><button class="primary-btn" type="button" data-course-id="${c.id}">Open Course →</button></div></article>`}).join('');
   learningCourseGrid.querySelectorAll('[data-course-id]').forEach(b=>b.addEventListener('click',()=>{learningPathPanel?.classList.remove('hidden');openLearningPath('course',b.dataset.courseId)}));
 }
 $('learningBackBtn')?.addEventListener('click',()=>{learningTrail.pop();const prev=learningTrail[learningTrail.length-1];if(prev)openLearningPath(prev.type,prev.id);else{learningPathPanel?.classList.add('hidden');learningTrail=[];$('learningCentrePanel')?.scrollIntoView({behavior:'smooth'})}});
@@ -864,93 +866,116 @@ renderLearningCentre=function(){ if(courseData.courses.length){renderLearningCou
 const _v24LoadLearningCentre=loadLearningCentre;
 loadLearningCentre=async function(){await _v24LoadLearningCentre();await loadCourseStructure();if(courseData.courses.length)renderLearningCoursesV25();};
 
-// ===== V26.1 PHONE-FRIENDLY COURSE BUILDER =====
+// ===== V27 COURSE BUILDER WIZARD =====
 const qbCourse=$('qbCourse'),qbSubject=$('qbSubject'),qbTopic=$('qbTopic');
-function qbSetMsg(id,text,ok=false){const el=$(id);if(!el)return;el.className='message '+(ok?'submission-success':'');el.textContent=text||'';}
-function qbToggle(id){$(id)?.classList.toggle('hidden');}
+let qbCurrentStep=1;
+function qbSetMsg(id,text,ok=false){const el=$(id);if(!el)return;el.className='message '+(ok?'submission-success':'');el.textContent=text||''}
+function qbToggle(id){$(id)?.classList.toggle('hidden')}
+function qbSelectedCourse(){return courseData.courses.find(c=>c.id===qbCourse?.value)}
+function qbSelectedSubject(){return courseData.subjects.find(s=>s.id===qbSubject?.value)}
+function qbSelectedTopic(){return courseData.topics.find(t=>t.id===qbTopic?.value)}
+function qbUpdateContext(){const c=qbSelectedCourse(),s=qbSelectedSubject(),t=qbSelectedTopic();if($('qbContextCourse'))$('qbContextCourse').textContent=c?.name||'—';if($('qbContextSubject'))$('qbContextSubject').textContent=s?.name||'—';if($('qbContextTopic'))$('qbContextTopic').textContent=t?.name||'—'}
+function qbCanStep(step){if(step===1)return true;if(step===2)return !!qbSelectedCourse();if(step===3)return !!qbSelectedCourse()&&!!qbSelectedSubject();if(step===4)return !!qbSelectedCourse()&&!!qbSelectedSubject()&&!!qbSelectedTopic();return false}
+function qbSummary(step){const c=qbSelectedCourse(),s=qbSelectedSubject(),t=qbSelectedTopic();if(step===1)return c?`<b>${esc(c.name)}</b><small>${esc(c.category||'General')} course</small>`:'';if(step===2)return s?`<b>${esc(s.name)}</b><small>Subject in ${esc(c?.name||'Course')}</small>`:'';if(step===3)return t?`<b>${esc(t.name)}</b><small>Topic in ${esc(s?.name||'Subject')}</small>`:'';return ''}
+function qbRefreshSummaries(){
+  [['qbCourseSummary',1,'qbEditCourse'],['qbSubjectSummary',2,'qbEditSubject'],['qbTopicSummary',3,'qbEditTopic']].forEach(([sid,step,eid])=>{const el=$(sid),edit=$(eid),txt=qbSummary(step);if(el){el.innerHTML=txt;el.classList.toggle('hidden',!txt)}if(edit)edit.classList.toggle('hidden',!txt)});
+  qbUpdateContext();
+}
+function qbSetStep(step,force=false){
+  if(!force&&!qbCanStep(step))return;
+  qbCurrentStep=step;
+  document.querySelectorAll('#courseAdminPanel .builder-step-card').forEach(card=>{const n=Number(card.dataset.builderStep);card.classList.toggle('active',n===step);card.classList.toggle('locked',n>step&&!qbCanStep(n));card.classList.toggle('collapsed',n<step&&qbCanStep(n));});
+  document.querySelectorAll('#courseAdminPanel [data-qb-step]').forEach(btn=>{const n=Number(btn.dataset.qbStep);btn.classList.toggle('active',n===step);btn.classList.toggle('done',n<step&&qbCanStep(n));btn.classList.toggle('locked',n>step&&!qbCanStep(n));btn.disabled=n>step&&!qbCanStep(n)});
+  qbRefreshSummaries();
+  const card=$('qbStep'+step);if(card)card.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
 function refreshQuickBuilder(){
   if(!qbCourse)return;
   qbCourse.innerHTML=courseData.courses.length?courseData.courses.map(c=>`<option value="${esc(c.id)}">${esc(c.name)} — ${esc(c.category||'General')}</option>`).join(''):'<option value="">No courses yet — create one</option>';
-  refreshQBSubjects();
+  refreshQBSubjects();qbSetStep(Math.min(qbCurrentStep,1),true);
 }
 function refreshQBSubjects(){
   if(!qbSubject)return;
-  const cid=qbCourse?.value;
-  const rows=courseData.subjects.filter(s=>s.courseId===cid);
+  const cid=qbCourse?.value,rows=courseData.subjects.filter(s=>s.courseId===cid);
   qbSubject.innerHTML=rows.length?rows.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join(''):'<option value="">No subjects yet — create one</option>';
-  refreshQBTopics();
+  refreshQBTopics();qbRefreshSummaries();
 }
 function refreshQBTopics(){
   if(!qbTopic)return;
-  const sid=qbSubject?.value;
-  const rows=courseData.topics.filter(t=>t.subjectId===sid);
+  const sid=qbSubject?.value,rows=courseData.topics.filter(t=>t.subjectId===sid);
   qbTopic.innerHTML=rows.length?rows.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join(''):'<option value="">No topics yet — create one</option>';
+  qbRefreshSummaries();
 }
-function renderCourseAdminListV26(){
+function renderCourseAdminListV27(){
   const box=$('courseAdminList');if(!box)return;
   if(!courseData.courses.length){box.innerHTML='<div class="learning-empty"><div>🎓</div><h3>No courses yet</h3><p class="muted">Start with a course above.</p></div>';return;}
   box.innerHTML=courseData.courses.map(c=>{
     const subs=courseData.subjects.filter(s=>s.courseId===c.id);
     return `<div class="admin-course-block"><div class="admin-course-title"><b>🎓 ${esc(c.name)}</b><span>${esc(c.category||'General')}</span></div>${subs.length?subs.map(s=>{
       const tops=courseData.topics.filter(t=>t.subjectId===s.id);
-      return `<div class="admin-subject-block"><div class="admin-course-title"><b>📘 ${esc(s.name)}</b><span>${tops.length} topic${tops.length===1?'':'s'}</span></div>${tops.length?tops.map(t=>{const ls=courseData.lessons.filter(l=>l.topicId===t.id);return `<div class="admin-topic-block"><div class="admin-course-title"><b>📌 ${esc(t.name)}</b><span>${ls.length} lesson${ls.length===1?'':'s'}</span></div>${ls.length?ls.map(l=>`<div class="lesson-row"><div><b>📖 ${esc(l.title||'Untitled Lesson')}</b>${l.pdfUrl?'<small> • PDF attached</small>':''}</div><div class="lesson-row-actions"><button type="button" class="secondary-btn admin-delete-mini" data-del-type="lesson" data-del-id="${esc(l.id)}">Delete</button></div></div>`).join(''):'<small class="muted">No lessons yet</small>'}</div>`}).join(''):'<small class="muted">No topics yet</small>'}</div>`;
+      return `<div class="admin-subject-block"><div class="admin-course-title"><b>📘 ${esc(s.name)}</b><span>${tops.length} topic${tops.length===1?'':'s'}</span></div>${tops.length?tops.map(t=>{const ls=courseData.lessons.filter(l=>l.topicId===t.id);return `<div class="admin-topic-block"><div class="admin-course-title"><b>📌 ${esc(t.name)}</b><span>${ls.length} lesson${ls.length===1?'':'s'}</span></div>${ls.length?ls.map(l=>`<div class="lesson-row"><div><b>📖 ${esc(l.title||'Untitled Lesson')}</b>${String(l.status||'published').toLowerCase()==='draft'?'<span class="draft-badge">DRAFT</span>':'<span class="published-badge">PUBLISHED</span>'}${l.pdfUrl?'<small> • PDF attached</small>':''}</div><div class="lesson-row-actions"><button type="button" class="secondary-btn admin-delete-mini" data-del-type="lesson" data-del-id="${esc(l.id)}">Delete</button></div></div>`).join(''):'<small class="muted">No lessons yet</small>'}</div>`}).join(''):'<small class="muted">No topics yet</small>'}</div>`;
     }).join(''):'<p class="muted">No subjects yet.</p>'}</div>`;
   }).join('');
   box.querySelectorAll('[data-del-type="lesson"]').forEach(btn=>btn.addEventListener('click',()=>qbDeleteLesson(btn.dataset.delId)));
 }
-async function qbReload(){
-  await loadCourseStructure();
-  refreshQuickBuilder();
-  renderCourseAdminListV26();
-}
-qbCourse?.addEventListener('change',refreshQBSubjects);
-qbSubject?.addEventListener('change',refreshQBTopics);
+async function qbReload(){await loadCourseStructure();refreshQuickBuilder();renderCourseAdminListV27()}
+qbCourse?.addEventListener('change',()=>{refreshQBSubjects();qbSetStep(2);});
+qbSubject?.addEventListener('change',()=>{refreshQBTopics();qbSetStep(3);});
+qbTopic?.addEventListener('change',()=>{qbRefreshSummaries();qbSetStep(4);});
 $('qbNewCourse')?.addEventListener('click',()=>qbToggle('qbCourseNew'));
 $('qbNewSubject')?.addEventListener('click',()=>qbToggle('qbSubjectNew'));
 $('qbNewTopic')?.addEventListener('click',()=>qbToggle('qbTopicNew'));
+$('qbContinue1')?.addEventListener('click',()=>{if(qbCanStep(2))qbSetStep(2);else qbSetMsg('qbCourseMsg','Create or select a course first.')});
+$('qbContinue2')?.addEventListener('click',()=>{if(qbCanStep(3))qbSetStep(3);else qbSetMsg('qbSubjectMsg','Create or select a subject first.')});
+$('qbContinue3')?.addEventListener('click',()=>{if(qbCanStep(4))qbSetStep(4);else qbSetMsg('qbTopicMsg','Create or select a topic first.')});
+$('qbEditCourse')?.addEventListener('click',()=>qbSetStep(1,true));
+$('qbEditSubject')?.addEventListener('click',()=>qbSetStep(2,true));
+$('qbEditTopic')?.addEventListener('click',()=>qbSetStep(3,true));
+document.querySelectorAll('#courseAdminPanel [data-qb-step]').forEach(btn=>btn.addEventListener('click',()=>{const n=Number(btn.dataset.qbStep);if(qbCanStep(n))qbSetStep(n,true)}));
 $('qbSaveCourse')?.addEventListener('click',async()=>{
   const name=$('qbCourseName').value.trim(),category=$('qbCourseCategory').value;
   if(!name){qbSetMsg('qbCourseMsg','Enter a course name.');return}
   qbSetMsg('qbCourseMsg','Creating course...');
-  try{const ref=await addDoc(collection(db,'courses'),{name,category,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbCourseName').value='';$('qbCourseNew').classList.add('hidden');await qbReload();qbCourse.value=ref.id;refreshQBSubjects();qbSetMsg('qbCourseMsg','Course created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbCourseMsg','Could not create course: '+(e.code||e.message))}
+  try{const ref=await addDoc(collection(db,'courses'),{name,category,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbCourseName').value='';$('qbCourseNew').classList.add('hidden');await qbReload();qbCourse.value=ref.id;refreshQBSubjects();qbSetStep(2,true);qbSetMsg('qbCourseMsg','Course created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbCourseMsg','Could not create course: '+(e.code||e.message))}
 });
 $('qbSaveSubject')?.addEventListener('click',async()=>{
   const courseId=qbCourse?.value,name=$('qbSubjectName').value.trim();
   if(!courseId){qbSetMsg('qbSubjectMsg','Create or select a course first.');return}
   if(!name){qbSetMsg('qbSubjectMsg','Enter a subject name.');return}
   qbSetMsg('qbSubjectMsg','Creating subject...');
-  try{const ref=await addDoc(collection(db,'subjects'),{name,courseId,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbSubjectName').value='';$('qbSubjectNew').classList.add('hidden');await qbReload();qbCourse.value=courseId;refreshQBSubjects();qbSubject.value=ref.id;refreshQBTopics();qbSetMsg('qbSubjectMsg','Subject created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbSubjectMsg','Could not create subject: '+(e.code||e.message))}
+  try{const ref=await addDoc(collection(db,'subjects'),{name,courseId,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbSubjectName').value='';$('qbSubjectNew').classList.add('hidden');await qbReload();qbCourse.value=courseId;refreshQBSubjects();qbSubject.value=ref.id;refreshQBTopics();qbSetStep(3,true);qbSetMsg('qbSubjectMsg','Subject created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbSubjectMsg','Could not create subject: '+(e.code||e.message))}
 });
 $('qbSaveTopic')?.addEventListener('click',async()=>{
   const subjectId=qbSubject?.value,name=$('qbTopicName').value.trim();
   if(!subjectId){qbSetMsg('qbTopicMsg','Create or select a subject first.');return}
   if(!name){qbSetMsg('qbTopicMsg','Enter a topic title.');return}
   qbSetMsg('qbTopicMsg','Creating topic...');
-  try{const ref=await addDoc(collection(db,'topics'),{name,subjectId,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbTopicName').value='';$('qbTopicNew').classList.add('hidden');await qbReload();qbSubject.value=subjectId;refreshQBTopics();qbTopic.value=ref.id;qbSetMsg('qbTopicMsg','Topic created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbTopicMsg','Could not create topic: '+(e.code||e.message))}
+  try{const ref=await addDoc(collection(db,'topics'),{name,subjectId,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbTopicName').value='';$('qbTopicNew').classList.add('hidden');await qbReload();qbSubject.value=subjectId;refreshQBTopics();qbTopic.value=ref.id;qbRefreshSummaries();qbSetStep(4,true);qbSetMsg('qbTopicMsg','Topic created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbTopicMsg','Could not create topic: '+(e.code||e.message))}
 });
-$('qbPublishLesson')?.addEventListener('click',async()=>{
+async function qbSaveLesson(status){
   const topicId=qbTopic?.value,title=$('qbLessonTitle').value.trim(),content=$('qbLessonContent').value.trim(),file=$('qbLessonFile')?.files?.[0];
   if(!topicId){qbSetMsg('qbLessonMsg','Create or select a topic first.');return}
   if(!title||!content){qbSetMsg('qbLessonMsg','Enter both a lesson title and lesson content.');return}
   if(file && (file.type!=='application/pdf' && !/\.pdf$/i.test(file.name))){qbSetMsg('qbLessonMsg','Only PDF files are allowed.');return}
   if(file && file.size>50*1024*1024){qbSetMsg('qbLessonMsg','PDF must be 50 MB or smaller.');return}
   const topic=courseData.topics.find(t=>t.id===topicId),subject=courseData.subjects.find(s=>s.id===topic?.subjectId),course=courseData.courses.find(c=>c.id===subject?.courseId);
-  const btn=$('qbPublishLesson');btn.disabled=true;qbSetMsg('qbLessonMsg',file?'Uploading PDF and publishing lesson...':'Publishing lesson...');
+  const btn=status==='draft'?$('qbSaveDraft'):$('qbPublishLesson');btn.disabled=true;qbSetMsg('qbLessonMsg',file&&status==='published'?'Uploading PDF and publishing lesson...':status==='draft'?'Saving draft...':'Publishing lesson...');
   let uploadedPath='';
   try{
     let pdfUrl='';
     if(file){const safeName=file.name.replace(/[^a-zA-Z0-9._-]+/g,'_');uploadedPath='materials/lessons/'+auth.currentUser.uid+'/'+Date.now()+'_'+safeName;const {error}=await supabase.storage.from(SUPABASE_BUCKET).upload(uploadedPath,file,{contentType:'application/pdf',upsert:false,cacheControl:'3600'});if(error)throw error;const {data}=supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(uploadedPath);pdfUrl=data.publicUrl}
-    await addDoc(collection(db,'lessons'),{title,content,pdfUrl,storagePath:uploadedPath||'',storageProvider:uploadedPath?'supabase':'',topicId,subjectId:subject?.id||'',courseId:course?.id||'',category:course?.category||'General',createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
-    $('qbLessonTitle').value='';$('qbLessonContent').value='';if($('qbLessonFile'))$('qbLessonFile').value='';await qbReload();qbSetMsg('qbLessonMsg','Lesson published successfully ✅',true);
-  }catch(e){console.error(e);if(uploadedPath){try{await supabase.storage.from(SUPABASE_BUCKET).remove([uploadedPath])}catch(cleanErr){console.warn(cleanErr)}}qbSetMsg('qbLessonMsg','Could not publish lesson: '+(e.code||e.message))}finally{btn.disabled=false}
-});
+    await addDoc(collection(db,'lessons'),{title,content,pdfUrl,storagePath:uploadedPath||'',storageProvider:uploadedPath?'supabase':'',topicId,subjectId:subject?.id||'',courseId:course?.id||'',category:course?.category||'General',status,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
+    $('qbLessonTitle').value='';$('qbLessonContent').value='';if($('qbLessonFile'))$('qbLessonFile').value='';await qbReload();qbSetMsg('qbLessonMsg',status==='draft'?'Draft saved successfully ✅':'Lesson published successfully ✅',true);
+  }catch(e){console.error(e);if(uploadedPath){try{await supabase.storage.from(SUPABASE_BUCKET).remove([uploadedPath])}catch(cleanErr){console.warn(cleanErr)}}qbSetMsg('qbLessonMsg','Could not '+(status==='draft'?'save draft':'publish lesson')+': '+(e.code||e.message))}finally{btn.disabled=false}
+}
+$('qbSaveDraft')?.addEventListener('click',()=>qbSaveLesson('draft'));
+$('qbPublishLesson')?.addEventListener('click',()=>qbSaveLesson('published'));
 async function qbDeleteLesson(id){
   const lesson=courseData.lessons.find(l=>l.id===id);if(!lesson)return;
   if(!confirm('Delete this lesson? This cannot be undone.'))return;
   try{if(lesson.storagePath)await supabase.storage.from(SUPABASE_BUCKET).remove([lesson.storagePath]);await deleteDoc(doc(db,'lessons',id));await qbReload();await loadLearningCentre();alert('Lesson deleted successfully.')}catch(e){console.error(e);alert('Could not delete lesson: '+(e.code||e.message))}
 }
 $('qbRefresh')?.addEventListener('click',qbReload);
-const _v25RenderCourseAdminList=renderCourseAdminList;
-renderCourseAdminList=function(){renderCourseAdminListV26()};
-const _v25LoadCourseStructure=loadCourseStructure;
-loadCourseStructure=async function(){await _v25LoadCourseStructure();refreshQuickBuilder();renderCourseAdminListV26()};
+const _v25RenderCourseAdminList=renderCourseAdminList;renderCourseAdminList=function(){renderCourseAdminListV27()};
+const _v25LoadCourseStructure=loadCourseStructure;loadCourseStructure=async function(){await _v25LoadCourseStructure();refreshQuickBuilder();renderCourseAdminListV27()};
+qbSetStep(1,true);
