@@ -1,4 +1,4 @@
-/* GREAT STAND PORTAL V27 - Course Builder Wizard */
+/* GREAT STAND PORTAL V38 - Stable Login + Real Tables */
 import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {createClient} from "https://esm.sh/@supabase/supabase-js@2"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const $=id=>document.getElementById(id),loginView=$("loginView"),dashboardView=$("dashboardView"),logoutBtn=$("logoutBtn"),adminPanel=$("adminPanel"),noteForm=$("noteForm"),notesList=$("notesList");
 const SUPABASE_URL="https://njwjjtxvckemejaezwtd.supabase.co";
@@ -981,7 +981,7 @@ function sanitizeRichHtml(html){
           child.replaceWith(frag); return;
         }
         const tag=child.tagName;
-        const keep=new Set(tag==='A'?['href','target','rel']:tag==='IMG'?['src','alt','title']:tag==='IFRAME'?['src','title','allow','allowfullscreen','frameborder']:[]);
+        const keep=new Set(tag==='A'?['href','target','rel']:tag==='IMG'?['src','alt','title']:tag==='IFRAME'?['src','title','allow','allowfullscreen','frameborder']:['class']);
         [...child.attributes].forEach(attr=>{if(!keep.has(attr.name.toLowerCase()))child.removeAttribute(attr.name)});
         if(tag==='A'){
           const href=child.getAttribute('href')||'';
@@ -1193,8 +1193,8 @@ $('qbLessonContent')?.addEventListener('paste',pasteAsRawAiLesson);
 function qbInsertTable(){
   const r=parseInt(prompt('Number of rows?','4')||'4',10), c=parseInt(prompt('Number of columns?','2')||'2',10);
   if(!Number.isFinite(r)||!Number.isFinite(c)||r<1||c<1||r>20||c>10)return;
-  let h='<table><tbody>';
-  for(let y=0;y<r;y++){h+='<tr>';for(let x=0;x<c;x++)h+=`<td>${y===0?'Header':''}</td>`;h+='</tr>'}
+  let h='<table class="lesson-table"><tbody>';
+  for(let y=0;y<r;y++){h+='<tr>';for(let x=0;x<c;x++)h+=`<${y===0?'th':'td'}>${y===0?'Header':''}</${y===0?'th':'td'}>`;h+='</tr>'}
   h+='</tbody></table><p><br></p>'; qbInsertHtml(h);
 }
 function qbInsertCalc(){qbInsertHtml('<div class="calc-block"><pre>Write your calculation here...\n------------------------------\nAnswer = </pre></div><p><br></p>');}
