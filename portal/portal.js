@@ -1,7 +1,10 @@
-/* GREAT STAND PORTAL V22.2 - direct PDF upload */
-import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {getStorage,ref as storageRef,uploadBytes,getDownloadURL,deleteObject} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+/* GREAT STAND PORTAL V23 - free Supabase PDF upload */
+import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {createClient} from "https://esm.sh/@supabase/supabase-js@2"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const $=id=>document.getElementById(id),loginView=$("loginView"),dashboardView=$("dashboardView"),logoutBtn=$("logoutBtn"),adminPanel=$("adminPanel"),noteForm=$("noteForm"),notesList=$("notesList");
-const storage=getStorage(getApps()[0]);
+const SUPABASE_URL="https://njwjjtxvckemejaezwtd.supabase.co";
+const SUPABASE_ANON_KEY="sb_publishable_bCsJSYS7ggDTnwvAYW_JUA_HJvtGl5f";
+const SUPABASE_BUCKET="materials";
+const supabase=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginMessage").textContent="Logging in...";try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(err){console.error(err);$("loginMessage").textContent="Login failed: "+(err.code||err.message)}}); logoutBtn.addEventListener("click",()=>signOut(auth));
 async function getCount(n){try{return(await getDocs(collection(db,n))).size}catch(e){console.error(e);return 0}}
 async function loadNotes(){notesList.innerHTML='<p class="muted">Loading notes...</p>';try{let s;try{s=await getDocs(query(collection(db,"notes"),orderBy("createdAt","desc")))}catch(e){s=await getDocs(collection(db,"notes"))}if(s.empty){notesList.innerHTML='<p class="muted">No notes published yet.</p>';return}notesList.innerHTML="";s.forEach(d=>{let n=d.data(),c=document.createElement("article");c.className="note-card";let h=document.createElement("h3");h.textContent=n.title||"Untitled Note";let sub=document.createElement("p");sub.className="subject";sub.textContent=n.subject||"General";let body=document.createElement("div");body.className="note-content";body.textContent=n.content||"";c.append(h,sub,body);notesList.appendChild(c)})}catch(e){console.error(e);notesList.innerHTML='<p class="message">Could not load notes.</p>'}}
@@ -469,7 +472,10 @@ async function loadMaterials(){
           if(!confirm('Delete this study material? This cannot be undone.'))return;
           del.disabled=true;
           try{
-            if(m.storagePath){try{await deleteObject(storageRef(storage,m.storagePath))}catch(storageErr){console.warn('Storage delete warning:',storageErr)}}
+            if(m.storageProvider==='supabase' && m.storagePath){
+              const {error:storageErr}=await supabase.storage.from(SUPABASE_BUCKET).remove([m.storagePath]);
+              if(storageErr)console.warn('Supabase storage delete warning:',storageErr);
+            }
             await deleteDoc(doc(db,'materials',m.id));await loadMaterials();await loadLearningCentre();
           }catch(e){console.error(e);alert('Could not delete material: '+(e.code||e.message));del.disabled=false}
         });actions.appendChild(del);
@@ -483,21 +489,31 @@ materialForm?.addEventListener('submit',async e=>{
   e.preventDefault();
   if(!isAdminRole()){ $('materialMessage').textContent='Only admins can publish study materials.';return; }
   const file=$('materialFile')?.files?.[0];
-  if(!file){$('materialMessage').className='message submission-error';$('materialMessage').textContent='Please select a PDF or material file.';return;}
-  if(file.type!=='application/pdf'){ $('materialMessage').className='message submission-error';$('materialMessage').textContent='Only PDF files are supported for now.';return; }
-  if(file.size>25*1024*1024){ $('materialMessage').className='message submission-error';$('materialMessage').textContent='File is too large. Maximum size is 25 MB.';return; }
+  if(!file){$('materialMessage').className='message submission-error';$('materialMessage').textContent='Please select a PDF file.';return;}
+  const looksLikePdf=file.type==='application/pdf' || !file.type || file.type==='application/octet-stream' || /\.pdf$/i.test(file.name);
+  if(!looksLikePdf){ $('materialMessage').className='message submission-error';$('materialMessage').textContent='Only PDF files are supported for now.';return; }
+  if(file.size>50*1024*1024){ $('materialMessage').className='message submission-error';$('materialMessage').textContent='File is too large. Maximum size is 50 MB on the free storage plan.';return; }
   const submitBtn=materialForm.querySelector('button[type="submit"]');if(submitBtn)submitBtn.disabled=true;
-  $('materialMessage').className='message';$('materialMessage').textContent='Uploading PDF...';
+  $('materialMessage').className='message';$('materialMessage').textContent='Uploading PDF to free storage...';
+  let uploadedPath=null;
   try{
     const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
     const storagePath='materials/'+auth.currentUser.uid+'/'+Date.now()+'_'+safeName;
-    const fileRef=storageRef(storage,storagePath);
-    await uploadBytes(fileRef,file,{contentType:'application/pdf'});
-    const url=await getDownloadURL(fileRef);
-    await addDoc(collection(db,'materials'),{title:$('materialTitle').value.trim(),subject:$('materialSubject').value.trim(),category:$('materialCategory').value,description:$('materialDescription').value.trim(),url,storagePath,fileName:file.name,fileSize:file.size,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
-    materialForm.reset();$('materialCategory').value='General';$('materialMessage').className='message submission-success';$('materialMessage').textContent='Study material uploaded successfully ✅';await loadMaterials();await loadLearningCentre();
-  }catch(e){console.error(e);$('materialMessage').className='message submission-error';$('materialMessage').textContent='Could not upload material: '+(e.code||e.message)+' — make sure Firebase Storage is enabled.'}
-  finally{if(submitBtn)submitBtn.disabled=false;}
+    uploadedPath=storagePath;
+    const {error:uploadError}=await supabase.storage.from(SUPABASE_BUCKET).upload(storagePath,file,{contentType:'application/pdf',upsert:false,cacheControl:'3600'});
+    if(uploadError)throw uploadError;
+    const {data:urlData}=supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(storagePath);
+    const url=urlData?.publicUrl;
+    if(!url)throw new Error('Could not create the public download link.');
+    await addDoc(collection(db,'materials'),{title:$('materialTitle').value.trim(),subject:$('materialSubject').value.trim(),category:$('materialCategory').value,description:$('materialDescription').value.trim(),url,storagePath,fileName:file.name,fileSize:file.size,storageProvider:'supabase',createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
+    materialForm.reset();$('materialCategory').value='General';$('materialMessage').className='message submission-success';$('materialMessage').textContent='Study material uploaded and published successfully ✅';await loadMaterials();await loadLearningCentre();
+  }catch(e){
+    console.error(e);
+    if(uploadedPath){try{await supabase.storage.from(SUPABASE_BUCKET).remove([uploadedPath])}catch(cleanErr){console.warn('Upload cleanup warning:',cleanErr)}}
+    const msg=e?.message||e?.error_description||e?.error||'Unknown error';
+    $('materialMessage').className='message submission-error';
+    $('materialMessage').textContent='Could not upload material: '+msg+' — check that the Supabase “materials” bucket exists and allows uploads.';
+  }finally{if(submitBtn)submitBtn.disabled=false;}
 });
 
 document.querySelectorAll('.material-filter').forEach(btn=>btn.addEventListener('click',()=>{materialFilter=btn.dataset.filter;document.querySelectorAll('.material-filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');loadMaterials()}));
