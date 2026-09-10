@@ -878,11 +878,28 @@ adminForm?.addEventListener("submit",async e=>{
   if(submit)submit.disabled=true;
   if(adminMessage){adminMessage.className="message";adminMessage.textContent="Creating admin account...";}
   try{
-    const sa=getStudentCreatorAuth();
-    const cred=await createUserWithEmailAndPassword(sa,email,password);
-    const uid=cred.user.uid;
+    // Create the new Firebase Authentication account through the Identity Toolkit REST API.
+    // This keeps the current Superadmin session intact and avoids switching the browser's auth user.
+    const apiKey=firebaseConfigForStudentCreation.apiKey;
+    const resp=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${encodeURIComponent(apiKey)}`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({email,password,returnSecureToken:false})
+    });
+    const data=await resp.json();
+    if(!resp.ok){
+      const code=data?.error?.message||"AUTH_ERROR";
+      const friendly={
+        EMAIL_EXISTS:"That email is already registered.",
+        INVALID_EMAIL:"Enter a valid email address.",
+        WEAK_PASSWORD:"Password must be at least 6 characters.",
+        OPERATION_NOT_ALLOWED:"Email/password sign-up is not enabled in Firebase Authentication."
+      }[code]||code;
+      throw new Error(friendly);
+    }
+    const uid=data.localId;
+    if(!uid)throw new Error("Firebase did not return a user ID.");
     await setDoc(doc(db,"users",uid),{name,email,role:"admin",active:true,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
-    await signOut(sa);
     adminForm.reset();
     if(adminMessage){adminMessage.className="message submission-success";adminMessage.textContent="Admin account created successfully ✅";}
     await loadSuperadminAccounts();
