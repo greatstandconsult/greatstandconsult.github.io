@@ -757,30 +757,89 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
 
 (function(){
   const menuBtn=document.getElementById("gsMenuBtn"), sideNav=document.getElementById("gsSideNav"), overlay=document.getElementById("gsNavOverlay"), links=document.getElementById("gsNavLinks"), navLogout=document.getElementById("gsNavLogout"), navClose=document.getElementById("gsNavClose"), nameEl=document.getElementById("gsNavName"), roleEl=document.getElementById("gsNavRole");
-  function closeNav(){sideNav?.classList.remove("open");overlay?.classList.remove("show");menuBtn?.setAttribute("aria-expanded","false")}
-  function openNav(){sideNav?.classList.add("open");overlay?.classList.add("show");menuBtn?.setAttribute("aria-expanded","true")}
-  menuBtn?.addEventListener("click",()=>sideNav?.classList.contains("open")?closeNav():openNav());
-  overlay?.addEventListener("click",closeNav); navClose?.addEventListener("click",closeNav);
-  navLogout?.addEventListener("click",()=>{document.getElementById("logoutBtn")?.click();closeNav()});
+  if(!menuBtn||!sideNav||!links)return;
 
   const studentGroups=[
-    {heading:"STUDENT MENU",items:[["⌂","Dashboard","dashboardView"],["🎓","My Courses","learningCentrePanel"],["🧠","CBT / Tests","testsPanel"],["▤","Assignments","assignmentsPanel"],["▱","Study Materials","materialsPanel"],["▥","My Results","studentResultsPanel"],["●","Notifications","statusPanel"],["◉","My Profile","statusPanel"]]},
-    {heading:"QUICK LINKS",items:[["📚","My Notes","notesPanel","View and read your notes"],["📝","Assignments","assignmentsPanel","View and submit assignments"],["🧠","CBT / Tests","testsPanel","Start and take your tests"],["📖","Study Materials","materialsPanel","Access your study resources"]]}
+    {heading:"STUDENT MENU",items:[
+      ["⌂","Dashboard","dashboardView","Return to your dashboard"],
+      ["🎓","My Courses","learningCentrePanel","Learn by course, subject and topic"],
+      ["📖","My Notes","notesPanel","Read your published notes"],
+      ["📝","Assignments","assignmentsPanel","View and submit assignments"],
+      ["🧠","CBT / Tests","testsPanel","Take practice tests and get scored"],
+      ["📚","Study Materials","materialsPanel","Access your study resources"],
+      ["🏆","My Results","studentResultsPanel","View your performance"]
+    ]}
   ];
   const adminGroups=[
-    {heading:"ADMIN MENU",items:[["⌂","Dashboard","dashboardView"],["👨‍🎓","Manage Students","studentAdminPanel"],["🎓","Manage Courses & Lessons","courseAdminPanel"],["📚","Manage Notes","adminPanel"],["📝","Manage Assignments","assignmentAdminPanel"],["🧠","Manage CBT / Tests","testAdminPanel"],["📖","Manage Study Materials","materialsAdminPanel"],["📊","CBT Results","testResultsAdminPanel"],["📥","Submissions","submissionsAdminPanel"]]},
-    {heading:"STUDENT VIEW",items:[["🎓","Learning Centre","learningCentrePanel"],["📚","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📖","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]]}
+    {heading:"ADMIN MENU",items:[
+      ["⌂","Dashboard","dashboardView","Portal overview"],
+      ["👨‍🎓","Manage Students","studentAdminPanel","Create and manage student accounts"],
+      ["🎓","Manage Courses & Lessons","courseAdminPanel","Build and publish learning content"],
+      ["📚","Manage Notes","adminPanel","Publish notes for students"],
+      ["📝","Manage Assignments","assignmentAdminPanel","Create and manage assignments"],
+      ["🧠","Manage CBT / Tests","testAdminPanel","Create practice tests"],
+      ["📖","Manage Study Materials","materialsAdminPanel","Manage downloadable materials"],
+      ["📊","CBT Results","testResultsAdminPanel","Review students' CBT performance"],
+      ["📥","Student Submissions","submissionsAdminPanel","Review and mark submissions"]
+    ]},
+    {heading:"STUDENT VIEW",items:[
+      ["🎓","Learning Centre","learningCentrePanel"],["📖","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📚","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]
+    ]}
   ];
   const superadminGroups=[
-    {heading:"SUPERADMIN CONTROL",items:[["⌂","Dashboard","dashboardView"],["👨‍🎓","Manage Students","studentAdminPanel"],["🎓","Manage Courses & Lessons","courseAdminPanel"],["📚","Manage Notes","adminPanel"],["📝","Manage Assignments","assignmentAdminPanel"],["🧠","Manage CBT / Tests","testAdminPanel"],["📖","Manage Study Materials","materialsAdminPanel"],["📊","CBT Results","testResultsAdminPanel"],["📥","Submissions","submissionsAdminPanel"]]},
-    {heading:"STUDENT PORTAL VIEW",items:[["🎓","Learning Centre","learningCentrePanel"],["📚","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📖","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]]}
+    {heading:"SUPERADMIN CONTROL",items:[
+      ["⌂","Dashboard","dashboardView","Full portal overview"],
+      ["👑","Admin Management","superadminPanel","Superadmin-only controls"],
+      ["👨‍🎓","Manage Students","studentAdminPanel","Create and manage student accounts"],
+      ["🎓","Manage Courses & Lessons","courseAdminPanel","Build and publish learning content"],
+      ["📚","Manage Notes","adminPanel","Publish notes for students"],
+      ["📝","Manage Assignments","assignmentAdminPanel","Create and manage assignments"],
+      ["🧠","Manage CBT / Tests","testAdminPanel","Create practice tests"],
+      ["📖","Manage Study Materials","materialsAdminPanel","Manage downloadable materials"],
+      ["📊","CBT Results","testResultsAdminPanel","Review students' CBT performance"],
+      ["📥","Student Submissions","submissionsAdminPanel","Review and mark submissions"]
+    ]},
+    {heading:"STUDENT PORTAL VIEW",items:[
+      ["🎓","Learning Centre","learningCentrePanel"],["📖","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📚","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]
+    ]}
   ];
+
+  function closeNav(){
+    sideNav.classList.remove("open"); overlay?.classList.remove("show"); sideNav.hidden=true; if(overlay)overlay.hidden=true;
+    menuBtn.setAttribute("aria-expanded","false");menuBtn.setAttribute("aria-label","Open navigation");document.body.classList.remove("gs-nav-open");
+  }
+  function openNav(){
+    sideNav.hidden=false;if(overlay)overlay.hidden=false;requestAnimationFrame(()=>{sideNav.classList.add("open");overlay?.classList.add("show")});
+    menuBtn.setAttribute("aria-expanded","true");menuBtn.setAttribute("aria-label","Close navigation");document.body.classList.add("gs-nav-open");
+  }
+  menuBtn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();sideNav.classList.contains("open")?closeNav():openNav()});
+  navClose?.addEventListener("click",closeNav);overlay?.addEventListener("click",closeNav);
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!sideNav.hidden)closeNav()});
+  navLogout?.addEventListener("click",()=>{document.getElementById("logoutBtn")?.click();closeNav()});
+
   function addHeading(text){const h=document.createElement("div");h.className="gs-nav-section-title";h.textContent=text;links.appendChild(h)}
-  function addItem(item){const [icon,label,target,sub]=item,btn=document.createElement("button");btn.type="button";btn.className="gs-nav-link";btn.innerHTML='<span>'+icon+'</span><div class="gs-nav-copy"><b>'+label+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div>';btn.dataset.target=target;btn.addEventListener("click",()=>{showSection(target);links.querySelectorAll(".gs-nav-link").forEach(x=>x.classList.remove("active"));btn.classList.add("active");closeNav()});links.appendChild(btn)}
-  function buildNav(){if(!links)return;const role=String(window.currentUserRole||currentStudentProfile?.role||"student").trim().toLowerCase(),isSuper=role==="superadmin",isAdmin=role==="admin"||isSuper,groups=isSuper?superadminGroups:(isAdmin?adminGroups:studentGroups);links.innerHTML="";groups.forEach(g=>{addHeading(g.heading);g.items.forEach(addItem)});const first=links.querySelector(".gs-nav-link");first?.classList.add("active");if(nameEl){const n=document.getElementById("welcomeTitle")?.textContent||"Welcome";nameEl.textContent=n.replace(/^Welcome,\s*/i,"")||"Welcome"}if(roleEl){roleEl.textContent=isSuper?"SUPERADMIN":isAdmin?"ADMIN":"STUDENT";roleEl.className="gs-nav-role-badge "+(isSuper?"superadmin":isAdmin?"admin":"student")}sideNav?.classList.toggle("gs-superadmin",isSuper)}
+  function addItem(item){
+    const [icon,label,target,sub]=item,btn=document.createElement("button");btn.type="button";btn.className="gs-nav-link";btn.dataset.target=target;
+    btn.innerHTML='<span aria-hidden="true">'+icon+'</span><div class="gs-nav-copy"><b>'+label+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div>';
+    btn.addEventListener("click",()=>{showSection(target);links.querySelectorAll(".gs-nav-link").forEach(x=>x.classList.remove("active"));btn.classList.add("active");closeNav()});links.appendChild(btn)
+  }
+  function buildNav(){
+    const role=String(window.currentUserRole||currentStudentProfile?.role||"student").trim().toLowerCase(),isSuper=role==="superadmin",isAdmin=role==="admin"||isSuper;
+    const groups=isSuper?superadminGroups:(isAdmin?adminGroups:studentGroups);links.innerHTML="";groups.forEach(g=>{addHeading(g.heading);g.items.forEach(addItem)});
+    const first=links.querySelector(".gs-nav-link");first?.classList.add("active");
+    if(nameEl){const n=document.getElementById("welcomeTitle")?.textContent||"Welcome";nameEl.textContent=n.replace(/^Welcome,\s*/i,"")||"Welcome"}
+    if(roleEl){roleEl.textContent=isSuper?"SUPERADMIN":isAdmin?"ADMIN":"STUDENT";roleEl.className="gs-nav-role-badge "+(isSuper?"superadmin":isAdmin?"admin":"student")}
+    sideNav.classList.toggle("gs-superadmin",isSuper);
+  }
   function allSections(){return Array.from(document.querySelectorAll(".portal-section"))}
-  function showSection(target){const dash=document.getElementById("dashboardView");if(target==="dashboardView"){allSections().forEach(el=>el.classList.add("gs-section-hidden"));window.scrollTo({top:0,behavior:"smooth"});return}allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));const el=document.getElementById(target);if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)}
+  function showSection(target){
+    if(target==="superadminPanel" && String(window.currentUserRole||"").toLowerCase()!=="superadmin")return;
+    if(target==="superadminPanel"){loadSuperadminAccounts();}
+    if(target==="dashboardView"){allSections().forEach(el=>el.classList.add("gs-section-hidden"));window.scrollTo({top:0,behavior:"smooth"});return}
+    allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));const el=document.getElementById(target);if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)
+  }
   window.gsShowSection=showSection;window.gsBuildNav=buildNav;window.gsRefreshNavigation=buildNav;
+  closeNav();
   document.addEventListener("DOMContentLoaded",()=>{buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))});
   let lastRole="";setInterval(()=>{const role=String(window.currentUserRole||"").trim().toLowerCase();if(role&&role!==lastRole){lastRole=role;buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))}},500);
 })();
@@ -788,6 +847,25 @@ document.querySelectorAll(".quick-action").forEach(btn=>btn.addEventListener("cl
 $("closeCourseModal")?.addEventListener("click",()=>$("courseModal").classList.add("hidden"));
 $("courseModal")?.addEventListener("click",e=>{if(e.target===$("courseModal"))$("courseModal").classList.add("hidden")});
 
+
+// ===== SUPERADMIN-ONLY ADMIN ACCOUNT OVERVIEW =====
+async function loadSuperadminAccounts(){
+  const panel=$("superadminPanel"),list=$("adminAccountsList");
+  if(!panel||!list)return;
+  if(String(window.currentUserRole||"").toLowerCase()!=="superadmin"){panel.style.display="none";return;}
+  list.innerHTML='<p class="muted">Loading administrative accounts...</p>';
+  try{
+    const snap=await getDocs(collection(db,"users"));
+    const admins=snap.docs.map(d=>({id:d.id,...d.data()})).filter(u=>["admin","superadmin"].includes(String(u.role||"").toLowerCase()));
+    if(!admins.length){list.innerHTML='<p class="muted">No administrative accounts found.</p>';return;}
+    list.innerHTML=admins.map(u=>{
+      const role=String(u.role||"admin").toUpperCase();
+      const cls=role==="SUPERADMIN"?"superadmin":"admin";
+      return '<article class="note-card" style="border-left:4px solid '+(cls==="superadmin"?'#d6ad55':'#1e5ca8')+'"><h3>'+esc(u.name||"Unnamed administrator")+'</h3><p class="subject">'+role+'</p><p class="muted">User ID: '+esc(u.id)+'</p></article>';
+    }).join("");
+  }catch(e){console.error(e);list.innerHTML='<p class="message">Could not load administrative accounts: '+esc(e.code||e.message)+'</p>'}
+}
+$("refreshAdminsBtn")?.addEventListener("click",loadSuperadminAccounts);
 
 // ===== V25 COURSE → SUBJECT → TOPIC → LESSON LEARNING SYSTEM =====
 const courseAdminPanel=$('courseAdminPanel'), courseForm=$('courseForm'), subjectForm=$('subjectForm'), topicForm=$('topicForm'), lessonForm=$('lessonForm');
@@ -1085,66 +1163,3 @@ const _v25LoadCourseStructure=loadCourseStructure;loadCourseStructure=async func
 qbSetStep(1,true);
 
 
-/* FINAL NAVIGATION UX CONTROLLER */
-(function(){
-  function initGreatStandNavigation(){
-    const menu=document.getElementById('gsMenuBtn');
-    const side=document.getElementById('gsSideNav');
-    const overlay=document.getElementById('gsNavOverlay');
-    const close=document.getElementById('gsNavClose');
-    if(!menu || !side) return;
-
-    // Replace the button/overlay/close nodes so older navigation listeners cannot compete.
-    const freshMenu=menu.cloneNode(true); menu.replaceWith(freshMenu);
-    const freshOverlay=overlay ? overlay.cloneNode(true) : null; if(overlay && freshOverlay) overlay.replaceWith(freshOverlay);
-    const freshClose=close ? close.cloneNode(true) : null; if(close && freshClose) close.replaceWith(freshClose);
-
-    function closeMenu(){
-      side.hidden=true;
-      if(freshOverlay) freshOverlay.hidden=true;
-      side.classList.remove('open');
-      freshOverlay?.classList.remove('show');
-      freshMenu.setAttribute('aria-expanded','false');
-      freshMenu.setAttribute('aria-label','Open navigation');
-      document.body.classList.remove('gs-nav-open');
-    }
-    function openMenu(){
-      side.hidden=false;
-      if(freshOverlay) freshOverlay.hidden=false;
-      side.classList.add('open');
-      freshOverlay?.classList.add('show');
-      freshMenu.setAttribute('aria-expanded','true');
-      freshMenu.setAttribute('aria-label','Close navigation');
-      document.body.classList.add('gs-nav-open');
-    }
-
-    // Always start closed.
-    closeMenu();
-
-    freshMenu.addEventListener('click',e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      side.hidden ? openMenu() : closeMenu();
-    });
-    freshOverlay?.addEventListener('click',closeMenu);
-    freshClose?.addEventListener('click',closeMenu);
-    document.addEventListener('keydown',e=>{if(e.key==='Escape' && !side.hidden) closeMenu();});
-
-    // Menu items work normally, then close the menu.
-    side.addEventListener('click',e=>{
-      const item=e.target.closest('.gs-nav-link');
-      if(item) setTimeout(closeMenu,80);
-    });
-
-    // Defensive guard: no script is allowed to make the navigation visible unless it is opened.
-    const observer=new MutationObserver(()=>{
-      if(side.dataset.gsNavInternal!=='open' && !side.classList.contains('open')){
-        side.hidden=true;
-        if(freshOverlay) freshOverlay.hidden=true;
-      }
-    });
-    observer.observe(side,{attributes:true,attributeFilter:['class','style']});
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initGreatStandNavigation,{once:true});
-  else initGreatStandNavigation();
-})();
