@@ -887,6 +887,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
   function showSection(target){
     if(target==="gsNotificationsPanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){loadStudentNotifications();}
     if(target==="gsProfilePanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){loadStudentProfilePanel();}
+    if(target==="gsAchievementsPanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){setTimeout(()=>window.gsRenderAchievements?.(),50);}
     if(target==="superadminPanel" && String(window.currentUserRole||"").toLowerCase()!=="superadmin")return;
     if(target==="superadminPanel"){loadSuperadminAccounts();}
     if(target==="announcementAdminPanel"){const ap=$("announcementAdminPanel");if(ap)ap.style.display="block";loadAdminAnnouncements();}else{const ap=$("announcementAdminPanel");if(ap)ap.style.display="none";}
@@ -1451,14 +1452,15 @@ qbSetStep(1,true);
   setInterval(renderStudentProgressDashboard,2000);
 })();
 
-/* ===== V34.2 STUDENT ACHIEVEMENTS ===== */
+
+/* ===== V34 STUDENT ACHIEVEMENTS ===== */
 (function(){
   const panel=document.getElementById('gsAchievementsPanel');
   if(!panel)return;
   function progressStore(){try{return JSON.parse(localStorage.getItem('gs_learning_progress_v1_'+(auth?.currentUser?.uid||'guest'))||'{}')}catch(e){return {}}}
   function publishedLessons(){return (courseData.lessons||[]).filter(l=>String(l.status||'published').toLowerCase()==='published'||!l.status)}
   function lessonDone(v){return !!v}
-  function completionDates(store){return Object.values(store).map(v=>v&&typeof v==='object'&&v.completedAt?new Date(v.completedAt):v===true?new Date():null).filter(Boolean)}
+  function completionDates(store){return Object.values(store).map(v=>v&&typeof v==='object'&&v.completedAt?new Date(v.completedAt):null).filter(Boolean)}
   function streak(store){
     const dates=completionDates(store).map(d=>{const x=new Date(d);x.setHours(0,0,0,0);return x.getTime()});
     const unique=[...new Set(dates)].sort((a,b)=>b-a); if(!unique.length)return 0;
@@ -1494,4 +1496,62 @@ qbSetStep(1,true);
   setTimeout(render,700);
   setInterval(()=>{if(String(window.currentUserRole||'').toLowerCase()==='student'&&panel.style.display!=='none')render()},15000);
 })();
+
 setInterval(()=>{if(String(window.currentUserRole||'').toLowerCase()==='student')loadStudentNotifications()},30000);
+
+/* ===== V34.2 ROBUST PORTAL NAVIGATION =====
+/* Fixes panels that use inline display:none and guarantees every navigation
+   target is shown without depending on old show/hide state. */
+(function(){
+  function forceShowPanel(id){
+    const target=document.getElementById(id);
+    if(!target) return false;
+    document.querySelectorAll('.portal-section').forEach(el=>{
+      if(el!==target){
+        el.classList.add('gs-section-hidden');
+        el.classList.remove('hidden');
+      }
+    });
+    target.classList.remove('gs-section-hidden','hidden');
+    target.style.setProperty('display','block','important');
+    const dash=document.getElementById('dashboardView');
+    if(dash) dash.classList.remove('hidden');
+    setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'start'}),30);
+    return true;
+  }
+  function robustShowSection(id){
+    if(id==='dashboardView'){
+      document.querySelectorAll('.portal-section').forEach(el=>el.classList.add('gs-section-hidden'));
+      document.querySelectorAll('.portal-section').forEach(el=>el.style.removeProperty('display'));
+      const dash=document.getElementById('dashboardView');
+      dash?.classList.remove('hidden');
+      window.scrollTo({top:0,behavior:'smooth'});
+      return;
+    }
+    if(forceShowPanel(id)){
+      if(id==='gsAchievementsPanel') setTimeout(()=>window.gsRenderAchievements?.(),60);
+      if(id==='gsProfilePanel' && String(window.currentUserRole||'').toLowerCase()==='student') setTimeout(()=>loadStudentProfilePanel(),60);
+      if(id==='gsNotificationsPanel' && String(window.currentUserRole||'').toLowerCase()==='student') setTimeout(()=>loadStudentNotifications(),60);
+      if(id==='studentAdminPanel') setTimeout(()=>loadStudents?.(),60);
+      if(id==='assignmentAdminPanel') setTimeout(()=>loadAssignments?.(),60);
+      if(id==='testAdminPanel') setTimeout(()=>loadTests?.(),60);
+      if(id==='testResultsAdminPanel') setTimeout(()=>loadCbtResultsIfNeeded?.(),60);
+      if(id==='submissionsAdminPanel') setTimeout(()=>loadSubmissions?.(),60);
+      if(id==='materialsAdminPanel') setTimeout(()=>loadMaterials?.(),60);
+      if(id==='courseAdminPanel') setTimeout(()=>loadCourseStructure?.(),60);
+      if(id==='adminPanel') setTimeout(()=>loadNotes?.(),60);
+    }
+  }
+  window.gsShowSection=robustShowSection;
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest?.('[data-target]');
+    if(!btn) return;
+    const id=btn.dataset.target;
+    if(!id || !document.getElementById(id)) return;
+    if(btn.classList.contains('gs-nav-link') || btn.classList.contains('quick-action') || btn.classList.contains('course-resource-btn')){
+      e.preventDefault();
+      robustShowSection(id);
+    }
+  },true);
+})();
+
