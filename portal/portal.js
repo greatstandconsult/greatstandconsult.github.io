@@ -815,7 +815,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
       ["📚","Study Materials","materialsPanel","Access your study resources"],
       ["🏆","My Results","studentResultsPanel","View your performance"],
       ["🔔","Notifications","gsNotificationsPanel","See your latest updates"],
-      ["👤","My Profile","gsProfilePanel","View your student information"],
+      ["📊","Learning Progress","gsStudentProgressPanel","Track your course and lesson progress"],
       ["👤","My Profile","gsProfilePanel","View your student information"]
     ]}
   ];
