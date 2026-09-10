@@ -243,6 +243,11 @@ body.gs-nav-open{overflow:hidden!important}
 .student-progress-panel{background:linear-gradient(135deg,#071a33 0%,#102b4d 100%)!important;color:#fff!important;border-radius:22px!important;padding:22px!important;margin:18px 0!important;box-shadow:0 16px 38px rgba(7,26,51,.18)!important}.gs-student-progress-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}.gs-student-progress-head h2{margin:10px 0 5px;color:#fff!important}.gs-student-progress-head .muted{color:#d9e4f2!important}.gs-student-progress-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:18px}.gs-student-progress-card{background:#fff;color:#071a33;border-radius:17px;padding:16px;border:1px solid rgba(255,255,255,.25);box-shadow:0 8px 20px rgba(0,0,0,.12)}.gs-student-progress-card h3{margin:0 0 5px;font-size:16px}.gs-student-progress-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#667085}.gs-student-progress-track{height:9px;background:#e8edf4;border-radius:99px;overflow:hidden;margin-top:11px}.gs-student-progress-fill{height:100%;background:linear-gradient(90deg,#1769e0,#5b9bf4);border-radius:99px}.gs-student-progress-card button{margin-top:12px;width:100%}@media(max-width:700px){.gs-student-progress-head{display:block}.gs-student-progress-head .secondary-btn{width:100%;margin-top:12px}.student-progress-panel{padding:18px!important}}
 </style>
 
+
+<style id="gs-announcements-style">
+.gs-announcements{background:#fff;border:1px solid #e7edf5;border-radius:22px;padding:22px;margin:18px 0;box-shadow:0 12px 30px rgba(7,26,51,.08)}
+.gs-announcements .announcement-hero{background:linear-gradient(135deg,#071a33,#12345a);color:#fff;border-radius:18px;padding:20px;margin-bottom:18px}.announcement-hero h2{margin:6px 0}.announcement-hero p{margin:0;color:#dbe7f5}.announcement-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.gs-announcements input,.gs-announcements select,.gs-announcements textarea{width:100%;box-sizing:border-box;border:1px solid #d8e0ea;border-radius:12px;padding:12px 13px;background:#fbfcfe;color:#101828}.gs-announcements textarea{min-height:130px;resize:vertical}.announcement-form-full{grid-column:1/-1}.announcement-publish{display:flex;justify-content:flex-end;margin-top:14px}.announcement-admin-list{display:grid;gap:10px;margin-top:18px}.announcement-admin-item{border:1px solid #e5eaf1;border-radius:15px;padding:14px;background:#fbfcfe}.announcement-admin-item strong{color:#071a33}.announcement-admin-item small{display:block;color:#667085;margin-top:5px}.announcement-admin-item button{margin-top:10px}@media(max-width:700px){.announcement-form-grid{grid-template-columns:1fr}.announcement-form-full{grid-column:auto}.announcement-publish .primary-btn{width:100%}}
+</style>
 <style id="gs-notifications-style">
 .gs-notifications{background:#fff;border:1px solid #e7edf5;border-radius:22px;padding:20px;margin:18px 0;box-shadow:0 12px 30px rgba(7,26,51,.08)}
 .gs-notifications-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.gs-notifications-head h2{margin:0}.gs-notification-list{display:grid;gap:10px}.gs-notification-item{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid #e8edf4;border-radius:16px;background:#fbfcfe}.gs-notification-icon{width:42px;height:42px;border-radius:12px;background:#071a33;color:#fff;display:grid;place-items:center;font-size:20px;flex:0 0 42px}.gs-notification-item b{display:block;color:#071a33}.gs-notification-item small{display:block;color:#667085;margin-top:4px}.gs-notification-empty{text-align:center;padding:25px;color:#667085}@media(max-width:700px){.gs-notifications{padding:16px}.gs-notifications-head{display:block}.gs-notifications-head .secondary-btn{margin-top:10px;width:100%}}
@@ -322,6 +327,22 @@ body.gs-nav-open{overflow:hidden!important}
   </form>
   <div class="student-list-head"><h3>Registered Students</h3></div>
   <div id="studentsList"><p class="muted">Loading students...</p></div>
+</div>
+<div id="announcementAdminPanel" class="panel admin-panel portal-section" style="display:none">
+  <div class="gs-announcements">
+    <div class="announcement-hero"><span class="badge">ADMIN UPDATES</span><h2>📢 Post Update</h2><p>Create announcements that appear in students' Notifications.</p></div>
+    <form id="announcementForm">
+      <div class="announcement-form-grid">
+        <div><label>Update Title</label><input id="announcementTitle" required placeholder="e.g. New Mathematics class tomorrow"></div>
+        <div><label>Type</label><select id="announcementType"><option value="announcement">📢 Announcement</option><option value="class">🎓 Class Update</option><option value="assignment">📝 Assignment Update</option><option value="test">🧠 CBT / Test Update</option><option value="general">ℹ️ General Update</option></select></div>
+        <div class="announcement-form-full"><label>Message</label><textarea id="announcementMessage" required placeholder="Write the update students should see..."></textarea></div>
+      </div>
+      <div class="announcement-publish"><button class="primary-btn" type="submit">📢 Publish Update</button></div>
+      <p id="announcementMessageStatus" class="message"></p>
+    </form>
+    <div class="student-list-head"><h3>Recent Posted Updates</h3><button id="refreshAnnouncementsBtn" class="secondary-btn" type="button">↻ Refresh</button></div>
+    <div id="adminAnnouncementsList" class="announcement-admin-list"><p class="muted">Loading updates...</p></div>
+  </div>
 </div>
 <div id="superadminPanel" class="panel admin-panel portal-section" style="display:none">
   <div class="superadmin-control-head"><span class="badge">SUPERADMIN ONLY</span><h2>👑 Admin Management</h2><p class="muted">This area is visible only to the Superadmin. Review the administrative accounts and keep the portal under central control.</p></div>

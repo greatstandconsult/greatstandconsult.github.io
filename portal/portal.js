@@ -583,6 +583,25 @@ studentForm.addEventListener("submit",async e=>{
   }catch(e){console.error(e);studentMessage.className="message submission-error";studentMessage.textContent="Could not create student: "+(e.code||e.message);}
 });
 
+// ===== ADMIN POST UPDATES =====
+async function loadAdminAnnouncements(){
+  const list=$("adminAnnouncementsList"); if(!list)return;
+  list.innerHTML='<p class="muted">Loading updates...</p>';
+  try{let snap;try{snap=await getDocs(query(collection(db,"announcements"),orderBy("createdAt","desc")))}catch(e){snap=await getDocs(collection(db,"announcements"))}
+    if(snap.empty){list.innerHTML='<p class="muted">No updates posted yet.</p>';return}
+    list.innerHTML=""; snap.docs.slice(0,20).forEach(d=>{const a=d.data(),card=document.createElement("article");card.className="announcement-admin-item";
+      const h=document.createElement("strong");h.textContent=(a.type||"announcement").toUpperCase()+" • "+(a.title||"Update");
+      const msg=document.createElement("div");msg.textContent=a.message||"";msg.style.marginTop="7px";msg.style.color="#344054";
+      const sm=document.createElement("small");sm.textContent=a.createdAt?.toDate?"Posted: "+a.createdAt.toDate().toLocaleString():"Posted recently";
+      const del=document.createElement("button");del.type="button";del.className="secondary-btn";del.textContent="Delete";
+      del.addEventListener("click",async()=>{if(!confirm("Delete this update?"))return;del.disabled=true;try{await deleteDoc(doc(db,"announcements",d.id));await loadAdminAnnouncements()}catch(e){alert("Could not delete update: "+(e.code||e.message));del.disabled=false}});
+      card.append(h,msg,sm,del);list.appendChild(card);});
+  }catch(e){console.error(e);list.innerHTML='<p class="message">Could not load posted updates: '+(e.code||e.message)+'</p>'}
+}
+const announcementForm=$("announcementForm");
+announcementForm?.addEventListener("submit",async e=>{e.preventDefault();if(!auth.currentUser)return;const st=$("announcementMessageStatus");st.textContent="Publishing update...";try{await addDoc(collection(db,"announcements"),{title:$("announcementTitle").value.trim(),message:$("announcementMessage").value.trim(),type:$("announcementType").value,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});announcementForm.reset();st.textContent="Update published successfully ✅";await loadAdminAnnouncements()}catch(e){console.error(e);st.textContent="Could not publish update: "+(e.code||e.message)}});
+$("refreshAnnouncementsBtn")?.addEventListener("click",loadAdminAnnouncements);
+
 // ===== STUDENT NOTIFICATIONS (derived from existing published content; no new Firestore collection) =====
 async function loadStudentNotifications(){
   const panel=$('gsNotificationsPanel'),list=$('gsNotificationList');
@@ -594,6 +613,7 @@ async function loadStudentNotifications(){
   try{
     const rows=[];
     const fetchCol=async(name,type,icon,label)=>{try{let snap;try{snap=await getDocs(query(collection(db,name),orderBy('createdAt','desc')))}catch(e){snap=await getDocs(collection(db,name))}snap.docs.slice(0,6).forEach(d=>{const x=d.data();rows.push({type,icon,label,title:x.title||label,time:x.createdAt?.toDate?x.createdAt.toDate():null})})}catch(e){console.warn('Notification source '+name,e)}};
+    try{let snap;try{snap=await getDocs(query(collection(db,"announcements"),orderBy("createdAt","desc")))}catch(e){snap=await getDocs(collection(db,"announcements"))}snap.docs.slice(0,8).forEach(d=>{const x=d.data();rows.push({type:"announcement",icon:"📢",label:"Update",title:x.title||"New update",message:x.message||"",time:x.createdAt?.toDate?x.createdAt.toDate():null})})}catch(e){console.warn("Notification source announcements",e)}
     await Promise.all([
       fetchCol('notes','note','📖','New note'),
       fetchCol('assignments','assignment','📝','New assignment'),
@@ -602,7 +622,7 @@ async function loadStudentNotifications(){
     ]);
     rows.sort((a,b)=>(b.time?.getTime?.()||0)-(a.time?.getTime?.()||0));
     if(!rows.length){list.innerHTML='<div class="gs-notification-empty">🎉 You are all caught up. New updates will appear here.</div>';return}
-    list.innerHTML=rows.slice(0,12).map(x=>`<article class="gs-notification-item"><div class="gs-notification-icon">${x.icon}</div><div><b>${esc(x.label)}: ${esc(x.title)}</b><small>${x.time?x.time.toLocaleString():'Recently published'} • Great Stand Educational Consult</small></div></article>`).join('');
+    list.innerHTML=rows.slice(0,12).map(x=>`<article class="gs-notification-item"><div class="gs-notification-icon">${x.icon}</div><div><b>${esc(x.label)}: ${esc(x.title)}</b>${x.message?`<div style="margin-top:5px;color:#344054">${esc(x.message)}</div>`:''}<small>${x.time?x.time.toLocaleString():'Recently published'} • Great Stand Educational Consult</small></div></article>`).join('');
   }catch(e){console.error(e);list.innerHTML='<div class="gs-notification-empty">Could not load notifications.</div>'}
 }
 window.gsRefreshNotifications=loadStudentNotifications;
@@ -803,6 +823,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
       ["👨‍🎓","Manage Students","studentAdminPanel","Create and manage student accounts"],
       ["🎓","Manage Courses & Lessons","courseAdminPanel","Build and publish learning content"],
       ["📚","Manage Notes","adminPanel","Publish notes for students"],
+      ["📢","Post Updates","announcementAdminPanel","Create announcements for students"],
       ["📝","Manage Assignments","assignmentAdminPanel","Create and manage assignments"],
       ["🧠","Manage CBT / Tests","testAdminPanel","Create practice tests"],
       ["📖","Manage Study Materials","materialsAdminPanel","Manage downloadable materials"],
@@ -820,6 +841,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
       ["👨‍🎓","Manage Students","studentAdminPanel","Create and manage student accounts"],
       ["🎓","Manage Courses & Lessons","courseAdminPanel","Build and publish learning content"],
       ["📚","Manage Notes","adminPanel","Publish notes for students"],
+      ["📢","Post Updates","announcementAdminPanel","Create announcements for students"],
       ["📝","Manage Assignments","assignmentAdminPanel","Create and manage assignments"],
       ["🧠","Manage CBT / Tests","testAdminPanel","Create practice tests"],
       ["📖","Manage Study Materials","materialsAdminPanel","Manage downloadable materials"],
@@ -863,6 +885,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
     if(target==="gsNotificationsPanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){loadStudentNotifications();}
     if(target==="superadminPanel" && String(window.currentUserRole||"").toLowerCase()!=="superadmin")return;
     if(target==="superadminPanel"){loadSuperadminAccounts();}
+    if(target==="announcementAdminPanel"){const ap=$("announcementAdminPanel");if(ap)ap.style.display="block";loadAdminAnnouncements();}else{const ap=$("announcementAdminPanel");if(ap)ap.style.display="none";}
     if(target==="dashboardView"){allSections().forEach(el=>el.classList.add("gs-section-hidden"));window.scrollTo({top:0,behavior:"smooth"});return}
     allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));const el=document.getElementById(target);if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)
   }
