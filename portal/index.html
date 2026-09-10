@@ -242,6 +242,11 @@ body.gs-nav-open{overflow:hidden!important}
 <style id="gs-student-progress-dashboard">
 .student-progress-panel{background:linear-gradient(135deg,#071a33 0%,#102b4d 100%)!important;color:#fff!important;border-radius:22px!important;padding:22px!important;margin:18px 0!important;box-shadow:0 16px 38px rgba(7,26,51,.18)!important}.gs-student-progress-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}.gs-student-progress-head h2{margin:10px 0 5px;color:#fff!important}.gs-student-progress-head .muted{color:#d9e4f2!important}.gs-student-progress-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:18px}.gs-student-progress-card{background:#fff;color:#071a33;border-radius:17px;padding:16px;border:1px solid rgba(255,255,255,.25);box-shadow:0 8px 20px rgba(0,0,0,.12)}.gs-student-progress-card h3{margin:0 0 5px;font-size:16px}.gs-student-progress-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#667085}.gs-student-progress-track{height:9px;background:#e8edf4;border-radius:99px;overflow:hidden;margin-top:11px}.gs-student-progress-fill{height:100%;background:linear-gradient(90deg,#1769e0,#5b9bf4);border-radius:99px}.gs-student-progress-card button{margin-top:12px;width:100%}@media(max-width:700px){.gs-student-progress-head{display:block}.gs-student-progress-head .secondary-btn{width:100%;margin-top:12px}.student-progress-panel{padding:18px!important}}
 </style>
+
+<style id="gs-notifications-style">
+.gs-notifications{background:#fff;border:1px solid #e7edf5;border-radius:22px;padding:20px;margin:18px 0;box-shadow:0 12px 30px rgba(7,26,51,.08)}
+.gs-notifications-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.gs-notifications-head h2{margin:0}.gs-notification-list{display:grid;gap:10px}.gs-notification-item{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid #e8edf4;border-radius:16px;background:#fbfcfe}.gs-notification-icon{width:42px;height:42px;border-radius:12px;background:#071a33;color:#fff;display:grid;place-items:center;font-size:20px;flex:0 0 42px}.gs-notification-item b{display:block;color:#071a33}.gs-notification-item small{display:block;color:#667085;margin-top:4px}.gs-notification-empty{text-align:center;padding:25px;color:#667085}@media(max-width:700px){.gs-notifications{padding:16px}.gs-notifications-head{display:block}.gs-notifications-head .secondary-btn{margin-top:10px;width:100%}}
+</style>
 </head><body><div id="gsNavOverlay" class="gs-nav-overlay" hidden></div>
 <aside id="gsSideNav" class="gs-side-nav" aria-label="Portal navigation" hidden>
   <div class="gs-nav-head"><div class="gs-nav-brand"><div class="gs-nav-logo">G</div><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div><button id="gsNavClose" class="gs-nav-close" type="button" aria-label="Close navigation">×</button></div>
@@ -259,10 +264,14 @@ body.gs-nav-open{overflow:hidden!important}
     <button class="quick-action" data-target="testsPanel"><span>🧠</span><b>CBT / Tests</b><small>Practice & get scored</small></button>
     <button class="quick-action" data-target="materialsPanel"><span>📚</span><b>Study Materials</b><small>View or download PDFs</small></button>
     <button class="quick-action" data-target="studentResultsPanel"><span>🏆</span><b>My Results</b><small>Check your performance</small></button>
+    <button class="quick-action" data-target="gsNotificationsPanel"><span>🔔</span><b>Notifications</b><small>See your latest updates</small></button>
   </div>
 </div><div id="gsStudentProgressPanel" class="student-progress-panel portal-section">
   <div class="gs-student-progress-head"><div><span class="badge">KEEP LEARNING</span><h2>📊 Your Learning Progress</h2><p class="muted">Track the lessons you have completed and continue where you stopped.</p></div><button class="secondary-btn" type="button" id="gsContinueLearningBtn">Continue Learning →</button></div>
   <div id="gsStudentProgressGrid" class="gs-student-progress-grid"><div class="learning-empty"><div>📚</div><h3>Loading progress...</h3></div></div>
+</div><div id="gsNotificationsPanel" class="gs-notifications portal-section">
+  <div class="gs-notifications-head"><div><span class="badge">UPDATES</span><h2>🔔 Notifications</h2><p class="muted">Stay updated when new learning content is published.</p></div><button class="secondary-btn" type="button" id="gsRefreshNotificationsBtn">↻ Refresh</button></div>
+  <div id="gsNotificationList" class="gs-notification-list"><div class="gs-notification-empty">Loading updates...</div></div>
 </div><div id="learningCentrePanel" class="panel portal-section learning-centre-panel">
   <div class="learning-head">
     <div><span class="badge">GREAT STAND LEARNING CENTRE</span><h2>📚 My Courses</h2><p class="muted">Your JAMB and WAEC learning space — subjects, notes, assignments and CBT tests in one place.</p></div>

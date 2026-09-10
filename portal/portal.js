@@ -583,6 +583,31 @@ studentForm.addEventListener("submit",async e=>{
   }catch(e){console.error(e);studentMessage.className="message submission-error";studentMessage.textContent="Could not create student: "+(e.code||e.message);}
 });
 
+// ===== STUDENT NOTIFICATIONS (derived from existing published content; no new Firestore collection) =====
+async function loadStudentNotifications(){
+  const panel=$('gsNotificationsPanel'),list=$('gsNotificationList');
+  if(!panel||!list)return;
+  const role=String(window.currentUserRole||currentStudentProfile?.role||'').toLowerCase();
+  panel.style.display=role==='student'?'block':'none';
+  if(role!=='student')return;
+  list.innerHTML='<div class="gs-notification-empty">Loading updates...</div>';
+  try{
+    const rows=[];
+    const fetchCol=async(name,type,icon,label)=>{try{let snap;try{snap=await getDocs(query(collection(db,name),orderBy('createdAt','desc')))}catch(e){snap=await getDocs(collection(db,name))}snap.docs.slice(0,6).forEach(d=>{const x=d.data();rows.push({type,icon,label,title:x.title||label,time:x.createdAt?.toDate?x.createdAt.toDate():null})})}catch(e){console.warn('Notification source '+name,e)}};
+    await Promise.all([
+      fetchCol('notes','note','📖','New note'),
+      fetchCol('assignments','assignment','📝','New assignment'),
+      fetchCol('tests','test','🧠','New CBT / test'),
+      fetchCol('materials','material','📚','New study material')
+    ]);
+    rows.sort((a,b)=>(b.time?.getTime?.()||0)-(a.time?.getTime?.()||0));
+    if(!rows.length){list.innerHTML='<div class="gs-notification-empty">🎉 You are all caught up. New updates will appear here.</div>';return}
+    list.innerHTML=rows.slice(0,12).map(x=>`<article class="gs-notification-item"><div class="gs-notification-icon">${x.icon}</div><div><b>${esc(x.label)}: ${esc(x.title)}</b><small>${x.time?x.time.toLocaleString():'Recently published'} • Great Stand Educational Consult</small></div></article>`).join('');
+  }catch(e){console.error(e);list.innerHTML='<div class="gs-notification-empty">Could not load notifications.</div>'}
+}
+window.gsRefreshNotifications=loadStudentNotifications;
+$('gsRefreshNotificationsBtn')?.addEventListener('click',loadStudentNotifications);
+
 onAuthStateChanged(auth,async user=>{
   if(!user){
     loginView.classList.remove("hidden");
@@ -671,6 +696,7 @@ onAuthStateChanged(auth,async user=>{
     }
 
     try{await loadStudentResultsIfNeeded()}catch(e){console.error("Student results:",e)}
+    try{await loadStudentNotifications()}catch(e){console.error("Notifications:",e)}
 
   }catch(e){
     console.error(e);
@@ -1280,3 +1306,5 @@ qbSetStep(1,true);
   setTimeout(renderStudentProgressDashboard,300);
   setInterval(renderStudentProgressDashboard,2000);
 })();
+
+setInterval(()=>{if(String(window.currentUserRole||'').toLowerCase()==='student')loadStudentNotifications()},30000);
