@@ -74,6 +74,15 @@
 #learningCourseGrid .learning-course-card, #learningCourseGrid .course-open-btn, #learningPathContent .path-card { position: relative !important; z-index: 30 !important; pointer-events: auto !important; }
 #learningPathPanel { z-index: 40 !important; }
 </style>
+<style id="v381-real-tables">
+.lesson-table-wrap{width:100%;overflow-x:auto;margin:16px 0;border-radius:12px;-webkit-overflow-scrolling:touch}
+.lesson-table{width:100%;min-width:560px;border-collapse:collapse!important;border-spacing:0!important;border:2px solid #1f2937!important;background:#fff!important}
+.lesson-table th,.lesson-table td{border:1.5px solid #6b7280!important;padding:10px 12px!important;text-align:left!important;vertical-align:top!important;line-height:1.5!important}
+.lesson-table th{font-weight:800!important;background:#eef2f7!important}
+.lesson-table tr:nth-child(even) td{background:#f8fafc!important}
+.lesson-table td:empty,.lesson-table th:empty{min-width:70px}
+@media(max-width:640px){.lesson-table{min-width:520px;font-size:14px}.lesson-table th,.lesson-table td{padding:9px 10px!important}}
+</style>
 </head><body><div id="gsNavOverlay" class="gs-nav-overlay"></div>
 <aside id="gsSideNav" class="gs-side-nav" aria-label="Portal navigation">
   <div class="gs-nav-head"><div class="gs-nav-brand"><div class="gs-nav-logo">G</div><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div><button id="gsNavClose" class="gs-nav-close" type="button" aria-label="Close navigation">×</button></div>
@@ -278,6 +287,11 @@ Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
     <span class="rich-divider"></span>
     <button type="button" class="rich-tool" data-link title="Insert link">🔗</button>
     <button type="button" class="rich-tool media-tool" id="qbInsertImage" title="Insert image">🖼️ Image</button>
+    <button type="button" class="rich-tool ai-format-tool" id="qbFormatAiNote" title="Convert AI commands into real formatting">✨ Format AI Note</button>
+    <button type="button" class="rich-tool" id="qbInsertTable" title="Insert table">▦ Table</button>
+    <button type="button" class="rich-tool" id="qbInsertCalc" title="Insert calculation">🧮 Calc</button>
+    <button type="button" class="rich-tool" id="qbInsertAnswer" title="Insert answer">✓ Answer</button>
+    <span class="rich-divider"></span>
     <button type="button" class="rich-tool media-tool" id="qbInsertVideo" title="Insert YouTube video">▶ Video</button>
     <button type="button" class="rich-tool" data-cmd="justifyLeft" title="Align left">≡</button>
     <button type="button" class="rich-tool" data-cmd="justifyCenter" title="Center">≡</button>
@@ -288,7 +302,7 @@ Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
     <button type="button" class="rich-tool" data-cmd="removeFormat" title="Clear formatting">Tx</button>
   </div>
   <div id="qbLessonContent" class="rich-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Write your lesson here... Add explanations, examples, formulas, subtopics and practice questions."></div>
-  <div class="rich-editor-help">Toolbar stays visible while you write. Use <b>Heading</b> for sections, <b>Subheading</b> for subtopics, <b>Image</b> for pictures and <b>Video</b> for YouTube lessons. Formatting and media are saved with the lesson.</div>
+  <div class="rich-editor-help"><b>Paste-friendly:</b> paste normal text, Markdown tables (<code>| A | B |</code>), <code>[table]...[/table]</code>, <code>[calc]...[/calc]</code>, <code>[answer]...[/answer]</code>, or calculation lines using <code>____</code>/<code>────</code>. The editor will format them automatically. Toolbar formatting, tables, calculations, answers, images and videos are saved with the lesson.</div>
 </div>
         <label class="upload-label">Optional lesson PDF</label>
         <input id="qbLessonFile" type="file" accept="application/pdf,.pdf">
@@ -331,4 +345,4 @@ Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
   <h2>📝 Available Assignments</h2>
   <div id="assignmentsList"><p class="muted">Loading assignments...</p></div><div id="assignmentModal" class="assignment-modal hidden"><div class="assignment-modal-card"><button id="closeAssignmentBtn" class="close-btn" type="button">×</button><h2 id="openAssignmentTitle">Assignment</h2><p id="openAssignmentSubject" class="subject"></p><div id="openAssignmentContent" class="note-content"></div><p id="openAssignmentDeadline" class="muted"></p><form id="submissionForm"><label>Your Answer</label><textarea id="submissionAnswer" required placeholder="Type your answer here..."></textarea><button class="primary-btn" type="submit">Submit Assignment</button><p id="submissionMessage" class="message"></p></form></div></div>
 </div>
-<div id="submissionsAdminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📥 Student Submissions</h2><p class="muted">Admins and Superadmins can review submitted assignments.</p><div id="submissionsList"><p class="muted">Loading submissions...</p></div></div><div id="studentResultsPanel" class="panel portal-section"><h2>🏆 My Results</h2><p class="muted">Your marked assignment results will appear here.</p><div id="studentResultsList"><p class="muted">Loading results...</p></div></div><div id="statusPanel" class="panel portal-section"><h2>Portal Status</h2><p id="statusText">Loading...</p></div><div id="featuresPanel" class="panel portal-section"><h2>What you can do here</h2><div class="features"><div><strong>📚 Learning Materials</strong><p>Access notes and study materials.</p></div><div><strong>📝 Assignments</strong><p>Receive and submit assignments.</p></div><div><strong>💻 CBT Tests</strong><p>Take online tests and examinations.</p></div><div><strong>🏆 Results</strong><p>View your scores and academic performance.</p></div></div></div></section><div id="courseModal" class="course-modal hidden" role="dialog" aria-modal="true" aria-labelledby="courseModalTitle"><div class="course-modal-card"><button id="closeCourseModal" class="close-btn" type="button">×</button><div class="course-modal-hero"><span id="courseModalIcon" class="course-modal-icon">📚</span><div><span id="courseModalCategory" class="course-category">COURSE</span><h2 id="courseModalTitle">Course</h2><p id="courseModalSubtitle" class="muted">Learning resources</p></div></div><div id="courseModalStats" class="course-modal-stats"></div><div id="courseModalResources" class="course-modal-resources"></div></div></div></main><footer>© 2026 Great Stand Educational Consult. Guiding Students. Building Futures.</footer><script type="module" src="portal.js?v=30.0"></script></body></html>
+<div id="submissionsAdminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📥 Student Submissions</h2><p class="muted">Admins and Superadmins can review submitted assignments.</p><div id="submissionsList"><p class="muted">Loading submissions...</p></div></div><div id="studentResultsPanel" class="panel portal-section"><h2>🏆 My Results</h2><p class="muted">Your marked assignment results will appear here.</p><div id="studentResultsList"><p class="muted">Loading results...</p></div></div><div id="statusPanel" class="panel portal-section"><h2>Portal Status</h2><p id="statusText">Loading...</p></div><div id="featuresPanel" class="panel portal-section"><h2>What you can do here</h2><div class="features"><div><strong>📚 Learning Materials</strong><p>Access notes and study materials.</p></div><div><strong>📝 Assignments</strong><p>Receive and submit assignments.</p></div><div><strong>💻 CBT Tests</strong><p>Take online tests and examinations.</p></div><div><strong>🏆 Results</strong><p>View your scores and academic performance.</p></div></div></div></section><div id="courseModal" class="course-modal hidden" role="dialog" aria-modal="true" aria-labelledby="courseModalTitle"><div class="course-modal-card"><button id="closeCourseModal" class="close-btn" type="button">×</button><div class="course-modal-hero"><span id="courseModalIcon" class="course-modal-icon">📚</span><div><span id="courseModalCategory" class="course-category">COURSE</span><h2 id="courseModalTitle">Course</h2><p id="courseModalSubtitle" class="muted">Learning resources</p></div></div><div id="courseModalStats" class="course-modal-stats"></div><div id="courseModalResources" class="course-modal-resources"></div></div></div></main><footer>© 2026 Great Stand Educational Consult. Guiding Students. Building Futures.</footer><script type="module" src="portal.js?v=40.0"></script></body></html>
