@@ -1083,3 +1083,57 @@ $('qbRefresh')?.addEventListener('click',qbReload);
 const _v25RenderCourseAdminList=renderCourseAdminList;renderCourseAdminList=function(){renderCourseAdminListV27()};
 const _v25LoadCourseStructure=loadCourseStructure;loadCourseStructure=async function(){await _v25LoadCourseStructure();refreshQuickBuilder();renderCourseAdminListV27()};
 qbSetStep(1,true);
+
+
+/* FINAL NAVIGATION BEHAVIOUR FIX */
+(function(){
+  function initFinalNavigation(){
+    const oldBtn=document.getElementById('gsMenuBtn');
+    const side=document.getElementById('gsSideNav');
+    const overlay=document.getElementById('gsNavOverlay');
+    const close=document.getElementById('gsNavClose');
+    if(!oldBtn || !side) return;
+
+    // Remove any competing click handlers from earlier versions.
+    const btn=oldBtn.cloneNode(true);
+    oldBtn.replaceWith(btn);
+
+    function closeMenu(){
+      side.classList.remove('open');
+      overlay?.classList.remove('show');
+      btn.setAttribute('aria-expanded','false');
+      btn.setAttribute('aria-label','Open navigation');
+    }
+    function openMenu(){
+      side.classList.add('open');
+      overlay?.classList.add('show');
+      btn.setAttribute('aria-expanded','true');
+      btn.setAttribute('aria-label','Close navigation');
+    }
+
+    closeMenu();
+    btn.addEventListener('click',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      if(side.classList.contains('open')) closeMenu(); else openMenu();
+    });
+    overlay?.addEventListener('click',closeMenu);
+    close?.addEventListener('click',closeMenu);
+
+    // Any navigation action closes the menu after selecting it.
+    side.addEventListener('click',function(e){
+      const item=e.target.closest('.gs-nav-link');
+      if(item) setTimeout(closeMenu,0);
+    });
+
+    // Keep the sidebar closed if another script tries to show it before login.
+    const observer=new MutationObserver(function(){
+      if(!side.classList.contains('open')){
+        side.style.transform='';
+      }
+    });
+    observer.observe(side,{attributes:true,attributeFilter:['class']});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initFinalNavigation,{once:true});
+  else initFinalNavigation();
+})();
