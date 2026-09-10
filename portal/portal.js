@@ -816,6 +816,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
       ["🏆","My Results","studentResultsPanel","View your performance"],
       ["🔔","Notifications","gsNotificationsPanel","See your latest updates"],
       ["📊","Learning Progress","gsStudentProgressPanel","Track your course and lesson progress"],
+      ["🏆","My Achievements","gsAchievementsPanel","View your learning milestones and badges"],
       ["👤","My Profile","gsProfilePanel","View your student information"]
     ]}
   ];
@@ -1297,7 +1298,7 @@ qbSetStep(1,true);
   }
   function gsSaveProgress(obj){try{localStorage.setItem(gsProgressKey(),JSON.stringify(obj||{}))}catch(e){}}
   function gsCompleted(id){return !!gsGetProgress()[id]}
-  function gsSetCompleted(id,value){const p=gsGetProgress();if(value)p[id]=true;else delete p[id];gsSaveProgress(p)}
+  function gsSetCompleted(id,value){const p=gsGetProgress();if(value)p[id]={completedAt:Date.now()};else delete p[id];gsSaveProgress(p)}
   function gsPublished(){return courseData.lessons.filter(l=>String(l.status||'published').toLowerCase()==='published'||!l.status)}
   function gsCourseLessons(courseId){return gsPublished().filter(l=>l.courseId===courseId)}
   function gsPct(courseId){const all=gsCourseLessons(courseId);if(!all.length)return 0;const done=all.filter(l=>gsCompleted(l.id)).length;return Math.round(done/all.length*100)}
@@ -1448,6 +1449,51 @@ qbSetStep(1,true);
   window.gsRefreshLearningProgress=function(){old?.();renderStudentProgressDashboard()};
   setTimeout(renderStudentProgressDashboard,300);
   setInterval(renderStudentProgressDashboard,2000);
+})();
+
+
+/* ===== V34 STUDENT ACHIEVEMENTS ===== */
+(function(){
+  const panel=document.getElementById('gsAchievementsPanel');
+  if(!panel)return;
+  function progressStore(){try{return JSON.parse(localStorage.getItem('gs_learning_progress_v1_'+(auth?.currentUser?.uid||'guest'))||'{}')}catch(e){return {}}}
+  function publishedLessons(){return (courseData.lessons||[]).filter(l=>String(l.status||'published').toLowerCase()==='published'||!l.status)}
+  function lessonDone(v){return !!v}
+  function completionDates(store){return Object.values(store).map(v=>v&&typeof v==='object'&&v.completedAt?new Date(v.completedAt):null).filter(Boolean)}
+  function streak(store){
+    const dates=completionDates(store).map(d=>{const x=new Date(d);x.setHours(0,0,0,0);return x.getTime()});
+    const unique=[...new Set(dates)].sort((a,b)=>b-a); if(!unique.length)return 0;
+    const today=new Date();today.setHours(0,0,0,0);const t=today.getTime();
+    if(unique[0]!==t && unique[0]!==t-86400000)return 0;
+    let count=1; for(let i=1;i<unique.length;i++){if(unique[i]===unique[i-1]-86400000)count++;else break} return count;
+  }
+  async function getStudentStats(){
+    const uid=auth?.currentUser?.uid; if(!uid)return {assignments:0,tests:0,average:0};
+    let assignments=0,tests=0,average=0;
+    try{const sub=await getDocs(query(collection(db,'submissions'),where('studentId','==',uid)));assignments=sub.size}catch(e){console.warn('achievement submissions',e)}
+    try{const rs=await getDocs(query(collection(db,'results'),where('studentId','==',uid)));let scores=[];rs.forEach(d=>{const r=d.data()||{};if(String(r.resultType||'').toLowerCase()==='cbt'){tests++;let n=Number(r.percentage);if(!Number.isFinite(n))n=Number(r.score);if(Number.isFinite(n)){if(n<=1)n*=100;scores.push(n)}}});average=scores.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):0}catch(e){console.warn('achievement results',e)}
+    return {assignments,tests,average};
+  }
+  function badge(icon,title,desc,unlocked){return `<div class="gs-achievement-badge ${unlocked?'':'locked'}"><div class="icon">${icon}</div><b>${title}</b><small>${unlocked?desc:'Locked • '+desc}</small></div>`}
+  async function render(){
+    const role=String(window.currentUserRole||currentStudentProfile?.role||'').toLowerCase();
+    panel.style.display=role==='student'?'block':'none'; if(role!=='student')return;
+    const store=progressStore(), lessons=publishedLessons(), doneLessons=lessons.filter(l=>lessonDone(store[l.id])).length;
+    const courses=(courseData.courses||[]).filter(c=>lessons.some(l=>l.courseId===c.id));
+    const completedCourses=courses.filter(c=>{const ls=lessons.filter(l=>l.courseId===c.id);return ls.length&&ls.every(l=>lessonDone(store[l.id]))}).length;
+    const stats=await getStudentStats(), st=streak(store);
+    document.getElementById('gsAchLessons').textContent=doneLessons;document.getElementById('gsAchCourses').textContent=completedCourses;document.getElementById('gsAchAssignments').textContent=stats.assignments;document.getElementById('gsAchTests').textContent=stats.tests;document.getElementById('gsAchAverage').textContent=stats.average+'%';document.getElementById('gsAchStreak').textContent=st+' 🔥';
+    const milestones=[['📖','Lesson Explorer',doneLessons,5,'Complete 5 lessons'],['📚','Course Finisher',completedCourses,1,'Complete 1 full course'],['📝','Assignment Ready',stats.assignments,5,'Submit 5 assignments'],['🧠','CBT Challenger',stats.tests,5,'Take 5 CBTs'],['🎯','High Scorer',stats.average,70,'Reach a 70%+ average CBT score'],['🔥','Consistency',st,7,'Learn on 7 consecutive days']];
+    document.getElementById('gsAchievementMilestones').innerHTML=milestones.map(m=>{const pct=Math.min(100,Math.round((Number(m[2])||0)/m[3]*100));return `<article class="gs-achievement-card"><h3>${m[0]} ${m[1]}</h3><p>${m[4]} • <b>${m[2]}/${m[3]}</b></p><div class="gs-achievement-progress"><i style="width:${pct}%"></i></div></article>`}).join('');
+    document.getElementById('gsAchievementBadges').innerHTML=[
+      badge('📖','First Lesson','Complete your first lesson',doneLessons>=1),badge('📚','Course Starter','Complete your first course',completedCourses>=1),badge('📝','Assignment Pro','Submit 5 assignments',stats.assignments>=5),badge('🧠','Test Taker','Take 5 CBTs',stats.tests>=5),badge('🎯','Smart Performer','Reach 70%+ average',stats.average>=70),badge('🔥','7-Day Streak','Learn 7 days in a row',st>=7)
+    ].join('');
+  }
+  window.gsRenderAchievements=render;
+  const oldShow=window.gsShowSection;
+  window.gsShowSection=function(id){oldShow?.(id);if(id==='gsAchievementsPanel')setTimeout(render,80)};
+  setTimeout(render,700);
+  setInterval(()=>{if(String(window.currentUserRole||'').toLowerCase()==='student'&&panel.style.display!=='none')render()},15000);
 })();
 
 setInterval(()=>{if(String(window.currentUserRole||'').toLowerCase()==='student')loadStudentNotifications()},30000);
