@@ -939,8 +939,15 @@ async function loadStudentProfilePanel(){
 function setupStudentProfileEditor(){
   const editBtn=$("gsEditProfileBtn"),box=$("gsProfileEditBox"),form=$("gsProfileEditForm"),cancel=$("gsCancelProfileEdit"),msg=$("gsProfileEditMessage");
   if(!editBtn||!box||!form)return;
-  editBtn.addEventListener("click",()=>{box.style.display="block";msg.textContent="";$("gsEditName").focus()});
-  cancel?.addEventListener("click",()=>{box.style.display="none";msg.textContent=""});
+  const openEditor=()=>{box.style.display="block";box.hidden=false;msg.textContent="";setTimeout(()=>$("gsEditName")?.focus(),50)};
+  const closeEditor=()=>{box.style.display="none";box.hidden=true;msg.textContent=""};
+  editBtn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();openEditor()});
+  cancel?.addEventListener("click",e=>{e.preventDefault();closeEditor()});
+  // Delegated fallback keeps the button working even if another portal script re-renders the profile panel.
+  document.addEventListener("click",e=>{
+    const b=e.target.closest?.("#gsEditProfileBtn");
+    if(b && b!==editBtn){e.preventDefault();openEditor()}
+  });
   form.addEventListener("submit",async e=>{
     e.preventDefault();
     if(!auth.currentUser || String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()!=="student")return;
