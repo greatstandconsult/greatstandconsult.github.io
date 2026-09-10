@@ -252,8 +252,18 @@ body.gs-nav-open{overflow:hidden!important}
 .gs-notifications{background:#fff;border:1px solid #e7edf5;border-radius:22px;padding:20px;margin:18px 0;box-shadow:0 12px 30px rgba(7,26,51,.08)}
 .gs-notifications-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.gs-notifications-head h2{margin:0}.gs-notification-list{display:grid;gap:10px}.gs-notification-item{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid #e8edf4;border-radius:16px;background:#fbfcfe}.gs-notification-icon{width:42px;height:42px;border-radius:12px;background:#071a33;color:#fff;display:grid;place-items:center;font-size:20px;flex:0 0 42px}.gs-notification-item b{display:block;color:#071a33}.gs-notification-item small{display:block;color:#667085;margin-top:4px}.gs-notification-empty{text-align:center;padding:25px;color:#667085}@media(max-width:700px){.gs-notifications{padding:16px}.gs-notifications-head{display:block}.gs-notifications-head .secondary-btn{margin-top:10px;width:100%}}
 </style>
-<style id="gs-student-profile">
-.gs-profile-panel{background:#fff;border-radius:22px;padding:24px;margin:18px 0;box-shadow:0 14px 35px rgba(7,26,51,.12);border:1px solid #e7edf5}.gs-profile-hero{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;background:linear-gradient(135deg,#071a33,#12345b);color:#fff;border-radius:18px;padding:22px;margin-bottom:18px}.gs-profile-avatar{width:72px;height:72px;border-radius:50%;background:#d6ad55;color:#071a33;display:grid;place-items:center;font-size:30px;font-weight:900;flex:none}.gs-profile-hero h2{margin:4px 0;color:#fff}.gs-profile-hero p{margin:0;color:#dbe6f3}.gs-profile-badge{background:rgba(255,255,255,.12);padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap}.gs-profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.gs-profile-card{background:#f8fafc;border:1px solid #e6ebf2;border-radius:16px;padding:16px}.gs-profile-card span{display:block;color:#667085;font-size:12px;font-weight:700;margin-bottom:6px}.gs-profile-card strong{font-size:16px;color:#071a33}.gs-profile-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px}.gs-profile-stat{padding:16px;border-radius:16px;background:#eef5ff;border:1px solid #dbe8fb}.gs-profile-stat b{display:block;font-size:25px;color:#1769e0}.gs-profile-stat span{font-size:12px;color:#667085}.gs-profile-edit{margin-top:18px;padding-top:18px;border-top:1px solid #e6ebf2}.gs-profile-edit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.gs-profile-edit .full{grid-column:1/-1}@media(max-width:650px){.gs-profile-hero{display:block}.gs-profile-avatar{margin-bottom:12px}.gs-profile-badge{display:inline-block;margin-top:12px}}
+
+<style id="gs-profile-style">
+.gs-profile-panel{background:#fff;border:1px solid #e7edf5;border-radius:22px;padding:22px;margin:18px 0;box-shadow:0 12px 30px rgba(7,26,51,.08)}
+.gs-profile-hero{display:flex;align-items:center;gap:16px;padding:20px;border-radius:18px;background:linear-gradient(135deg,#071a33,#102b4f);color:#fff;margin-bottom:18px}
+.gs-profile-avatar{width:68px;height:68px;border-radius:20px;background:#d6ad55;color:#071a33;display:grid;place-items:center;font-size:30px;font-weight:900;flex:0 0 68px}
+.gs-profile-hero h2{margin:0;font-size:24px}.gs-profile-hero p{margin:5px 0 0;color:#cbd5e1}
+.gs-profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.gs-profile-item{padding:16px;border:1px solid #e6ebf2;border-radius:16px;background:#fbfcfe}.gs-profile-item span{display:block;color:#667085;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px}.gs-profile-item strong{display:block;color:#111827;font-size:15px;word-break:break-word}
+.gs-profile-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}.gs-profile-stat{padding:16px;border-radius:16px;background:#f7f9fc;border:1px solid #e5eaf1;text-align:center}.gs-profile-stat b{display:block;font-size:24px;color:#071a33}.gs-profile-stat small{color:#667085}
+.gs-profile-note{margin-top:16px;padding:13px 15px;border-radius:14px;background:#fffaf0;border:1px solid #ead9a8;color:#6f5410;font-size:13px}
+@media(max-width:700px){.gs-profile-grid,.gs-profile-summary{grid-template-columns:1fr}.gs-profile-hero{padding:16px}.gs-profile-avatar{width:58px;height:58px;flex-basis:58px;font-size:25px}.gs-profile-hero h2{font-size:20px}}
+.gs-profile-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px}.gs-profile-editbox{margin-top:14px;padding:18px;border:1px solid #dce4ee;border-radius:18px;background:#f8fafc}.gs-profile-edit-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.gs-profile-edit-head b{display:block;color:#071a33;font-size:18px}.gs-profile-edit-head small{display:block;color:#667085;margin-top:4px}.gs-profile-form{display:grid;gap:12px}.gs-profile-form label{font-size:12px;font-weight:800;color:#344054}.gs-profile-form input,.gs-profile-form select{display:block;width:100%;margin-top:6px;padding:12px 13px;border:1px solid #cfd8e3;border-radius:12px;background:#fff;font:inherit;color:#111827;box-sizing:border-box}.gs-profile-form .primary-btn{justify-self:start}
 </style>
 </head><body><div id="gsNavOverlay" class="gs-nav-overlay" hidden></div>
 <aside id="gsSideNav" class="gs-side-nav" aria-label="Portal navigation" hidden>
@@ -274,6 +284,32 @@ body.gs-nav-open{overflow:hidden!important}
     <button class="quick-action" data-target="studentResultsPanel"><span>🏆</span><b>My Results</b><small>Check your performance</small></button>
     <button class="quick-action" data-target="gsNotificationsPanel"><span>🔔</span><b>Notifications</b><small>See your latest updates</small></button>
   </div>
+</div><div id="gsProfilePanel" class="gs-profile-panel portal-section gs-section-hidden">
+  <div class="gs-profile-hero"><div id="gsProfileAvatar" class="gs-profile-avatar">G</div><div><span class="badge">MY PROFILE</span><h2 id="gsProfileName">Student Profile</h2><p id="gsProfileEmail">Loading profile...</p></div></div>
+  <div class="gs-profile-grid">
+    <div class="gs-profile-item"><span>Full Name</span><strong id="gsProfileFullName">—</strong></div>
+    <div class="gs-profile-item"><span>Email Address</span><strong id="gsProfileEmailValue">—</strong></div>
+    <div class="gs-profile-item"><span>Category</span><strong id="gsProfileCategory">—</strong></div>
+    <div class="gs-profile-item"><span>Class / Level</span><strong id="gsProfileLevel">Not specified</strong></div>
+    <div class="gs-profile-item"><span>Account Status</span><strong id="gsProfileStatus">—</strong></div>
+    <div class="gs-profile-item"><span>Account Role</span><strong id="gsProfileRole">STUDENT</strong></div>
+  </div>
+  <div class="gs-profile-summary">
+    <div class="gs-profile-stat"><b id="gsProfileResultCount">0</b><small>Results</small></div>
+    <div class="gs-profile-stat"><b id="gsProfileCourseCount">0</b><small>Available Courses</small></div>
+    <div class="gs-profile-stat"><b id="gsProfileAverage">—</b><small>Average Score</small></div>
+  </div>
+  <div class="gs-profile-actions"><button type="button" class="primary-btn" id="gsEditProfileBtn">✏️ Edit Profile</button><span id="gsProfileEditMessage" class="muted"></span></div>
+  <div id="gsProfileEditBox" class="gs-profile-editbox" style="display:none">
+    <div class="gs-profile-edit-head"><div><b>Edit your profile</b><small>Update your name, exam category and class/level.</small></div><button type="button" class="secondary-btn" id="gsCancelProfileEdit">Cancel</button></div>
+    <form id="gsProfileEditForm" class="gs-profile-form">
+      <label>Full Name<input id="gsEditName" required maxlength="100"></label>
+      <label>Exam Category<select id="gsEditCategory" required><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="JAMB & WAEC">JAMB & WAEC</option></select></label>
+      <label>Class / Level<input id="gsEditLevel" maxlength="80" placeholder="e.g. SS3 / JAMBite"></label>
+      <button type="submit" class="primary-btn">Save Changes</button>
+    </form>
+  </div>
+  <div class="gs-profile-note">🔒 You can edit your name, category and class/level. Your account role, status and login email remain protected.</div>
 </div><div id="gsStudentProgressPanel" class="student-progress-panel portal-section">
   <div class="gs-student-progress-head"><div><span class="badge">KEEP LEARNING</span><h2>📊 Your Learning Progress</h2><p class="muted">Track the lessons you have completed and continue where you stopped.</p></div><button class="secondary-btn" type="button" id="gsContinueLearningBtn">Continue Learning →</button></div>
   <div id="gsStudentProgressGrid" class="gs-student-progress-grid"><div class="learning-empty"><div>📚</div><h3>Loading progress...</h3></div></div>
@@ -293,12 +329,6 @@ body.gs-nav-open{overflow:hidden!important}
   <div id="learningCourseGrid" class="learning-course-grid">
     <div class="learning-empty"><div>📚</div><h3>Loading your courses...</h3><p class="muted">Please wait while we organize your learning resources.</p></div>
   </div>
-</div>
-<div id="studentProfilePanel" class="gs-profile-panel portal-section">
-<div class="gs-profile-hero"><div style="display:flex;gap:16px;align-items:center"><div class="gs-profile-avatar" id="gsProfileAvatar">S</div><div><span class="badge">MY PROFILE</span><h2 id="gsProfileNameHero">Student Profile</h2><p id="gsProfileRoleHero">Student account</p></div></div><div class="gs-profile-badge" id="gsProfileStatus">ACTIVE</div></div>
-<div class="gs-profile-grid"><div class="gs-profile-card"><span>Full Name</span><strong id="gsProfileName">—</strong></div><div class="gs-profile-card"><span>Email Address</span><strong id="gsProfileEmail">—</strong></div><div class="gs-profile-card"><span>Exam Category</span><strong id="gsProfileCategory">—</strong></div><div class="gs-profile-card"><span>Class / Level</span><strong id="gsProfileLevel">—</strong></div><div class="gs-profile-card"><span>Account Role</span><strong id="gsProfileRole">—</strong></div><div class="gs-profile-card"><span>Account Status</span><strong id="gsProfileActive">—</strong></div></div>
-<div class="gs-profile-summary"><div class="gs-profile-stat"><b id="gsProfileCourseCount">0</b><span>Available Courses</span></div><div class="gs-profile-stat"><b id="gsProfileCompleted">0</b><span>Lessons Completed</span></div><div class="gs-profile-stat"><b id="gsProfileResults">0</b><span>Results</span></div></div>
-<div class="gs-profile-edit"><h3>✏️ Edit Profile</h3><p class="muted">Update your name, exam category and class/level. Your email and role are controlled by the portal.</p><form id="gsProfileForm"><div class="gs-profile-edit-grid"><div><label>Full Name</label><input id="gsEditName" required></div><div><label>Exam Category</label><select id="gsEditCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="JAMB & WAEC">JAMB & WAEC</option></select></div><div class="full"><label>Class / Level</label><input id="gsEditLevel" placeholder="e.g. SS3 / UTME 2027"></div></div><button class="primary-btn" type="submit">Save Profile Changes</button><p id="gsProfileMessage" class="message"></p></form></div>
 </div>
 <div id="adminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📚 Manage Notes</h2><p class="muted">Admins and Superadmins can publish notes for students.</p><form id="noteForm"><label>Note Title</label><input id="noteTitle" required placeholder="e.g. JAMB English: Parts of Speech"><label>Subject</label><input id="noteSubject" required placeholder="e.g. English Language"><label>Category</label><select id="noteCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General" selected>General</option></select><label>Note Content</label><textarea id="noteContent" required placeholder="Type or paste the lesson note here..."></textarea><button class="primary-btn" type="submit">Publish Note</button><p id="noteMessage" class="message"></p></form></div><div id="learningPathPanel" class="panel portal-section hidden-learning-path">
   <div class="learning-path-head"><button id="learningBackBtn" class="secondary-btn" type="button">← Back</button><div><span class="badge">LESSON CENTRE</span><h2 id="learningPathTitle">Learning</h2><p id="learningPathSubtitle" class="muted">Choose a subject, topic or lesson.</p></div></div>

@@ -717,7 +717,6 @@ onAuthStateChanged(auth,async user=>{
 
     try{await loadStudentResultsIfNeeded()}catch(e){console.error("Student results:",e)}
     try{await loadStudentNotifications()}catch(e){console.error("Notifications:",e)}
-    if(role==="student"){try{await loadStudentProfilePanel()}catch(e){console.error("Profile:",e)}}
 
   }catch(e){
     console.error(e);
@@ -815,7 +814,9 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
       ["🧠","CBT / Tests","testsPanel","Take practice tests and get scored"],
       ["📚","Study Materials","materialsPanel","Access your study resources"],
       ["🏆","My Results","studentResultsPanel","View your performance"],
-      ["🔔","Notifications","gsNotificationsPanel","See your latest updates"], ["👤","My Profile","studentProfilePanel","View and edit your profile"]
+      ["🔔","Notifications","gsNotificationsPanel","See your latest updates"],
+      ["👤","My Profile","gsProfilePanel","View your student information"],
+      ["👤","My Profile","gsProfilePanel","View your student information"]
     ]}
   ];
   const adminGroups=[
@@ -832,7 +833,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
       ["📥","Student Submissions","submissionsAdminPanel","Review and mark submissions"]
     ]},
     {heading:"STUDENT VIEW",items:[
-      ["🎓","Learning Centre","learningCentrePanel"],["📖","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📚","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"],["🔔","Notifications","gsNotificationsPanel","See your latest updates"], ["👤","My Profile","studentProfilePanel","View and edit your profile"]
+      ["🎓","Learning Centre","learningCentrePanel"],["📖","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📚","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"],["🔔","Notifications","gsNotificationsPanel","See your latest updates"]
     ]}
   ];
   const superadminGroups=[
@@ -850,7 +851,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
       ["📥","Student Submissions","submissionsAdminPanel","Review and mark submissions"]
     ]},
     {heading:"STUDENT PORTAL VIEW",items:[
-      ["🎓","Learning Centre","learningCentrePanel"],["📖","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📚","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"],["🔔","Notifications","gsNotificationsPanel","See your latest updates"], ["👤","My Profile","studentProfilePanel","View and edit your profile"]
+      ["🎓","Learning Centre","learningCentrePanel"],["📖","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📚","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"],["🔔","Notifications","gsNotificationsPanel","See your latest updates"]
     ]}
   ];
 
@@ -884,7 +885,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
   function allSections(){return Array.from(document.querySelectorAll(".portal-section"))}
   function showSection(target){
     if(target==="gsNotificationsPanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){loadStudentNotifications();}
-    if(target==="studentProfilePanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){loadStudentProfilePanel();}
+    if(target==="gsProfilePanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){loadStudentProfilePanel();}
     if(target==="superadminPanel" && String(window.currentUserRole||"").toLowerCase()!=="superadmin")return;
     if(target==="superadminPanel"){loadSuperadminAccounts();}
     if(target==="announcementAdminPanel"){const ap=$("announcementAdminPanel");if(ap)ap.style.display="block";loadAdminAnnouncements();}else{const ap=$("announcementAdminPanel");if(ap)ap.style.display="none";}
@@ -901,9 +902,61 @@ $("closeCourseModal")?.addEventListener("click",()=>$("courseModal").classList.a
 $("courseModal")?.addEventListener("click",e=>{if(e.target===$("courseModal"))$("courseModal").classList.add("hidden")});
 
 
+
 // ===== STUDENT PROFILE =====
-async function loadStudentProfilePanel(){const panel=$("studentProfilePanel");if(!panel||!auth.currentUser)return;const role=String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase();if(role!=="student"){panel.classList.add("gs-section-hidden");return;}try{const snap=await getDoc(doc(db,"users",auth.currentUser.uid));if(!snap.exists())return;const p=snap.data();currentStudentProfile=p;const name=p.name||auth.currentUser.email||"Student",email=p.email||auth.currentUser.email||"",category=p.category||"JAMB & WAEC",level=p.level||"Not specified",active=p.active!==false;$("gsProfileAvatar").textContent=name.trim().charAt(0).toUpperCase()||"S";$("gsProfileNameHero").textContent=name;$("gsProfileRoleHero").textContent="Student account • "+category;$("gsProfileStatus").textContent=active?"ACTIVE":"INACTIVE";$("gsProfileName").textContent=name;$("gsProfileEmail").textContent=email;$("gsProfileCategory").textContent=category;$("gsProfileLevel").textContent=level;$("gsProfileRole").textContent=String(p.role||"student").toUpperCase();$("gsProfileActive").textContent=active?"Active":"Inactive";$("gsEditName").value=name;$("gsEditCategory").value=["JAMB","WAEC","JAMB & WAEC"].includes(category)?category:"JAMB & WAEC";$("gsEditLevel").value=p.level||"";try{$("gsProfileCourseCount").textContent=(await getDocs(collection(db,"courses"))).size}catch(e){}try{$("gsProfileResults").textContent=(await getDocs(query(collection(db,"results"),where("studentId","==",auth.currentUser.uid)))).size}catch(e){}let completed=0;try{const store=JSON.parse(localStorage.getItem("gs_learning_progress_v1_"+auth.currentUser.uid)||"{}");completed=Object.values(store).filter(Boolean).length}catch(e){}$("gsProfileCompleted").textContent=completed;}catch(e){console.error("Profile:",e)}}
-$("gsProfileForm")?.addEventListener("submit",async e=>{e.preventDefault();const msg=$("gsProfileMessage");if(!auth.currentUser||String(window.currentUserRole||"").toLowerCase()!=="student")return;msg.className="message";msg.textContent="Saving...";try{const name=$("gsEditName").value.trim();await updateDoc(doc(db,"users",auth.currentUser.uid),{name,category:$("gsEditCategory").value,level:$("gsEditLevel").value.trim()});msg.className="message submission-success";msg.textContent="Profile updated successfully ✅";await loadStudentProfilePanel();$("welcomeTitle").textContent="Welcome, "+name;$("roleText").textContent="Signed in as student";}catch(e){console.error(e);msg.className="message submission-error";msg.textContent="Could not update profile: "+(e.code||e.message)}});
+async function loadStudentProfilePanel(){
+  const role=String(window.currentUserRole||currentStudentProfile?.role||'').toLowerCase();
+  const panel=$("gsProfilePanel");
+  if(!panel || role!=="student" || !auth.currentUser)return;
+  const p=currentStudentProfile||{};
+  const name=p.name||auth.currentUser.email||"Student";
+  const email=p.email||auth.currentUser.email||"—";
+  const category=p.category||"JAMB & WAEC";
+  const level=p.level||"Not specified";
+  $("gsProfileName").textContent=name;
+  $("gsProfileEmail").textContent=email;
+  $("gsProfileFullName").textContent=name;
+  $("gsProfileEmailValue").textContent=email;
+  $("gsProfileCategory").textContent=category;
+  $("gsProfileLevel").textContent=level;
+  $("gsProfileStatus").textContent=p.active===false?"Inactive":"Active";
+  $("gsProfileRole").textContent="STUDENT";
+  $("gsProfileAvatar").textContent=name.trim().charAt(0).toUpperCase()||"G";
+  if($("gsEditName")){ $("gsEditName").value=name; $("gsEditCategory").value=["JAMB","WAEC","JAMB & WAEC"].includes(category)?category:"JAMB & WAEC"; $("gsEditLevel").value=(p.level&&p.level!=="Not specified")?p.level:""; }
+  try{
+    const rs=await getDocs(query(collection(db,"results"),where("studentId","==",auth.currentUser.uid)));
+    $("gsProfileResultCount").textContent=rs.size;
+    const scores=rs.docs.map(d=>Number(d.data().score)).filter(n=>Number.isFinite(n));
+    $("gsProfileAverage").textContent=scores.length?(scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1)+"%":"—";
+  }catch(e){console.warn("Profile results",e)}
+  try{
+    const cs=await getDocs(collection(db,"courses"));
+    let count=0;cs.forEach(d=>{const c=d.data(),cat=String(c.category||"General").toUpperCase(),want=String(category).toUpperCase();if(want.includes("JAMB")&&want.includes("WAEC")||cat==="GENERAL"||cat===want)count++});
+    $("gsProfileCourseCount").textContent=count;
+  }catch(e){console.warn("Profile courses",e)}
+}
+
+function setupStudentProfileEditor(){
+  const editBtn=$("gsEditProfileBtn"),box=$("gsProfileEditBox"),form=$("gsProfileEditForm"),cancel=$("gsCancelProfileEdit"),msg=$("gsProfileEditMessage");
+  if(!editBtn||!box||!form)return;
+  editBtn.addEventListener("click",()=>{box.style.display="block";msg.textContent="";$("gsEditName").focus()});
+  cancel?.addEventListener("click",()=>{box.style.display="none";msg.textContent=""});
+  form.addEventListener("submit",async e=>{
+    e.preventDefault();
+    if(!auth.currentUser || String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()!=="student")return;
+    const name=$("gsEditName").value.trim(),category=$("gsEditCategory").value,level=$("gsEditLevel").value.trim();
+    if(name.length<2){msg.textContent="Please enter your full name.";return;}
+    msg.textContent="Saving...";
+    try{
+      await updateDoc(doc(db,"users",auth.currentUser.uid),{name,category,level});
+      currentStudentProfile={...(currentStudentProfile||{}),name,category,level};
+      await loadStudentProfilePanel();
+      box.style.display="none";
+      msg.textContent="Profile updated successfully ✅";
+    }catch(err){console.error("Profile update",err);msg.textContent="Could not update profile: "+(err.code||err.message)}
+  });
+}
+setupStudentProfileEditor();
 
 // ===== SUPERADMIN-ONLY ADMIN ACCOUNT OVERVIEW =====
 async function loadSuperadminAccounts(){
