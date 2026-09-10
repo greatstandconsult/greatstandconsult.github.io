@@ -1085,55 +1085,66 @@ const _v25LoadCourseStructure=loadCourseStructure;loadCourseStructure=async func
 qbSetStep(1,true);
 
 
-/* FINAL NAVIGATION BEHAVIOUR FIX */
+/* FINAL NAVIGATION UX CONTROLLER */
 (function(){
-  function initFinalNavigation(){
-    const oldBtn=document.getElementById('gsMenuBtn');
+  function initGreatStandNavigation(){
+    const menu=document.getElementById('gsMenuBtn');
     const side=document.getElementById('gsSideNav');
     const overlay=document.getElementById('gsNavOverlay');
     const close=document.getElementById('gsNavClose');
-    if(!oldBtn || !side) return;
+    if(!menu || !side) return;
 
-    // Remove any competing click handlers from earlier versions.
-    const btn=oldBtn.cloneNode(true);
-    oldBtn.replaceWith(btn);
+    // Replace the button/overlay/close nodes so older navigation listeners cannot compete.
+    const freshMenu=menu.cloneNode(true); menu.replaceWith(freshMenu);
+    const freshOverlay=overlay ? overlay.cloneNode(true) : null; if(overlay && freshOverlay) overlay.replaceWith(freshOverlay);
+    const freshClose=close ? close.cloneNode(true) : null; if(close && freshClose) close.replaceWith(freshClose);
 
     function closeMenu(){
+      side.hidden=true;
+      if(freshOverlay) freshOverlay.hidden=true;
       side.classList.remove('open');
-      overlay?.classList.remove('show');
-      btn.setAttribute('aria-expanded','false');
-      btn.setAttribute('aria-label','Open navigation');
+      freshOverlay?.classList.remove('show');
+      freshMenu.setAttribute('aria-expanded','false');
+      freshMenu.setAttribute('aria-label','Open navigation');
+      document.body.classList.remove('gs-nav-open');
     }
     function openMenu(){
+      side.hidden=false;
+      if(freshOverlay) freshOverlay.hidden=false;
       side.classList.add('open');
-      overlay?.classList.add('show');
-      btn.setAttribute('aria-expanded','true');
-      btn.setAttribute('aria-label','Close navigation');
+      freshOverlay?.classList.add('show');
+      freshMenu.setAttribute('aria-expanded','true');
+      freshMenu.setAttribute('aria-label','Close navigation');
+      document.body.classList.add('gs-nav-open');
     }
 
+    // Always start closed.
     closeMenu();
-    btn.addEventListener('click',function(e){
+
+    freshMenu.addEventListener('click',e=>{
       e.preventDefault();
       e.stopPropagation();
-      if(side.classList.contains('open')) closeMenu(); else openMenu();
+      side.hidden ? openMenu() : closeMenu();
     });
-    overlay?.addEventListener('click',closeMenu);
-    close?.addEventListener('click',closeMenu);
+    freshOverlay?.addEventListener('click',closeMenu);
+    freshClose?.addEventListener('click',closeMenu);
+    document.addEventListener('keydown',e=>{if(e.key==='Escape' && !side.hidden) closeMenu();});
 
-    // Any navigation action closes the menu after selecting it.
-    side.addEventListener('click',function(e){
+    // Menu items work normally, then close the menu.
+    side.addEventListener('click',e=>{
       const item=e.target.closest('.gs-nav-link');
-      if(item) setTimeout(closeMenu,0);
+      if(item) setTimeout(closeMenu,80);
     });
 
-    // Keep the sidebar closed if another script tries to show it before login.
-    const observer=new MutationObserver(function(){
-      if(!side.classList.contains('open')){
-        side.style.transform='';
+    // Defensive guard: no script is allowed to make the navigation visible unless it is opened.
+    const observer=new MutationObserver(()=>{
+      if(side.dataset.gsNavInternal!=='open' && !side.classList.contains('open')){
+        side.hidden=true;
+        if(freshOverlay) freshOverlay.hidden=true;
       }
     });
-    observer.observe(side,{attributes:true,attributeFilter:['class']});
+    observer.observe(side,{attributes:true,attributeFilter:['class','style']});
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initFinalNavigation,{once:true});
-  else initFinalNavigation();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initGreatStandNavigation,{once:true});
+  else initGreatStandNavigation();
 })();

@@ -106,8 +106,32 @@ html,body{overflow-x:hidden!important}
 #gsMenuBtn[aria-expanded="true"]{background:#d6ad55!important;color:#071a33!important}
 @media(max-width:700px){.gs-side-nav{width:min(310px,88vw)!important}.topbar{gap:8px!important}#gsMenuBtn.gs-menu-btn{width:40px!important;height:40px!important;min-width:40px!important}}
 </style>
-</head><body><div id="gsNavOverlay" class="gs-nav-overlay"></div>
-<aside id="gsSideNav" class="gs-side-nav" aria-label="Portal navigation">
+<style id="gs-nav-ux-final">
+/* Great Stand navigation — collapsed by default, opens only from the menu button. */
+#gsSideNav[hidden],#gsNavOverlay[hidden]{display:none!important}
+.gs-nav-overlay{position:fixed!important;inset:0!important;background:rgba(4,15,31,.55)!important;z-index:9998!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+.gs-side-nav{position:fixed!important;top:0!important;left:0!important;bottom:0!important;width:300px!important;max-width:88vw!important;height:100dvh!important;z-index:9999!important;box-sizing:border-box!important;background:#071a33!important;color:#fff!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;border-right:1px solid rgba(214,173,85,.24)!important;box-shadow:18px 0 45px rgba(0,0,0,.3)!important;transform:none!important;visibility:visible!important;opacity:1!important}
+.gs-nav-head{height:72px!important;min-height:72px!important;padding:0 14px 0 18px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;box-sizing:border-box!important;background:#071a33!important;border-bottom:1px solid rgba(255,255,255,.12)!important}
+.gs-nav-brand{display:flex!important;align-items:center!important;gap:10px!important;min-width:0!important}
+.gs-nav-logo{width:40px!important;height:40px!important;border-radius:12px!important;display:grid!important;place-items:center!important;background:#071a33!important;color:#d6ad55!important;border:1px solid rgba(214,173,85,.7)!important;font-size:25px!important;font-weight:900!important}
+.gs-nav-brand strong{display:block!important;color:#fff!important;font-size:14px!important;letter-spacing:.4px!important;line-height:1.15!important}.gs-nav-brand small{display:block!important;color:#b9c5d5!important;font-size:8px!important;letter-spacing:.8px!important;margin-top:3px!important}
+.gs-nav-close{width:38px!important;height:38px!important;border:0!important;background:transparent!important;color:#fff!important;font-size:29px!important;line-height:1!important;border-radius:10px!important;cursor:pointer!important}
+.gs-nav-close:hover{background:rgba(255,255,255,.08)!important}
+.gs-nav-user{padding:14px 18px 12px!important;border-bottom:1px solid rgba(255,255,255,.08)!important;background:linear-gradient(180deg,#0a2343,#071a33)!important}
+.gs-nav-user span{display:inline-block!important;color:#d6ad55!important;font-size:10px!important;font-weight:900!important;letter-spacing:1px!important;margin-bottom:5px!important}.gs-nav-user b{display:block!important;color:#fff!important;font-size:14px!important}
+#gsNavLinks{display:block!important;overflow-y:auto!important;overflow-x:hidden!important;flex:1 1 auto!important;padding:10px 10px 14px!important;box-sizing:border-box!important}
+.gs-nav-section-title{margin:12px 9px 7px!important;color:#d6ad55!important;font-size:10px!important;font-weight:900!important;letter-spacing:1px!important}
+.gs-nav-link{appearance:none!important;-webkit-appearance:none!important;width:100%!important;min-height:45px!important;border:0!important;border-radius:11px!important;background:transparent!important;color:#fff!important;display:flex!important;align-items:center!important;gap:12px!important;padding:9px 11px!important;margin:3px 0!important;text-align:left!important;cursor:pointer!important;box-sizing:border-box!important}
+.gs-nav-link>span{width:25px!important;min-width:25px!important;text-align:center!important;font-size:18px!important;line-height:1!important}.gs-nav-copy{min-width:0!important}.gs-nav-copy b{display:block!important;color:inherit!important;font-size:13px!important;line-height:1.2!important}.gs-nav-copy small{display:block!important;color:#9eafc4!important;font-size:10px!important;margin-top:2px!important}
+.gs-nav-link:hover{background:#102b4f!important}.gs-nav-link.active{background:#d6ad55!important;color:#071a33!important;box-shadow:0 5px 16px rgba(214,173,85,.16)!important}.gs-nav-link.active .gs-nav-copy small{color:#31445e!important}
+.gs-nav-logout{flex:0 0 auto!important;margin:10px 12px 14px!important;width:calc(100% - 24px)!important;min-height:44px!important;border:0!important;border-radius:11px!important;background:#b42318!important;color:#fff!important;font-weight:800!important;cursor:pointer!important}
+.topbar{display:flex!important;align-items:center!important;gap:12px!important;position:relative!important;z-index:10000!important;min-height:64px!important}
+#gsMenuBtn{appearance:none!important;-webkit-appearance:none!important;display:grid!important;place-items:center!important;width:42px!important;height:42px!important;min-width:42px!important;padding:0!important;margin:0!important;border:1px solid rgba(214,173,85,.65)!important;border-radius:11px!important;background:#102b4f!important;color:#fff!important;font-size:22px!important;line-height:1!important;cursor:pointer!important;pointer-events:auto!important;touch-action:manipulation!important;box-shadow:0 3px 10px rgba(0,0,0,.12)!important}
+#gsMenuBtn:hover{background:#183a64!important}#gsMenuBtn[aria-expanded="true"]{background:#d6ad55!important;color:#071a33!important}
+@media(max-width:700px){.gs-side-nav{width:min(300px,88vw)!important}.topbar{gap:8px!important}#gsMenuBtn{width:40px!important;height:40px!important;min-width:40px!important}}
+</style>
+</head><body><div id="gsNavOverlay" class="gs-nav-overlay" hidden></div>
+<aside id="gsSideNav" class="gs-side-nav" aria-label="Portal navigation" hidden>
   <div class="gs-nav-head"><div class="gs-nav-brand"><div class="gs-nav-logo">G</div><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div><button id="gsNavClose" class="gs-nav-close" type="button" aria-label="Close navigation">×</button></div>
   <div class="gs-nav-user"><span id="gsNavRole">PORTAL</span><b id="gsNavName">Welcome</b></div>
   <nav id="gsNavLinks"></nav>
