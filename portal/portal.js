@@ -867,6 +867,31 @@ async function loadSuperadminAccounts(){
 }
 $("refreshAdminsBtn")?.addEventListener("click",loadSuperadminAccounts);
 
+// ===== SUPERADMIN: CREATE ADMIN ACCOUNT =====
+const adminForm=$("adminForm"),adminMessage=$("adminMessage");
+adminForm?.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(String(window.currentUserRole||"").toLowerCase()!=="superadmin"||!auth.currentUser){if(adminMessage)adminMessage.textContent="Only the Superadmin can create admin accounts.";return;}
+  const name=$("adminName").value.trim(),email=$("adminEmail").value.trim(),password=$("adminPassword").value;
+  if(!name||!email||password.length<6){if(adminMessage)adminMessage.textContent="Enter the admin name, a valid email, and a password of at least 6 characters.";return;}
+  const submit=adminForm.querySelector('button[type="submit"]');
+  if(submit)submit.disabled=true;
+  if(adminMessage){adminMessage.className="message";adminMessage.textContent="Creating admin account...";}
+  try{
+    const sa=getStudentCreatorAuth();
+    const cred=await createUserWithEmailAndPassword(sa,email,password);
+    const uid=cred.user.uid;
+    await setDoc(doc(db,"users",uid),{name,email,role:"admin",active:true,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
+    await signOut(sa);
+    adminForm.reset();
+    if(adminMessage){adminMessage.className="message submission-success";adminMessage.textContent="Admin account created successfully ✅";}
+    await loadSuperadminAccounts();
+  }catch(e){
+    console.error(e);
+    if(adminMessage){adminMessage.className="message submission-error";adminMessage.textContent="Could not create admin: "+(e.code||e.message);}
+  }finally{if(submit)submit.disabled=false;}
+});
+
 // ===== V25 COURSE → SUBJECT → TOPIC → LESSON LEARNING SYSTEM =====
 const courseAdminPanel=$('courseAdminPanel'), courseForm=$('courseForm'), subjectForm=$('subjectForm'), topicForm=$('topicForm'), lessonForm=$('lessonForm');
 const learningPathPanel=$('learningPathPanel'), learningPathContent=$('learningPathContent'), learningPathTitle=$('learningPathTitle'), learningPathSubtitle=$('learningPathSubtitle');

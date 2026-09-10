@@ -114,7 +114,104 @@ body.gs-nav-open{overflow:hidden!important}
 @media(max-width:700px){.gs-side-nav{width:min(360px,92vw)!important}.gs-nav-head{height:76px!important;min-height:76px!important;padding-left:16px!important}.gs-nav-logo{width:44px!important;height:44px!important;min-width:44px!important}.gs-nav-brand strong{font-size:14px!important}.gs-nav-link{min-height:52px!important;padding:9px 12px!important}.gs-nav-link>span{font-size:20px!important}.topbar{gap:9px!important;min-height:64px!important}#gsMenuBtn{width:50px!important;height:50px!important;min-width:50px!important;font-size:27px!important}}
 </style>
 <style id="gs-superadmin-style">
-.superadmin-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}.superadmin-control-card{padding:18px;border:1px solid #ead9a8;border-radius:16px;background:linear-gradient(135deg,#fffaf0,#fff);box-shadow:0 6px 18px rgba(7,26,51,.05)}.superadmin-control-card strong{display:block;color:#071a33;font-size:15px;margin-bottom:6px}.superadmin-control-card p{margin:0;color:#667085;font-size:13px;line-height:1.55}@media(max-width:700px){.superadmin-control-grid{grid-template-columns:1fr}}
+.superadmin-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}.superadmin-control-card{padding:18px;border:1px solid #ead9a8;border-radius:16px;background:linear-gradient(135deg,#fffaf0,#fff);box-shadow:0 6px 18px rgba(7,26,51,.05)}.superadmin-control-card strong{display:block;color:#071a33;font-size:15px;margin-bottom:6px}.superadmin-control-card p{margin:0;color:#667085;font-size:13px;line-height:1.55}.superadmin-create-card{margin:18px 0;padding:20px;border:1px solid #d9e2ef;border-radius:16px;background:#fff;box-shadow:0 8px 24px rgba(7,26,51,.06)}.superadmin-create-head h3{margin:8px 0 4px;color:#071a33}.admin-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}.admin-form-grid>div{display:flex;flex-direction:column}.admin-form-action{justify-content:flex-end}.admin-form-action .primary-btn{width:100%}@media(max-width:700px){.superadmin-control-grid{grid-template-columns:1fr}.admin-form-grid{grid-template-columns:1fr}}
+</style>
+<style id="gs-nav-final-white-actions">
+/* GREAT STAND FINAL NAVIGATION — white action panel, black text, blue active state */
+.gs-side-nav{
+  width:400px!important;
+  max-width:92vw!important;
+  background:#fff!important;
+  color:#111827!important;
+  border-right:1px solid #dbe3ee!important;
+  box-shadow:20px 0 55px rgba(0,0,0,.28)!important;
+}
+.gs-nav-head{
+  height:88px!important;
+  min-height:88px!important;
+  background:#071a33!important;
+  border-bottom:1px solid rgba(255,255,255,.14)!important;
+}
+.gs-nav-brand strong{color:#fff!important}
+.gs-nav-brand small{color:#cbd5e1!important}
+.gs-nav-logo{background:#071a33!important;color:#d6ad55!important}
+.gs-nav-close{color:#fff!important}
+.gs-nav-user{
+  background:#f7f9fc!important;
+  border-bottom:1px solid #e5eaf1!important;
+}
+.gs-nav-user span{color:#1e5ca8!important}
+.gs-nav-user b{color:#111827!important}
+#gsNavLinks{
+  background:#fff!important;
+  padding:16px 16px 18px!important;
+}
+.gs-nav-section-title{
+  color:#667085!important;
+  margin:14px 10px 9px!important;
+  font-size:11px!important;
+  letter-spacing:1.2px!important;
+}
+.gs-nav-link{
+  min-height:58px!important;
+  margin:5px 0!important;
+  padding:11px 14px!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#111827!important;
+  gap:15px!important;
+  border:1px solid transparent!important;
+  transition:background .16s ease,color .16s ease,border-color .16s ease,transform .16s ease!important;
+}
+.gs-nav-link>span{
+  color:#111827!important;
+  width:31px!important;
+  min-width:31px!important;
+  font-size:21px!important;
+}
+.gs-nav-copy b{color:inherit!important;font-size:14px!important}
+.gs-nav-copy small{color:#667085!important}
+.gs-nav-link:hover{
+  background:#f1f6ff!important;
+  color:#1769e0!important;
+  border-color:#d9e7ff!important;
+  transform:translateX(2px)!important;
+}
+.gs-nav-link:hover>span,.gs-nav-link:hover .gs-nav-copy b{color:#1769e0!important}
+.gs-nav-link.active{
+  background:#1769e0!important;
+  color:#fff!important;
+  border-color:#1769e0!important;
+  box-shadow:0 7px 18px rgba(23,105,224,.20)!important;
+  transform:none!important;
+}
+.gs-nav-link.active>span,.gs-nav-link.active .gs-nav-copy b{color:#fff!important}
+.gs-nav-link.active .gs-nav-copy small{color:#dbeafe!important}
+.gs-nav-logout{
+  background:#fff!important;
+  color:#111827!important;
+  border:1px solid #e1e7ef!important;
+  min-height:54px!important;
+  margin:10px 16px 18px!important;
+  width:calc(100% - 32px)!important;
+}
+.gs-nav-logout:hover{background:#fff1f2!important;color:#b42318!important;border-color:#fecdd3!important}
+.gs-nav-logout span{color:inherit!important}
+.gs-side-nav.gs-superadmin .gs-nav-user{background:#f7f9fc!important}
+.gs-side-nav.gs-superadmin .gs-nav-role-badge{color:#071a33!important;background:#d6ad55!important}
+#gsMenuBtn{
+  width:60px!important;
+  height:60px!important;
+  min-width:60px!important;
+  font-size:31px!important;
+}
+#gsMenuBtn[aria-expanded="true"]{background:#1769e0!important;color:#fff!important;border-color:#1769e0!important}
+@media(max-width:700px){
+  .gs-side-nav{width:min(400px,92vw)!important}
+  .gs-nav-head{height:80px!important;min-height:80px!important}
+  .gs-nav-link{min-height:56px!important}
+  #gsMenuBtn{width:54px!important;height:54px!important;min-width:54px!important;font-size:29px!important}
+}
 </style>
 </head><body><div id="gsNavOverlay" class="gs-nav-overlay" hidden></div>
 <aside id="gsSideNav" class="gs-side-nav" aria-label="Portal navigation" hidden>
@@ -189,7 +286,17 @@ body.gs-nav-open{overflow:hidden!important}
   <div class="superadmin-control-head"><span class="badge">SUPERADMIN ONLY</span><h2>👑 Admin Management</h2><p class="muted">This area is visible only to the Superadmin. Review the administrative accounts and keep the portal under central control.</p></div>
   <div class="superadmin-control-grid">
     <div class="superadmin-control-card"><strong>🔐 Access Control</strong><p>Superadmin has access to administrative controls that regular admins do not see.</p></div>
-    <div class="superadmin-control-card"><strong>👥 Admin Accounts</strong><p>Review the people currently assigned administrative roles.</p></div>
+    <div class="superadmin-control-card"><strong>👥 Admin Accounts</strong><p>Create and review the people assigned administrative roles.</p></div>
+  </div>
+  <div class="superadmin-create-card">
+    <div class="superadmin-create-head"><div><span class="badge">SUPERADMIN ACTION</span><h3>➕ Create New Admin</h3><p class="muted">Create an administrator account without logging out of your Superadmin account.</p></div></div>
+    <form id="adminForm" class="admin-form-grid">
+      <div><label>Admin Full Name</label><input id="adminName" required placeholder="e.g. A.O. Joshua"></div>
+      <div><label>Email Address</label><input id="adminEmail" type="email" required placeholder="admin@example.com"></div>
+      <div><label>Temporary Password</label><input id="adminPassword" type="password" minlength="6" required placeholder="Minimum 6 characters"></div>
+      <div class="admin-form-action"><button class="primary-btn" type="submit">Create Admin Account</button></div>
+    </form>
+    <p id="adminMessage" class="message"></p>
   </div>
   <div class="student-list-head"><h3>Administrative Accounts</h3><button id="refreshAdminsBtn" class="secondary-btn" type="button">↻ Refresh</button></div>
   <div id="adminAccountsList"><p class="muted">Loading administrative accounts...</p></div>
