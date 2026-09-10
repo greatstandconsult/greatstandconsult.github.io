@@ -68,9 +68,6 @@
 .lesson-body .video-media{position:relative;aspect-ratio:16/9;max-width:820px;margin:20px auto}
 .lesson-body .video-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:12px}
 @media(max-width:600px){#qbLessonToolbar{top:0}.rich-tool{min-width:36px}.rich-select{max-width:118px}}
-
-/* V35.0.3 - isolated Superadmin controls; does not alter existing portal panels */
-.superadmin-safe-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}.superadmin-safe-card{padding:18px;border:1px solid #ead9a8;border-radius:16px;background:#fffaf0}.superadmin-safe-card strong{display:block;color:#071a33;font-size:15px;margin-bottom:6px}.superadmin-safe-card p{margin:0;color:#667085;font-size:13px;line-height:1.5}.superadmin-safe-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}.superadmin-safe-stats .stat-card{margin:0}@media(max-width:700px){.superadmin-safe-grid{grid-template-columns:1fr}.superadmin-safe-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 <style id="v31-learning-click-fix">
 #learningCentrePanel, #learningPathPanel, #learningPathContent, #learningCourseGrid { position: relative; }
@@ -402,12 +399,200 @@ body.gs-nav-open{overflow:hidden!important}
   </div>
 </div>
 <div id="superadminPanel" class="panel admin-panel portal-section" style="display:none">
-  <div class="superadmin-control-head"><span class="badge">SUPERADMIN CONTROL CENTER</span><h2>👑 Superadmin Dashboard</h2><p class="muted">Central control for administrative accounts and portal access.</p></div>
-  <div class="superadmin-safe-grid">
-    <div class="superadmin-safe-card"><strong>🔐 Access Control</strong><p>Superadmin-only controls for administrative accounts.</p></div>
-    <div class="superadmin-safe-card"><strong>👥 Admin Management</strong><p>Review existing Admin and Superadmin accounts.</p></div>
+  <div class="superadmin-control-head"><span class="badge">SUPERADMIN ONLY</span><h2>👑 Admin Management</h2><p class="muted">This area is visible only to the Superadmin. Review the administrative accounts and keep the portal under central control.</p></div>
+  <div class="superadmin-control-grid">
+    <div class="superadmin-control-card"><strong>🔐 Access Control</strong><p>Superadmin has access to administrative controls that regular admins do not see.</p></div>
+    <div class="superadmin-control-card"><strong>👥 Admin Accounts</strong><p>Review the people currently assigned administrative roles.</p></div>
   </div>
   <div class="student-list-head"><h3>Administrative Accounts</h3><button id="refreshAdminsBtn" class="secondary-btn" type="button">↻ Refresh</button></div>
   <div id="adminAccountsList"><p class="muted">Loading administrative accounts...</p></div>
+</div>
+<div id="testAdminPanel" class="panel admin-panel portal-section" style="display:none">
+  <h2>💻 Manage CBT Tests</h2>
+  <p class="muted">Create multiple-choice practice tests for students.</p>
+  <form id="testForm">
+    <label>Test Title</label>
+    <input id="testTitle" required placeholder="e.g. JAMB English Practice Test 1">
+    <label>Subject</label>
+    <input id="testSubject" required placeholder="e.g. English Language">
+    <label>Category</label><select id="testCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General" selected>General</option></select>
+    <label>Duration (minutes)</label>
+    <input id="testDuration" type="number" min="1" max="180" value="30" required>
+    <div class="cbt-create-tabs">
+      <button id="manualCbtTab" class="secondary-btn cbt-tab active" type="button">✍️ Add Manually</button>
+      <button id="pasteCbtTab" class="secondary-btn cbt-tab" type="button">📋 Paste Questions</button>
+      <button id="csvCbtTab" class="secondary-btn cbt-tab" type="button">📊 Paste CSV</button>
+    </div>
+    <div id="manualCbtMode">
+      <div id="questionBuilder"></div>
+      <button id="addQuestionBtn" class="secondary-btn" type="button">＋ Add Question</button>
+    </div>
+    <div id="pasteCbtMode" class="cbt-import-mode hidden">
+      <p class="muted">Paste 50, 100, 150+ questions using the format below. We recognize ANSWER:, Answer =, Correct Answer:, etc.</p>
+      <textarea id="bulkQuestionsText" class="bulk-question-input" placeholder="1. What is the capital of Nigeria?
+A. Lagos
+B. Abuja
+C. Kano
+D. Ibadan
+ANSWER: B
+
+2. Which is a prime number?
+A. 12
+B. 15
+C. 17
+D. 21
+ANSWER: C"></textarea>
+      <button id="parseBulkQuestionsBtn" class="secondary-btn" type="button">🔍 Preview & Parse Questions</button>
+      <div id="bulkParseMessage" class="message"></div>
+      <div id="bulkQuestionsPreview"></div>
+    </div>
+    <div id="csvCbtMode" class="cbt-import-mode hidden">
+      <p class="muted">Paste CSV with columns: question,A,B,C,D,answer. The first row may be a header.</p>
+      <textarea id="csvQuestionsText" class="bulk-question-input" placeholder="question,A,B,C,D,answer
+What is 2+2?,1,2,3,4,D
+Capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B"></textarea>
+      <button id="parseCsvQuestionsBtn" class="secondary-btn" type="button">🔍 Preview & Parse CSV</button>
+      <div id="csvParseMessage" class="message"></div>
+      <div id="csvQuestionsPreview"></div>
+    </div>
+    <button class="primary-btn" type="submit">Publish CBT Test</button>
+    <p id="testMessage" class="message"></p>
+  </form>
+</div>
+<div id="testsPanel" class="panel portal-section">
+  <h2>💻 Available CBT Tests</h2>
+  <div id="testsList"><p class="muted">Loading tests...</p></div>
+  <div id="testModal" class="assignment-modal hidden">
+    <div class="assignment-modal-card cbt-modal-card">
+      <button id="closeTestBtn" class="close-btn" type="button">×</button>
+      <div class="cbt-head"><div><span class="badge">GREAT STAND CBT</span><h2 id="openTestTitle">Test</h2><p id="openTestSubject" class="subject"></p></div><div id="testTimer" class="test-timer">00:00</div></div>
+      <div id="testProgress" class="cbt-progress"></div>
+      <div id="testQuestionArea"></div>
+      <div class="cbt-nav"><button id="prevQuestionBtn" class="secondary-btn" type="button">← Previous</button><button id="nextQuestionBtn" class="primary-btn cbt-next" type="button">Next →</button><button id="submitTestBtn" class="primary-btn cbt-submit hidden" type="button">Submit Test</button></div>
+      <p id="testSubmitMessage" class="message"></p>
+    </div>
+  </div>
+</div>
+<div id="courseAdminPanel" class="panel admin-panel portal-section" style="display:none">
+  <div class="builder-head">
+    <div><span class="badge">COURSE BUILDER</span><h2>🎓 Build Your Learning Centre</h2><p class="muted">Build your course step by step. You can return to any completed step and edit it.</p></div>
+  </div>
+
+  <div class="builder-progress" id="qbProgress" aria-label="Course builder progress">
+    <button class="builder-step active" data-qb-step="1" type="button"><span>1</span><b>Course</b></button><div class="builder-line"></div>
+    <button class="builder-step" data-qb-step="2" type="button"><span>2</span><b>Subject</b></button><div class="builder-line"></div>
+    <button class="builder-step" data-qb-step="3" type="button"><span>3</span><b>Topic</b></button><div class="builder-line"></div>
+    <button class="builder-step" data-qb-step="4" type="button"><span>4</span><b>Lesson</b></button>
+  </div>
+
+  <div class="quick-builder" id="quickBuilder">
+    <div class="builder-card builder-step-card active" data-builder-step="1" id="qbStep1">
+      <div class="builder-card-title"><div><span class="builder-number">1</span><div><h3>Choose or create a course</h3><p class="muted">Example: JAMB Preparation</p></div></div><button class="builder-edit-btn hidden" id="qbEditCourse" type="button">Edit</button></div>
+      <div class="builder-summary hidden" id="qbCourseSummary"></div>
+      <div class="builder-step-body">
+        <div class="builder-row"><select id="qbCourse"></select><button id="qbNewCourse" class="secondary-btn" type="button">＋ New Course</button></div>
+        <div id="qbCourseNew" class="builder-new hidden"><input id="qbCourseName" placeholder="Course name e.g. JAMB Preparation"><select id="qbCourseCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General">General</option></select><button id="qbSaveCourse" class="primary-btn" type="button">Create Course</button></div>
+        <div class="builder-continue"><button id="qbContinue1" class="primary-btn" type="button">Continue to Subject →</button></div>
+      </div>
+      <p id="qbCourseMsg" class="message"></p>
+    </div>
+
+    <div class="builder-card builder-step-card locked" data-builder-step="2" id="qbStep2">
+      <div class="builder-card-title"><div><span class="builder-number">2</span><div><h3>Choose or create a subject</h3><p class="muted">Example: Mathematics</p></div></div><button class="builder-edit-btn hidden" id="qbEditSubject" type="button">Edit</button></div>
+      <div class="builder-summary hidden" id="qbSubjectSummary"></div>
+      <div class="builder-step-body">
+        <div class="builder-row"><select id="qbSubject"></select><button id="qbNewSubject" class="secondary-btn" type="button">＋ New Subject</button></div>
+        <div id="qbSubjectNew" class="builder-new hidden"><input id="qbSubjectName" placeholder="Subject name e.g. Mathematics"><button id="qbSaveSubject" class="primary-btn" type="button">Create Subject</button></div>
+        <div class="builder-continue"><button id="qbContinue2" class="primary-btn" type="button">Continue to Topic →</button></div>
+      </div>
+      <p id="qbSubjectMsg" class="message"></p>
+    </div>
+
+    <div class="builder-card builder-step-card locked" data-builder-step="3" id="qbStep3">
+      <div class="builder-card-title"><div><span class="builder-number">3</span><div><h3>Choose or create a topic</h3><p class="muted">Example: Number Bases</p></div></div><button class="builder-edit-btn hidden" id="qbEditTopic" type="button">Edit</button></div>
+      <div class="builder-summary hidden" id="qbTopicSummary"></div>
+      <div class="builder-step-body">
+        <div class="builder-row"><select id="qbTopic"></select><button id="qbNewTopic" class="secondary-btn" type="button">＋ New Topic</button></div>
+        <div id="qbTopicNew" class="builder-new hidden"><input id="qbTopicName" placeholder="Topic title e.g. Number Bases"><button id="qbSaveTopic" class="primary-btn" type="button">Create Topic</button></div>
+        <div class="builder-continue"><button id="qbContinue3" class="primary-btn" type="button">Continue to Lesson →</button></div>
+      </div>
+      <p id="qbTopicMsg" class="message"></p>
+    </div>
+
+    <div class="builder-card builder-step-card locked" data-builder-step="4" id="qbStep4">
+      <div class="builder-card-title"><div><span class="builder-number">4</span><div><h3>Create the lesson</h3><p class="muted">Add your teaching content and an optional PDF.</p></div></div></div>
+      <div class="builder-context" id="qbLessonContext"><span>Course</span><b id="qbContextCourse">—</b><span>Subject</span><b id="qbContextSubject">—</b><span>Topic</span><b id="qbContextTopic">—</b></div>
+      <div class="builder-step-body">
+        <input id="qbLessonTitle" placeholder="Lesson title e.g. Introduction to Number Bases">
+        <div class="rich-editor-wrap">
+  <div class="rich-toolbar" id="qbLessonToolbar" role="toolbar" aria-label="Lesson formatting">
+    <button type="button" class="rich-tool" data-cmd="bold" title="Bold"><b>B</b></button>
+    <button type="button" class="rich-tool" data-cmd="italic" title="Italic"><i>I</i></button>
+    <button type="button" class="rich-tool" data-cmd="underline" title="Underline"><u>U</u></button>
+    <span class="rich-divider"></span>
+    <select class="rich-select" data-block title="Text style">
+      <option value="p">Normal</option>
+      <option value="h2">Heading</option>
+      <option value="h3">Subheading</option>
+      <option value="h4">Small heading</option>
+      <option value="blockquote">Quote</option>
+    </select>
+    <button type="button" class="rich-tool" data-cmd="insertUnorderedList" title="Bullet list">• List</button>
+    <button type="button" class="rich-tool" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+    <span class="rich-divider"></span>
+    <button type="button" class="rich-tool" data-link title="Insert link">🔗</button>
+    <button type="button" class="rich-tool media-tool" id="qbInsertImage" title="Insert image">🖼️ Image</button>
+    <button type="button" class="rich-tool media-tool" id="qbInsertVideo" title="Insert YouTube video">▶ Video</button>
+    <button type="button" class="rich-tool" data-cmd="justifyLeft" title="Align left">≡</button>
+    <button type="button" class="rich-tool" data-cmd="justifyCenter" title="Center">≡</button>
+    <button type="button" class="rich-tool" data-cmd="justifyRight" title="Align right">≡</button>
+    <span class="rich-divider"></span>
+    <button type="button" class="rich-tool" data-cmd="undo" title="Undo">↶</button>
+    <button type="button" class="rich-tool" data-cmd="redo" title="Redo">↷</button>
+    <button type="button" class="rich-tool" data-cmd="removeFormat" title="Clear formatting">Tx</button>
+  </div>
+  <div id="qbLessonContent" class="rich-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Write your lesson here... Add explanations, examples, formulas, subtopics and practice questions."></div>
+  <div class="rich-editor-help">Toolbar stays visible while you write. Use <b>Heading</b> for sections, <b>Subheading</b> for subtopics, <b>Image</b> for pictures and <b>Video</b> for YouTube lessons. Formatting and media are saved with the lesson.</div>
+</div>
+        <label class="upload-label">Optional lesson PDF</label>
+        <input id="qbLessonFile" type="file" accept="application/pdf,.pdf">
+        <small class="upload-help">PDF only • Maximum 50 MB</small>
+        <div class="builder-publish"><button id="qbSaveDraft" class="secondary-btn" type="button">Save Draft</button><button id="qbPublishLesson" class="primary-btn" type="button">📖 Publish Lesson</button></div>
+      </div>
+      <p id="qbLessonMsg" class="message"></p>
+    </div>
+  </div>
+
+  <div class="course-builder-tip"><b>💡 Recommended workflow</b><span>Choose JAMB → Mathematics → Number Bases → create your lesson. Previous steps stay editable, while unpublished drafts remain hidden from students.</span></div>
+
+  <div class="course-admin-list"><div class="builder-list-head"><div><h3>Current Learning Structure</h3><p class="muted">Everything you have created appears here.</p></div><button id="qbRefresh" class="secondary-btn" type="button">↻ Refresh</button></div><div id="courseAdminList"><p class="muted">Loading courses...</p></div></div>
+</div>
+<div id="testResultsAdminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📊 CBT Student Results</h2><p class="muted">View students' automatically marked CBT scores.</p><div id="testResultsList"><p class="muted">Loading CBT results...</p></div></div>
+<div id="materialsAdminPanel" class="panel admin-panel portal-section" style="display:none">
+  <h2>📚 Manage Study Materials</h2>
+  <p class="muted">Upload PDF study materials directly from your phone or computer. No external links required.</p>
+  <form id="materialForm">
+    <label>Material Title</label><input id="materialTitle" required placeholder="e.g. JAMB English Past Questions 2026">
+    <label>Subject</label><input id="materialSubject" required placeholder="e.g. English Language">
+    <label>Category</label><select id="materialCategory"><option value="JAMB">JAMB</option><option value="WAEC">WAEC</option><option value="General" selected>General</option></select>
+    <label>Description (optional)</label><textarea id="materialDescription" class="short-textarea" placeholder="Briefly describe this material..."></textarea>
+    <label>PDF / Material File</label><input id="materialFile" type="file" accept="application/pdf,.pdf" required><small class="upload-help">PDF only • Maximum 50 MB</small>
+    <button class="primary-btn" type="submit">Publish Study Material</button>
+    <p id="materialMessage" class="message"></p>
+  </form>
+</div>
+<div id="materialsPanel" class="panel portal-section">
+  <h2>📚 Study Materials</h2>
+  <div class="material-filters">
+    <button class="secondary-btn material-filter active" data-filter="All" type="button">All</button>
+    <button class="secondary-btn material-filter" data-filter="JAMB" type="button">JAMB</button>
+    <button class="secondary-btn material-filter" data-filter="WAEC" type="button">WAEC</button>
+    <button class="secondary-btn material-filter" data-filter="General" type="button">Other</button>
+  </div>
+  <div id="materialsList"><p class="muted">Loading study materials...</p></div>
+</div>
+<div id="assignmentsPanel" class="panel portal-section">
+  <h2>📝 Available Assignments</h2>
+  <div id="assignmentsList"><p class="muted">Loading assignments...</p></div><div id="assignmentModal" class="assignment-modal hidden"><div class="assignment-modal-card"><button id="closeAssignmentBtn" class="close-btn" type="button">×</button><h2 id="openAssignmentTitle">Assignment</h2><p id="openAssignmentSubject" class="subject"></p><div id="openAssignmentContent" class="note-content"></div><p id="openAssignmentDeadline" class="muted"></p><form id="submissionForm"><label>Your Answer</label><textarea id="submissionAnswer" required placeholder="Type your answer here..."></textarea><button class="primary-btn" type="submit">Submit Assignment</button><p id="submissionMessage" class="message"></p></form></div></div>
 </div>
 <div id="submissionsAdminPanel" class="panel admin-panel portal-section" style="display:none"><h2>📥 Student Submissions</h2><p class="muted">Admins and Superadmins can review submitted assignments.</p><div id="submissionsList"><p class="muted">Loading submissions...</p></div></div><div id="studentResultsPanel" class="panel portal-section"><h2>🏆 My Results</h2><p class="muted">Your marked assignment results will appear here.</p><div id="studentResultsList"><p class="muted">Loading results...</p></div></div><div id="statusPanel" class="panel portal-section"><h2>Portal Status</h2><p id="statusText">Loading...</p></div><div id="featuresPanel" class="panel portal-section"><h2>What you can do here</h2><div class="features"><div><strong>📚 Learning Materials</strong><p>Access notes and study materials.</p></div><div><strong>📝 Assignments</strong><p>Receive and submit assignments.</p></div><div><strong>💻 CBT Tests</strong><p>Take online tests and examinations.</p></div><div><strong>🏆 Results</strong><p>View your scores and academic performance.</p></div></div></div></section><div id="courseModal" class="course-modal hidden" role="dialog" aria-modal="true" aria-labelledby="courseModalTitle"><div class="course-modal-card"><button id="closeCourseModal" class="close-btn" type="button">×</button><div class="course-modal-hero"><span id="courseModalIcon" class="course-modal-icon">📚</span><div><span id="courseModalCategory" class="course-category">COURSE</span><h2 id="courseModalTitle">Course</h2><p id="courseModalSubtitle" class="muted">Learning resources</p></div></div><div id="courseModalStats" class="course-modal-stats"></div><div id="courseModalResources" class="course-modal-resources"></div></div></div></main><footer>© 2026 Great Stand Educational Consult. Guiding Students. Building Futures.</footer><script type="module" src="portal.js?v=34.0"></script></body></html>
