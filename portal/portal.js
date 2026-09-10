@@ -887,42 +887,13 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
   function showSection(target){
     if(target==="gsNotificationsPanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){loadStudentNotifications();}
     if(target==="gsProfilePanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){loadStudentProfilePanel();}
-    if(target==="gsAchievementsPanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){setTimeout(()=>window.gsRenderAchievements?.(),50);}
     if(target==="superadminPanel" && String(window.currentUserRole||"").toLowerCase()!=="superadmin")return;
     if(target==="superadminPanel"){loadSuperadminAccounts();}
     if(target==="announcementAdminPanel"){const ap=$("announcementAdminPanel");if(ap)ap.style.display="block";loadAdminAnnouncements();}else{const ap=$("announcementAdminPanel");if(ap)ap.style.display="none";}
-    if(target==="dashboardView"){
-      allSections().forEach(el=>el.classList.add("gs-section-hidden"));
-      if(dashboardView)dashboardView.classList.remove("hidden");
-      window.scrollTo({top:0,behavior:"smooth"});
-      return
-    }
-    if(dashboardView)dashboardView.classList.add("hidden");
-    allSections().forEach(el=>{
-      const isTarget=el.id===target;
-      el.classList.toggle("gs-section-hidden",!isTarget);
-      el.style.display=isTarget?"":"none";
-      if(isTarget)el.classList.remove("hidden");
-    });
-    const el=document.getElementById(target);
-    if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)
+    if(target==="dashboardView"){allSections().forEach(el=>el.classList.add("gs-section-hidden"));window.scrollTo({top:0,behavior:"smooth"});return}
+    allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));const el=document.getElementById(target);if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)
   }
   window.gsShowSection=showSection;window.gsBuildNav=buildNav;window.gsRefreshNavigation=buildNav;
-  // V34.2: dedicated achievements navigation handler.
-  document.addEventListener("click",function(e){
-    const btn=e.target.closest?.('.gs-nav-link[data-target="gsAchievementsPanel"]');
-    if(!btn)return;
-    const panel=document.getElementById("gsAchievementsPanel");
-    if(!panel)return;
-    setTimeout(()=>{
-      if(dashboardView)dashboardView.classList.add("hidden");
-      allSections().forEach(el=>{el.classList.add("gs-section-hidden");el.style.display="none";});
-      panel.classList.remove("gs-section-hidden","hidden");
-      panel.style.display="block";
-      window.gsRenderAchievements?.();
-      panel.scrollIntoView({behavior:"smooth",block:"start"});
-    },0);
-  },true);
   closeNav();
   document.addEventListener("DOMContentLoaded",()=>{buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))});
   let lastRole="";setInterval(()=>{const role=String(window.currentUserRole||"").trim().toLowerCase();if(role&&role!==lastRole){lastRole=role;buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))}},500);
@@ -1480,7 +1451,6 @@ qbSetStep(1,true);
   setInterval(renderStudentProgressDashboard,2000);
 })();
 
-
 /* ===== V34.2 STUDENT ACHIEVEMENTS ===== */
 (function(){
   const panel=document.getElementById('gsAchievementsPanel');
@@ -1488,7 +1458,7 @@ qbSetStep(1,true);
   function progressStore(){try{return JSON.parse(localStorage.getItem('gs_learning_progress_v1_'+(auth?.currentUser?.uid||'guest'))||'{}')}catch(e){return {}}}
   function publishedLessons(){return (courseData.lessons||[]).filter(l=>String(l.status||'published').toLowerCase()==='published'||!l.status)}
   function lessonDone(v){return !!v}
-  function completionDates(store){return Object.values(store).map(v=>v&&typeof v==='object'&&v.completedAt?new Date(v.completedAt):null).filter(Boolean)}
+  function completionDates(store){return Object.values(store).map(v=>v&&typeof v==='object'&&v.completedAt?new Date(v.completedAt):v===true?new Date():null).filter(Boolean)}
   function streak(store){
     const dates=completionDates(store).map(d=>{const x=new Date(d);x.setHours(0,0,0,0);return x.getTime()});
     const unique=[...new Set(dates)].sort((a,b)=>b-a); if(!unique.length)return 0;
@@ -1524,5 +1494,4 @@ qbSetStep(1,true);
   setTimeout(render,700);
   setInterval(()=>{if(String(window.currentUserRole||'').toLowerCase()==='student'&&panel.style.display!=='none')render()},15000);
 })();
-
 setInterval(()=>{if(String(window.currentUserRole||'').toLowerCase()==='student')loadStudentNotifications()},30000);
