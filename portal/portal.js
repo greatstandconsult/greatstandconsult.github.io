@@ -1404,3 +1404,92 @@ qbSetStep(1,true);
     return window.gsV41FormatTables(text);
   };
 })();
+
+
+
+/* ===== V42 VISUAL TABLE BUILDER ===== */
+(function(){
+  const editor = document.getElementById("qbLessonContent");
+  const btn = document.getElementById("qbVisualTable");
+  if(!editor || !btn) return;
+
+  function insertHtmlAtCursor(h){
+    editor.focus();
+    const sel=window.getSelection();
+    if(!sel || !sel.rangeCount){ editor.insertAdjacentHTML("beforeend",h); return; }
+    const r=sel.getRangeAt(0);
+    r.deleteContents();
+    const frag=r.createContextualFragment(h);
+    r.insertNode(frag);
+    r.collapse(false);
+    sel.removeAllRanges(); sel.addRange(r);
+  }
+
+  function makeTable(rows,cols){
+    rows=Math.max(1,Math.min(50,parseInt(rows,10)||2));
+    cols=Math.max(1,Math.min(20,parseInt(cols,10)||2));
+    let h='<div class="gs-tb-grid-wrap"><table class="gs-tb-grid"><thead><tr>';
+    for(let c=0;c<cols;c++) h+='<th contenteditable="true">Heading '+(c+1)+'</th>';
+    h+='</tr></thead><tbody>';
+    for(let r=0;r<rows-1;r++){
+      h+='<tr>';
+      for(let c=0;c<cols;c++) h+='<td contenteditable="true"> </td>';
+      h+='</tr>';
+    }
+    h+='</tbody></table></div>';
+    insertHtmlAtCursor(h);
+  }
+
+  btn.addEventListener("click",()=>{
+    const cols=prompt("How many columns?","2");
+    if(cols===null)return;
+    const rows=prompt("How many rows?","3");
+    if(rows===null)return;
+    makeTable(rows,cols);
+  });
+
+  // Convert a pasted plain-text pipe table into a real HTML table, but ONLY when
+  // there are at least two consecutive pipe-separated rows.
+  editor.addEventListener("paste",e=>{
+    const text=e.clipboardData?.getData("text/plain");
+    if(!text || !text.includes("|")) return;
+    const lines=text.replace(/\r/g,"").split("\n").map(x=>x.trim()).filter(Boolean);
+    const pipeLines=lines.filter(x=>x.includes("|"));
+    if(pipeLines.length<2) return;
+
+    const rows=pipeLines.map(line=>{
+      let s=line;
+      if(s.startsWith("|"))s=s.slice(1);
+      if(s.endsWith("|"))s=s.slice(0,-1);
+      return s.split("|").map(x=>x.trim());
+    }).filter(r=>r.length>=2);
+
+    if(rows.length<2)return;
+
+    // Ignore Markdown separator rows.
+    const data=rows.filter((r,i)=>{
+      if(i===0)return true;
+      return !r.every(c=>/^:?-{2,}:?$/.test(c));
+    });
+    if(data.length<2)return;
+
+    e.preventDefault();
+
+    const width=Math.max(...data.map(r=>r.length));
+    let h='<div class="gs-tb-grid-wrap"><table class="gs-tb-grid"><thead><tr>';
+    for(let c=0;c<width;c++)h+='<th contenteditable="true">'+escapeHtml(data[0][c]||"")+'</th>';
+    h+='</tr></thead><tbody>';
+    for(let r=1;r<data.length;r++){
+      h+='<tr>';
+      for(let c=0;c<width;c++)h+='<td contenteditable="true">'+escapeHtml(data[r][c]||"")+'</td>';
+      h+='</tr>';
+    }
+    h+='</tbody></table></div>';
+    insertHtmlAtCursor(h);
+  });
+
+  function escapeHtml(s){
+    return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+})();
