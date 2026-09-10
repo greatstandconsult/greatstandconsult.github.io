@@ -937,6 +937,9 @@ async function loadStudentProfilePanel(){
 }
 
 function setupStudentProfileEditor(){
+  // Keep exactly one edit button if a previous cached/rendered layer duplicated it.
+  const editButtons=document.querySelectorAll("#gsEditProfileBtn");
+  editButtons.forEach((btn,i)=>{if(i>0)btn.remove()});
   const editBtn=$("gsEditProfileBtn"),box=$("gsProfileEditBox"),form=$("gsProfileEditForm"),cancel=$("gsCancelProfileEdit"),msg=$("gsProfileEditMessage");
   if(!editBtn||!box||!form)return;
   const openEditor=()=>{box.style.display="block";box.hidden=false;msg.textContent="";setTimeout(()=>$("gsEditName")?.focus(),50)};
@@ -1347,6 +1350,7 @@ qbSetStep(1,true);
       learningPathTitle.textContent=t?.name||'Topic';learningPathSubtitle.textContent='Choose a lesson';gsRenderPathCards(gsPublished().filter(x=>x.topicId===id),'lesson');
     }else if(type==='lesson'){
       const pos=gsCoursePosition(l), pct=pos.course?gsPct(pos.course.id):0, done=gsCompleted(l?.id), next=gsNextLesson(l);
+      try{localStorage.setItem('gs_last_lesson_'+(auth?.currentUser?.uid||'guest'),JSON.stringify({lessonId:l?.id,courseId:pos.course?.id||null,updatedAt:Date.now()}))}catch(e){}
       const lessonHtml=String(l?.contentFormat||'').toLowerCase()==='html'?sanitizeRichHtml(l?.content||''):esc(l?.content||'').replace(/\n/g,'<br>');
       learningPathTitle.textContent=l?.title||'Lesson';learningPathSubtitle.textContent=pos.course?.name||'Lesson';
       learningPathContent.innerHTML=`<article class="lesson-view"><div class="gs-lesson-hero"><div class="lesson-badge">LESSON ${pos.index} OF ${pos.total||1}</div><h2 style="margin:0;color:#fff">${esc(l?.title||'Lesson')}</h2><div class="gs-lesson-meta"><span>📚 ${esc(pos.course?.name||'Learning')}</span><span>${done?'✅ Completed':'▶ In progress'}</span></div></div><div class="gs-lesson-progress"><div class="gs-progress-top"><span>Course progress</span><span class="gs-progress-percent">${pct}%</span></div><div class="gs-progress-track"><div class="gs-progress-fill" style="width:${pct}%"></div></div></div><div class="lesson-body">${lessonHtml}</div>${l?.pdfUrl?`<div class="lesson-file-actions"><a class="primary-btn" href="${esc(l.pdfUrl)}" target="_blank" rel="noopener">📖 View PDF</a><a class="secondary-btn" href="${esc(l.pdfUrl)}" download>⬇️ Download PDF</a></div>`:''}<div class="gs-lesson-actions"><button type="button" class="primary-btn gs-complete-btn ${done?'completed':''}" id="gsCompleteLesson">${done?'✓ Completed':'✓ Mark as Completed'}</button>${next?`<button type="button" class="secondary-btn gs-next-btn" id="gsNextLesson">Next Lesson →</button>`:''}<div class="gs-lesson-footnote">Your progress is saved on this device for your account. You can change the completion status anytime.</div></div></article>`;
@@ -1382,13 +1386,51 @@ qbSetStep(1,true);
     const role=String(window.currentUserRole||currentStudentProfile?.role||'').toLowerCase();
     panel.style.display=role==='student'?'block':'none';
     if(role!=='student')return;
+
     const courses=courseData.courses||[];
-    if(!courses.length){grid.innerHTML='<div class="gs-student-progress-card"><h3>No courses available yet</h3><p class="muted">Your tutor will publish courses here.</p></div>';return}
     const published=(courseData.lessons||[]).filter(l=>String(l.status||'published').toLowerCase()==='published'||!l.status);
     const store=(()=>{try{return JSON.parse(localStorage.getItem('gs_learning_progress_v1_'+(auth?.currentUser?.uid||'guest'))||'{}')}catch(e){return {}}})();
-    const pct=c=>{const ls=published.filter(l=>l.courseId===c.id);if(!ls.length)return 0;return Math.round(ls.filter(l=>store[l.id]).length/ls.length*100)};
-    grid.innerHTML=courses.map(c=>{const p=pct(c),ls=published.filter(l=>l.courseId===c.id);return '<article class="gs-student-progress-card"><h3>'+esc(c.name||'Course')+'</h3><div class="gs-student-progress-meta"><span>'+esc(c.category||'General')+'</span><b>'+p+'%</b></div><div class="gs-student-progress-track"><div class="gs-student-progress-fill" style="width:'+p+'%"></div></div><div class="gs-student-progress-meta" style="margin-top:7px"><span>'+ls.filter(l=>store[l.id]).length+' of '+ls.length+' lessons completed</span></div><button class="secondary-btn gs-progress-open" type="button" data-course-id="'+esc(c.id)+'">Open Course →</button></article>'}).join('');
+    const courseLessons=c=>published.filter(l=>l.courseId===c.id);
+    const coursePct=c=>{const ls=courseLessons(c);return ls.length?Math.round(ls.filter(l=>store[l.id]).length/ls.length*100):0};
+    const allTotal=published.length, allDone=published.filter(l=>store[l.id]).length;
+    const overall=allTotal?Math.round(allDone/allTotal*100):0;
+
+    // Find the most recently opened lesson, then fall back to the first incomplete lesson.
+    let last=null;
+    try{last=JSON.parse(localStorage.getItem('gs_last_lesson_'+(auth?.currentUser?.uid||'guest'))||'null')}catch(e){}
+    const lastLesson=last?.lessonId?published.find(l=>l.id===last.lessonId):null;
+    const fallbackLesson=published.find(l=>!store[l.id])||published[0]||null;
+    const continueLesson=lastLesson||fallbackLesson;
+    const continueCourse=continueLesson?gsFindCourseForLesson(continueLesson):null;
+
+    if(!courses.length){
+      grid.innerHTML='<div class="gs-student-progress-card"><h3>No courses available yet</h3><p class="muted">Your tutor will publish courses here.</p></div>';
+      return;
+    }
+
+    const overallCard=`<div class="gs-progress-overview">
+      <div class="gs-progress-overview-main"><span class="gs-progress-kicker">OVERALL LEARNING</span><strong>${overall}%</strong><span>${allDone} of ${allTotal} published lesson${allTotal===1?'':'s'} completed</span></div>
+      <div class="gs-progress-overview-track"><div style="width:${overall}%"></div></div>
+      <div class="gs-progress-continue">
+        ${continueLesson?`<div><small>CONTINUE WHERE YOU STOPPED</small><b>${esc(continueLesson.title||'Continue lesson')}</b><span>${esc(continueCourse?.name||'Learning Centre')}</span></div><button type="button" class="primary-btn gs-continue-last" data-lesson-id="${esc(continueLesson.id)}">Continue →</button>`:`<div><b>No lesson available yet.</b><span>Your tutor will publish learning content here.</span></div>`}
+      </div>
+    </div>`;
+
+    const courseCards=courses.map(c=>{
+      const ls=courseLessons(c), done=ls.filter(l=>store[l.id]).length, pct=coursePct(c);
+      const subjectMap={};
+      ls.forEach(l=>{const t=courseData.topics.find(x=>x.id===l.topicId),sub=courseData.subjects.find(x=>x.id===t?.subjectId);if(sub){(subjectMap[sub.id]??={name:sub.name||'Subject',total:0,done:0});subjectMap[sub.id].total++;if(store[l.id])subjectMap[sub.id].done++}});
+      const subjects=Object.values(subjectMap).slice(0,4).map(x=>{const sp=x.total?Math.round(x.done/x.total*100):0;return `<div class="gs-subject-progress"><div><span>${esc(x.name)}</span><b>${sp}%</b></div><div class="gs-mini-track"><i style="width:${sp}%"></i></div><small>${x.done}/${x.total} lessons</small></div>`}).join('');
+      return `<article class="gs-student-progress-card"><div class="gs-course-progress-title"><div><h3>${esc(c.name||'Course')}</h3><small>${esc(c.category||'General')}</small></div><b>${pct}%</b></div><div class="gs-student-progress-track"><div class="gs-student-progress-fill" style="width:${pct}%"></div></div><div class="gs-student-progress-meta" style="margin-top:7px"><span>${done} of ${ls.length} lessons completed</span></div>${subjects?`<div class="gs-subject-progress-list">${subjects}</div>`:''}<button class="secondary-btn gs-progress-open" type="button" data-course-id="${esc(c.id)}">Open Course →</button></article>`;
+    }).join('');
+
+    grid.innerHTML=overallCard+`<div class="gs-progress-course-grid">${courseCards}</div>`;
     grid.querySelectorAll('.gs-progress-open').forEach(b=>b.addEventListener('click',()=>{if(window.gsShowSection)window.gsShowSection('learningCentrePanel');setTimeout(()=>window.openLearningPath?.('course',b.dataset.courseId),80)}));
+    grid.querySelector('.gs-continue-last')?.addEventListener('click',()=>{
+      const id=grid.querySelector('.gs-continue-last')?.dataset.lessonId;
+      const lesson=id?published.find(l=>l.id===id):null;
+      if(lesson){if(window.gsShowSection)window.gsShowSection('learningCentrePanel');setTimeout(()=>window.openLearningPath?.('lesson',lesson.id),80)}
+    });
   }
   window.gsRenderStudentProgressDashboard=renderStudentProgressDashboard;
   document.getElementById('gsContinueLearningBtn')?.addEventListener('click',()=>window.gsShowSection?.('learningCentrePanel'));
