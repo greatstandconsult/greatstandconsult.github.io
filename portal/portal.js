@@ -1305,6 +1305,14 @@ qbSetStep(1,true);
     const t=courseData.topics.find(x=>x.id===l?.topicId), s=courseData.subjects.find(x=>x.id===t?.subjectId);
     return courseData.courses.find(x=>x.id===s?.courseId || x.id===l?.courseId);
   }
+  function gsPreviousLesson(l){
+    if(!l)return null;
+    const list=gsPublished();
+    const sameTopic=list.filter(x=>x.topicId===l.topicId);
+    let i=sameTopic.findIndex(x=>x.id===l.id); if(i>0)return sameTopic[i-1];
+    const c=gsFindCourseForLesson(l); if(!c)return null;
+    const all=gsCourseLessons(c.id); i=all.findIndex(x=>x.id===l.id); return i>0?all[i-1]||null:null;
+  }
   function gsNextLesson(l){
     if(!l)return null;
     const list=gsPublished();
@@ -1349,12 +1357,14 @@ qbSetStep(1,true);
     }else if(type==='topic'){
       learningPathTitle.textContent=t?.name||'Topic';learningPathSubtitle.textContent='Choose a lesson';gsRenderPathCards(gsPublished().filter(x=>x.topicId===id),'lesson');
     }else if(type==='lesson'){
-      const pos=gsCoursePosition(l), pct=pos.course?gsPct(pos.course.id):0, done=gsCompleted(l?.id), next=gsNextLesson(l);
+      const pos=gsCoursePosition(l), pct=pos.course?gsPct(pos.course.id):0, done=gsCompleted(l?.id), prev=gsPreviousLesson(l), next=gsNextLesson(l);
       try{localStorage.setItem('gs_last_lesson_'+(auth?.currentUser?.uid||'guest'),JSON.stringify({lessonId:l?.id,courseId:pos.course?.id||null,updatedAt:Date.now()}))}catch(e){}
       const lessonHtml=String(l?.contentFormat||'').toLowerCase()==='html'?sanitizeRichHtml(l?.content||''):esc(l?.content||'').replace(/\n/g,'<br>');
       learningPathTitle.textContent=l?.title||'Lesson';learningPathSubtitle.textContent=pos.course?.name||'Lesson';
-      learningPathContent.innerHTML=`<article class="lesson-view"><div class="gs-lesson-hero"><div class="lesson-badge">LESSON ${pos.index} OF ${pos.total||1}</div><h2 style="margin:0;color:#fff">${esc(l?.title||'Lesson')}</h2><div class="gs-lesson-meta"><span>📚 ${esc(pos.course?.name||'Learning')}</span><span>${done?'✅ Completed':'▶ In progress'}</span></div></div><div class="gs-lesson-progress"><div class="gs-progress-top"><span>Course progress</span><span class="gs-progress-percent">${pct}%</span></div><div class="gs-progress-track"><div class="gs-progress-fill" style="width:${pct}%"></div></div></div><div class="lesson-body">${lessonHtml}</div>${l?.pdfUrl?`<div class="lesson-file-actions"><a class="primary-btn" href="${esc(l.pdfUrl)}" target="_blank" rel="noopener">📖 View PDF</a><a class="secondary-btn" href="${esc(l.pdfUrl)}" download>⬇️ Download PDF</a></div>`:''}<div class="gs-lesson-actions"><button type="button" class="primary-btn gs-complete-btn ${done?'completed':''}" id="gsCompleteLesson">${done?'✓ Completed':'✓ Mark as Completed'}</button>${next?`<button type="button" class="secondary-btn gs-next-btn" id="gsNextLesson">Next Lesson →</button>`:''}<div class="gs-lesson-footnote">Your progress is saved on this device for your account. You can change the completion status anytime.</div></div></article>`;
+      learningPathContent.innerHTML=`<article class="lesson-view"><div class="gs-lesson-hero"><div class="lesson-badge">LESSON ${pos.index} OF ${pos.total||1}</div><h2 style="margin:0;color:#fff">${esc(l?.title||'Lesson')}</h2><div class="gs-lesson-meta"><span>📚 ${esc(pos.course?.name||'Learning')}</span><span>${done?'✅ Completed':'▶ In progress'}</span></div></div><div class="gs-lesson-progress"><div class="gs-progress-top"><span>Course progress</span><span class="gs-progress-percent">${pct}%</span></div><div class="gs-progress-track"><div class="gs-progress-fill" style="width:${pct}%"></div></div></div><div class="lesson-body">${lessonHtml}</div>${l?.pdfUrl?`<div class="lesson-file-actions"><a class="primary-btn" href="${esc(l.pdfUrl)}" target="_blank" rel="noopener">📖 View PDF</a><a class="secondary-btn" href="${esc(l.pdfUrl)}" download>⬇️ Download PDF</a></div>`:''}<div class="gs-lesson-actions"><button type="button" class="secondary-btn gs-topic-back" id="gsBackTopic">← Back to Topic</button>${prev?`<button type="button" class="secondary-btn gs-prev-btn" id="gsPrevLesson">← Previous Lesson</button>`:''}<button type="button" class="primary-btn gs-complete-btn ${done?'completed':''}" id="gsCompleteLesson">${done?'✓ Completed':'✓ Mark as Completed'}</button>${next?`<button type="button" class="secondary-btn gs-next-btn" id="gsNextLesson">Next Lesson →</button>`:''}<div class="gs-lesson-footnote">Mark this lesson complete to update your learning progress. Your progress is saved for this account on this device.</div></div></article>`;
       $('gsCompleteLesson')?.addEventListener('click',()=>{gsSetCompleted(l.id,!gsCompleted(l.id));gsOpenLearningPath('lesson',l.id);learningTrail.pop();if(window.gsRefreshLearningProgress)window.gsRefreshLearningProgress()});
+      $('gsBackTopic')?.addEventListener('click',()=>{if(l?.topicId)gsOpenLearningPath('topic',l.topicId)});
+      $('gsPrevLesson')?.addEventListener('click',()=>{if(prev)gsOpenLearningPath('lesson',prev.id)});
       $('gsNextLesson')?.addEventListener('click',()=>{if(next)gsOpenLearningPath('lesson',next.id)});
     }
     learningPathPanel?.classList.remove('hidden','gs-section-hidden');learningPathPanel?.scrollIntoView({behavior:'smooth',block:'start'});
