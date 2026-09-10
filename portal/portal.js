@@ -1290,3 +1290,117 @@ $('qbRefresh')?.addEventListener('click',qbReload);
 const _v25RenderCourseAdminList=renderCourseAdminList;renderCourseAdminList=function(){renderCourseAdminListV27()};
 const _v25LoadCourseStructure=loadCourseStructure;loadCourseStructure=async function(){await _v25LoadCourseStructure();refreshQuickBuilder();renderCourseAdminListV27()};
 qbSetStep(1,true);
+
+
+
+/* ===== GREAT STAND PORTAL V41 — DETERMINISTIC TABLE FORMATTER ===== */
+(function(){
+  function gsEsc(s){
+    return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  function gsInline(s){
+    let x=gsEsc(s);
+    x=x.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");
+    x=x.replace(/__(.+?)__/g,"<u>$1</u>");
+    x=x.replace(/\*([^*\n]+?)\*/g,"<em>$1</em>");
+    x=x.replace(/`([^`\n]+?)`/g,"<code>$1</code>");
+    return x;
+  }
+
+  function gsTableBlock(raw){
+    const lines=String(raw).replace(/\r/g,"").split("\n");
+    const rows=[];
+    for(const line of lines){
+      const s=line.trim();
+      if(!s) continue;
+      // A separator row such as |---|---| is not data.
+      if(/^\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)+\|?$/.test(s)) continue;
+      if(!s.includes("|")) continue;
+
+      let cells=s;
+      if(cells.startsWith("|")) cells=cells.slice(1);
+      if(cells.endsWith("|")) cells=cells.slice(0,-1);
+
+      const parts=cells.split("|").map(v=>v.trim());
+      if(parts.length<2) continue;
+      rows.push(parts);
+    }
+
+    if(!rows.length) return "";
+
+    const width=Math.max(...rows.map(r=>r.length));
+    const normalized=rows.map(r=>{
+      const a=r.slice(0,width);
+      while(a.length<width) a.push("");
+      return a;
+    });
+
+    const head=normalized[0];
+    const body=normalized.slice(1);
+
+    let html='<div class="lesson-table-wrap"><table class="lesson-table"><thead><tr>';
+    for(const c of head) html+='<th>'+gsInline(c)+'</th>';
+    html+='</tr></thead>';
+
+    if(body.length){
+      html+='<tbody>';
+      for(const row of body){
+        html+='<tr>';
+        for(const c of row) html+='<td>'+gsInline(c)+'</td>';
+        html+='</tr>';
+      }
+      html+='</tbody>';
+    }
+    html+='</table></div>';
+    return html;
+  }
+
+  // Expose a dedicated deterministic converter.
+  window.gsV41TableBlock=gsTableBlock;
+
+  // Convert only explicit [table] blocks. This prevents unrelated lesson text
+  // from ever being absorbed into a table.
+  window.gsV41FormatTables=function(input){
+    let out="", pos=0;
+    const src=String(input ?? "");
+    const re=/\[table\]([\s\S]*?)\[\/table\]/gi;
+    let m;
+    while((m=re.exec(src))){
+      out+=src.slice(pos,m.index);
+      out+=gsTableBlock(m[1]) || m[0];
+      pos=re.lastIndex;
+    }
+    out+=src.slice(pos);
+    return out;
+  };
+
+  // Repair Format AI Note / save paths without replacing the rest of the formatter:
+  // if an existing formatter exists, wrap its output through the explicit table
+  // converter so tables are rendered first and are never extended to later text.
+  if(typeof window.formatAiLessonText==="function"){
+    const old=window.formatAiLessonText;
+    window.formatAiLessonText=function(input){
+      const marked=String(input ?? "");
+      const converted=window.gsV41FormatTables(marked);
+      // If the converter created HTML tables, preserve them and let the old
+      // formatter handle only the remaining non-table text.
+      if(converted!==marked && converted.includes('class="lesson-table"')){
+        const token=[];
+        const protectedText=converted.replace(
+          /<div class="lesson-table-wrap">[\s\S]*?<\/div>/gi,
+          h=>{const i=token.push(h)-1;return "\n@@GSTABLE"+i+"@@\n";}
+        );
+        const rest=old(protectedText);
+        return rest.replace(/@@GSTABLE(\d+)@@/g,(_,i)=>token[Number(i)]);
+      }
+      return old(marked);
+    };
+  }
+
+  // Also expose a paste-safe conversion hook for future use.
+  window.gsV41PasteTable=function(text){
+    return window.gsV41FormatTables(text);
+  };
+})();
