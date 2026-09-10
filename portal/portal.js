@@ -887,7 +887,15 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
   function showSection(target){
     if(target==="gsNotificationsPanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){loadStudentNotifications();}
     if(target==="gsProfilePanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){loadStudentProfilePanel();}
-    if(target==="gsAchievementsPanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){setTimeout(()=>window.gsRenderAchievements?.(),50);}
+    if(target==="gsAchievementsPanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){
+      const ach=document.getElementById("gsAchievementsPanel");
+      allSections().forEach(el=>el.classList.add("gs-section-hidden"));
+      if(ach){ ach.classList.remove("gs-section-hidden","hidden"); ach.hidden=false; ach.style.display="block"; }
+      window.scrollTo({top:0,behavior:"smooth"});
+      setTimeout(()=>window.gsRenderAchievements?.(),0);
+      setTimeout(()=>{if(ach){ach.classList.remove("gs-section-hidden","hidden");ach.hidden=false;ach.style.display="block";}},100);
+      return;
+    }
     if(target==="superadminPanel" && String(window.currentUserRole||"").toLowerCase()!=="superadmin")return;
     if(target==="superadminPanel"){loadSuperadminAccounts();}
     if(target==="announcementAdminPanel"){const ap=$("announcementAdminPanel");if(ap)ap.style.display="block";loadAdminAnnouncements();}else{const ap=$("announcementAdminPanel");if(ap)ap.style.display="none";}
