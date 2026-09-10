@@ -1255,3 +1255,28 @@ qbSetStep(1,true);
   loadLearningCentre=async function(){await oldCentre();gsRenderCourseProgress()};
   window.addEventListener('storage',gsRefreshLearningProgress);
 })();
+
+/* ===== STUDENT LEARNING PROGRESS DASHBOARD ===== */
+(function(){
+  function renderStudentProgressDashboard(){
+    const panel=document.getElementById('gsStudentProgressPanel');
+    const grid=document.getElementById('gsStudentProgressGrid');
+    if(!panel||!grid)return;
+    const role=String(window.currentUserRole||currentStudentProfile?.role||'').toLowerCase();
+    panel.style.display=role==='student'?'block':'none';
+    if(role!=='student')return;
+    const courses=courseData.courses||[];
+    if(!courses.length){grid.innerHTML='<div class="gs-student-progress-card"><h3>No courses available yet</h3><p class="muted">Your tutor will publish courses here.</p></div>';return}
+    const published=(courseData.lessons||[]).filter(l=>String(l.status||'published').toLowerCase()==='published'||!l.status);
+    const store=(()=>{try{return JSON.parse(localStorage.getItem('gs_learning_progress_v1_'+(auth?.currentUser?.uid||'guest'))||'{}')}catch(e){return {}}})();
+    const pct=c=>{const ls=published.filter(l=>l.courseId===c.id);if(!ls.length)return 0;return Math.round(ls.filter(l=>store[l.id]).length/ls.length*100)};
+    grid.innerHTML=courses.map(c=>{const p=pct(c),ls=published.filter(l=>l.courseId===c.id);return '<article class="gs-student-progress-card"><h3>'+esc(c.name||'Course')+'</h3><div class="gs-student-progress-meta"><span>'+esc(c.category||'General')+'</span><b>'+p+'%</b></div><div class="gs-student-progress-track"><div class="gs-student-progress-fill" style="width:'+p+'%"></div></div><div class="gs-student-progress-meta" style="margin-top:7px"><span>'+ls.filter(l=>store[l.id]).length+' of '+ls.length+' lessons completed</span></div><button class="secondary-btn gs-progress-open" type="button" data-course-id="'+esc(c.id)+'">Open Course →</button></article>'}).join('');
+    grid.querySelectorAll('.gs-progress-open').forEach(b=>b.addEventListener('click',()=>{if(window.gsShowSection)window.gsShowSection('learningCentrePanel');setTimeout(()=>window.openLearningPath?.('course',b.dataset.courseId),80)}));
+  }
+  window.gsRenderStudentProgressDashboard=renderStudentProgressDashboard;
+  document.getElementById('gsContinueLearningBtn')?.addEventListener('click',()=>window.gsShowSection?.('learningCentrePanel'));
+  const old=window.gsRefreshLearningProgress;
+  window.gsRefreshLearningProgress=function(){old?.();renderStudentProgressDashboard()};
+  setTimeout(renderStudentProgressDashboard,300);
+  setInterval(renderStudentProgressDashboard,2000);
+})();

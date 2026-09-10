@@ -239,6 +239,9 @@ body.gs-nav-open{overflow:hidden!important}
 .gs-path-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}.gs-path-header .badge{margin:0}.gs-path-count{margin-left:auto;font-size:12px;color:#718096;font-weight:700}
 @media(max-width:600px){.gs-lesson-hero{padding:20px 16px}.lesson-body{padding:18px!important}.gs-lesson-actions{padding:15px 16px}.gs-next-btn{margin-left:0;width:100%}.gs-progress-wrap{margin-top:12px}}
 </style>
+<style id="gs-student-progress-dashboard">
+.student-progress-panel{background:linear-gradient(135deg,#071a33 0%,#102b4d 100%)!important;color:#fff!important;border-radius:22px!important;padding:22px!important;margin:18px 0!important;box-shadow:0 16px 38px rgba(7,26,51,.18)!important}.gs-student-progress-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}.gs-student-progress-head h2{margin:10px 0 5px;color:#fff!important}.gs-student-progress-head .muted{color:#d9e4f2!important}.gs-student-progress-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:18px}.gs-student-progress-card{background:#fff;color:#071a33;border-radius:17px;padding:16px;border:1px solid rgba(255,255,255,.25);box-shadow:0 8px 20px rgba(0,0,0,.12)}.gs-student-progress-card h3{margin:0 0 5px;font-size:16px}.gs-student-progress-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#667085}.gs-student-progress-track{height:9px;background:#e8edf4;border-radius:99px;overflow:hidden;margin-top:11px}.gs-student-progress-fill{height:100%;background:linear-gradient(90deg,#1769e0,#5b9bf4);border-radius:99px}.gs-student-progress-card button{margin-top:12px;width:100%}@media(max-width:700px){.gs-student-progress-head{display:block}.gs-student-progress-head .secondary-btn{width:100%;margin-top:12px}.student-progress-panel{padding:18px!important}}
+</style>
 </head><body><div id="gsNavOverlay" class="gs-nav-overlay" hidden></div>
 <aside id="gsSideNav" class="gs-side-nav" aria-label="Portal navigation" hidden>
   <div class="gs-nav-head"><div class="gs-nav-brand"><div class="gs-nav-logo">G</div><div><strong>GREAT STAND</strong><small>EDUCATIONAL CONSULT</small></div></div><button id="gsNavClose" class="gs-nav-close" type="button" aria-label="Close navigation">×</button></div>
@@ -257,6 +260,9 @@ body.gs-nav-open{overflow:hidden!important}
     <button class="quick-action" data-target="materialsPanel"><span>📚</span><b>Study Materials</b><small>View or download PDFs</small></button>
     <button class="quick-action" data-target="studentResultsPanel"><span>🏆</span><b>My Results</b><small>Check your performance</small></button>
   </div>
+</div><div id="gsStudentProgressPanel" class="student-progress-panel portal-section">
+  <div class="gs-student-progress-head"><div><span class="badge">KEEP LEARNING</span><h2>📊 Your Learning Progress</h2><p class="muted">Track the lessons you have completed and continue where you stopped.</p></div><button class="secondary-btn" type="button" id="gsContinueLearningBtn">Continue Learning →</button></div>
+  <div id="gsStudentProgressGrid" class="gs-student-progress-grid"><div class="learning-empty"><div>📚</div><h3>Loading progress...</h3></div></div>
 </div><div id="learningCentrePanel" class="panel portal-section learning-centre-panel">
   <div class="learning-head">
     <div><span class="badge">GREAT STAND LEARNING CENTRE</span><h2>📚 My Courses</h2><p class="muted">Your JAMB and WAEC learning space — subjects, notes, assignments and CBT tests in one place.</p></div>
