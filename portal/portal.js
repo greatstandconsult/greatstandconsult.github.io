@@ -873,7 +873,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
   function addItem(item){
     const [icon,label,target,sub]=item,btn=document.createElement("button");btn.type="button";btn.className="gs-nav-link";btn.dataset.target=target;
     btn.innerHTML='<span aria-hidden="true">'+icon+'</span><div class="gs-nav-copy"><b>'+label+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div>';
-    btn.addEventListener("click",()=>{if(target==="gsAchievementsPanel"&&typeof window.gsOpenAchievements==="function"){window.gsOpenAchievements()}else{showSection(target)}links.querySelectorAll(".gs-nav-link").forEach(x=>x.classList.remove("active"));btn.classList.add("active");closeNav()});links.appendChild(btn)
+    btn.addEventListener("click",()=>{showSection(target);links.querySelectorAll(".gs-nav-link").forEach(x=>x.classList.remove("active"));btn.classList.add("active");closeNav()});links.appendChild(btn)
   }
   function buildNav(){
     const role=String(window.currentUserRole||currentStudentProfile?.role||"student").trim().toLowerCase(),isSuper=role==="superadmin",isAdmin=role==="admin"||isSuper;
@@ -890,11 +890,42 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
     if(target==="gsAchievementsPanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){setTimeout(()=>window.gsRenderAchievements?.(),50);}
     if(target==="superadminPanel" && String(window.currentUserRole||"").toLowerCase()!=="superadmin")return;
     if(target==="superadminPanel"){loadSuperadminAccounts();}
+    if(target==="superadminPanel"){
+      if(dashboardView)dashboardView.classList.add("hidden");
+      allSections().forEach(el=>{if(el.id!=="superadminPanel")el.classList.add("gs-section-hidden");});
+      const sp=document.getElementById("superadminPanel");
+      if(sp){sp.classList.remove("gs-section-hidden","hidden");sp.style.display="block";}
+      window.scrollTo({top:0,behavior:"smooth"});
+      return;
+    }
     if(target==="announcementAdminPanel"){const ap=$("announcementAdminPanel");if(ap)ap.style.display="block";loadAdminAnnouncements();}else{const ap=$("announcementAdminPanel");if(ap)ap.style.display="none";}
-    if(target==="dashboardView"){allSections().forEach(el=>el.classList.add("gs-section-hidden"));window.scrollTo({top:0,behavior:"smooth"});return}
-    allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));const el=document.getElementById(target);if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)
+    if(target==="dashboardView"){
+      allSections().forEach(el=>el.classList.add("gs-section-hidden"));
+      if(dashboardView)dashboardView.classList.remove("hidden");
+      window.scrollTo({top:0,behavior:"smooth"});
+      return
+    }
+    if(dashboardView)dashboardView.classList.add("hidden");
+    allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));
+    const el=document.getElementById(target);
+    if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)
   }
   window.gsShowSection=showSection;window.gsBuildNav=buildNav;window.gsRefreshNavigation=buildNav;
+  // V34.2: dedicated achievements navigation handler.
+  document.addEventListener("click",function(e){
+    const btn=e.target.closest?.('.gs-nav-link[data-target="gsAchievementsPanel"]');
+    if(!btn)return;
+    const panel=document.getElementById("gsAchievementsPanel");
+    if(!panel)return;
+    setTimeout(()=>{
+      if(dashboardView)dashboardView.classList.add("hidden");
+      allSections().forEach(el=>{el.classList.add("gs-section-hidden");el.style.display="none";});
+      panel.classList.remove("gs-section-hidden","hidden");
+      panel.style.display="block";
+      window.gsRenderAchievements?.();
+      panel.scrollIntoView({behavior:"smooth",block:"start"});
+    },0);
+  },true);
   closeNav();
   document.addEventListener("DOMContentLoaded",()=>{buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))});
   let lastRole="";setInterval(()=>{const role=String(window.currentUserRole||"").trim().toLowerCase();if(role&&role!==lastRole){lastRole=role;buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))}},500);
@@ -1453,7 +1484,7 @@ qbSetStep(1,true);
 })();
 
 
-/* ===== V34 STUDENT ACHIEVEMENTS ===== */
+/* ===== V34.2 STUDENT ACHIEVEMENTS ===== */
 (function(){
   const panel=document.getElementById('gsAchievementsPanel');
   if(!panel)return;
@@ -1476,19 +1507,6 @@ qbSetStep(1,true);
     return {assignments,tests,average};
   }
   function badge(icon,title,desc,unlocked){return `<div class="gs-achievement-badge ${unlocked?'':'locked'}"><div class="icon">${icon}</div><b>${title}</b><small>${unlocked?desc:'Locked • '+desc}</small></div>`}
-  window.gsOpenAchievements=function(){
-    try{
-      const dashboard=document.getElementById('dashboardView');
-      document.querySelectorAll('.portal-section').forEach(el=>{if(el.id!=='gsAchievementsPanel')el.classList.add('gs-section-hidden');});
-      if(dashboard){dashboard.style.display='none';dashboard.classList.add('hidden');}
-      panel.style.display='block';
-      panel.classList.remove('gs-section-hidden','hidden');
-      panel.setAttribute('aria-hidden','false');
-      panel.scrollIntoView({behavior:'smooth',block:'start'});
-      setTimeout(()=>window.gsRenderAchievements?.(),40);
-    }catch(e){console.error('open achievements',e);}
-  };
-
   async function render(){
     const role=String(window.currentUserRole||currentStudentProfile?.role||'').toLowerCase();
     panel.style.display=role==='student'?'block':'none'; if(role!=='student')return;
@@ -1505,7 +1523,7 @@ qbSetStep(1,true);
   }
   window.gsRenderAchievements=render;
   const oldShow=window.gsShowSection;
-  window.gsShowSection=function(id){if(id==='gsAchievementsPanel'){window.gsOpenAchievements();return}oldShow?.(id)};
+  window.gsShowSection=function(id){oldShow?.(id);if(id==='gsAchievementsPanel')setTimeout(render,80)};
   setTimeout(render,700);
   setInterval(()=>{if(String(window.currentUserRole||'').toLowerCase()==='student'&&panel.style.display!=='none')render()},15000);
 })();
