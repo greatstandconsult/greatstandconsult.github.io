@@ -835,12 +835,18 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
   function showSection(target){
     if(target==="superadminPanel" && String(window.currentUserRole||"").toLowerCase()!=="superadmin")return;
     if(target==="superadminPanel"){loadSuperadminAccounts();}
-    if(target==="dashboardView"){allSections().forEach(el=>el.classList.add("gs-section-hidden"));window.scrollTo({top:0,behavior:"smooth"});return}
-    allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));const el=document.getElementById(target);if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)
+    allSections().forEach(el=>{
+      const active=el.id===target;
+      el.classList.toggle("gs-section-hidden",!active);
+      el.style.display=active?"block":"none";
+    });
+    if(target==="dashboardView"){window.scrollTo({top:0,behavior:"smooth"});return;}
+    const el=document.getElementById(target);
+    if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30);
   }
   window.gsShowSection=showSection;window.gsBuildNav=buildNav;window.gsRefreshNavigation=buildNav;
   closeNav();
-  document.addEventListener("DOMContentLoaded",()=>{buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))});
+  document.addEventListener("DOMContentLoaded",()=>{buildNav();allSections().forEach(el=>{el.classList.add("gs-section-hidden");el.style.display="none"})});
   let lastRole="";setInterval(()=>{const role=String(window.currentUserRole||"").trim().toLowerCase();if(role&&role!==lastRole){lastRole=role;buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))}},500);
 })();
 document.querySelectorAll(".quick-action").forEach(btn=>btn.addEventListener("click",()=>{if(window.gsShowSection)window.gsShowSection(btn.dataset.target)}));
