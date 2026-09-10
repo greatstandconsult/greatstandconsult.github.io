@@ -793,7 +793,8 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
       ["📝","Assignments","assignmentsPanel","View and submit assignments"],
       ["🧠","CBT / Tests","testsPanel","Take practice tests and get scored"],
       ["📚","Study Materials","materialsPanel","Access your study resources"],
-      ["🏆","My Results","studentResultsPanel","View your performance"]
+      ["🏆","My Results","studentResultsPanel","View your performance"],
+      ["🔔","Notifications","gsNotificationsPanel","See your latest updates"]
     ]}
   ];
   const adminGroups=[
@@ -809,7 +810,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
       ["📥","Student Submissions","submissionsAdminPanel","Review and mark submissions"]
     ]},
     {heading:"STUDENT VIEW",items:[
-      ["🎓","Learning Centre","learningCentrePanel"],["📖","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📚","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]
+      ["🎓","Learning Centre","learningCentrePanel"],["📖","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📚","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"],["🔔","Notifications","gsNotificationsPanel","See your latest updates"]
     ]}
   ];
   const superadminGroups=[
@@ -826,7 +827,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
       ["📥","Student Submissions","submissionsAdminPanel","Review and mark submissions"]
     ]},
     {heading:"STUDENT PORTAL VIEW",items:[
-      ["🎓","Learning Centre","learningCentrePanel"],["📖","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📚","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]
+      ["🎓","Learning Centre","learningCentrePanel"],["📖","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📚","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"],["🔔","Notifications","gsNotificationsPanel","See your latest updates"]
     ]}
   ];
 
@@ -859,6 +860,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
   }
   function allSections(){return Array.from(document.querySelectorAll(".portal-section"))}
   function showSection(target){
+    if(target==="gsNotificationsPanel" && String(window.currentUserRole||currentStudentProfile?.role||"").toLowerCase()==="student"){loadStudentNotifications();}
     if(target==="superadminPanel" && String(window.currentUserRole||"").toLowerCase()!=="superadmin")return;
     if(target==="superadminPanel"){loadSuperadminAccounts();}
     if(target==="dashboardView"){allSections().forEach(el=>el.classList.add("gs-section-hidden"));window.scrollTo({top:0,behavior:"smooth"});return}
