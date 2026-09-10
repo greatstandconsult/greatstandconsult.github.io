@@ -898,7 +898,12 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
       return
     }
     if(dashboardView)dashboardView.classList.add("hidden");
-    allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));
+    allSections().forEach(el=>{
+      const isTarget=el.id===target;
+      el.classList.toggle("gs-section-hidden",!isTarget);
+      el.style.display=isTarget?"":"none";
+      if(isTarget)el.classList.remove("hidden");
+    });
     const el=document.getElementById(target);
     if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)
   }
