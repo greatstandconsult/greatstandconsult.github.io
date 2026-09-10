@@ -1,4 +1,4 @@
-/* GREAT STAND PORTAL V38.1 - Course Builder + Real Tables */
+/* GREAT STAND PORTAL V27 - Course Builder Wizard */
 import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {createClient} from "https://esm.sh/@supabase/supabase-js@2"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const $=id=>document.getElementById(id),loginView=$("loginView"),dashboardView=$("dashboardView"),logoutBtn=$("logoutBtn"),adminPanel=$("adminPanel"),noteForm=$("noteForm"),notesList=$("notesList");
 const SUPABASE_URL="https://njwjjtxvckemejaezwtd.supabase.co";
@@ -1059,64 +1059,33 @@ $('qbInsertVideo')?.addEventListener('click',qbInsertVideo);
 // ===== V32 PASTE-FRIENDLY TABLE + CALCULATION BLOCKS =====
 function htmlEscText(v){return esc(String(v??''));}
 function linesToPreHtml(text){return htmlEscText(text).replace(/\n/g,'<br>');}
-function normalizeTableCell(text){
-  return String(text??'').replace(/\s+/g,' ').trim();
-}
-function splitTableRow(line){
-  let x=String(line??'').trim();
-  if(x.startsWith('|')) x=x.slice(1);
-  if(x.endsWith('|')) x=x.slice(0,-1);
-  // A table row must contain real pipe separators. Do not treat ordinary prose as a row.
-  if(!x.includes('|')) return [];
-  return x.split('|').map(normalizeTableCell);
-}
-function isTableSeparatorRow(row){
-  return Array.isArray(row) && row.length>=2 && row.every(c=>/^:?-{3,}:?$/.test(c));
-}
-function buildRealTable(rows){
-  if(!Array.isArray(rows)||rows.length<2)return '';
-  const parsed=rows.map(splitTableRow).filter(r=>r.length>=2);
-  if(parsed.length<2)return '';
-  const header=parsed[0];
-  const columnCount=header.length;
-  if(columnCount<2 || columnCount>12)return '';
-  let body=parsed.slice(1);
-  if(body.length && isTableSeparatorRow(body[0])) body=body.slice(1);
-  // Require every actual row to have the same number of columns.
-  // This prevents unrelated text from being swallowed into the table.
-  if(body.length && body.some(r=>r.length!==columnCount)) return '';
-  const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
-  const bodyHtml=body.map(r=>'<tr>'+r.map(c=>`<td>${htmlEscText(c)}</td>`).join('')+'</tr>').join('');
-  return `<div class="lesson-table-wrap"><table class="lesson-table">${head}<tbody>${bodyHtml}</tbody></table></div>`;
-}
 function parsePipeTable(lines){
-  return buildRealTable(lines);
+  const clean=lines.map(x=>String(x).trim()).filter(Boolean);
+  if(clean.length<2)return '';
+  let rows=clean.map(x=>x.replace(/^\||\|$/g,'').split('|').map(c=>c.trim()));
+  const isSep=r=>r.length>0 && r.every(c=>/^:?-{3,}:?$/.test(c));
+  let header=rows[0], body=rows.slice(1);
+  if(body.length && isSep(body[0])) body=body.slice(1);
+  if(header.length<2 || (!body.length && !isSep(rows[1]||[]))) return '';
+  const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
+  const bodyHtml=body.map(r=>'<tr>'+header.map((_,i)=>`<td>${htmlEscText(r[i]||'')}</td>`).join('')+'</tr>').join('');
+  return `<table class="lesson-table">${head}${bodyHtml?`<tbody>${bodyHtml}</tbody>`:''}</table>`;
 }
 function parseLooseTable(lines){
-  const clean=(lines||[]).map(x=>String(x).trim()).filter(Boolean);
+  const clean=lines.map(x=>String(x).trim()).filter(Boolean);
   if(clean.length<2)return '';
-  // Only explicit pipe/tab rows are eligible. Plain paragraphs are never included.
-  const candidates=clean.filter(x=>x.includes('|')||x.includes('\t'));
-  if(candidates.length<2)return '';
-  const pipeRows=candidates.map(x=>x.includes('|')?splitTableRow(x):x.split(/\t+/).map(normalizeTableCell));
-  if(pipeRows.length<2)return '';
-  const header=pipeRows[0];
-  if(header.length<2||header.length>12)return '';
-  let body=pipeRows.slice(1);
-  if(body.length&&isTableSeparatorRow(body[0]))body=body.slice(1);
-  if(body.length&&body.some(r=>r.length!==header.length))return '';
+  // Accept pipe, tab or multiple-space columns. This makes pasted AI tables work even
+  // after a mobile browser has converted the original markdown table into plain text.
+  let rows=clean.map(x=>x.replace(/^\||\|$/g,'').split(/\s*\|\s*|\t+/).map(c=>c.trim()).filter(Boolean));
+  const width=Math.max(...rows.map(r=>r.length));
+  if(width<2)return '';
+  rows=rows.map(r=>Array.from({length:width},(_,i)=>r[i]||''));
+  const looksSep=r=>r.every(c=>/^:?-{3,}:?$/.test(c));
+  if(!looksSep(rows[1]) && !clean.some(x=>x.includes('|')))return '';
+  const header=rows[0], body=looksSep(rows[1])?rows.slice(2):rows.slice(1);
   const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
-  const bodyHtml=body.map(r=>'<tr>'+r.map(c=>`<td>${htmlEscText(c)}</td>`).join('')+'</tr>').join('');
-  return `<div class="lesson-table-wrap"><table class="lesson-table">${head}<tbody>${bodyHtml}</tbody></table></div>`;
-}
-function parseExplicitTableBlock(lines){
-  // [table] is authoritative: only the lines inside the markers belong to the table.
-  const raw=(lines||[]).map(x=>String(x).trim());
-  while(raw.length && !raw[0])raw.shift();
-  while(raw.length && !raw[raw.length-1])raw.pop();
-  if(raw.length<2)return {html:'',rest:raw};
-  const html=parseLooseTable(raw);
-  return {html,rest:[]};
+  const bodyHtml=body.map(r=>'<tr>'+header.map((_,i)=>`<td>${htmlEscText(r[i]||'')}</td>`).join('')+'</tr>').join('');
+  return `<table class="lesson-table">${head}<tbody>${bodyHtml}</tbody></table>`;
 }
 function aiInlineFormat(text){
   let s=htmlEscText(String(text??''));
@@ -1170,35 +1139,10 @@ function formatAiLessonText(text){
   while(i<lines.length){
     const raw=lines[i], t=raw.trim();
     if(/^\[table\]/i.test(t)){
-      flush();
-      let block=[];
-      const first=t.replace(/^\[table\]/i,'').trim();
-      const closeSame=first.search(/\[\/table\]/i);
-      if(closeSame>=0){
-        const inside=first.slice(0,closeSame).trim();
-        if(inside)block.push(inside);
-        const after=first.slice(closeSame+8).trim();
-        if(after)plain.push(after);
-        i++;
-      }else{
-        if(first)block.push(first);
-        i++;
-        while(i<lines.length&&!/^\[\/table\]/i.test(lines[i].trim())){
-          block.push(lines[i]);
-          i++;
-        }
-        if(i<lines.length){
-          const closingLine=lines[i].trim();
-          const after=closingLine.replace(/^\[\/table\]/i,'').trim();
-          if(after)plain.push(after);
-          i++;
-        }
-      }
-      const parsed=parseExplicitTableBlock(block);
-      out+=parsed.html||`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`;
-      if(parsed.rest.length)plain.push(...parsed.rest);
-      firstContentSeen=true;
-      continue;
+      flush(); let inline=t.replace(/^\[table\]/i,'').replace(/\[\/table\].*$/i,'').trim(); let block=[]; if(inline)block.push(inline); i++;
+      while(i<lines.length&&!/^\[\/table\]/i.test(lines[i].trim())){block.push(lines[i]);i++;}
+      if(i<lines.length)i++;
+      out+=parseLooseTable(block)||`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`; firstContentSeen=true; continue;
     }
     if(/^\[calc\]/i.test(t)){
       flush(); let block=[]; i++;
@@ -1213,12 +1157,8 @@ function formatAiLessonText(text){
       out+=`<div class="answer-block"><b>Answer</b><div>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</div></div>`; firstContentSeen=true; continue;
     }
     if(/^\s*\|.*\|\s*$/.test(raw) && i+1<lines.length){
-      let j=i, block=[];
-      while(j<lines.length && /^\s*\|.*\|\s*$/.test(lines[j])){block.push(lines[j]);j++;}
-      if(block.length>=2){
-        const table=parsePipeTable(block);
-        if(table){flush();out+=table;firstContentSeen=true;i=j;continue;}
-      }
+      let j=i, block=[]; while(j<lines.length && /^\s*\|.*\|\s*$/.test(lines[j])){block.push(lines[j]);j++;}
+      if(block.length>=2){const table=parseLooseTable(block);if(table){flush();out+=table;firstContentSeen=true;i=j;continue;}}
     }
     if(/^#{1,3}\s+/.test(t)){flush();const m=t.match(/^(#{1,3})\s+(.+)$/);const tag=m[1].length===1?'h2':m[1].length===2?'h3':'h4';out+=`<${tag}>${aiInlineFormat(m[2])}</${tag}>`;firstContentSeen=true;i++;continue;}
     if(i+1<lines.length && /^(?:\s*[-_=]{4,}\s*)$/.test(lines[i+1]) && t){
@@ -1253,9 +1193,9 @@ $('qbLessonContent')?.addEventListener('paste',pasteAsRawAiLesson);
 function qbInsertTable(){
   const r=parseInt(prompt('Number of rows?','4')||'4',10), c=parseInt(prompt('Number of columns?','2')||'2',10);
   if(!Number.isFinite(r)||!Number.isFinite(c)||r<1||c<1||r>20||c>10)return;
-  let h='<div class=\"lesson-table-wrap\"><table class=\"lesson-table\"><tbody>';
+  let h='<table><tbody>';
   for(let y=0;y<r;y++){h+='<tr>';for(let x=0;x<c;x++)h+=`<td>${y===0?'Header':''}</td>`;h+='</tr>'}
-  h+='</tbody></table></div><p><br></p>'; qbInsertHtml(h);
+  h+='</tbody></table><p><br></p>'; qbInsertHtml(h);
 }
 function qbInsertCalc(){qbInsertHtml('<div class="calc-block"><pre>Write your calculation here...\n------------------------------\nAnswer = </pre></div><p><br></p>');}
 function qbInsertAnswer(){qbInsertHtml('<div class="answer-block"><b>Answer</b><div>Write the final answer here.</div></div><p><br></p>');}
@@ -1290,206 +1230,3 @@ $('qbRefresh')?.addEventListener('click',qbReload);
 const _v25RenderCourseAdminList=renderCourseAdminList;renderCourseAdminList=function(){renderCourseAdminListV27()};
 const _v25LoadCourseStructure=loadCourseStructure;loadCourseStructure=async function(){await _v25LoadCourseStructure();refreshQuickBuilder();renderCourseAdminListV27()};
 qbSetStep(1,true);
-
-
-
-/* ===== GREAT STAND PORTAL V41 — DETERMINISTIC TABLE FORMATTER ===== */
-(function(){
-  function gsEsc(s){
-    return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-  }
-
-  function gsInline(s){
-    let x=gsEsc(s);
-    x=x.replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>");
-    x=x.replace(/__(.+?)__/g,"<u>$1</u>");
-    x=x.replace(/\*([^*\n]+?)\*/g,"<em>$1</em>");
-    x=x.replace(/`([^`\n]+?)`/g,"<code>$1</code>");
-    return x;
-  }
-
-  function gsTableBlock(raw){
-    const lines=String(raw).replace(/\r/g,"").split("\n");
-    const rows=[];
-    for(const line of lines){
-      const s=line.trim();
-      if(!s) continue;
-      // A separator row such as |---|---| is not data.
-      if(/^\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)+\|?$/.test(s)) continue;
-      if(!s.includes("|")) continue;
-
-      let cells=s;
-      if(cells.startsWith("|")) cells=cells.slice(1);
-      if(cells.endsWith("|")) cells=cells.slice(0,-1);
-
-      const parts=cells.split("|").map(v=>v.trim());
-      if(parts.length<2) continue;
-      rows.push(parts);
-    }
-
-    if(!rows.length) return "";
-
-    const width=Math.max(...rows.map(r=>r.length));
-    const normalized=rows.map(r=>{
-      const a=r.slice(0,width);
-      while(a.length<width) a.push("");
-      return a;
-    });
-
-    const head=normalized[0];
-    const body=normalized.slice(1);
-
-    let html='<div class="lesson-table-wrap"><table class="lesson-table"><thead><tr>';
-    for(const c of head) html+='<th>'+gsInline(c)+'</th>';
-    html+='</tr></thead>';
-
-    if(body.length){
-      html+='<tbody>';
-      for(const row of body){
-        html+='<tr>';
-        for(const c of row) html+='<td>'+gsInline(c)+'</td>';
-        html+='</tr>';
-      }
-      html+='</tbody>';
-    }
-    html+='</table></div>';
-    return html;
-  }
-
-  // Expose a dedicated deterministic converter.
-  window.gsV41TableBlock=gsTableBlock;
-
-  // Convert only explicit [table] blocks. This prevents unrelated lesson text
-  // from ever being absorbed into a table.
-  window.gsV41FormatTables=function(input){
-    let out="", pos=0;
-    const src=String(input ?? "");
-    const re=/\[table\]([\s\S]*?)\[\/table\]/gi;
-    let m;
-    while((m=re.exec(src))){
-      out+=src.slice(pos,m.index);
-      out+=gsTableBlock(m[1]) || m[0];
-      pos=re.lastIndex;
-    }
-    out+=src.slice(pos);
-    return out;
-  };
-
-  // Repair Format AI Note / save paths without replacing the rest of the formatter:
-  // if an existing formatter exists, wrap its output through the explicit table
-  // converter so tables are rendered first and are never extended to later text.
-  if(typeof window.formatAiLessonText==="function"){
-    const old=window.formatAiLessonText;
-    window.formatAiLessonText=function(input){
-      const marked=String(input ?? "");
-      const converted=window.gsV41FormatTables(marked);
-      // If the converter created HTML tables, preserve them and let the old
-      // formatter handle only the remaining non-table text.
-      if(converted!==marked && converted.includes('class="lesson-table"')){
-        const token=[];
-        const protectedText=converted.replace(
-          /<div class="lesson-table-wrap">[\s\S]*?<\/div>/gi,
-          h=>{const i=token.push(h)-1;return "\n@@GSTABLE"+i+"@@\n";}
-        );
-        const rest=old(protectedText);
-        return rest.replace(/@@GSTABLE(\d+)@@/g,(_,i)=>token[Number(i)]);
-      }
-      return old(marked);
-    };
-  }
-
-  // Also expose a paste-safe conversion hook for future use.
-  window.gsV41PasteTable=function(text){
-    return window.gsV41FormatTables(text);
-  };
-})();
-
-
-
-/* ===== V42 VISUAL TABLE BUILDER ===== */
-(function(){
-  const editor = document.getElementById("qbLessonContent");
-  const btn = document.getElementById("qbVisualTable");
-  if(!editor || !btn) return;
-
-  function insertHtmlAtCursor(h){
-    editor.focus();
-    const sel=window.getSelection();
-    if(!sel || !sel.rangeCount){ editor.insertAdjacentHTML("beforeend",h); return; }
-    const r=sel.getRangeAt(0);
-    r.deleteContents();
-    const frag=r.createContextualFragment(h);
-    r.insertNode(frag);
-    r.collapse(false);
-    sel.removeAllRanges(); sel.addRange(r);
-  }
-
-  function makeTable(rows,cols){
-    rows=Math.max(1,Math.min(50,parseInt(rows,10)||2));
-    cols=Math.max(1,Math.min(20,parseInt(cols,10)||2));
-    let h='<div class="gs-tb-grid-wrap"><table class="gs-tb-grid"><thead><tr>';
-    for(let c=0;c<cols;c++) h+='<th contenteditable="true">Heading '+(c+1)+'</th>';
-    h+='</tr></thead><tbody>';
-    for(let r=0;r<rows-1;r++){
-      h+='<tr>';
-      for(let c=0;c<cols;c++) h+='<td contenteditable="true"> </td>';
-      h+='</tr>';
-    }
-    h+='</tbody></table></div>';
-    insertHtmlAtCursor(h);
-  }
-
-  btn.addEventListener("click",()=>{
-    const cols=prompt("How many columns?","2");
-    if(cols===null)return;
-    const rows=prompt("How many rows?","3");
-    if(rows===null)return;
-    makeTable(rows,cols);
-  });
-
-  // Convert a pasted plain-text pipe table into a real HTML table, but ONLY when
-  // there are at least two consecutive pipe-separated rows.
-  editor.addEventListener("paste",e=>{
-    const text=e.clipboardData?.getData("text/plain");
-    if(!text || !text.includes("|")) return;
-    const lines=text.replace(/\r/g,"").split("\n").map(x=>x.trim()).filter(Boolean);
-    const pipeLines=lines.filter(x=>x.includes("|"));
-    if(pipeLines.length<2) return;
-
-    const rows=pipeLines.map(line=>{
-      let s=line;
-      if(s.startsWith("|"))s=s.slice(1);
-      if(s.endsWith("|"))s=s.slice(0,-1);
-      return s.split("|").map(x=>x.trim());
-    }).filter(r=>r.length>=2);
-
-    if(rows.length<2)return;
-
-    // Ignore Markdown separator rows.
-    const data=rows.filter((r,i)=>{
-      if(i===0)return true;
-      return !r.every(c=>/^:?-{2,}:?$/.test(c));
-    });
-    if(data.length<2)return;
-
-    e.preventDefault();
-
-    const width=Math.max(...data.map(r=>r.length));
-    let h='<div class="gs-tb-grid-wrap"><table class="gs-tb-grid"><thead><tr>';
-    for(let c=0;c<width;c++)h+='<th contenteditable="true">'+escapeHtml(data[0][c]||"")+'</th>';
-    h+='</tr></thead><tbody>';
-    for(let r=1;r<data.length;r++){
-      h+='<tr>';
-      for(let c=0;c<width;c++)h+='<td contenteditable="true">'+escapeHtml(data[r][c]||"")+'</td>';
-      h+='</tr>';
-    }
-    h+='</tbody></table></div>';
-    insertHtmlAtCursor(h);
-  });
-
-  function escapeHtml(s){
-    return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-  }
-})();
