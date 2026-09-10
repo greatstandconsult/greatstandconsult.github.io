@@ -835,18 +835,12 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
   function showSection(target){
     if(target==="superadminPanel" && String(window.currentUserRole||"").toLowerCase()!=="superadmin")return;
     if(target==="superadminPanel"){loadSuperadminAccounts();}
-    allSections().forEach(el=>{
-      const active=el.id===target;
-      el.classList.toggle("gs-section-hidden",!active);
-      el.style.display=active?"block":"none";
-    });
-    if(target==="dashboardView"){window.scrollTo({top:0,behavior:"smooth"});return;}
-    const el=document.getElementById(target);
-    if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30);
+    if(target==="dashboardView"){allSections().forEach(el=>el.classList.add("gs-section-hidden"));window.scrollTo({top:0,behavior:"smooth"});return}
+    allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));const el=document.getElementById(target);if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)
   }
   window.gsShowSection=showSection;window.gsBuildNav=buildNav;window.gsRefreshNavigation=buildNav;
   closeNav();
-  document.addEventListener("DOMContentLoaded",()=>{buildNav();allSections().forEach(el=>{el.classList.add("gs-section-hidden");el.style.display="none"})});
+  document.addEventListener("DOMContentLoaded",()=>{buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))});
   let lastRole="";setInterval(()=>{const role=String(window.currentUserRole||"").trim().toLowerCase();if(role&&role!==lastRole){lastRole=role;buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))}},500);
 })();
 document.querySelectorAll(".quick-action").forEach(btn=>btn.addEventListener("click",()=>{if(window.gsShowSection)window.gsShowSection(btn.dataset.target)}));
@@ -872,48 +866,6 @@ async function loadSuperadminAccounts(){
   }catch(e){console.error(e);list.innerHTML='<p class="message">Could not load administrative accounts: '+esc(e.code||e.message)+'</p>'}
 }
 $("refreshAdminsBtn")?.addEventListener("click",loadSuperadminAccounts);
-
-// ===== SUPERADMIN: CREATE ADMIN ACCOUNT =====
-const adminForm=$("adminForm"),adminMessage=$("adminMessage");
-adminForm?.addEventListener("submit",async e=>{
-  e.preventDefault();
-  if(String(window.currentUserRole||"").toLowerCase()!=="superadmin"||!auth.currentUser){if(adminMessage)adminMessage.textContent="Only the Superadmin can create admin accounts.";return;}
-  const name=$("adminName").value.trim(),email=$("adminEmail").value.trim(),password=$("adminPassword").value;
-  if(!name||!email||password.length<6){if(adminMessage)adminMessage.textContent="Enter the admin name, a valid email, and a password of at least 6 characters.";return;}
-  const submit=adminForm.querySelector('button[type="submit"]');
-  if(submit)submit.disabled=true;
-  if(adminMessage){adminMessage.className="message";adminMessage.textContent="Creating admin account...";}
-  try{
-    // Create the new Firebase Authentication account through the Identity Toolkit REST API.
-    // This keeps the current Superadmin session intact and avoids switching the browser's auth user.
-    const apiKey=firebaseConfigForStudentCreation.apiKey;
-    const resp=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${encodeURIComponent(apiKey)}`,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({email,password,returnSecureToken:false})
-    });
-    const data=await resp.json();
-    if(!resp.ok){
-      const code=data?.error?.message||"AUTH_ERROR";
-      const friendly={
-        EMAIL_EXISTS:"That email is already registered.",
-        INVALID_EMAIL:"Enter a valid email address.",
-        WEAK_PASSWORD:"Password must be at least 6 characters.",
-        OPERATION_NOT_ALLOWED:"Email/password sign-up is not enabled in Firebase Authentication."
-      }[code]||code;
-      throw new Error(friendly);
-    }
-    const uid=data.localId;
-    if(!uid)throw new Error("Firebase did not return a user ID.");
-    await setDoc(doc(db,"users",uid),{name,email,role:"admin",active:true,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
-    adminForm.reset();
-    if(adminMessage){adminMessage.className="message submission-success";adminMessage.textContent="Admin account created successfully ✅";}
-    await loadSuperadminAccounts();
-  }catch(e){
-    console.error(e);
-    if(adminMessage){adminMessage.className="message submission-error";adminMessage.textContent="Could not create admin: "+(e.code||e.message);}
-  }finally{if(submit)submit.disabled=false;}
-});
 
 // ===== V25 COURSE → SUBJECT → TOPIC → LESSON LEARNING SYSTEM =====
 const courseAdminPanel=$('courseAdminPanel'), courseForm=$('courseForm'), subjectForm=$('subjectForm'), topicForm=$('topicForm'), lessonForm=$('lessonForm');
@@ -1211,3 +1163,95 @@ const _v25LoadCourseStructure=loadCourseStructure;loadCourseStructure=async func
 qbSetStep(1,true);
 
 
+
+
+/* ===== V37 STUDENT LESSON VIEWER + LOCAL LEARNING PROGRESS =====
+   This layer is intentionally self-contained: it does not alter Firebase
+   data or existing admin/course-builder behavior. Progress is stored locally
+   per signed-in user so no Firestore rule change is required. */
+(function(){
+  const GS_PROGRESS_PREFIX='gs_learning_progress_v1_';
+  function gsProgressKey(){return GS_PROGRESS_PREFIX+(auth?.currentUser?.uid||'guest')}
+  function gsGetProgress(){
+    try{return JSON.parse(localStorage.getItem(gsProgressKey())||'{}')}catch(e){return {}}
+  }
+  function gsSaveProgress(obj){try{localStorage.setItem(gsProgressKey(),JSON.stringify(obj||{}))}catch(e){}}
+  function gsCompleted(id){return !!gsGetProgress()[id]}
+  function gsSetCompleted(id,value){const p=gsGetProgress();if(value)p[id]=true;else delete p[id];gsSaveProgress(p)}
+  function gsPublished(){return courseData.lessons.filter(l=>String(l.status||'published').toLowerCase()==='published'||!l.status)}
+  function gsCourseLessons(courseId){return gsPublished().filter(l=>l.courseId===courseId)}
+  function gsPct(courseId){const all=gsCourseLessons(courseId);if(!all.length)return 0;const done=all.filter(l=>gsCompleted(l.id)).length;return Math.round(done/all.length*100)}
+  function gsFindCourseForLesson(l){
+    const t=courseData.topics.find(x=>x.id===l?.topicId), s=courseData.subjects.find(x=>x.id===t?.subjectId);
+    return courseData.courses.find(x=>x.id===s?.courseId || x.id===l?.courseId);
+  }
+  function gsNextLesson(l){
+    if(!l)return null;
+    const list=gsPublished();
+    const sameTopic=list.filter(x=>x.topicId===l.topicId);
+    let i=sameTopic.findIndex(x=>x.id===l.id); if(i>=0&&sameTopic[i+1])return sameTopic[i+1];
+    const c=gsFindCourseForLesson(l); if(!c)return null;
+    const all=gsCourseLessons(c.id); i=all.findIndex(x=>x.id===l.id); return i>=0?all[i+1]||null:null;
+  }
+  function gsCoursePosition(l){
+    const c=gsFindCourseForLesson(l), all=c?gsCourseLessons(c.id):[]; const i=all.findIndex(x=>x.id===l?.id);
+    return {course:c,total:all.length,index:i<0?1:i+1}
+  }
+  function gsRenderCourseProgress(){
+    document.querySelectorAll('#learningCourseGrid [data-course-id]').forEach(btn=>{
+      const card=btn.closest('.learning-course-card'); const id=btn.dataset.courseId; if(!card||!id)return;
+      const pct=gsPct(id), total=gsCourseLessons(id).length, done=gsCourseLessons(id).filter(l=>gsCompleted(l.id)).length;
+      let box=card.querySelector('.gs-progress-wrap');
+      if(!box){box=document.createElement('div');box.className='gs-progress-wrap';btn.closest('.course-actions')?.before(box)}
+      box.innerHTML=`<div class="gs-progress-top"><span>Learning progress</span><span class="gs-progress-percent">${pct}%</span></div><div class="gs-progress-track"><div class="gs-progress-fill" style="width:${pct}%"></div></div><div class="gs-progress-note">${done} of ${total} lesson${total===1?'':'s'} completed</div>`;
+    });
+  }
+  function gsRenderPathCards(rows,type){
+    if(!rows.length){learningPathContent.innerHTML=`<div class="learning-empty"><div>📚</div><h3>No ${type}s yet</h3><p class="muted">Your tutor will add content here.</p></div>`;return}
+    if(type==='lesson'){
+      const topic=rows.length?courseData.topics.find(t=>t.id===rows[0].topicId):null;
+      const subject=courseData.subjects.find(s=>s.id===topic?.subjectId), course=courseData.courses.find(c=>c.id===subject?.courseId);
+      const pct=course?gsPct(course.id):0, done=course?gsCourseLessons(course.id).filter(l=>gsCompleted(l.id)).length:0, total=course?gsCourseLessons(course.id).length:rows.length;
+      learningPathContent.innerHTML=`<div class="gs-path-header"><span class="badge">LESSON CENTRE</span><span class="gs-path-count">${done}/${total} completed • ${pct}%</span></div><div class="gs-progress-wrap"><div class="gs-progress-top"><span>${esc(course?.name||'Your course')}</span><span class="gs-progress-percent">${pct}%</span></div><div class="gs-progress-track"><div class="gs-progress-fill" style="width:${pct}%"></div></div></div>`+
+        rows.map((x,i)=>`<button class="path-card" type="button" data-id="${esc(x.id)}" data-type="lesson" style="position:relative;z-index:20;pointer-events:auto;cursor:pointer;"><span>${gsCompleted(x.id)?'✅':'📖'}</span><div><b>${esc(x.title||'Untitled Lesson')}</b><small>${gsCompleted(x.id)?'Completed':'Start lesson'}${i===0?' • First lesson':''}</small></div><strong>›</strong></button>`).join('');
+    }else{
+      learningPathContent.innerHTML=rows.map(x=>{const count=type==='subject'?courseData.topics.filter(t=>t.subjectId===x.id).length:type==='topic'?gsPublished().filter(l=>l.topicId===x.id).length:0;return `<button class="path-card" type="button" data-id="${esc(x.id)}" data-type="${esc(type)}" style="position:relative;z-index:20;pointer-events:auto;cursor:pointer;"><span>${type==='subject'?'📘':'📌'}</span><div><b>${esc(x.name||x.title)}</b><small>${count} ${type==='subject'?'topics':'lessons'}</small></div><strong>›</strong></button>`}).join('');
+    }
+    learningPathContent.querySelectorAll('.path-card').forEach(b=>b.onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();openLearningPath(b.dataset.type,b.dataset.id)});
+  }
+  function gsOpenLearningPath(type,id){
+    learningTrail.push({type,id});
+    const c=courseData.courses.find(x=>x.id===id), s=courseData.subjects.find(x=>x.id===id), t=courseData.topics.find(x=>x.id===id), l=courseData.lessons.find(x=>x.id===id);
+    if(type==='course'){
+      learningPathTitle.textContent=c?.name||'Course';learningPathSubtitle.textContent='Choose a subject';gsRenderPathCards(courseData.subjects.filter(x=>x.courseId===id),'subject');
+    }else if(type==='subject'){
+      learningPathTitle.textContent=s?.name||'Subject';learningPathSubtitle.textContent='Choose a topic';gsRenderPathCards(courseData.topics.filter(x=>x.subjectId===id),'topic');
+    }else if(type==='topic'){
+      learningPathTitle.textContent=t?.name||'Topic';learningPathSubtitle.textContent='Choose a lesson';gsRenderPathCards(gsPublished().filter(x=>x.topicId===id),'lesson');
+    }else if(type==='lesson'){
+      const pos=gsCoursePosition(l), pct=pos.course?gsPct(pos.course.id):0, done=gsCompleted(l?.id), next=gsNextLesson(l);
+      const lessonHtml=String(l?.contentFormat||'').toLowerCase()==='html'?sanitizeRichHtml(l?.content||''):esc(l?.content||'').replace(/\n/g,'<br>');
+      learningPathTitle.textContent=l?.title||'Lesson';learningPathSubtitle.textContent=pos.course?.name||'Lesson';
+      learningPathContent.innerHTML=`<article class="lesson-view"><div class="gs-lesson-hero"><div class="lesson-badge">LESSON ${pos.index} OF ${pos.total||1}</div><h2 style="margin:0;color:#fff">${esc(l?.title||'Lesson')}</h2><div class="gs-lesson-meta"><span>📚 ${esc(pos.course?.name||'Learning')}</span><span>${done?'✅ Completed':'▶ In progress'}</span></div></div><div class="gs-lesson-progress"><div class="gs-progress-top"><span>Course progress</span><span class="gs-progress-percent">${pct}%</span></div><div class="gs-progress-track"><div class="gs-progress-fill" style="width:${pct}%"></div></div></div><div class="lesson-body">${lessonHtml}</div>${l?.pdfUrl?`<div class="lesson-file-actions"><a class="primary-btn" href="${esc(l.pdfUrl)}" target="_blank" rel="noopener">📖 View PDF</a><a class="secondary-btn" href="${esc(l.pdfUrl)}" download>⬇️ Download PDF</a></div>`:''}<div class="gs-lesson-actions"><button type="button" class="primary-btn gs-complete-btn ${done?'completed':''}" id="gsCompleteLesson">${done?'✓ Completed':'✓ Mark as Completed'}</button>${next?`<button type="button" class="secondary-btn gs-next-btn" id="gsNextLesson">Next Lesson →</button>`:''}<div class="gs-lesson-footnote">Your progress is saved on this device for your account. You can change the completion status anytime.</div></div></article>`;
+      $('gsCompleteLesson')?.addEventListener('click',()=>{gsSetCompleted(l.id,!gsCompleted(l.id));gsOpenLearningPath('lesson',l.id);learningTrail.pop();if(window.gsRefreshLearningProgress)window.gsRefreshLearningProgress()});
+      $('gsNextLesson')?.addEventListener('click',()=>{if(next)gsOpenLearningPath('lesson',next.id)});
+    }
+    learningPathPanel?.classList.remove('hidden','gs-section-hidden');learningPathPanel?.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function gsRefreshLearningProgress(){gsRenderCourseProgress()}
+  window.gsRefreshLearningProgress=gsRefreshLearningProgress;
+  // Override only the learning viewer functions. Admin builder and Firebase writes remain untouched.
+  window.openLearningPath=gsOpenLearningPath;
+  openLearningPath=gsOpenLearningPath;
+  window.renderPathCards=gsRenderPathCards;
+  renderPathCards=gsRenderPathCards;
+  const oldRender=renderLearningCoursesV25;
+  renderLearningCoursesV25=function(){oldRender();gsRenderCourseProgress()};
+  // Refresh after the existing async course loader finishes.
+  const oldLoad=loadCourseStructure;
+  loadCourseStructure=async function(){await oldLoad();gsRenderCourseProgress()};
+  // Keep progress visible after normal Learning Centre refreshes.
+  const oldCentre=loadLearningCentre;
+  loadLearningCentre=async function(){await oldCentre();gsRenderCourseProgress()};
+  window.addEventListener('storage',gsRefreshLearningProgress);
+})();
