@@ -196,7 +196,7 @@ assignmentForm.addEventListener("submit",async e=>{
 // ===== CBT / TEST SYSTEM (V14) =====
 const testAdminPanel=$('testAdminPanel'),testForm=$('testForm'),questionBuilder=$('questionBuilder'),testsList=$('testsList'),testModal=$('testModal');
 function isAdminRole(){const r=String(window.currentUserRole||"student").trim().toLowerCase();return r==="admin"||r==="superadmin";}
-function setAdminPanelsVisible(show){["adminPanel","assignmentAdminPanel","testAdminPanel","studentAdminPanel","submissionsAdminPanel","testResultsAdminPanel","materialsAdminPanel","courseAdminPanel","superadminPanel"].forEach(id=>{const el=$(id);if(el)el.style.display=show?"block":"none";});}
+function setAdminPanelsVisible(show){["adminPanel","assignmentAdminPanel","testAdminPanel","studentAdminPanel","submissionsAdminPanel","testResultsAdminPanel","materialsAdminPanel","courseAdminPanel"].forEach(id=>{const el=$(id);if(el)el.style.display=show?"block":"none";});}
 setAdminPanelsVisible(false);
 let questionCount=0,currentTest=null,currentQuestionIndex=0,testAnswers=[],testTimerInterval=null,testAutoSubmitTimeout=null,testSecondsLeft=0;
 function addQuestion(){
@@ -873,7 +873,7 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
   function addItem(item){
     const [icon,label,target,sub]=item,btn=document.createElement("button");btn.type="button";btn.className="gs-nav-link";btn.dataset.target=target;
     btn.innerHTML='<span aria-hidden="true">'+icon+'</span><div class="gs-nav-copy"><b>'+label+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div>';
-    btn.addEventListener("click",()=>{showSection(target);links.querySelectorAll(".gs-nav-link").forEach(x=>x.classList.remove("active"));btn.classList.add("active");closeNav()});links.appendChild(btn)
+    btn.addEventListener("click",()=>{if(target==="gsAchievementsPanel"&&typeof window.gsOpenAchievements==="function"){window.gsOpenAchievements()}else{showSection(target)}links.querySelectorAll(".gs-nav-link").forEach(x=>x.classList.remove("active"));btn.classList.add("active");closeNav()});links.appendChild(btn)
   }
   function buildNav(){
     const role=String(window.currentUserRole||currentStudentProfile?.role||"student").trim().toLowerCase(),isSuper=role==="superadmin",isAdmin=role==="admin"||isSuper;
@@ -891,33 +891,10 @@ $('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
     if(target==="superadminPanel" && String(window.currentUserRole||"").toLowerCase()!=="superadmin")return;
     if(target==="superadminPanel"){loadSuperadminAccounts();}
     if(target==="announcementAdminPanel"){const ap=$("announcementAdminPanel");if(ap)ap.style.display="block";loadAdminAnnouncements();}else{const ap=$("announcementAdminPanel");if(ap)ap.style.display="none";}
-    if(target==="dashboardView"){
-      allSections().forEach(el=>el.classList.add("gs-section-hidden"));
-      if(dashboardView)dashboardView.classList.remove("hidden");
-      window.scrollTo({top:0,behavior:"smooth"});
-      return
-    }
-    if(dashboardView)dashboardView.classList.add("hidden");
-    allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));
-    const el=document.getElementById(target);
-    if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)
+    if(target==="dashboardView"){allSections().forEach(el=>el.classList.add("gs-section-hidden"));window.scrollTo({top:0,behavior:"smooth"});return}
+    allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));const el=document.getElementById(target);if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)
   }
   window.gsShowSection=showSection;window.gsBuildNav=buildNav;window.gsRefreshNavigation=buildNav;
-  // V34.2: dedicated achievements navigation handler.
-  document.addEventListener("click",function(e){
-    const btn=e.target.closest?.('.gs-nav-link[data-target="gsAchievementsPanel"]');
-    if(!btn)return;
-    const panel=document.getElementById("gsAchievementsPanel");
-    if(!panel)return;
-    setTimeout(()=>{
-      if(dashboardView)dashboardView.classList.add("hidden");
-      allSections().forEach(el=>{el.classList.add("gs-section-hidden");el.style.display="none";});
-      panel.classList.remove("gs-section-hidden","hidden");
-      panel.style.display="block";
-      window.gsRenderAchievements?.();
-      panel.scrollIntoView({behavior:"smooth",block:"start"});
-    },0);
-  },true);
   closeNav();
   document.addEventListener("DOMContentLoaded",()=>{buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))});
   let lastRole="";setInterval(()=>{const role=String(window.currentUserRole||"").trim().toLowerCase();if(role&&role!==lastRole){lastRole=role;buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))}},500);
@@ -993,7 +970,7 @@ function setupStudentProfileEditor(){
 }
 setupStudentProfileEditor();
 
-// ===== V35.0 SUPERADMIN CONTROL CENTER =====
+// ===== SUPERADMIN-ONLY ADMIN ACCOUNT OVERVIEW =====
 async function loadSuperadminAccounts(){
   const panel=$("superadminPanel"),list=$("adminAccountsList");
   if(!panel||!list)return;
@@ -1001,58 +978,15 @@ async function loadSuperadminAccounts(){
   list.innerHTML='<p class="muted">Loading administrative accounts...</p>';
   try{
     const snap=await getDocs(collection(db,"users"));
-    const all=snap.docs.map(d=>({id:d.id,...d.data()}));
-    const admins=all.filter(u=>["admin","superadmin"].includes(String(u.role||"").toLowerCase()));
-    const students=all.filter(u=>String(u.role||"").toLowerCase()==="student").length;
-    const adminCount=admins.filter(u=>String(u.role||"").toLowerCase()==="admin").length;
-    const superCount=admins.filter(u=>String(u.role||"").toLowerCase()==="superadmin").length;
-    $("saStudentCount") && ($( "saStudentCount").textContent=students);
-    $("saAdminCount") && ($( "saAdminCount").textContent=adminCount);
-    $("saSuperadminCount") && ($( "saSuperadminCount").textContent=superCount);
-    $("saTotalUsers") && ($( "saTotalUsers").textContent=all.length);
+    const admins=snap.docs.map(d=>({id:d.id,...d.data()})).filter(u=>["admin","superadmin"].includes(String(u.role||"").toLowerCase()));
     if(!admins.length){list.innerHTML='<p class="muted">No administrative accounts found.</p>';return;}
-    const currentUid=auth.currentUser?.uid||"";
-    list.innerHTML="";
-    admins.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""))).forEach(u=>{
-      const role=String(u.role||"admin").toLowerCase();
-      const card=document.createElement("article");card.className="superadmin-account-card";
-      const h=document.createElement("h3");h.textContent=(role==="superadmin"?"👑 ":"🧑‍💼 ")+(u.name||"Unnamed administrator");
-      const meta=document.createElement("div");meta.className="superadmin-account-meta";meta.textContent=(u.email||"No email")+" • "+role.toUpperCase();
-      const status=document.createElement("span");status.className=u.active===false?"status-badge inactive":"status-badge active";status.textContent=u.active===false?"Inactive":"Active";
-      const actions=document.createElement("div");actions.className="superadmin-account-actions";
-      if(u.id===currentUid){
-        const own=document.createElement("span");own.className="muted";own.textContent="Your current Superadmin account";actions.appendChild(own);
-      }else{
-        const roleSelect=document.createElement("select");roleSelect.innerHTML='<option value="admin">Admin</option><option value="superadmin">Superadmin</option>';roleSelect.value=role==="superadmin"?"superadmin":"admin";
-        const save=document.createElement("button");save.type="button";save.className="secondary-btn";save.textContent="Save Role";
-        save.addEventListener("click",async()=>{save.disabled=true;try{await updateDoc(doc(db,"users",u.id),{role:roleSelect.value,roleUpdatedAt:serverTimestamp(),roleUpdatedBy:currentUid});await loadSuperadminAccounts()}catch(e){console.error(e);alert("Could not update role: "+(e.code||e.message));save.disabled=false}});
-        const toggle=document.createElement("button");toggle.type="button";toggle.className="secondary-btn";toggle.textContent=u.active===false?"Activate":"Deactivate";
-        toggle.addEventListener("click",async()=>{toggle.disabled=true;try{await updateDoc(doc(db,"users",u.id),{active:u.active===false,statusUpdatedAt:serverTimestamp(),statusUpdatedBy:currentUid});await loadSuperadminAccounts()}catch(e){console.error(e);alert("Could not update account status: "+(e.code||e.message));toggle.disabled=false}});
-        actions.append(roleSelect,save,toggle);
-      }
-      card.append(h,meta,status,actions);list.appendChild(card);
-    });
-  }catch(e){console.error(e);list.innerHTML='<p class="message">Could not load administrative accounts: '+esc(e.code||e.message)+'</p>';}
+    list.innerHTML=admins.map(u=>{
+      const role=String(u.role||"admin").toUpperCase();
+      const cls=role==="SUPERADMIN"?"superadmin":"admin";
+      return '<article class="note-card" style="border-left:4px solid '+(cls==="superadmin"?'#d6ad55':'#1e5ca8')+'"><h3>'+esc(u.name||"Unnamed administrator")+'</h3><p class="subject">'+role+'</p><p class="muted">User ID: '+esc(u.id)+'</p></article>';
+    }).join("");
+  }catch(e){console.error(e);list.innerHTML='<p class="message">Could not load administrative accounts: '+esc(e.code||e.message)+'</p>'}
 }
-
-const superadminAccountForm=$("superadminAccountForm");
-superadminAccountForm?.addEventListener("submit",async e=>{
-  e.preventDefault();
-  const msg=$("superadminAccountMessage");
-  if(String(window.currentUserRole||"").toLowerCase()!=="superadmin"||!auth.currentUser){msg.textContent="Superadmin access is required.";return;}
-  const name=$("saAccountName").value.trim(),email=$("saAccountEmail").value.trim(),password=$("saAccountPassword").value,role=$("saAccountRole").value;
-  if(password.length<6){msg.textContent="Password must be at least 6 characters.";return;}
-  msg.className="message";msg.textContent="Creating administrative account...";
-  try{
-    const creator=getStudentCreatorAuth();
-    const cred=await createUserWithEmailAndPassword(creator,email,password);
-    await setDoc(doc(db,"users",cred.user.uid),{name,email,role:role==="superadmin"?"superadmin":"admin",active:true,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
-    await signOut(creator);
-    superadminAccountForm.reset();
-    msg.className="message submission-success";msg.textContent="Administrative account created successfully ✅";
-    await loadSuperadminAccounts();
-  }catch(e){console.error(e);msg.className="message submission-error";msg.textContent="Could not create account: "+(e.code||e.message);}
-});
 $("refreshAdminsBtn")?.addEventListener("click",loadSuperadminAccounts);
 
 // ===== V25 COURSE → SUBJECT → TOPIC → LESSON LEARNING SYSTEM =====
@@ -1519,7 +1453,7 @@ qbSetStep(1,true);
 })();
 
 
-/* ===== V34.2 STUDENT ACHIEVEMENTS ===== */
+/* ===== V34 STUDENT ACHIEVEMENTS ===== */
 (function(){
   const panel=document.getElementById('gsAchievementsPanel');
   if(!panel)return;
@@ -1542,6 +1476,19 @@ qbSetStep(1,true);
     return {assignments,tests,average};
   }
   function badge(icon,title,desc,unlocked){return `<div class="gs-achievement-badge ${unlocked?'':'locked'}"><div class="icon">${icon}</div><b>${title}</b><small>${unlocked?desc:'Locked • '+desc}</small></div>`}
+  window.gsOpenAchievements=function(){
+    try{
+      const dashboard=document.getElementById('dashboardView');
+      document.querySelectorAll('.portal-section').forEach(el=>{if(el.id!=='gsAchievementsPanel')el.classList.add('gs-section-hidden');});
+      if(dashboard){dashboard.style.display='none';dashboard.classList.add('hidden');}
+      panel.style.display='block';
+      panel.classList.remove('gs-section-hidden','hidden');
+      panel.setAttribute('aria-hidden','false');
+      panel.scrollIntoView({behavior:'smooth',block:'start'});
+      setTimeout(()=>window.gsRenderAchievements?.(),40);
+    }catch(e){console.error('open achievements',e);}
+  };
+
   async function render(){
     const role=String(window.currentUserRole||currentStudentProfile?.role||'').toLowerCase();
     panel.style.display=role==='student'?'block':'none'; if(role!=='student')return;
@@ -1558,7 +1505,7 @@ qbSetStep(1,true);
   }
   window.gsRenderAchievements=render;
   const oldShow=window.gsShowSection;
-  window.gsShowSection=function(id){oldShow?.(id);if(id==='gsAchievementsPanel')setTimeout(render,80)};
+  window.gsShowSection=function(id){if(id==='gsAchievementsPanel'){window.gsOpenAchievements();return}oldShow?.(id)};
   setTimeout(render,700);
   setInterval(()=>{if(String(window.currentUserRole||'').toLowerCase()==='student'&&panel.style.display!=='none')render()},15000);
 })();
