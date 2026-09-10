@@ -1,9 +1,14 @@
-import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+/* GREAT STAND PORTAL V27 - Course Builder Wizard */
+import {auth,db} from "./firebase.js?v=17.1"; import {initializeApp,getApps} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"; import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,createUserWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"; import {createClient} from "https://esm.sh/@supabase/supabase-js@2"; import {doc,getDoc,collection,getDocs,addDoc,updateDoc,deleteDoc,setDoc,serverTimestamp,query,orderBy,where} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 const $=id=>document.getElementById(id),loginView=$("loginView"),dashboardView=$("dashboardView"),logoutBtn=$("logoutBtn"),adminPanel=$("adminPanel"),noteForm=$("noteForm"),notesList=$("notesList");
+const SUPABASE_URL="https://njwjjtxvckemejaezwtd.supabase.co";
+const SUPABASE_ANON_KEY="sb_publishable_bCsJSYS7ggDTnwvAYW_JUA_HJvtGl5f";
+const SUPABASE_BUCKET="materials";
+const supabase=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginMessage").textContent="Logging in...";try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(err){console.error(err);$("loginMessage").textContent="Login failed: "+(err.code||err.message)}}); logoutBtn.addEventListener("click",()=>signOut(auth));
 async function getCount(n){try{return(await getDocs(collection(db,n))).size}catch(e){console.error(e);return 0}}
 async function loadNotes(){notesList.innerHTML='<p class="muted">Loading notes...</p>';try{let s;try{s=await getDocs(query(collection(db,"notes"),orderBy("createdAt","desc")))}catch(e){s=await getDocs(collection(db,"notes"))}if(s.empty){notesList.innerHTML='<p class="muted">No notes published yet.</p>';return}notesList.innerHTML="";s.forEach(d=>{let n=d.data(),c=document.createElement("article");c.className="note-card";let h=document.createElement("h3");h.textContent=n.title||"Untitled Note";let sub=document.createElement("p");sub.className="subject";sub.textContent=n.subject||"General";let body=document.createElement("div");body.className="note-content";body.textContent=n.content||"";c.append(h,sub,body);notesList.appendChild(c)})}catch(e){console.error(e);notesList.innerHTML='<p class="message">Could not load notes.</p>'}}
-noteForm.addEventListener("submit",async e=>{e.preventDefault();$("noteMessage").textContent="Publishing...";try{await addDoc(collection(db,"notes"),{title:$("noteTitle").value.trim(),subject:$("noteSubject").value.trim(),content:$("noteContent").value.trim(),createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});noteForm.reset();$("noteMessage").textContent="Note published successfully ✅";$("notesCount").textContent=await getCount("notes");await loadNotes();await loadAssignments();await loadTests();await loadStudentResultsIfNeeded()}catch(e){console.error(e);$("noteMessage").textContent="Could not publish note: "+(e.code||e.message)}});
+noteForm.addEventListener("submit",async e=>{e.preventDefault();$("noteMessage").textContent="Publishing...";try{await addDoc(collection(db,"notes"),{title:$("noteTitle").value.trim(),subject:$("noteSubject").value.trim(),category:$("noteCategory").value,content:$("noteContent").value.trim(),createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});noteForm.reset();$("noteMessage").textContent="Note published successfully ✅";$("notesCount").textContent=await getCount("notes");await loadNotes();await loadAssignments();await loadTests();await loadStudentResultsIfNeeded();await loadLearningCentre()}catch(e){console.error(e);$("noteMessage").textContent="Could not publish note: "+(e.code||e.message)}});
 
 const assignmentAdminPanel=$("assignmentAdminPanel"),assignmentForm=$("assignmentForm"),assignmentsList=$("assignmentsList");
 const assignmentModal=$("assignmentModal"),closeAssignmentBtn=$("closeAssignmentBtn"),submissionForm=$("submissionForm");
@@ -81,7 +86,7 @@ async function loadAssignments(){
       }
       if(isAdminRole()){
         const del=document.createElement("button"); del.type="button"; del.className="secondary-btn"; del.textContent="Delete";
-        del.addEventListener("click",async()=>{if(!confirm("Delete this assignment and its student submissions/results? This cannot be undone."))return;del.disabled=true;try{const subs=await getDocs(query(collection(db,"submissions"),where("assignmentId","==",d.id)));for(const sd of subs.docs)await deleteDoc(doc(db,"submissions",sd.id));const results=await getDocs(query(collection(db,"results"),where("assignmentId","==",d.id)));for(const rd of results.docs)await deleteDoc(doc(db,"results",rd.id));await deleteDoc(doc(db,"assignments",d.id));await loadAssignments();$("assignmentsCount").textContent=await getCount("assignments");await loadAdminResultsIfNeeded();$("resultsCount").textContent=await getCount("results") }catch(e){console.error(e);alert("Could not delete assignment: "+(e.code||e.message));del.disabled=false}});
+        del.addEventListener("click",async()=>{if(!confirm("Delete this assignment and its student submissions/results? This cannot be undone."))return;del.disabled=true;try{const subs=await getDocs(query(collection(db,"submissions"),where("assignmentId","==",d.id)));for(const sd of subs.docs)await deleteDoc(doc(db,"submissions",sd.id));const results=await getDocs(query(collection(db,"results"),where("assignmentId","==",d.id)));for(const rd of results.docs)await deleteDoc(doc(db,"results",rd.id));await deleteDoc(doc(db,"assignments",d.id));await loadAssignments();await loadLearningCentre();$("assignmentsCount").textContent=await getCount("assignments");await loadAdminResultsIfNeeded();$("resultsCount").textContent=await getCount("results") }catch(e){console.error(e);alert("Could not delete assignment: "+(e.code||e.message));del.disabled=false}});
         actions.appendChild(del);
       }
       c.append(actions);
@@ -171,6 +176,7 @@ assignmentForm.addEventListener("submit",async e=>{
     await addDoc(collection(db,"assignments"),{
       title:$("assignmentTitle").value.trim(),
       subject:$("assignmentSubject").value.trim(),
+      category:$("assignmentCategory").value,
       content:$("assignmentContent").value.trim(),
       deadline:deadline?new Date(deadline):null,
       createdAt:serverTimestamp(),
@@ -190,7 +196,7 @@ assignmentForm.addEventListener("submit",async e=>{
 // ===== CBT / TEST SYSTEM (V14) =====
 const testAdminPanel=$('testAdminPanel'),testForm=$('testForm'),questionBuilder=$('questionBuilder'),testsList=$('testsList'),testModal=$('testModal');
 function isAdminRole(){const r=String(window.currentUserRole||"student").trim().toLowerCase();return r==="admin"||r==="superadmin";}
-function setAdminPanelsVisible(show){["adminPanel","assignmentAdminPanel","testAdminPanel","studentAdminPanel","submissionsAdminPanel","testResultsAdminPanel","materialsAdminPanel"].forEach(id=>{const el=$(id);if(el)el.style.display=show?"block":"none";});}
+function setAdminPanelsVisible(show){["adminPanel","assignmentAdminPanel","testAdminPanel","studentAdminPanel","submissionsAdminPanel","testResultsAdminPanel","materialsAdminPanel","courseAdminPanel"].forEach(id=>{const el=$(id);if(el)el.style.display=show?"block":"none";});}
 setAdminPanelsVisible(false);
 let questionCount=0,currentTest=null,currentQuestionIndex=0,testAnswers=[],testTimerInterval=null,testAutoSubmitTimeout=null,testSecondsLeft=0;
 function addQuestion(){
@@ -298,8 +304,8 @@ $('parseCsvQuestionsBtn').addEventListener('click',()=>{
   if(!error)renderImportedPreview('csvQuestionsPreview',csvParsedQuestions);else $('csvQuestionsPreview').innerHTML='';
 });
 setCbtMode('manual');
-testForm.addEventListener('submit',async e=>{e.preventDefault();if(!isAdminRole()){ $('testMessage').textContent='Only admins can publish CBT tests.'; return; }$('testMessage').textContent='Publishing CBT test...';try{const questions=collectQuestions();if(!questions.length)throw new Error('Add at least one question.');if(questions.some(q=>!q.text||Object.values(q.options).some(v=>!v)||!q.correct))throw new Error('Complete every question, all four options, and the correct answer.');await addDoc(collection(db,'tests'),{title:$('testTitle').value.trim(),subject:$('testSubject').value.trim(),duration:Number($('testDuration').value),questions,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});testForm.reset();questionBuilder.innerHTML='';questionCount=0;addQuestion();bulkParsedQuestions=[];csvParsedQuestions=[];$('bulkQuestionsPreview').innerHTML='';$('csvQuestionsPreview').innerHTML='';$('bulkParseMessage').textContent='';$('csvParseMessage').textContent='';setCbtMode('manual');$('testDuration').value=30;$('testMessage').className='message submission-success';$('testMessage').textContent='CBT test published successfully ✅';$('testsCount').textContent=await getCount('tests');await loadTests()}catch(e){console.error(e);$('testMessage').className='message submission-error';$('testMessage').textContent='Could not publish test: '+(e.code||e.message)}});
-async function loadTests(){testsList.innerHTML='<p class="muted">Loading tests...</p>';try{let s;try{s=await getDocs(query(collection(db,'tests'),orderBy('createdAt','desc')))}catch(e){s=await getDocs(collection(db,'tests'))}if(s.empty){testsList.innerHTML='<p class="muted">No CBT tests published yet.</p>';return}testsList.innerHTML='';s.forEach(d=>{const t=d.data(),card=document.createElement('article');card.className='note-card test-card';const h=document.createElement('h3');h.textContent=t.title||'Untitled Test';const sub=document.createElement('p');sub.className='subject';sub.textContent=(t.subject||'General')+' • '+(t.questions?.length||0)+' questions • '+(t.duration||30)+' mins';const actions=document.createElement('div');actions.className='card-actions';const btn=document.createElement('button');btn.type='button';btn.className='primary-btn open-assignment-btn';btn.textContent=(window.currentUserRole||'student')==='student'?'Start Test':'Preview Test';btn.addEventListener('click',()=>openTest(d.id,t));actions.appendChild(btn);if(isAdminRole()){const del=document.createElement('button');del.type='button';del.className='secondary-btn';del.textContent='Delete';del.addEventListener('click',async()=>{if(!confirm('Delete this CBT test and its student results? This cannot be undone.'))return;del.disabled=true;try{const results=await getDocs(query(collection(db,'results'),where('testId','==',d.id)));for(const rd of results.docs)await deleteDoc(doc(db,'results',rd.id));await deleteDoc(doc(db,'tests',d.id));await loadTests();$('testsCount').textContent=await getCount('tests');if(isAdminRole()){await loadCbtResultsIfNeeded();await loadAdminResultsIfNeeded();$('resultsCount').textContent=await getCount('results')}}catch(e){console.error(e);alert('Could not delete test: '+(e.code||e.message));del.disabled=false}});actions.appendChild(del)}card.append(h,sub,actions);testsList.appendChild(card)})}catch(e){console.error(e);testsList.innerHTML='<p class="message">Could not load tests: '+(e.code||e.message)+'</p>'}}
+testForm.addEventListener('submit',async e=>{e.preventDefault();if(!isAdminRole()){ $('testMessage').textContent='Only admins can publish CBT tests.'; return; }$('testMessage').textContent='Publishing CBT test...';try{const questions=collectQuestions();if(!questions.length)throw new Error('Add at least one question.');if(questions.some(q=>!q.text||Object.values(q.options).some(v=>!v)||!q.correct))throw new Error('Complete every question, all four options, and the correct answer.');await addDoc(collection(db,'tests'),{title:$('testTitle').value.trim(),subject:$('testSubject').value.trim(),category:$('testCategory').value,duration:Number($('testDuration').value),questions,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});testForm.reset();questionBuilder.innerHTML='';questionCount=0;addQuestion();bulkParsedQuestions=[];csvParsedQuestions=[];$('bulkQuestionsPreview').innerHTML='';$('csvQuestionsPreview').innerHTML='';$('bulkParseMessage').textContent='';$('csvParseMessage').textContent='';setCbtMode('manual');$('testDuration').value=30;$('testMessage').className='message submission-success';$('testMessage').textContent='CBT test published successfully ✅';$('testsCount').textContent=await getCount('tests');await loadTests()}catch(e){console.error(e);$('testMessage').className='message submission-error';$('testMessage').textContent='Could not publish test: '+(e.code||e.message)}});
+async function loadTests(){testsList.innerHTML='<p class="muted">Loading tests...</p>';try{let s;try{s=await getDocs(query(collection(db,'tests'),orderBy('createdAt','desc')))}catch(e){s=await getDocs(collection(db,'tests'))}if(s.empty){testsList.innerHTML='<p class="muted">No CBT tests published yet.</p>';return}testsList.innerHTML='';s.forEach(d=>{const t=d.data(),card=document.createElement('article');card.className='note-card test-card';const h=document.createElement('h3');h.textContent=t.title||'Untitled Test';const sub=document.createElement('p');sub.className='subject';sub.textContent=(t.subject||'General')+' • '+(t.questions?.length||0)+' questions • '+(t.duration||30)+' mins';const actions=document.createElement('div');actions.className='card-actions';const btn=document.createElement('button');btn.type='button';btn.className='primary-btn open-assignment-btn';btn.textContent=(window.currentUserRole||'student')==='student'?'Start Test':'Preview Test';btn.addEventListener('click',()=>openTest(d.id,t));actions.appendChild(btn);if(isAdminRole()){const del=document.createElement('button');del.type='button';del.className='secondary-btn';del.textContent='Delete';del.addEventListener('click',async()=>{if(!confirm('Delete this CBT test and its student results? This cannot be undone.'))return;del.disabled=true;try{const results=await getDocs(query(collection(db,'results'),where('testId','==',d.id)));for(const rd of results.docs)await deleteDoc(doc(db,'results',rd.id));await deleteDoc(doc(db,'tests',d.id));await loadTests();await loadLearningCentre();$('testsCount').textContent=await getCount('tests');if(isAdminRole()){await loadCbtResultsIfNeeded();await loadAdminResultsIfNeeded();$('resultsCount').textContent=await getCount('results')}}catch(e){console.error(e);alert('Could not delete test: '+(e.code||e.message));del.disabled=false}});actions.appendChild(del)}card.append(h,sub,actions);testsList.appendChild(card)})}catch(e){console.error(e);testsList.innerHTML='<p class="message">Could not load tests: '+(e.code||e.message)+'</p>'}}
 function closeTest(){clearInterval(testTimerInterval);testTimerInterval=null;if(testAutoSubmitTimeout){clearTimeout(testAutoSubmitTimeout);testAutoSubmitTimeout=null}currentTest=null;testModal.classList.add('hidden');$('testSubmitMessage').textContent=''}
 $('closeTestBtn').addEventListener('click',closeTest);testModal.addEventListener('click',e=>{if(e.target===testModal)closeTest()});
 function renderQuestion(){if(!currentTest)return;const qs=currentTest.questions||[];const q=qs[currentQuestionIndex];$('testProgress').textContent=`Question ${currentQuestionIndex+1} of ${qs.length}`;const area=$('testQuestionArea');area.innerHTML='';const card=document.createElement('div');card.className='cbt-question-card';const title=document.createElement('h3');title.textContent=q.text;card.appendChild(title);const opts=document.createElement('div');opts.className='cbt-options';['A','B','C','D'].forEach(letter=>{const label=document.createElement('label');label.className='cbt-option';const radio=document.createElement('input');radio.type='radio';radio.name='currentQuestion';radio.value=letter;radio.checked=testAnswers[currentQuestionIndex]===letter;radio.addEventListener('change',()=>testAnswers[currentQuestionIndex]=letter);const span=document.createElement('span');span.textContent=letter+'. '+q.options[letter];label.append(radio,span);opts.appendChild(label)});card.appendChild(opts);area.appendChild(card);$('prevQuestionBtn').disabled=currentQuestionIndex===0;$('nextQuestionBtn').classList.toggle('hidden',currentQuestionIndex===qs.length-1);$('submitTestBtn').classList.toggle('hidden',currentQuestionIndex!==qs.length-1)}
@@ -449,28 +455,84 @@ async function loadMaterials(){
   if(!materialsList)return;
   materialsList.innerHTML='<p class="muted">Loading study materials...</p>';
   try{
-    let s;try{s=await getDocs(query(collection(db,'materials'),orderBy('createdAt','desc')))}catch(e){s=await getDocs(collection(db,'materials'))}
+    let s;
+    try{s=await getDocs(query(collection(db,'materials'),orderBy('createdAt','desc')))}catch(e){s=await getDocs(collection(db,'materials'))}
     const rows=s.docs.map(d=>({id:d.id,...d.data()})).filter(m=>materialFilter==='All'||String(m.category||'General')===materialFilter);
     if(!rows.length){materialsList.innerHTML='<p class="muted">No study materials published yet.</p>';return}
-    materialsList.innerHTML='';rows.forEach(m=>{
+    materialsList.innerHTML='';
+    rows.forEach(m=>{
       const c=document.createElement('article');c.className='material-card';
-      const h=document.createElement('h3');h.textContent=m.title||'Study Material';
-      const meta=document.createElement('p');meta.className='subject';meta.textContent=(m.subject||'General')+' • '+(m.category||'General');
+      const h=document.createElement('h3');h.textContent=m.title||'Untitled Material';
+      const meta=document.createElement('p');meta.className='subject';meta.textContent=(m.category||'General')+' • '+(m.subject||'General');
       const desc=document.createElement('p');desc.className='muted';desc.textContent=m.description||'Study material / PDF resource.';
-      const actions=document.createElement('div');actions.className='card-actions';
-      const open=document.createElement('a');open.className='primary-btn material-link';open.href=m.url;open.target='_blank';open.rel='noopener noreferrer';open.textContent='📄 Open / Download';actions.appendChild(open);
+      const actions=document.createElement('div');actions.className='material-actions';
+      const open=document.createElement('a');open.className='primary-btn material-link';open.href=m.url||'#';open.target='_blank';open.rel='noopener noreferrer';open.textContent='👁️ View PDF';actions.appendChild(open);
+      if(m.storageProvider==='supabase' && m.storagePath){
+        const dl=document.createElement('button');dl.className='secondary-btn material-download-btn';dl.type='button';dl.textContent='⬇️ Download PDF';
+        dl.addEventListener('click',async()=>{
+          const oldText=dl.textContent;dl.disabled=true;dl.textContent='⏳ Downloading...';
+          try{
+            const filename=m.fileName||((m.title||'study-material')+'.pdf');
+            const {data:urlData,error:urlError}=supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(m.storagePath,{download:filename});
+            if(urlError)throw urlError;
+            const downloadUrl=urlData?.publicUrl;
+            if(!downloadUrl)throw new Error('Could not create download URL.');
+            const a=document.createElement('a');a.href=downloadUrl;a.download=filename;a.target='_blank';a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
+          }catch(e){console.error('PDF download error:',e);alert('Could not download this PDF: '+(e?.message||e));}
+          finally{dl.disabled=false;dl.textContent=oldText;}
+        });
+        actions.appendChild(dl);
+      }
       if(isAdminRole()){
-        const del=document.createElement('button');del.type='button';del.className='secondary-btn';del.textContent='Delete';
-        del.addEventListener('click',async()=>{if(!confirm('Delete this study material? This cannot be undone.'))return;del.disabled=true;try{await deleteDoc(doc(db,'materials',m.id));await loadMaterials()}catch(e){console.error(e);alert('Could not delete material: '+(e.code||e.message));del.disabled=false}});actions.appendChild(del);
+        const del=document.createElement('button');del.className='danger-btn';del.type='button';del.textContent='🗑 Delete';
+        del.addEventListener('click',async()=>{
+          if(!confirm('Delete this study material? This cannot be undone.'))return;
+          del.disabled=true;
+          try{
+            if(m.storageProvider==='supabase' && m.storagePath){
+              const {error:storageErr}=await supabase.storage.from(SUPABASE_BUCKET).remove([m.storagePath]);
+              if(storageErr)console.warn('Supabase storage delete warning:',storageErr);
+            }
+            await deleteDoc(doc(db,'materials',m.id));await loadMaterials();await loadLearningCentre();
+          }catch(e){console.error(e);alert('Could not delete material: '+(e.code||e.message));del.disabled=false}
+        });actions.appendChild(del);
       }
       c.append(h,meta,desc,actions);materialsList.appendChild(c);
     });
   }catch(e){console.error(e);materialsList.innerHTML='<p class="message">Could not load study materials: '+(e.code||e.message)+'</p>'}
 }
+
 materialForm?.addEventListener('submit',async e=>{
-  e.preventDefault();if(!isAdminRole()){ $('materialMessage').textContent='Only admins can publish study materials.';return; }
-  $('materialMessage').textContent='Publishing material...';
-  try{await addDoc(collection(db,'materials'),{title:$('materialTitle').value.trim(),subject:$('materialSubject').value.trim(),category:$('materialCategory').value,description:$('materialDescription').value.trim(),url:$('materialUrl').value.trim(),createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});materialForm.reset();$('materialCategory').value='General';$('materialMessage').className='message submission-success';$('materialMessage').textContent='Study material published successfully ✅';await loadMaterials()}catch(e){console.error(e);$('materialMessage').className='message submission-error';$('materialMessage').textContent='Could not publish material: '+(e.code||e.message)}});
+  e.preventDefault();
+  if(!isAdminRole()){ $('materialMessage').textContent='Only admins can publish study materials.';return; }
+  const file=$('materialFile')?.files?.[0];
+  if(!file){$('materialMessage').className='message submission-error';$('materialMessage').textContent='Please select a PDF file.';return;}
+  const looksLikePdf=file.type==='application/pdf' || !file.type || file.type==='application/octet-stream' || /\.pdf$/i.test(file.name);
+  if(!looksLikePdf){ $('materialMessage').className='message submission-error';$('materialMessage').textContent='Only PDF files are supported for now.';return; }
+  if(file.size>50*1024*1024){ $('materialMessage').className='message submission-error';$('materialMessage').textContent='File is too large. Maximum size is 50 MB on the free storage plan.';return; }
+  const submitBtn=materialForm.querySelector('button[type="submit"]');if(submitBtn)submitBtn.disabled=true;
+  $('materialMessage').className='message';$('materialMessage').textContent='Uploading PDF to free storage...';
+  let uploadedPath=null;
+  try{
+    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    const storagePath='materials/'+auth.currentUser.uid+'/'+Date.now()+'_'+safeName;
+    uploadedPath=storagePath;
+    const {error:uploadError}=await supabase.storage.from(SUPABASE_BUCKET).upload(storagePath,file,{contentType:'application/pdf',upsert:false,cacheControl:'3600'});
+    if(uploadError)throw uploadError;
+    const {data:urlData}=supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(storagePath);
+    const url=urlData?.publicUrl;
+    if(!url)throw new Error('Could not create the public download link.');
+    await addDoc(collection(db,'materials'),{title:$('materialTitle').value.trim(),subject:$('materialSubject').value.trim(),category:$('materialCategory').value,description:$('materialDescription').value.trim(),url,storagePath,fileName:file.name,fileSize:file.size,storageProvider:'supabase',createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
+    materialForm.reset();$('materialCategory').value='General';$('materialMessage').className='message submission-success';$('materialMessage').textContent='Study material uploaded and published successfully ✅';await loadMaterials();await loadLearningCentre();
+  }catch(e){
+    console.error(e);
+    if(uploadedPath){try{await supabase.storage.from(SUPABASE_BUCKET).remove([uploadedPath])}catch(cleanErr){console.warn('Upload cleanup warning:',cleanErr)}}
+    const msg=e?.message||e?.error_description||e?.error||'Unknown error';
+    $('materialMessage').className='message submission-error';
+    $('materialMessage').textContent='Could not upload material: '+msg+' — check that the Supabase “materials” bucket exists and allows uploads.';
+  }finally{if(submitBtn)submitBtn.disabled=false;}
+});
+
 document.querySelectorAll('.material-filter').forEach(btn=>btn.addEventListener('click',()=>{materialFilter=btn.dataset.filter;document.querySelectorAll('.material-filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');loadMaterials()}));
 
 const studentAdminPanel=$("studentAdminPanel"),studentForm=$("studentForm"),studentsList=$("studentsList"),studentMessage=$("studentMessage");
@@ -544,10 +606,21 @@ onAuthStateChanged(auth,async user=>{
     }
 
     const p=s.data();
+    currentStudentProfile=p;
     const role=String(p.role||"student").trim().toLowerCase();
     const allowed=role==="admin"||role==="superadmin";
 
     window.currentUserRole=role;
+    const studentQuick=$("studentQuickPanel");
+    const adminStat=document.querySelector(".admin-stat");
+    if(studentQuick)studentQuick.style.display=role==="student"?"block":"none";
+    if(adminStat)adminStat.style.display=role==="student"?"none":"block";
+    if(role==="student"){
+      const cat=String(p.category||"Student").replace(/\s+/g," ").trim();
+      $("studentCategoryPill").textContent=cat.toUpperCase();
+      learningFilter = cat.toUpperCase()==="JAMB" || cat.toUpperCase()==="WAEC" ? cat.toUpperCase() : "all";
+      document.querySelectorAll(".learning-tab").forEach(b=>b.classList.toggle("active",(b.dataset.learningFilter||"all").toUpperCase()===learningFilter.toUpperCase()));
+    }
 
     if(p.active===false){
       await signOut(auth);
@@ -570,6 +643,8 @@ onAuthStateChanged(auth,async user=>{
     // This is intentionally before loading dashboard data so a later
     // non-critical loading error cannot hide the panels.
     setAdminPanelsVisible(allowed);
+    if(allowed){ const cp=$("courseAdminPanel"); if(cp) cp.style.display="block"; }
+    if(window.gsRefreshNavigation) window.gsRefreshNavigation();
 
     try{$("notesCount").textContent=await getCount("notes")}catch(e){}
     try{$("assignmentsCount").textContent=await getCount("assignments")}catch(e){}
@@ -579,7 +654,8 @@ onAuthStateChanged(auth,async user=>{
     try{await loadNotes()}catch(e){console.error("Notes:",e)}
     try{await loadAssignments()}catch(e){console.error("Assignments:",e)}
     try{await loadTests()}catch(e){console.error("Tests:",e)}
-    try{await loadMaterials()}catch(e){console.error("Materials:",e)}
+    try{await loadMaterials();await loadLearningCentre()}catch(e){console.error("Materials:",e)}
+    try{await loadLearningCentre()}catch(e){console.error("Learning Centre:",e)}
 
     if(allowed){
       try{await loadSubmissions()}catch(e){console.error("Submissions:",e)}
@@ -603,3 +679,618 @@ onAuthStateChanged(auth,async user=>{
     $("statusText").textContent="Firestore error: "+(e.code||e.message);
   }
 });
+/* V20.3 role-aware navigation layer — visual/navigation only; Firebase/Auth logic is untouched. */
+
+// ===== V21 LEARNING CENTRE =====
+const learningCourseGrid=$('learningCourseGrid');
+let learningFilter='all';
+const learningStore={notes:[],assignments:[],tests:[],materials:[]};
+function normalizeText(v){return String(v||'').trim()}
+function courseKey(category,subject){return (normalizeText(category)||'General')+'::'+(normalizeText(subject)||'General')}
+function courseCategory(row){const c=normalizeText(row.category).toUpperCase();return c==='JAMB'||c==='WAEC'?''+c:(normalizeText(row.category)||'General')}
+function makeLearningCourse(category,subject){return {category:category||'General',subject:subject||'General',notes:0,assignments:0,tests:0,materials:0}}
+function renderLearningCentre(){
+  if(!learningCourseGrid)return;
+  const map=new Map();
+  const add=(category,subject,type)=>{const key=courseKey(category,subject);if(!map.has(key))map.set(key,makeLearningCourse(category,subject));map.get(key)[type]++};
+  learningStore.notes.forEach(n=>add(courseCategory(n),normalizeText(n.subject)||'General','notes'));
+  learningStore.assignments.forEach(a=>add(courseCategory(a),normalizeText(a.subject)||'General','assignments'));
+  learningStore.tests.forEach(t=>add(courseCategory(t),normalizeText(t.subject)||'General','tests'));
+  learningStore.materials.forEach(m=>add(courseCategory(m),normalizeText(m.subject)||'General','materials'));
+  let rows=[...map.values()];
+  if(learningFilter!=='all')rows=rows.filter(x=>x.category===learningFilter);
+  if(learningFilter==='all'){
+    const tracks=['JAMB','WAEC'].map(cat=>({category:cat,subject:cat==='JAMB'?'JAMB Preparation':'WAEC Preparation',notes:learningStore.notes.filter(x=>courseCategory(x)===cat).length,assignments:learningStore.assignments.filter(x=>courseCategory(x)===cat).length,tests:learningStore.tests.filter(x=>courseCategory(x)===cat).length,materials:learningStore.materials.filter(x=>courseCategory(x)===cat).length,track:true}));
+    rows=[...tracks,...rows.filter(x=>x.category!=='JAMB'&&x.category!=='WAEC')];
+  }
+  if(!rows.length){learningCourseGrid.innerHTML='<div class="learning-empty"><div>📚</div><h3>No courses yet</h3><p class="muted">Courses will appear here when learning resources are published for your JAMB or WAEC category.</p></div>';return}
+  rows.sort((a,b)=>a.category.localeCompare(b.category)||a.subject.localeCompare(b.subject));
+  learningCourseGrid.innerHTML='';
+  rows.forEach(c=>{
+    const total=c.notes+c.assignments+c.tests+c.materials;
+    const card=document.createElement('article');card.className='learning-course-card'+(c.track?' learning-track-card':'');
+    const icon=c.category==='JAMB'?'🎯':c.category==='WAEC'?'🎓':'📘';
+    card.innerHTML=`<div class="learning-course-top"><span class="course-icon">${icon}</span><span class="course-category ${c.category.toLowerCase()}">${c.category}</span></div><h3>${c.subject}</h3><p class="muted">${total} learning resource${total===1?'':'s'} available</p><div class="course-resource-row"><span>📖 ${c.notes} Notes</span><span>📝 ${c.assignments} Assignments</span><span>🧠 ${c.tests} Tests</span><span>📚 ${c.materials} Materials</span></div><div class="course-actions"><button class="primary-btn course-open-btn" type="button">Open Course →</button></div>`;
+    card.querySelector('.course-open-btn').addEventListener('click',()=>openCourseResources(c));
+    learningCourseGrid.appendChild(card);
+  });
+}
+function openCourseResources(course){
+  const modal=$('courseModal'); if(!modal)return;
+  $('courseModalTitle').textContent=course.subject||'Course';
+  $('courseModalCategory').textContent=(course.category||'General').toUpperCase();
+  $('courseModalSubtitle').textContent=course.track ? 'Preparation track' : 'Your learning resources for this subject';
+  const icon=course.category==='JAMB'?'🎓':course.category==='WAEC'?'📘':'📚';
+  $('courseModalIcon').textContent=icon;
+  $('courseModalStats').innerHTML=`<div><b>${course.notes}</b><span>Notes</span></div><div><b>${course.assignments}</b><span>Assignments</span></div><div><b>${course.tests}</b><span>CBT Tests</span></div><div><b>${course.materials}</b><span>Materials</span></div>`;
+  const resources=[];
+  const same=(r)=>course.track ? courseCategory(r)===course.category : (courseCategory(r)===course.category && (normalizeText(r.subject)||'General')===course.subject);
+  [
+    [learningStore.notes,'notesPanel','📖','Notes','Read your published lessons'],
+    [learningStore.assignments,'assignmentsPanel','📝','Assignments','Open and submit your work'],
+    [learningStore.tests,'testsPanel','🧠','CBT / Tests','Take practice tests and get scored'],
+    [learningStore.materials,'materialsPanel','📚','Study Materials','View or download PDF materials']
+  ].forEach(([arr,target,ico,title,desc])=>{ const count=arr.filter(same).length; if(count)resources.push({target,ico,title,desc,count}); });
+  if(!resources.length){
+    $('courseModalResources').innerHTML='<div class="course-empty">No resources have been added to this course yet.<br><small>Check back when your tutor publishes new materials.</small></div>';
+  }else{
+    $('courseModalResources').innerHTML=resources.map(r=>`<button class="course-resource-btn" data-target="${r.target}" type="button"><span>${r.ico}</span><div><b>${r.title}</b><small>${r.count} available • ${r.desc}</small></div><strong>›</strong></button>`).join('');
+    $('courseModalResources').querySelectorAll('.course-resource-btn').forEach(btn=>btn.addEventListener('click',()=>{modal.classList.add('hidden'); if(window.gsShowSection)window.gsShowSection(btn.dataset.target)}));
+  }
+  modal.classList.remove('hidden');
+}
+async function loadLearningCentre(){
+  if(!learningCourseGrid)return;
+  learningCourseGrid.innerHTML='<div class="learning-empty"><div>⏳</div><h3>Organizing your courses...</h3><p class="muted">Loading notes, assignments, tests and materials.</p></div>';
+  try{
+    const [ns,as,ts,ms]=await Promise.all([getDocs(collection(db,'notes')),getDocs(collection(db,'assignments')),getDocs(collection(db,'tests')),getDocs(collection(db,'materials'))]);
+    learningStore.notes=ns.docs.map(d=>d.data());
+    learningStore.assignments=as.docs.map(d=>d.data());
+    learningStore.tests=ts.docs.map(d=>d.data());
+    learningStore.materials=ms.docs.map(d=>d.data());
+    renderLearningCentre();
+  }catch(e){console.error('Learning Centre:',e);learningCourseGrid.innerHTML='<div class="learning-empty"><div>⚠️</div><h3>Could not load courses</h3><p class="muted">Please refresh and try again.</p></div>'}
+}
+
+document.querySelectorAll('.learning-tab').forEach(btn=>btn.addEventListener('click',()=>{learningFilter=btn.dataset.learningFilter||'all';document.querySelectorAll('.learning-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderLearningCentre()}));
+$('refreshLearningBtn')?.addEventListener('click',loadLearningCentre);
+
+(function(){
+  const menuBtn=document.getElementById("gsMenuBtn"), sideNav=document.getElementById("gsSideNav"), overlay=document.getElementById("gsNavOverlay"), links=document.getElementById("gsNavLinks"), navLogout=document.getElementById("gsNavLogout"), navClose=document.getElementById("gsNavClose"), nameEl=document.getElementById("gsNavName"), roleEl=document.getElementById("gsNavRole");
+  function closeNav(){sideNav?.classList.remove("open");overlay?.classList.remove("show");menuBtn?.setAttribute("aria-expanded","false")}
+  function openNav(){sideNav?.classList.add("open");overlay?.classList.add("show");menuBtn?.setAttribute("aria-expanded","true")}
+  menuBtn?.addEventListener("click",()=>sideNav?.classList.contains("open")?closeNav():openNav());
+  overlay?.addEventListener("click",closeNav); navClose?.addEventListener("click",closeNav);
+  navLogout?.addEventListener("click",()=>{document.getElementById("logoutBtn")?.click();closeNav()});
+
+  const studentGroups=[
+    {heading:"STUDENT MENU",items:[["⌂","Dashboard","dashboardView"],["🎓","My Courses","learningCentrePanel"],["🧠","CBT / Tests","testsPanel"],["▤","Assignments","assignmentsPanel"],["▱","Study Materials","materialsPanel"],["▥","My Results","studentResultsPanel"],["●","Notifications","statusPanel"],["◉","My Profile","statusPanel"]]},
+    {heading:"QUICK LINKS",items:[["📚","My Notes","notesPanel","View and read your notes"],["📝","Assignments","assignmentsPanel","View and submit assignments"],["🧠","CBT / Tests","testsPanel","Start and take your tests"],["📖","Study Materials","materialsPanel","Access your study resources"]]}
+  ];
+  const adminGroups=[
+    {heading:"ADMIN MENU",items:[["⌂","Dashboard","dashboardView"],["👨‍🎓","Manage Students","studentAdminPanel"],["🎓","Manage Courses & Lessons","courseAdminPanel"],["📚","Manage Notes","adminPanel"],["📝","Manage Assignments","assignmentAdminPanel"],["🧠","Manage CBT / Tests","testAdminPanel"],["📖","Manage Study Materials","materialsAdminPanel"],["📊","CBT Results","testResultsAdminPanel"],["📥","Submissions","submissionsAdminPanel"]]},
+    {heading:"STUDENT VIEW",items:[["🎓","Learning Centre","learningCentrePanel"],["📚","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📖","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]]}
+  ];
+  const superadminGroups=[
+    {heading:"SUPERADMIN CONTROL",items:[["⌂","Dashboard","dashboardView"],["👨‍🎓","Manage Students","studentAdminPanel"],["🎓","Manage Courses & Lessons","courseAdminPanel"],["📚","Manage Notes","adminPanel"],["📝","Manage Assignments","assignmentAdminPanel"],["🧠","Manage CBT / Tests","testAdminPanel"],["📖","Manage Study Materials","materialsAdminPanel"],["📊","CBT Results","testResultsAdminPanel"],["📥","Submissions","submissionsAdminPanel"]]},
+    {heading:"STUDENT PORTAL VIEW",items:[["🎓","Learning Centre","learningCentrePanel"],["📚","Notes","notesPanel"],["📝","Assignments","assignmentsPanel"],["🧠","CBT / Tests","testsPanel"],["📖","Study Materials","materialsPanel"],["🏆","Results","studentResultsPanel"]]}
+  ];
+  function addHeading(text){const h=document.createElement("div");h.className="gs-nav-section-title";h.textContent=text;links.appendChild(h)}
+  function addItem(item){const [icon,label,target,sub]=item,btn=document.createElement("button");btn.type="button";btn.className="gs-nav-link";btn.innerHTML='<span>'+icon+'</span><div class="gs-nav-copy"><b>'+label+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div>';btn.dataset.target=target;btn.addEventListener("click",()=>{showSection(target);links.querySelectorAll(".gs-nav-link").forEach(x=>x.classList.remove("active"));btn.classList.add("active");closeNav()});links.appendChild(btn)}
+  function buildNav(){if(!links)return;const role=String(window.currentUserRole||currentStudentProfile?.role||"student").trim().toLowerCase(),isSuper=role==="superadmin",isAdmin=role==="admin"||isSuper,groups=isSuper?superadminGroups:(isAdmin?adminGroups:studentGroups);links.innerHTML="";groups.forEach(g=>{addHeading(g.heading);g.items.forEach(addItem)});const first=links.querySelector(".gs-nav-link");first?.classList.add("active");if(nameEl){const n=document.getElementById("welcomeTitle")?.textContent||"Welcome";nameEl.textContent=n.replace(/^Welcome,\s*/i,"")||"Welcome"}if(roleEl){roleEl.textContent=isSuper?"SUPERADMIN":isAdmin?"ADMIN":"STUDENT";roleEl.className="gs-nav-role-badge "+(isSuper?"superadmin":isAdmin?"admin":"student")}sideNav?.classList.toggle("gs-superadmin",isSuper)}
+  function allSections(){return Array.from(document.querySelectorAll(".portal-section"))}
+  function showSection(target){const dash=document.getElementById("dashboardView");if(target==="dashboardView"){allSections().forEach(el=>el.classList.add("gs-section-hidden"));window.scrollTo({top:0,behavior:"smooth"});return}allSections().forEach(el=>el.classList.toggle("gs-section-hidden",el.id!==target));const el=document.getElementById(target);if(el&&!el.classList.contains("hidden"))setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),30)}
+  window.gsShowSection=showSection;window.gsBuildNav=buildNav;window.gsRefreshNavigation=buildNav;
+  document.addEventListener("DOMContentLoaded",()=>{buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))});
+  let lastRole="";setInterval(()=>{const role=String(window.currentUserRole||"").trim().toLowerCase();if(role&&role!==lastRole){lastRole=role;buildNav();allSections().forEach(el=>el.classList.add("gs-section-hidden"))}},500);
+})();
+document.querySelectorAll(".quick-action").forEach(btn=>btn.addEventListener("click",()=>{if(window.gsShowSection)window.gsShowSection(btn.dataset.target)}));
+$("closeCourseModal")?.addEventListener("click",()=>$("courseModal").classList.add("hidden"));
+$("courseModal")?.addEventListener("click",e=>{if(e.target===$("courseModal"))$("courseModal").classList.add("hidden")});
+
+
+// ===== V25 COURSE → SUBJECT → TOPIC → LESSON LEARNING SYSTEM =====
+const courseAdminPanel=$('courseAdminPanel'), courseForm=$('courseForm'), subjectForm=$('subjectForm'), topicForm=$('topicForm'), lessonForm=$('lessonForm');
+const learningPathPanel=$('learningPathPanel'), learningPathContent=$('learningPathContent'), learningPathTitle=$('learningPathTitle'), learningPathSubtitle=$('learningPathSubtitle');
+const courseData={courses:[],subjects:[],topics:[],lessons:[]};
+let learningTrail=[];
+function fsDate(v){try{return v?.toDate?v.toDate():new Date(v)}catch(e){return null}}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+async function readCollectionSafe(name){
+  try{return await getDocs(collection(db,name))}
+  catch(e){console.error('Could not read '+name,e);return null}
+}
+async function loadCourseStructure(){
+  if(!courseAdminPanel && !learningPathPanel)return;
+  try{
+    const [cs,ss,ts,ls]=await Promise.all([
+      readCollectionSafe('courses'),readCollectionSafe('subjects'),
+      readCollectionSafe('topics'),readCollectionSafe('lessons')
+    ]);
+    courseData.courses=cs?cs.docs.map(d=>({id:d.id,...d.data()})):[];
+    courseData.subjects=ss?ss.docs.map(d=>({id:d.id,...d.data()})):[];
+    courseData.topics=ts?ts.docs.map(d=>({id:d.id,...d.data()})):[];
+    courseData.lessons=ls?ls.docs.map(d=>({id:d.id,...d.data()})):[];
+    populateCourseSelectors(); renderCourseAdminList();
+    if(!cs && courseAdminPanel)$('courseAdminList').innerHTML='<p class="message">Could not read courses. Please check that you are logged in and that the Firestore courses rule is published.</p>';
+  }catch(e){console.error('Course structure:',e); if(courseAdminPanel)$('courseAdminList').innerHTML='<p class="message">Could not load course structure: '+(e.code||e.message)+'</p>'}
+}
+function populateCourseSelectors(){
+  const c=$('subjectCourse'), s=$('topicSubject'), t=$('lessonTopic'); if(!c||!s||!t)return;
+  c.innerHTML=courseData.courses.length?courseData.courses.map(x=>`<option value="${x.id}">${esc(x.name)} (${esc(x.category||'General')})</option>`).join(''):'<option value="">Create a course first</option>';
+  s.innerHTML=courseData.subjects.length?courseData.subjects.map(x=>{const c0=courseData.courses.find(c=>c.id===x.courseId);return `<option value="${x.id}">${esc(x.name)} — ${esc(c0?.name||'Course')}</option>`}).join(''):'<option value="">Create a subject first</option>';
+  t.innerHTML=courseData.topics.length?courseData.topics.map(x=>{const s0=courseData.subjects.find(s=>s.id===x.subjectId);return `<option value="${x.id}">${esc(x.name)} — ${esc(s0?.name||'Subject')}</option>`}).join(''):'<option value="">Create a topic first</option>';
+}
+function renderCourseAdminList(){
+  const box=$('courseAdminList'); if(!box)return;
+  if(!courseData.courses.length){box.innerHTML='<p class="muted">No courses created yet.</p>';return}
+  box.innerHTML=courseData.courses.map(c=>{const subs=courseData.subjects.filter(s=>s.courseId===c.id); return `<div class="admin-course-block"><div class="admin-course-title"><b>🎓 ${esc(c.name)}</b><span>${esc(c.category||'General')}</span></div>${subs.length?subs.map(s=>{const tops=courseData.topics.filter(t=>t.subjectId===s.id);return `<div class="admin-subject-block"><b>📘 ${esc(s.name)}</b>${tops.length?'<ul>'+tops.map(t=>{const ls=courseData.lessons.filter(l=>l.topicId===t.id);return `<li>📌 ${esc(t.name)} <small>${ls.length} lesson${ls.length===1?'':'s'}</small></li>`}).join('')+'</ul>':'<small class="muted">No topics yet</small>'}</div>`}).join(''):'<p class="muted">No subjects yet.</p>'}</div>`}).join('');
+}
+async function addStructureDoc(col,payload,msgEl,form){
+  msgEl.className='message'; msgEl.textContent='Saving...';
+  try{await addDoc(collection(db,col),{...payload,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid}); msgEl.className='message submission-success';msgEl.textContent='Saved successfully ✅';form.reset();await loadCourseStructure();await loadLearningCentre();}
+  catch(e){console.error(e);msgEl.className='message submission-error';msgEl.textContent='Could not save: '+(e.code||e.message)}
+}
+courseForm?.addEventListener('submit',e=>{e.preventDefault();addStructureDoc('courses',{name:$('courseName').value.trim(),category:$('courseCategory').value},$('courseMessage'),courseForm)});
+subjectForm?.addEventListener('submit',e=>{e.preventDefault();if(!$('subjectCourse').value)return;addStructureDoc('subjects',{name:$('subjectName').value.trim(),courseId:$('subjectCourse').value},$('subjectMessage'),subjectForm)});
+topicForm?.addEventListener('submit',e=>{e.preventDefault();if(!$('topicSubject').value)return;addStructureDoc('topics',{name:$('topicName').value.trim(),subjectId:$('topicSubject').value},$('topicMessage'),topicForm)});
+lessonForm?.addEventListener('submit',e=>{e.preventDefault();if(!$('lessonTopic').value)return;addStructureDoc('lessons',{title:$('lessonTitle').value.trim(),content:$('lessonContent').value.trim(),pdfUrl:$('lessonPdfUrl').value.trim(),topicId:$('lessonTopic').value},$('lessonMessage'),lessonForm)});
+function openLearningPath(type,id){
+  learningTrail.push({type,id});
+  const c=courseData.courses.find(x=>x.id===id), s=courseData.subjects.find(x=>x.id===id), t=courseData.topics.find(x=>x.id===id), l=courseData.lessons.find(x=>x.id===id);
+  if(type==='course'){
+    learningPathTitle.textContent=c?.name||'Course';learningPathSubtitle.textContent='Choose a subject';
+    const rows=courseData.subjects.filter(x=>x.courseId===id); renderPathCards(rows,'subject');
+  }else if(type==='subject'){
+    learningPathTitle.textContent=s?.name||'Subject';learningPathSubtitle.textContent='Choose a topic';
+    const rows=courseData.topics.filter(x=>x.subjectId===id);renderPathCards(rows,'topic');
+  }else if(type==='topic'){
+    learningPathTitle.textContent=t?.name||'Topic';learningPathSubtitle.textContent='Choose a lesson';
+    const rows=publishedLessons().filter(x=>x.topicId===id);renderPathCards(rows,'lesson');
+  }else if(type==='lesson'){
+    learningPathTitle.textContent=l?.title||'Lesson';learningPathSubtitle.textContent='Lesson';
+    const lessonHtml=String(l?.contentFormat||'').toLowerCase()==='html'?sanitizeRichHtml(l?.content||''):esc(l?.content||'').replace(/\n/g,'<br>'); learningPathContent.innerHTML=`<article class="lesson-view"><div class="lesson-badge">LESSON</div><div class="lesson-body">${lessonHtml}</div>${l?.pdfUrl?`<div class="lesson-file-actions"><a class="primary-btn" href="${esc(l.pdfUrl)}" target="_blank" rel="noopener">📖 View PDF</a><a class="secondary-btn" href="${esc(l.pdfUrl)}" download>⬇️ Download PDF</a></div>`:''}</article>`;
+  }
+  // Navigation hides every portal section when switching views. The lesson path is a separate section, so explicitly remove both hidden states before opening it.
+  learningPathPanel?.classList.remove('hidden','gs-section-hidden');
+  learningPathPanel?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+window.openLearningPath=openLearningPath;
+function renderPathCards(rows,type){
+  if(!rows.length){learningPathContent.innerHTML=`<div class="learning-empty"><div>📚</div><h3>No ${type}s yet</h3><p class="muted">Your tutor will add content here.</p></div>`;return}
+  learningPathContent.innerHTML=rows.map(x=>{const count=type==='subject'?courseData.topics.filter(t=>t.subjectId===x.id).length:type==='topic'?courseData.lessons.filter(l=>l.topicId===x.id).length:0;return `<button class="path-card" type="button" data-id="${esc(x.id)}" data-type="${esc(type)}" style="position:relative;z-index:20;pointer-events:auto;cursor:pointer;"><span>${type==='subject'?'📘':type==='topic'?'📌':'📖'}</span><div><b>${esc(x.name||x.title)}</b><small>${type==='lesson'?'Open lesson':count+' '+(type==='subject'?'topics':'lessons')}</small></div><strong>›</strong></button>`}).join('');
+  learningPathContent.querySelectorAll('.path-card').forEach(b=>{b.onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();openLearningPath(b.dataset.type,b.dataset.id)}});
+}
+function publishedLessons(){return courseData.lessons.filter(l=>String(l.status||'published').toLowerCase()==='published' || !l.status)}
+function renderLearningCoursesV25(){
+  if(!learningCourseGrid)return;
+  let rows=courseData.courses.filter(c=>learningFilter==='all'||c.category===learningFilter);
+  if(!rows.length){learningCourseGrid.innerHTML='<div class="learning-empty"><div>🎓</div><h3>No courses yet</h3><p class="muted">Your tutor will publish courses here.</p></div>';return}
+  const liveLessons=publishedLessons();
+  learningCourseGrid.innerHTML=rows.map(c=>{const subs=courseData.subjects.filter(s=>s.courseId===c.id),topics=subs.reduce((n,s)=>n+courseData.topics.filter(t=>t.subjectId===s.id).length,0),lessons=liveLessons.filter(l=>l.courseId===c.id).length;return `<article class="learning-course-card learning-track-card"><div class="learning-course-top"><span class="course-icon">${c.category==='JAMB'?'🎓':c.category==='WAEC'?'📘':'📚'}</span><span class="course-category ${String(c.category||'general').toLowerCase()}">${esc(c.category||'General')}</span></div><h3>${esc(c.name)}</h3><p class="muted">${subs.length} subject${subs.length===1?'':'s'} • ${topics} topics • ${lessons} lessons</p><div class="course-resource-row"><span>📘 ${subs.length} Subjects</span><span>📌 ${topics} Topics</span><span>📖 ${lessons} Lessons</span></div><div class="course-actions"><button class="primary-btn" type="button" data-course-id="${c.id}">Open Course →</button></div></article>`}).join('');
+  learningCourseGrid.querySelectorAll('[data-course-id]').forEach(b=>b.addEventListener('click',()=>{learningPathPanel?.classList.remove('hidden');openLearningPath('course',b.dataset.courseId)}));
+}
+$('learningBackBtn')?.addEventListener('click',()=>{learningTrail.pop();const prev=learningTrail[learningTrail.length-1];if(prev)openLearningPath(prev.type,prev.id);else{learningPathPanel?.classList.add('hidden');learningTrail=[];$('learningCentrePanel')?.scrollIntoView({behavior:'smooth'})}});
+// Override course rendering/loading so V25 courses are first-class while preserving V24 resources.
+const _v24RenderLearningCentre=renderLearningCentre;
+renderLearningCentre=function(){ if(courseData.courses.length){renderLearningCoursesV25()} else {_v24RenderLearningCentre()} };
+const _v24LoadLearningCentre=loadLearningCentre;
+loadLearningCentre=async function(){await _v24LoadLearningCentre();await loadCourseStructure();if(courseData.courses.length)renderLearningCoursesV25();};
+
+// ===== V27 COURSE BUILDER WIZARD =====
+const qbCourse=$('qbCourse'),qbSubject=$('qbSubject'),qbTopic=$('qbTopic');
+let qbCurrentStep=1;
+function qbSetMsg(id,text,ok=false){const el=$(id);if(!el)return;el.className='message '+(ok?'submission-success':'');el.textContent=text||''}
+function qbToggle(id){$(id)?.classList.toggle('hidden')}
+function qbSelectedCourse(){return courseData.courses.find(c=>c.id===qbCourse?.value)}
+function qbSelectedSubject(){return courseData.subjects.find(s=>s.id===qbSubject?.value)}
+function qbSelectedTopic(){return courseData.topics.find(t=>t.id===qbTopic?.value)}
+function qbUpdateContext(){const c=qbSelectedCourse(),s=qbSelectedSubject(),t=qbSelectedTopic();if($('qbContextCourse'))$('qbContextCourse').textContent=c?.name||'—';if($('qbContextSubject'))$('qbContextSubject').textContent=s?.name||'—';if($('qbContextTopic'))$('qbContextTopic').textContent=t?.name||'—'}
+function qbCanStep(step){if(step===1)return true;if(step===2)return !!qbSelectedCourse();if(step===3)return !!qbSelectedCourse()&&!!qbSelectedSubject();if(step===4)return !!qbSelectedCourse()&&!!qbSelectedSubject()&&!!qbSelectedTopic();return false}
+function qbSummary(step){const c=qbSelectedCourse(),s=qbSelectedSubject(),t=qbSelectedTopic();if(step===1)return c?`<b>${esc(c.name)}</b><small>${esc(c.category||'General')} course</small>`:'';if(step===2)return s?`<b>${esc(s.name)}</b><small>Subject in ${esc(c?.name||'Course')}</small>`:'';if(step===3)return t?`<b>${esc(t.name)}</b><small>Topic in ${esc(s?.name||'Subject')}</small>`:'';return ''}
+function qbRefreshSummaries(){
+  [['qbCourseSummary',1,'qbEditCourse'],['qbSubjectSummary',2,'qbEditSubject'],['qbTopicSummary',3,'qbEditTopic']].forEach(([sid,step,eid])=>{const el=$(sid),edit=$(eid),txt=qbSummary(step);if(el){el.innerHTML=txt;el.classList.toggle('hidden',!txt)}if(edit)edit.classList.toggle('hidden',!txt)});
+  qbUpdateContext();
+}
+function qbSetStep(step,force=false){
+  if(!force&&!qbCanStep(step))return;
+  qbCurrentStep=step;
+  document.querySelectorAll('#courseAdminPanel .builder-step-card').forEach(card=>{const n=Number(card.dataset.builderStep);card.classList.toggle('active',n===step);card.classList.toggle('locked',n>step&&!qbCanStep(n));card.classList.toggle('collapsed',n<step&&qbCanStep(n));});
+  document.querySelectorAll('#courseAdminPanel [data-qb-step]').forEach(btn=>{const n=Number(btn.dataset.qbStep);btn.classList.toggle('active',n===step);btn.classList.toggle('done',n<step&&qbCanStep(n));btn.classList.toggle('locked',n>step&&!qbCanStep(n));btn.disabled=n>step&&!qbCanStep(n)});
+  qbRefreshSummaries();
+  const card=$('qbStep'+step);if(card)card.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function refreshQuickBuilder(){
+  if(!qbCourse)return;
+  qbCourse.innerHTML=courseData.courses.length?courseData.courses.map(c=>`<option value="${esc(c.id)}">${esc(c.name)} — ${esc(c.category||'General')}</option>`).join(''):'<option value="">No courses yet — create one</option>';
+  refreshQBSubjects();qbSetStep(Math.min(qbCurrentStep,1),true);
+}
+function refreshQBSubjects(){
+  if(!qbSubject)return;
+  const cid=qbCourse?.value,rows=courseData.subjects.filter(s=>s.courseId===cid);
+  qbSubject.innerHTML=rows.length?rows.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join(''):'<option value="">No subjects yet — create one</option>';
+  refreshQBTopics();qbRefreshSummaries();
+}
+function refreshQBTopics(){
+  if(!qbTopic)return;
+  const sid=qbSubject?.value,rows=courseData.topics.filter(t=>t.subjectId===sid);
+  qbTopic.innerHTML=rows.length?rows.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join(''):'<option value="">No topics yet — create one</option>';
+  qbRefreshSummaries();
+}
+function renderCourseAdminListV27(){
+  const box=$('courseAdminList');if(!box)return;
+  if(!courseData.courses.length){box.innerHTML='<div class="learning-empty"><div>🎓</div><h3>No courses yet</h3><p class="muted">Start with a course above.</p></div>';return;}
+  box.innerHTML=courseData.courses.map(c=>{
+    const subs=courseData.subjects.filter(s=>s.courseId===c.id);
+    return `<div class="admin-course-block"><div class="admin-course-title"><b>🎓 ${esc(c.name)}</b><span>${esc(c.category||'General')}</span></div>${subs.length?subs.map(s=>{
+      const tops=courseData.topics.filter(t=>t.subjectId===s.id);
+      return `<div class="admin-subject-block"><div class="admin-course-title"><b>📘 ${esc(s.name)}</b><span>${tops.length} topic${tops.length===1?'':'s'}</span></div>${tops.length?tops.map(t=>{const ls=courseData.lessons.filter(l=>l.topicId===t.id);return `<div class="admin-topic-block"><div class="admin-course-title"><b>📌 ${esc(t.name)}</b><span>${ls.length} lesson${ls.length===1?'':'s'}</span></div>${ls.length?ls.map(l=>`<div class="lesson-row"><div><b>📖 ${esc(l.title||'Untitled Lesson')}</b>${String(l.status||'published').toLowerCase()==='draft'?'<span class="draft-badge">DRAFT</span>':'<span class="published-badge">PUBLISHED</span>'}${l.pdfUrl?'<small> • PDF attached</small>':''}</div><div class="lesson-row-actions"><button type="button" class="secondary-btn admin-delete-mini" data-del-type="lesson" data-del-id="${esc(l.id)}">Delete</button></div></div>`).join(''):'<small class="muted">No lessons yet</small>'}</div>`}).join(''):'<small class="muted">No topics yet</small>'}</div>`;
+    }).join(''):'<p class="muted">No subjects yet.</p>'}</div>`;
+  }).join('');
+  box.querySelectorAll('[data-del-type="lesson"]').forEach(btn=>btn.addEventListener('click',()=>qbDeleteLesson(btn.dataset.delId)));
+}
+async function qbReload(){await loadCourseStructure();refreshQuickBuilder();renderCourseAdminListV27()}
+qbCourse?.addEventListener('change',()=>{refreshQBSubjects();qbSetStep(2);});
+qbSubject?.addEventListener('change',()=>{refreshQBTopics();qbSetStep(3);});
+qbTopic?.addEventListener('change',()=>{qbRefreshSummaries();qbSetStep(4);});
+$('qbNewCourse')?.addEventListener('click',()=>qbToggle('qbCourseNew'));
+$('qbNewSubject')?.addEventListener('click',()=>qbToggle('qbSubjectNew'));
+$('qbNewTopic')?.addEventListener('click',()=>qbToggle('qbTopicNew'));
+$('qbContinue1')?.addEventListener('click',()=>{if(qbCanStep(2))qbSetStep(2);else qbSetMsg('qbCourseMsg','Create or select a course first.')});
+$('qbContinue2')?.addEventListener('click',()=>{if(qbCanStep(3))qbSetStep(3);else qbSetMsg('qbSubjectMsg','Create or select a subject first.')});
+$('qbContinue3')?.addEventListener('click',()=>{if(qbCanStep(4))qbSetStep(4);else qbSetMsg('qbTopicMsg','Create or select a topic first.')});
+$('qbEditCourse')?.addEventListener('click',()=>qbSetStep(1,true));
+$('qbEditSubject')?.addEventListener('click',()=>qbSetStep(2,true));
+$('qbEditTopic')?.addEventListener('click',()=>qbSetStep(3,true));
+document.querySelectorAll('#courseAdminPanel [data-qb-step]').forEach(btn=>btn.addEventListener('click',()=>{const n=Number(btn.dataset.qbStep);if(qbCanStep(n))qbSetStep(n,true)}));
+$('qbSaveCourse')?.addEventListener('click',async()=>{
+  const name=$('qbCourseName').value.trim(),category=$('qbCourseCategory').value;
+  if(!name){qbSetMsg('qbCourseMsg','Enter a course name.');return}
+  qbSetMsg('qbCourseMsg','Creating course...');
+  try{const ref=await addDoc(collection(db,'courses'),{name,category,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbCourseName').value='';$('qbCourseNew').classList.add('hidden');await qbReload();qbCourse.value=ref.id;refreshQBSubjects();qbSetStep(2,true);qbSetMsg('qbCourseMsg','Course created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbCourseMsg','Could not create course: '+(e.code||e.message))}
+});
+$('qbSaveSubject')?.addEventListener('click',async()=>{
+  const courseId=qbCourse?.value,name=$('qbSubjectName').value.trim();
+  if(!courseId){qbSetMsg('qbSubjectMsg','Create or select a course first.');return}
+  if(!name){qbSetMsg('qbSubjectMsg','Enter a subject name.');return}
+  qbSetMsg('qbSubjectMsg','Creating subject...');
+  try{const ref=await addDoc(collection(db,'subjects'),{name,courseId,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbSubjectName').value='';$('qbSubjectNew').classList.add('hidden');await qbReload();qbCourse.value=courseId;refreshQBSubjects();qbSubject.value=ref.id;refreshQBTopics();qbSetStep(3,true);qbSetMsg('qbSubjectMsg','Subject created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbSubjectMsg','Could not create subject: '+(e.code||e.message))}
+});
+$('qbSaveTopic')?.addEventListener('click',async()=>{
+  const subjectId=qbSubject?.value,name=$('qbTopicName').value.trim();
+  if(!subjectId){qbSetMsg('qbTopicMsg','Create or select a subject first.');return}
+  if(!name){qbSetMsg('qbTopicMsg','Enter a topic title.');return}
+  qbSetMsg('qbTopicMsg','Creating topic...');
+  try{const ref=await addDoc(collection(db,'topics'),{name,subjectId,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});$('qbTopicName').value='';$('qbTopicNew').classList.add('hidden');await qbReload();qbSubject.value=subjectId;refreshQBTopics();qbTopic.value=ref.id;qbRefreshSummaries();qbSetStep(4,true);qbSetMsg('qbTopicMsg','Topic created successfully ✅',true)}catch(e){console.error(e);qbSetMsg('qbTopicMsg','Could not create topic: '+(e.code||e.message))}
+});
+
+// ===== V28 RICH TEXT EDITOR =====
+function qbEditorText(){
+  return ($('qbLessonContent')?.innerText || $('qbLessonContent')?.textContent || '').replace(/\u00a0/g,' ').trim();
+}
+function sanitizeRichHtml(html){
+  const template=document.createElement('template');
+  template.innerHTML=String(html||'');
+  const allowed=new Set(['B','STRONG','I','EM','U','H2','H3','H4','P','BR','UL','OL','LI','BLOCKQUOTE','A','CODE','PRE','SUB','SUP','DIV','SPAN','IMG','FIGURE','FIGCAPTION','IFRAME','TABLE','THEAD','TBODY','TR','TH','TD']);
+  const walk=node=>{
+    [...node.childNodes].forEach(child=>{
+      if(child.nodeType===Node.ELEMENT_NODE){
+        if(!allowed.has(child.tagName)){
+          const frag=document.createDocumentFragment();
+          while(child.firstChild)frag.appendChild(child.firstChild);
+          child.replaceWith(frag); return;
+        }
+        const tag=child.tagName;
+        const keep=new Set(tag==='A'?['href','target','rel']:tag==='IMG'?['src','alt','title']:tag==='IFRAME'?['src','title','allow','allowfullscreen','frameborder']:[]);
+        [...child.attributes].forEach(attr=>{if(!keep.has(attr.name.toLowerCase()))child.removeAttribute(attr.name)});
+        if(tag==='A'){
+          const href=child.getAttribute('href')||'';
+          if(!/^https?:\/\//i.test(href)){child.removeAttribute('href')}else{child.setAttribute('target','_blank');child.setAttribute('rel','noopener noreferrer')}
+        }
+        if(tag==='IMG'){
+          const src=child.getAttribute('src')||'';
+          if(!/^https?:\/\//i.test(src)){child.remove();return}
+          child.setAttribute('loading','lazy');
+        }
+        if(tag==='IFRAME'){
+          const src=child.getAttribute('src')||'';
+          if(!/^https:\/\/(www\.)?(youtube\.com|youtube-nocookie\.com)\//i.test(src)){child.remove();return}
+          child.setAttribute('loading','lazy');
+          child.setAttribute('allow','accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+          child.setAttribute('allowfullscreen','');
+        }
+        walk(child);
+      }else if(child.nodeType!==Node.TEXT_NODE){child.remove()}
+    });
+  };
+  walk(template.content);
+  return template.innerHTML.trim();
+}
+function qbRichExec(cmd,value=null){
+  $('qbLessonContent')?.focus();
+  try{document.execCommand(cmd,false,value)}catch(e){console.warn('Formatting command failed',cmd,e)}
+}
+
+// Fast formatting shortcuts: admins can format while typing without returning to the toolbar.
+document.getElementById('qbLessonContent')?.addEventListener('keydown',e=>{
+  if(!(e.ctrlKey||e.metaKey))return;
+  const k=e.key.toLowerCase();
+  if(['b','i','u'].includes(k)){e.preventDefault();qbRichExec(k==='b'?'bold':k==='i'?'italic':'underline');}
+});
+document.querySelectorAll('#qbLessonToolbar [data-cmd]').forEach(btn=>btn.addEventListener('mousedown',e=>e.preventDefault()));
+document.querySelectorAll('#qbLessonToolbar [data-cmd]').forEach(btn=>btn.addEventListener('click',()=>qbRichExec(btn.dataset.cmd)));
+$('qbLessonToolbar [data-block]')?.addEventListener('change',e=>{
+  const value=e.target.value;
+  $('qbLessonContent')?.focus();
+  qbRichExec('formatBlock',value);
+  e.target.value='p';
+});
+$('qbLessonToolbar [data-link]')?.addEventListener('mousedown',e=>e.preventDefault());
+$('qbLessonToolbar [data-link]')?.addEventListener('click',()=>{
+  const url=prompt('Enter the full link (https://...)');
+  if(url && /^https?:\/\//i.test(url.trim()))qbRichExec('createLink',url.trim());
+});
+
+function qbYoutubeEmbed(url){
+  try{
+    const u=new URL(url); let id='';
+    if(u.hostname==='youtu.be') id=u.pathname.slice(1);
+    if(u.hostname.includes('youtube.com')) id=u.searchParams.get('v')||u.pathname.split('/').filter(Boolean).pop();
+    id=(id||'').replace(/[^a-zA-Z0-9_-]/g,'');
+    return id?`https://www.youtube-nocookie.com/embed/${id}`:'';
+  }catch(e){return ''}
+}
+function qbInsertHtml(html){const editor=$('qbLessonContent');if(!editor)return;editor.focus();document.execCommand('insertHTML',false,html);}
+function qbInsertImage(){
+  const url=prompt('Paste the image URL (https://...)');
+  if(!url||!/^https?:\/\//i.test(url.trim()))return;
+  const alt=prompt('Image description (optional)')||'Lesson image';
+  qbInsertHtml(`<figure class="lesson-media image-media"><img src="${esc(url.trim())}" alt="${esc(alt)}"><figcaption>${esc(alt)}</figcaption></figure><p><br></p>`);
+}
+function qbInsertVideo(){
+  const url=prompt('Paste a YouTube video link (https://youtube.com/... or https://youtu.be/...)');
+  const embed=qbYoutubeEmbed((url||'').trim());
+  if(!embed){if(url)alert('Please enter a valid YouTube link.');return}
+  qbInsertHtml(`<div class="lesson-media video-media"><iframe src="${embed}" title="Lesson video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div><p><br></p>`);
+}
+$('qbInsertImage')?.addEventListener('click',qbInsertImage);
+$('qbInsertVideo')?.addEventListener('click',qbInsertVideo);
+
+// ===== V32 PASTE-FRIENDLY TABLE + CALCULATION BLOCKS =====
+function htmlEscText(v){return esc(String(v??''));}
+function linesToPreHtml(text){return htmlEscText(text).replace(/\n/g,'<br>');}
+function parsePipeTable(lines){
+  const clean=lines.map(x=>String(x).trim()).filter(Boolean);
+  if(clean.length<2)return '';
+  let rows=clean.map(x=>x.replace(/^\||\|$/g,'').split('|').map(c=>c.trim()));
+  const isSep=r=>r.length>0 && r.every(c=>/^:?-{3,}:?$/.test(c));
+  let header=rows[0], body=rows.slice(1);
+  if(body.length && isSep(body[0])) body=body.slice(1);
+  if(header.length<2 || (!body.length && !isSep(rows[1]||[]))) return '';
+  const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
+  const bodyHtml=body.map(r=>'<tr>'+header.map((_,i)=>`<td>${htmlEscText(r[i]||'')}</td>`).join('')+'</tr>').join('');
+  return `<table class="lesson-table">${head}${bodyHtml?`<tbody>${bodyHtml}</tbody>`:''}</table>`;
+}
+function parseLooseTable(lines){
+  const clean=lines.map(x=>String(x).trim()).filter(Boolean);
+  if(clean.length<2)return '';
+  // Accept pipe, tab or multiple-space columns. This makes pasted AI tables work even
+  // after a mobile browser has converted the original markdown table into plain text.
+  let rows=clean.map(x=>x.replace(/^\||\|$/g,'').split(/\s*\|\s*|\t+/).map(c=>c.trim()).filter(Boolean));
+  const width=Math.max(...rows.map(r=>r.length));
+  if(width<2)return '';
+  rows=rows.map(r=>Array.from({length:width},(_,i)=>r[i]||''));
+  const looksSep=r=>r.every(c=>/^:?-{3,}:?$/.test(c));
+  if(!looksSep(rows[1]) && !clean.some(x=>x.includes('|')))return '';
+  const header=rows[0], body=looksSep(rows[1])?rows.slice(2):rows.slice(1);
+  const head='<thead><tr>'+header.map(c=>`<th>${htmlEscText(c)}</th>`).join('')+'</tr></thead>';
+  const bodyHtml=body.map(r=>'<tr>'+header.map((_,i)=>`<td>${htmlEscText(r[i]||'')}</td>`).join('')+'</tr>').join('');
+  return `<table class="lesson-table">${head}<tbody>${bodyHtml}</tbody></table>`;
+}
+function aiInlineFormat(text){
+  let s=htmlEscText(String(text??''));
+  const stash=[];
+  s=s.replace(/`([^`]+)`/g,(_,x)=>{const k=`@@CODE${stash.length}@@`;stash.push(`<code>${x}</code>`);return k;});
+  s=s.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
+  s=s.replace(/__([^_\n]+)__/g,'<u>$1</u>');
+  s=s.replace(/\*([^*\n]+)\*/g,'<em>$1</em>');
+  s=s.replace(/\b([A-Za-z0-9]+)\^([A-Za-z0-9+-]+)\b/g,'$1<sup>$2</sup>');
+  s=s.replace(/@@CODE(\d+)@@/g,(_,i)=>stash[Number(i)]||'');
+  return s;
+}
+function aiFormatPlainBlock(lines){
+  return lines.map(line=>{
+    const t=line.trim();
+    if(!t)return '<p><br></p>';
+    if(/^###\s+/.test(t))return `<h4>${aiInlineFormat(t.replace(/^###\s+/,''))}</h4>`;
+    if(/^##\s+/.test(t))return `<h3>${aiInlineFormat(t.replace(/^##\s+/,''))}</h3>`;
+    if(/^#\s+/.test(t))return `<h2>${aiInlineFormat(t.replace(/^#\s+/,''))}</h2>`;
+    if(/^[-•*]\s+/.test(t))return `<p>• ${aiInlineFormat(t.replace(/^[-•*]\s+/,''))}</p>`;
+    if(/^\d+[.)]\s+/.test(t))return `<p>${aiInlineFormat(t)}</p>`;
+    return `<p>${aiInlineFormat(t)}</p>`;
+  }).join('');
+}
+function formatAiLessonText(text){
+  const src=String(text||'').replace(/\r\n?/g,'\n');
+  if(!src.trim())return '';
+  const lines=src.split('\n'); let out='',i=0,plain=[]; let firstContentSeen=false;
+  const flush=()=>{if(!plain.length)return;
+    while(plain.length && !plain[0].trim())plain.shift();
+    if(!firstContentSeen && plain.length && /^[A-Z][A-Z0-9 &'’()\-]{2,70}$/.test(plain[0].trim())){
+      out+=`<h2>${aiInlineFormat(plain.shift().trim())}</h2>`;
+      firstContentSeen=true;
+    }
+    if(plain.length){
+      // Treat standalone ALL-CAPS lines later in the lesson as subheadings.
+      const chunks=[];
+      plain.forEach(line=>{
+        const t=line.trim();
+        const labeled=/^(?:DEFINITION|MEANING|INTRODUCTION|RULES?|TYPES?|EXAMPLES?|WORKED EXAMPLES?|IMPORTANT NOTES?|KEY POINTS?|EXAM TIPS?|COMMON ERRORS?|PRACTICE QUESTIONS?|QUESTIONS?|ANSWERS?|SUMMARY|CONCLUSION)\s*:??$/i.test(t);
+        if((/^[A-Z][A-Z0-9 &'’()\-]{2,60}$/.test(t) && t.split(/\s+/).length<=8) || labeled){
+          if(chunks.length){out+=aiFormatPlainBlock(chunks);chunks.length=0;}
+          out+=`<h3>${aiInlineFormat(t.replace(/:$/,''))}</h3>`;
+        }else chunks.push(line);
+      });
+      if(chunks.length)out+=aiFormatPlainBlock(chunks);
+      firstContentSeen=true;
+    } else if(!firstContentSeen) firstContentSeen=true;
+    plain=[];
+  };
+  while(i<lines.length){
+    const raw=lines[i], t=raw.trim();
+    if(/^\[table\]/i.test(t)){
+      flush(); let inline=t.replace(/^\[table\]/i,'').replace(/\[\/table\].*$/i,'').trim(); let block=[]; if(inline)block.push(inline); i++;
+      while(i<lines.length&&!/^\[\/table\]/i.test(lines[i].trim())){block.push(lines[i]);i++;}
+      if(i<lines.length)i++;
+      out+=parseLooseTable(block)||`<div class="calc-block"><pre>${htmlEscText(block.join('\n'))}</pre></div>`; firstContentSeen=true; continue;
+    }
+    if(/^\[calc\]/i.test(t)){
+      flush(); let block=[]; i++;
+      while(i<lines.length&&!/^\[\/calc\]/i.test(lines[i].trim())){block.push(lines[i]);i++;}
+      if(i<lines.length)i++;
+      out+=`<div class="calc-block"><pre>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</pre></div>`; firstContentSeen=true; continue;
+    }
+    if(/^\[answer\]/i.test(t)){
+      flush(); let block=[]; i++;
+      while(i<lines.length&&!/^\[\/answer\]/i.test(lines[i].trim())){block.push(lines[i]);i++;}
+      if(i<lines.length)i++;
+      out+=`<div class="answer-block"><b>Answer</b><div>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</div></div>`; firstContentSeen=true; continue;
+    }
+    if(/^\s*\|.*\|\s*$/.test(raw) && i+1<lines.length){
+      let j=i, block=[]; while(j<lines.length && /^\s*\|.*\|\s*$/.test(lines[j])){block.push(lines[j]);j++;}
+      if(block.length>=2){const table=parseLooseTable(block);if(table){flush();out+=table;firstContentSeen=true;i=j;continue;}}
+    }
+    if(/^#{1,3}\s+/.test(t)){flush();const m=t.match(/^(#{1,3})\s+(.+)$/);const tag=m[1].length===1?'h2':m[1].length===2?'h3':'h4';out+=`<${tag}>${aiInlineFormat(m[2])}</${tag}>`;firstContentSeen=true;i++;continue;}
+    if(i+1<lines.length && /^(?:\s*[-_=]{4,}\s*)$/.test(lines[i+1]) && t){
+      flush();let block=[raw,lines[i+1]];i+=2;while(i<lines.length&&lines[i].trim()&&!/^\[/.test(lines[i].trim())){block.push(lines[i]);i++;}
+      out+=`<div class="calc-block"><pre>${aiInlineFormat(block.join('\n')).replace(/\n/g,'<br>')}</pre></div>`;firstContentSeen=true;continue;
+    }
+    if(/^\s*(?:FORMATTING|TABLES|CALCULATIONS|ANSWERS)\s*:\s*$/i.test(t)){flush();i++;continue;}
+    plain.push(raw);i++;
+  }
+  flush();return out;
+}
+function qbFormatAiNote(){
+  const editor=$('qbLessonContent');if(!editor)return;
+  const text=editor.innerText||editor.textContent||'';
+  if(!text.trim()){alert('Paste or type the AI lesson first.');return;}
+  const html=formatAiLessonText(text);
+  if(html){editor.innerHTML=html;editor.focus();qbSetMsg('qbLessonMsg','AI formatting applied successfully ✨');}
+}
+$('qbFormatAiNote')?.addEventListener('click',qbFormatAiNote);
+
+// V36: Keep pasted AI text as RAW text until the user presses "Format AI Note".
+// This is intentional: converting during paste can destroy [table]/[calc]/[answer]
+// markers before the formatter gets a chance to see them. The browser's normal paste
+// behavior is therefore used here.
+function pasteAsRawAiLesson(e){
+  const text=e.clipboardData?.getData('text/plain');
+  if(!text)return;
+  // Let the browser paste the exact text. The Format AI Note button is the
+  // authoritative conversion step.
+}
+$('qbLessonContent')?.addEventListener('paste',pasteAsRawAiLesson);
+let qbTableRange=null;
+function qbRememberEditorSelection(){
+  const editor=$('qbLessonContent'),sel=window.getSelection();
+  if(!editor||!sel||!sel.rangeCount)return;
+  const range=sel.getRangeAt(0);
+  if(editor.contains(range.commonAncestorContainer))qbTableRange=range.cloneRange();
+}
+function qbCloseTableBuilder(){
+  const modal=$('qbTableModal');
+  if(!modal)return;
+  modal.classList.add('hidden');modal.setAttribute('aria-hidden','true');
+  $('qbTableMessage').textContent='';
+}
+function qbBuildTableGrid(){
+  const box=$('qbTableGrid');if(!box)return;
+  let rows=Math.max(1,Math.min(20,parseInt($('qbTableRows').value,10)||1));
+  let cols=Math.max(1,Math.min(10,parseInt($('qbTableCols').value,10)||1));
+  $('qbTableRows').value=rows;$('qbTableCols').value=cols;
+  const table=document.createElement('table');table.className='table-builder-grid';
+  const tbody=document.createElement('tbody');
+  for(let r=0;r<rows;r++){
+    const tr=document.createElement('tr');
+    for(let c=0;c<cols;c++){
+      const cell=document.createElement(r===0?'th':'td');
+      const editor=document.createElement('div');editor.className='table-builder-cell';editor.contentEditable='true';editor.dataset.placeholder=r===0?'Heading':'Cell';
+      cell.appendChild(editor);tr.appendChild(cell);
+    }
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);box.innerHTML='';box.appendChild(table);
+  const first=box.querySelector('.table-builder-cell');if(first)first.focus();
+}
+function qbOpenTableBuilder(){
+  qbRememberEditorSelection();
+  const modal=$('qbTableModal');if(!modal)return;
+  modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');
+  qbBuildTableGrid();
+}
+function qbInsertBuiltTable(){
+  const grid=$('qbTableGrid')?.querySelector('table');
+  if(!grid){$('qbTableMessage').textContent='Create a table grid first.';return}
+  const rows=[...grid.rows];
+  if(!rows.length){$('qbTableMessage').textContent='Add at least one row.';return}
+  let html='<table class="lesson-table"><thead><tr>';
+  const header=[...rows[0].cells].map(c=>htmlEscText(c.textContent.trim()));
+  html+=header.map(x=>`<th>${x||' '}</th>`).join('')+'</tr></thead>';
+  if(rows.length>1){
+    html+='<tbody>';
+    for(let r=1;r<rows.length;r++){const cells=[...rows[r].cells];html+='<tr>'+header.map((_,i)=>`<td>${htmlEscText((cells[i]?.textContent||'').trim())||' '}</td>`).join('')+'</tr>'}
+    html+='</tbody>';
+  }
+  html+='</table><p><br></p>';
+  const editor=$('qbLessonContent');if(!editor)return;
+  editor.focus();
+  if(qbTableRange){
+    const sel=window.getSelection();sel.removeAllRanges();sel.addRange(qbTableRange);
+  }
+  document.execCommand('insertHTML',false,html);
+  qbTableRange=null;qbCloseTableBuilder();
+  qbSetMsg('qbLessonMsg','Table inserted successfully. You can edit the cells directly in the lesson.');
+}
+$('qbInsertTable')?.addEventListener('mousedown',e=>{e.preventDefault();qbRememberEditorSelection()});
+$('qbInsertTable')?.addEventListener('click',qbOpenTableBuilder);
+$('qbTableResize')?.addEventListener('click',qbBuildTableGrid);
+$('qbTableInsert')?.addEventListener('click',qbInsertBuiltTable);
+$('qbTableClose')?.addEventListener('click',qbCloseTableBuilder);
+$('qbTableCancel')?.addEventListener('click',qbCloseTableBuilder);
+$('qbTableModal')?.addEventListener('click',e=>{if(e.target.id==='qbTableModal')qbCloseTableBuilder()});
+$('qbTableCols')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();qbBuildTableGrid()}});
+$('qbTableRows')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();qbBuildTableGrid()}});
+
+function qbInsertCalc(){qbInsertHtml('<div class="calc-block"><pre>Write your calculation here...\n------------------------------\nAnswer = </pre></div><p><br></p>');}
+function qbInsertAnswer(){qbInsertHtml('<div class="answer-block"><b>Answer</b><div>Write the final answer here.</div></div><p><br></p>');}
+$('qbInsertTable')?.addEventListener('click',qbInsertTable);
+$('qbInsertCalc')?.addEventListener('click',qbInsertCalc);
+$('qbInsertAnswer')?.addEventListener('click',qbInsertAnswer);
+
+async function qbSaveLesson(status){
+  const topicId=qbTopic?.value,title=$('qbLessonTitle').value.trim(),rawHtml=$('qbLessonContent')?.innerHTML||'',editorText=$('qbLessonContent')?.innerText||$('qbLessonContent')?.textContent||'',formattedHtml=/\[\/?(?:table|calc|answer)\]/i.test(editorText)||/\*\*[^*]+\*\*/.test(editorText)||/__[^_]+__/.test(editorText)?formatAiLessonText(editorText):rawHtml,content=sanitizeRichHtml(formattedHtml),file=$('qbLessonFile')?.files?.[0];
+  if(!topicId){qbSetMsg('qbLessonMsg','Create or select a topic first.');return}
+  if(!title||!qbEditorText()){qbSetMsg('qbLessonMsg','Enter both a lesson title and lesson content.');return}
+  if(file && (file.type!=='application/pdf' && !/\.pdf$/i.test(file.name))){qbSetMsg('qbLessonMsg','Only PDF files are allowed.');return}
+  if(file && file.size>50*1024*1024){qbSetMsg('qbLessonMsg','PDF must be 50 MB or smaller.');return}
+  const topic=courseData.topics.find(t=>t.id===topicId),subject=courseData.subjects.find(s=>s.id===topic?.subjectId),course=courseData.courses.find(c=>c.id===subject?.courseId);
+  const btn=status==='draft'?$('qbSaveDraft'):$('qbPublishLesson');btn.disabled=true;qbSetMsg('qbLessonMsg',file&&status==='published'?'Uploading PDF and publishing lesson...':status==='draft'?'Saving draft...':'Publishing lesson...');
+  let uploadedPath='';
+  try{
+    let pdfUrl='';
+    if(file){const safeName=file.name.replace(/[^a-zA-Z0-9._-]+/g,'_');uploadedPath='materials/lessons/'+auth.currentUser.uid+'/'+Date.now()+'_'+safeName;const {error}=await supabase.storage.from(SUPABASE_BUCKET).upload(uploadedPath,file,{contentType:'application/pdf',upsert:false,cacheControl:'3600'});if(error)throw error;const {data}=supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(uploadedPath);pdfUrl=data.publicUrl}
+    await addDoc(collection(db,'lessons'),{title,content,pdfUrl,storagePath:uploadedPath||'',storageProvider:uploadedPath?'supabase':'',topicId,subjectId:subject?.id||'',courseId:course?.id||'',category:course?.category||'General',status,contentFormat:'html',createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});
+    $('qbLessonTitle').value='';$('qbLessonContent').innerHTML='';if($('qbLessonFile'))$('qbLessonFile').value='';await qbReload();qbSetMsg('qbLessonMsg',status==='draft'?'Draft saved successfully ✅':'Lesson published successfully ✅',true);
+  }catch(e){console.error(e);if(uploadedPath){try{await supabase.storage.from(SUPABASE_BUCKET).remove([uploadedPath])}catch(cleanErr){console.warn(cleanErr)}}qbSetMsg('qbLessonMsg','Could not '+(status==='draft'?'save draft':'publish lesson')+': '+(e.code||e.message))}finally{btn.disabled=false}
+}
+$('qbSaveDraft')?.addEventListener('click',()=>qbSaveLesson('draft'));
+$('qbPublishLesson')?.addEventListener('click',()=>qbSaveLesson('published'));
+async function qbDeleteLesson(id){
+  const lesson=courseData.lessons.find(l=>l.id===id);if(!lesson)return;
+  if(!confirm('Delete this lesson? This cannot be undone.'))return;
+  try{if(lesson.storagePath)await supabase.storage.from(SUPABASE_BUCKET).remove([lesson.storagePath]);await deleteDoc(doc(db,'lessons',id));await qbReload();await loadLearningCentre();alert('Lesson deleted successfully.')}catch(e){console.error(e);alert('Could not delete lesson: '+(e.code||e.message))}
+}
+$('qbRefresh')?.addEventListener('click',qbReload);
+const _v25RenderCourseAdminList=renderCourseAdminList;renderCourseAdminList=function(){renderCourseAdminListV27()};
+const _v25LoadCourseStructure=loadCourseStructure;loadCourseStructure=async function(){await _v25LoadCourseStructure();refreshQuickBuilder();renderCourseAdminListV27()};
+qbSetStep(1,true);
