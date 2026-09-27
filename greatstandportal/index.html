@@ -3,25 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Great Stand Educational Consult | Enterprise Portal</title>
+    <title>Great Stand Educational Consult | Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .view-section { display: none; }
         .view-section.active { display: block; }
-        .rich-editor-content:empty:before {
-            content: attr(data-placeholder);
-            color: #64748b;
-            pointer-events: none;
-            display: block;
-        }
-        @media print {
-            body * { visibility: hidden; }
-            #printableReceipt, #printableReceipt * { visibility: visible; }
-            #printableReceipt { position: absolute; left: 0; top: 0; width: 100%; }
-        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between">
@@ -37,9 +25,7 @@
                 <span class="text-[9px] text-amber-400 font-bold uppercase tracking-wider">Educational Consult</span>
             </div>
         </div>
-        <div class="flex items-center gap-2">
-            <div id="headerAuthArea"></div>
-        </div>
+        <div id="headerAuthArea"></div>
     </header>
 
     <!-- SLIDE-OUT MENU DRAWER -->
@@ -49,7 +35,7 @@
                 <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
                     <div>
                         <span id="drawerRoleTitle" class="text-[10px] font-black text-amber-400 uppercase tracking-wider block">👑 Navigation Menu</span>
-                        <span class="text-xs font-extrabold text-white">Portal Hub</span>
+                        <span class="text-xs font-extrabold text-white">Portal Control</span>
                     </div>
                     <button onclick="toggleDrawer()" class="text-slate-400 hover:text-white font-bold text-xs bg-slate-800 px-2.5 py-1 rounded-lg">✕ Close</button>
                 </div>
@@ -71,8 +57,8 @@
         <div id="loginView" class="view-section active mt-10">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
                 <div class="text-center mb-6">
-                    <h1 class="text-xl font-extrabold text-amber-400">Enterprise Portal Login</h1>
-                    <p class="text-xs text-slate-400 mt-1">Sign in with your assigned credentials.</p>
+                    <h1 class="text-xl font-extrabold text-amber-400">Portal Login</h1>
+                    <p class="text-xs text-slate-400 mt-1">Enter your credentials to access your dashboard.</p>
                 </div>
                 <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
                     <div>
@@ -91,14 +77,22 @@
             </div>
         </div>
 
-        <!-- SUPER ADMIN / STAFF VIEW -->
+        <!-- DASHBOARD VIEW (Admin / Super Admin / Bursar / Tutor) -->
         <div id="superAdminView" class="view-section space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex justify-between items-center">
                 <div>
-                    <span id="roleBadgeLabel" class="bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider">Super Admin</span>
+                    <span id="roleBadge" class="bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider">Super Admin</span>
                     <h2 id="superAdminName" class="text-sm font-extrabold text-white mt-1">Welcome</h2>
                 </div>
-                <span id="roleTierBadge" class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-xl font-bold">Full Control</span>
+                <span id="roleSubBadge" class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-xl font-bold">Full Control</span>
+            </div>
+
+            <!-- ANNOUNCEMENTS & ADMISSIONS FEED (Shows on every dashboard login) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg space-y-3">
+                <h3 class="text-xs font-black uppercase text-amber-400 flex items-center gap-1.5">📢 Latest Announcements & Admissions</h3>
+                <div id="dashboardAnnouncementsFeed" class="space-y-3 max-h-64 overflow-y-auto">
+                    <p class="text-slate-500 text-xs">Loading announcements...</p>
+                </div>
             </div>
 
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
@@ -110,15 +104,24 @@
             </div>
         </div>
 
-        <!-- STANDARD STUDENT VIEW -->
+        <!-- STUDENT / USER VIEW -->
         <div id="standardView" class="view-section space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg flex justify-between items-center">
                 <div>
-                    <span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase">Student Portal</span>
+                    <span id="standardRoleBadge" class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase">Student Portal</span>
                     <h2 id="standardUserName" class="text-sm font-extrabold text-white mt-1">Welcome</h2>
                 </div>
                 <span class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-xl font-bold">Online Student</span>
             </div>
+
+            <!-- STUDENT DASHBOARD ANNOUNCEMENTS FEED -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg space-y-3">
+                <h3 class="text-xs font-black uppercase text-amber-400 flex items-center gap-1.5">📢 Campus Updates & Admissions</h3>
+                <div id="studentAnnouncementsFeed" class="space-y-3 max-h-60 overflow-y-auto">
+                    <p class="text-slate-500 text-xs">Loading updates...</p>
+                </div>
+            </div>
+
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg" id="standardContentArea">
                 <h3 id="studentModuleTitle" class="text-xs font-black uppercase text-amber-400 mb-3">📚 CBT Examination Center</h3>
                 <div id="studentModuleContent"></div>
@@ -172,95 +175,66 @@
         }
 
         function populateMenu(role) {
-            currentUserRole = role;
             const linksContainer = document.getElementById('drawerLinks');
             const roleTitle = document.getElementById('drawerRoleTitle');
-            const roleBadgeLabel = document.getElementById('roleBadgeLabel');
-            const roleTierBadge = document.getElementById('roleTierBadge');
 
             if (role === 'super_admin') {
                 roleTitle.innerText = "👑 Master Control Menu";
-                roleBadgeLabel.innerText = "Super Admin";
-                roleBadgeLabel.className = "bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider";
-                roleTierBadge.innerText = "Full Control";
                 linksContainer.innerHTML = `
                     <div class="text-[10px] text-amber-400 uppercase px-2 pt-1 font-black">Overview & Control</div>
                     <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard</a>
-                    <a href="#" onclick="loadModule('platformControl')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">⚡ Platform Control</a>
-                    <a href="#" onclick="loadModule('broadcast')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 Broadcast Center</a>
-                    <a href="#" onclick="loadModule('adminProfile')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👤 Admin Profile</a>
-
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">User & Staff Management</div>
                     <a href="#" onclick="loadModule('users')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🛠️ User Management</a>
-                    <a href="#" onclick="loadModule('roles')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🔒 Roles & Permissions</a>
-                    <a href="#" onclick="loadModule('students')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👥 Student Accounts</a>
-                    <a href="#" onclick="loadModule('admins')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👑 Staff / Admin Accounts</a>
+                    <a href="#" onclick="loadModule('students')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👥 Student Management</a>
+                    <a href="#" onclick="loadModule('admins')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👑 Admin Management</a>
+                    <a href="#" onclick="loadModule('bursars')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💰 Bursar Management</a>
+                    <a href="#" onclick="loadModule('tutors')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧑🏽‍🏫 Tutor Management</a>
 
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Content & Classes</div>
-                    <a href="#" onclick="loadModule('richNotes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📝 Rich Notes & Lessons</a>
-                    <a href="#" onclick="loadModule('virtualClasses')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎥 Live Virtual Classes</a>
-                    <a href="#" onclick="loadModule('files')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🗂️ PDF File Manager</a>
-                    <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT Exam Creator</a>
-                    <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📈 CBT Student Results</a>
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Finance & Payments</div>
+                    <a href="#" onclick="loadModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💳 Fee & Payment Records</a>
 
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Finance & Reports</div>
-                    <a href="#" onclick="loadModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💳 Payment Management</a>
-                    <a href="#" onclick="loadModule('support')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎧 Support Management</a>
-                    <a href="#" onclick="loadModule('reports')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 Graphical Analytics</a>
-                    <a href="#" onclick="loadModule('audit')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📜 Activity Audit Logs</a>
-                    <a href="#" onclick="loadModule('settings')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">⚙️ System Settings</a>
-                `;
-            } else if (role === 'tutor') {
-                roleTitle.innerText = "📚 Tutor Menu Hub";
-                roleBadgeLabel.innerText = "Tutor Staff";
-                roleBadgeLabel.className = "bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider";
-                roleTierBadge.innerText = "Academic Staff";
-                linksContainer.innerHTML = `
-                    <a href="#" onclick="loadModule('richNotes')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">📝 Rich Notes & Lessons</a>
-                    <a href="#" onclick="loadModule('virtualClasses')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎥 Live Virtual Classes</a>
-                    <a href="#" onclick="loadModule('files')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🗂️ PDF File Manager</a>
-                    <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT Exam Creator</a>
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Academics & CBT</div>
+                    <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT & Exam Creator</a>
                     <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📈 CBT Student Results</a>
-                    <a href="#" onclick="loadModule('support')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎧 Support Management</a>
+                    <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Timetable Management</a>
+                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes Management</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Announcements & Admissions</div>
+                    <a href="#" onclick="loadModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 Post Announcements / Admissions</a>
                 `;
             } else if (role === 'bursar') {
-                roleTitle.innerText = "💳 Bursary Menu Hub";
-                roleBadgeLabel.innerText = "Bursary Staff";
-                roleBadgeLabel.className = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider";
-                roleTierBadge.innerText = "Finance Staff";
+                roleTitle.innerText = "💰 Bursary Portal Menu";
                 linksContainer.innerHTML = `
-                    <a href="#" onclick="loadModule('payments')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">💳 Payment Management</a>
-                    <a href="#" onclick="loadModule('students')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👥 Student Accounts Directory</a>
+                    <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Bursary Dashboard</a>
+                    <a href="#" onclick="loadModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💳 Record & View Payments</a>
+                    <a href="#" onclick="loadModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 View Announcements</a>
                 `;
             } else {
                 roleTitle.innerText = "🎓 Student Portal Menu";
                 linksContainer.innerHTML = `
                     <a href="#" onclick="loadStudentModule('cbts')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🧪 Live CBT Exams</a>
-                    <a href="#" onclick="loadStudentModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📝 Study Notes & Lessons</a>
-                    <a href="#" onclick="loadStudentModule('virtualClasses')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎥 Live Virtual Classes</a>
-                    <a href="#" onclick="loadStudentModule('files')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📥 Downloadable PDFs</a>
-                    <a href="#" onclick="loadStudentModule('support')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎧 Help & Support Tickets</a>
+                    <a href="#" onclick="loadStudentModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💳 My Payments & Receipts</a>
+                    <a href="#" onclick="loadStudentModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Class Timetable</a>
+                    <a href="#" onclick="loadStudentModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes & Resources</a>
                 `;
             }
         }
 
-        // ================= ADMIN & STAFF MODULE LOADER =================
+        // ================= ADMIN / BURSAR MODULE LOADER =================
         function loadModule(key) {
             toggleDrawer();
             let titleEl = document.getElementById('moduleTitle');
             let contentEl = document.getElementById('moduleContentArea');
 
             const titles = {
-                dashboard: "🏠 Dashboard Overview", platformControl: "⚡ Platform Control", broadcast: "📢 Broadcast Center",
-                adminProfile: "👤 Admin Profile", users: "🛠️ User Management", roles: "🔒 Roles & Permissions",
-                students: "👥 Student Account Management", admins: "👑 Staff Account Management", richNotes: "📝 Rich Notes Creator",
-                virtualClasses: "🎥 Live Virtual Class Scheduler", files: "🗂️ PDF File Manager", cbts: "🧪 CBT Exam Creator",
-                cbtResults: "📈 CBT Student Results", payments: "💳 Payment Management", support: "🎧 Support Management",
-                reports: "📊 Graphical Analytics & Reports", audit: "📜 Activity / Audit Logs", settings: "⚙️ System Settings"
+                dashboard: "🏠 Dashboard Overview", students: "👥 Student Account Management", 
+                admins: "👑 Admin Account Management", bursars: "💰 Bursar Account Management",
+                tutors: "🧑🏽‍🏫 Tutor Management", payments: "💳 Financial & Payment Records",
+                cbts: "🧪 CBT & Exam Creator", cbtResults: "📈 CBT Student Results",
+                timetable: "📅 Timetable Management", notes: "📚 Notes Management",
+                announcements: "📢 Announcements & Admission Updates"
             };
 
             titleEl.innerText = titles[key] || "⚙️ Management Module";
-            logAuditAction(`Accessed module: ${titles[key] || key}`);
 
             if (key === 'dashboard') {
                 contentEl.innerHTML = `
@@ -271,425 +245,139 @@
                         </div>
                         <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
                             <span class="text-[10px] text-slate-400 uppercase font-bold block">System Status</span>
-                            <span class="text-xs font-black text-emerald-400 mt-1 block">Live & Enterprise</span>
+                            <span class="text-xs font-black text-emerald-400 mt-1 block">Live & Secure</span>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-400">Welcome to your administration panel. Select features from the navigation drawer above.</p>
+                    <p class="text-xs text-slate-400">Welcome to your central administration panel. Check announcements above or select a module from the menu.</p>
                 `;
                 db.collection('users').get().then(snap => {
                     document.getElementById('statUsers').innerText = snap.size;
                 });
             } 
-            else if (key === 'broadcast') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                        <p class="text-xs font-bold text-amber-400">📢 Send Bulk Broadcast Announcement</p>
-                        <input type="text" id="broadcastSubject" placeholder="Notice Subject (e.g. Important Exam Update)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <textarea id="broadcastMessage" placeholder="Type your message to all students..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-24"></textarea>
-                        <button onclick="sendBroadcast()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl">Broadcast to All Students 🚀</button>
-                    </div>
-                    <div class="space-y-2 mt-3">
-                        <p class="text-xs font-bold text-slate-400">Recent Broadcasts Sent:</p>
-                        <div id="adminBroadcastList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading broadcasts...</div>
-                    </div>
-                `;
-                fetchAdminBroadcasts();
-            }
-            else if (key === 'virtualClasses') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                        <p class="text-xs font-bold text-amber-400">🎥 Schedule Live Virtual Lecture</p>
-                        <input type="text" id="classTitle" placeholder="Class Title (e.g. Physics Revision)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="text" id="classLink" placeholder="Meeting Link (Zoom / Google Meet URL)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="datetime-local" id="classTime" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="scheduleVirtualClass()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl">Publish Live Class 📅</button>
-                    </div>
-                    <div class="space-y-2 mt-3">
-                        <p class="text-xs font-bold text-slate-400">Scheduled Live Classes:</p>
-                        <div id="adminClassList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading classes...</div>
-                    </div>
-                `;
-                fetchAdminVirtualClasses();
-            }
-            else if (key === 'richNotes') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                        <p class="text-xs font-bold text-amber-400">📝 Create Multimedia Rich Note / Lesson</p>
-                        <input type="text" id="richNoteTitle" placeholder="Lesson Title" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        
-                        <div class="flex flex-wrap gap-1 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
-                            <button onclick="formatRichText('bold')" class="bg-slate-800 hover:bg-slate-700 text-white px-2.5 py-1 rounded text-xs font-bold"><b>B</b></button>
-                            <button onclick="formatRichText('italic')" class="bg-slate-800 hover:bg-slate-700 text-white px-2.5 py-1 rounded text-xs italic"><i>I</i></button>
-                            <button onclick="formatRichText('underline')" class="bg-slate-800 hover:bg-slate-700 text-white px-2.5 py-1 rounded text-xs underline"><u>U</u></button>
-                            <button onclick="insertTablePrompt()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-2.5 py-1 rounded text-xs font-bold">📊 Table</button>
-                            <button onclick="insertImagePrompt()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 px-2.5 py-1 rounded text-xs font-bold">🖼️ Image</button>
-                            <button onclick="insertVideoPrompt()" class="bg-slate-800 hover:bg-slate-700 text-blue-400 px-2.5 py-1 rounded text-xs font-bold">🎬 Video</button>
-                        </div>
-
-                        <div id="richEditorArea" contenteditable="true" data-placeholder="Type or format your lesson note here..." class="w-full min-h-[140px] bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-400 overflow-y-auto"></div>
-
-                        <button onclick="publishRichNote()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl">Publish Rich Note 🚀</button>
-                    </div>
-                    <div class="space-y-2 mt-3">
-                        <p class="text-xs font-bold text-slate-400">Published Lessons & Notes:</p>
-                        <div id="adminRichNotesList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading notes...</div>
-                    </div>
-                `;
-                fetchAdminRichNotes();
-            }
-            else if (key === 'platformControl') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                        <p class="text-xs font-bold text-amber-400">⚡ Global Platform Switches</p>
-                        <div class="flex justify-between items-center text-xs">
-                            <span>New Student Registrations</span>
-                            <select id="ctrlReg" class="bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-white">
-                                <option value="true">Enabled (Open)</option>
-                                <option value="false">Disabled (Closed)</option>
-                            </select>
-                        </div>
-                        <div class="flex justify-between items-center text-xs">
-                            <span>CBT Examination Access</span>
-                            <select id="ctrlCbt" class="bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-white">
-                                <option value="true">Active</option>
-                                <option value="false">Locked</option>
-                            </select>
-                        </div>
-                        <button onclick="savePlatformControl()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Update Platform Status</button>
-                    </div>
-                `;
-                db.collection('settings').doc('platform').get().then(doc => {
-                    if(doc.exists) {
-                        let d = doc.data();
-                        if(d.reg !== undefined) document.getElementById('ctrlReg').value = String(d.reg);
-                        if(d.cbt !== undefined) document.getElementById('ctrlCbt').value = String(d.cbt);
-                    }
-                });
-            }
-            else if (key === 'users') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <p class="text-xs text-slate-400">Universal user directory:</p>
-                            <button onclick="exportTableToCSV('users')" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] px-2 py-1 rounded font-bold">📥 Export CSV</button>
-                        </div>
-                        <div id="allUsersManagementList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading all users...</div>
-                    </div>
-                `;
-                fetchAllUsersList();
-            }
-            else if (key === 'files') {
-                contentEl.innerHTML = `
+            else if (key === 'students' || key === 'admins' || key === 'bursars' || key === 'tutors') {
+                let roleTarget = key === 'students' ? 'student' : (key === 'admins' ? 'super_admin' : (key === 'bursars' ? 'bursar' : 'tutor'));
+                let roleLabel = key === 'students' ? 'Student' : (key === 'admins' ? 'Admin' : (key === 'bursars' ? 'Bursar' : 'Tutor'));
+                
+                let createSection = currentUserRole === 'super_admin' ? `
                     <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <p class="text-xs font-bold text-amber-400">🗂️ Upload PDF File for Direct Download</p>
-                        <input type="text" id="pdfTitle" placeholder="PDF Document Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="file" id="pdfFile" accept=".pdf" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950 cursor-pointer">
-                        <button onclick="uploadPDFFile()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl">Upload PDF 📤</button>
+                        <p class="text-xs text-amber-400 font-bold">Create New ${roleLabel} Account</p>
+                        <input type="text" id="newUserName" placeholder="Full Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="email" id="newUserEmail" placeholder="Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="password" id="newUserPassword" placeholder="Password (min 6 characters)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="createNewUserAccount('${roleTarget}')" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Create ${roleLabel} Account 🚀</button>
                     </div>
-                    <div class="space-y-2">
-                        <p class="text-[11px] text-slate-400 font-bold">Available Downloadable PDFs:</p>
-                        <div id="adminPdfList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading PDFs...</div>
-                    </div>
-                `;
-                fetchAdminPDFs();
-            }
-            else if (key === 'support') {
+                ` : '';
+
                 contentEl.innerHTML = `
+                    ${createSection}
                     <div class="space-y-2">
-                        <p class="text-xs text-slate-400">Support tickets submitted by students:</p>
-                        <div id="adminSupportList" class="space-y-2 max-h-64 overflow-y-auto text-xs">Loading support tickets...</div>
+                        <p class="text-[11px] text-slate-400 font-bold">Existing ${roleLabel}s:</p>
+                        <div id="userManagementList" class="space-y-2 max-h-52 overflow-y-auto text-xs">Loading...</div>
                     </div>
                 `;
-                fetchAdminSupportTickets();
+                fetchUserManagementList(roleTarget);
             }
             else if (key === 'payments') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <div class="flex justify-between items-center">
-                            <p class="text-xs font-bold text-amber-400">💳 Record Manual Student Payment</p>
-                            <button onclick="exportTableToCSV('payments')" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] px-2 py-1 rounded font-bold">📥 Export CSV</button>
-                        </div>
-                        <input type="text" id="payStudentEmail" placeholder="Student Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="number" id="payAmount" placeholder="Amount (e.g. 25000)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="text" id="payPurpose" placeholder="Purpose (e.g. JAMB Tuition Fee)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="recordPayment()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Save & Generate Receipt 💰</button>
+                        <p class="text-xs text-amber-400 font-bold">💳 Record Student Payment / Fee</p>
+                        <input type="email" id="payStudentEmail" placeholder="Student Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="number" id="payAmount" placeholder="Amount (e.g. 45000)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="text" id="payPurpose" placeholder="Purpose (e.g. First Term School Fees)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="text" id="payTerm" placeholder="Term / Session (e.g. 2026/2027 1st Term)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="recordPayment()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Save & Generate Receipt 🧾</button>
                     </div>
                     <div class="space-y-2">
-                        <p class="text-[11px] text-slate-400 font-bold">Transaction History:</p>
-                        <div id="adminPaymentsList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading payments...</div>
+                        <p class="text-[11px] text-slate-400 font-bold">All School Payment Records:</p>
+                        <div id="adminPaymentsList" class="space-y-2 max-h-52 overflow-y-auto text-xs">Loading payments...</div>
                     </div>
                 `;
                 fetchAdminPayments();
             }
-            else if (key === 'roles') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3">
-                        <p class="text-xs text-slate-400">Manage user staff roles (Super Admin, Tutor, Bursar, Student):</p>
-                        <div id="rolesUserList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading users...</div>
-                    </div>
-                `;
-                fetchRolesUserList();
-            }
-            else if (key === 'reports') {
-                contentEl.innerHTML = `
-                    <div class="space-y-4">
-                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                            <p class="text-xs font-bold text-amber-400 mb-2">📊 Platform Analytics Overview</p>
-                            <canvas id="analyticsChart" class="w-full h-48"></canvas>
-                        </div>
-                    </div>
-                `;
-                generateChartAnalytics();
-            }
-            else if (key === 'adminProfile') {
-                let user = auth.currentUser;
-                contentEl.innerHTML = `
-                    <div class="space-y-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                        <p class="text-xs font-bold text-amber-400">Staff Credentials</p>
-                        <input type="email" disabled value="${user ? user.email : ''}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 cursor-not-allowed">
-                        <input type="text" id="adminNewName" placeholder="New Display Name" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="updateAdminProfile()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Save Changes</button>
-                    </div>
-                `;
-            }
-            else if (key === 'audit') {
-                contentEl.innerHTML = `<div id="auditLogsList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading logs...</div>`;
-                fetchAuditLogs();
-            }
-            else if (key === 'settings') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                        <input type="text" id="settingPortalName" value="Great Stand Educational Consult" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="saveSystemSettings()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Save Settings</button>
-                    </div>
-                `;
-            }
-            else if (key === 'students' || key === 'admins') {
-                let roleTarget = key === 'students' ? 'student' : 'super_admin';
+            else if (key === 'announcements') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <input type="text" id="newUserName" placeholder="Full Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="email" id="newUserEmail" placeholder="Email" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="password" id="newUserPassword" placeholder="Password" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        ${key === 'admins' ? `
-                            <select id="newUserRoleSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                                <option value="super_admin">Super Admin</option>
-                                <option value="tutor">Tutor Staff</option>
-                                <option value="bursar">Bursar Staff</option>
-                            </select>
-                        ` : ''}
-                        <button onclick="createNewUserAccount('${roleTarget}')" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Create Account</button>
+                        <p class="text-xs text-amber-400 font-bold">📢 Post Announcement or Admission Update</p>
+                        <select id="annCategory" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                            <option value="General Announcement">General Announcement</option>
+                            <option value="Admission Update">Admission Update 🏛️</option>
+                            <option value="Fee Notice">Fee & Bursary Notice 💳</option>
+                        </select>
+                        <input type="text" id="annTitle" placeholder="Headline Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <textarea id="annContent" placeholder="Full details / description..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-24"></textarea>
+                        <input type="url" id="annImage" placeholder="Image URL (Optional - paste image web link)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="postAnnouncement()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Publish Announcement 🚀</button>
                     </div>
-                    <div id="userManagementList" class="space-y-2 max-h-52 overflow-y-auto text-xs">Loading...</div>
+                    <div class="space-y-2">
+                        <p class="text-[11px] text-slate-400 font-bold">Published Feed:</p>
+                        <div id="adminAnnList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading...</div>
+                    </div>
                 `;
-                fetchUserManagementList(roleTarget);
+                fetchAdminAnnouncements();
             }
             else if (key === 'cbts') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <input type="text" id="cbtTitle" placeholder="Exam Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="number" id="cbtDuration" placeholder="Duration (Mins)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <textarea id="bulkQuestionsText" placeholder="1. Question...&#10;A) Opt A&#10;B) Opt B&#10;Answer: A" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-32"></textarea>
-                        <button onclick="parseAndSaveBulkCBT()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Publish Exam</button>
+                        <p class="text-xs text-amber-400 font-bold">🚀 Bulk CBT Exam Import (Paste 50+ Questions)</p>
+                        <input type="text" id="cbtTitle" placeholder="Exam Title (e.g. JAMB Physics Mock)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="number" id="cbtDuration" placeholder="Duration in Minutes (e.g. 30)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+                            <p class="text-[11px] text-slate-300 font-bold">Paste Questions Text Below:</p>
+                            <textarea id="bulkQuestionsText" placeholder="1. What is the capital of Nigeria?&#10;A) Lagos&#10;B) Abuja&#10;C) Kano&#10;D) Ibadan&#10;Answer: B&#10;&#10;2. Next question..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-36"></textarea>
+                            <button onclick="parseAndSaveBulkCBT()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl">⚡ Parse & Publish Live Exam</button>
+                        </div>
                     </div>
-                    <div id="adminCbtList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading...</div>
+                    <div class="space-y-2">
+                        <p class="text-[11px] text-slate-400 font-bold">Published CBT Exams:</p>
+                        <div id="adminCbtList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div>
+                    </div>
                 `;
                 fetchAdminCBTs();
             }
             else if (key === 'cbtResults') {
                 contentEl.innerHTML = `
-                    <div class="flex justify-end mb-2"><button onclick="exportTableToCSV('cbtResults')" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] px-2 py-1 rounded font-bold">📥 Export CSV</button></div>
-                    <div id="cbtResultsList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading...</div>
+                    <div class="space-y-2">
+                        <p class="text-xs text-slate-400">Student exam scores submitted in real-time:</p>
+                        <div id="cbtResultsList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading results...</div>
+                    </div>
                 `;
                 fetchCBTResults();
             }
-        }
-
-        // ================= RICH TEXT & FEATURE HELPERS =================
-        function formatRichText(command) { document.execCommand(command, false, null); }
-
-        function insertTablePrompt() {
-            let rows = prompt("Enter number of rows:", "3");
-            let cols = prompt("Enter number of columns:", "3");
-            if (!rows || !cols) return;
-            let tableHTML = `<table class="border-collapse border border-slate-700 my-2 w-full text-xs">`;
-            for (let i = 0; i < parseInt(rows); i++) {
-                tableHTML += `<tr>`;
-                for (let j = 0; j < parseInt(cols); j++) {
-                    tableHTML += `<td class="border border-slate-700 p-2">Cell</td>`;
-                }
-                tableHTML += `</tr>`;
+            else {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 border-b border-slate-800 pb-4">
+                        <p class="text-xs text-slate-400">Manage records for this section.</p>
+                        <input type="text" id="genTitle" placeholder="Title / Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="text" id="genDetails" placeholder="Details or Description" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="saveGenericItem('${key}', {title: document.getElementById('genTitle').value, details: document.getElementById('genDetails').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Save Record</button>
+                    </div>
+                    <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Saved Entries:</p><div id="genList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
+                `;
+                fetchList(key, 'genList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title || 'Record'}</span><span class="text-[10px] text-slate-400">${item.details || ''}</span></div>`);
             }
-            tableHTML += `</table><p><br></p>`;
-            document.execCommand('insertHTML', false, tableHTML);
         }
 
-        function insertImagePrompt() {
-            let url = prompt("Enter Image URL:");
-            if (!url) return;
-            let imgHTML = `<img src="${url}" class="max-w-full rounded-xl my-2 max-h-64 object-cover"><p><br></p>`;
-            document.execCommand('insertHTML', false, imgHTML);
-        }
-
-        function insertVideoPrompt() {
-            let url = prompt("Enter YouTube embed URL or MP4 video URL:");
-            if (!url) return;
-            if (url.includes('watch?v=')) { url = url.replace('watch?v=', 'embed/'); }
-            let vidHTML = `<div class="my-2"><iframe src="${url}" class="w-full h-48 rounded-xl border border-slate-800" allowfullscreen></iframe></div><p><br></p>`;
-            document.execCommand('insertHTML', false, vidHTML);
-        }
-
-        function publishRichNote() {
-            let title = document.getElementById('richNoteTitle').value;
-            let content = document.getElementById('richEditorArea').innerHTML;
-            if(!title || !content.trim()) { alert('Please enter title and content.'); return; }
-            db.collection('richNotes').add({
-                title, content, createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                logAuditAction(`Published Rich Note: ${title}`);
-                alert('Rich note published successfully!');
-                loadModule('richNotes');
-            });
-        }
-
-        function fetchAdminRichNotes() {
-            db.collection('richNotes').orderBy('createdAt', 'desc').get().then(snap => {
-                let html = '';
-                snap.forEach(doc => {
-                    let n = doc.data();
-                    html += `
-                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
-                            <span class="font-bold text-white">${n.title}</span>
-                            <button onclick="db.collection('richNotes').doc('${doc.id}').delete(); loadModule('richNotes');" class="text-red-400 text-[10px]">Delete</button>
-                        </div>
-                    `;
-                });
-                document.getElementById('adminRichNotesList').innerHTML = html || '<p class="text-slate-500 text-xs">No rich notes yet.</p>';
-            });
-        }
-
-        function sendBroadcast() {
-            let subject = document.getElementById('broadcastSubject').value;
-            let message = document.getElementById('broadcastMessage').value;
-            if(!subject || !message) { alert('Fill all fields.'); return; }
-            db.collection('broadcasts').add({
-                subject, message, sender: auth.currentUser.email,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                logAuditAction(`Sent broadcast: ${subject}`);
-                alert('Broadcast message dispatched successfully!');
-                loadModule('broadcast');
-            });
-        }
-
-        function fetchAdminBroadcasts() {
-            db.collection('broadcasts').orderBy('createdAt', 'desc').get().then(snap => {
-                let html = '';
-                snap.forEach(doc => {
-                    let b = doc.data();
-                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${b.subject}</span><p class="text-[10px] text-slate-300 mt-1">${b.message}</p></div>`;
-                });
-                document.getElementById('adminBroadcastList').innerHTML = html || '<p class="text-slate-500 text-xs">No broadcasts sent.</p>';
-            });
-        }
-
-        function scheduleVirtualClass() {
-            let title = document.getElementById('classTitle').value;
-            let link = document.getElementById('classLink').value;
-            let time = document.getElementById('classTime').value;
-            if(!title || !link || !time) { alert('Fill all fields.'); return; }
-            db.collection('virtualClasses').add({
-                title, link, time, createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                logAuditAction(`Scheduled virtual class: ${title}`);
-                alert('Virtual class scheduled!');
-                loadModule('virtualClasses');
-            });
-        }
-
-        function fetchAdminVirtualClasses() {
-            db.collection('virtualClasses').orderBy('createdAt', 'desc').get().then(snap => {
-                let html = '';
-                snap.forEach(doc => {
-                    let c = doc.data();
-                    html += `
-                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
-                            <div>
-                                <span class="font-bold text-white block">${c.title}</span>
-                                <span class="text-[10px] text-amber-400">📅 ${new Date(c.time).toLocaleString()}</span>
-                            </div>
-                            <button onclick="db.collection('virtualClasses').doc('${doc.id}').delete(); loadModule('virtualClasses');" class="text-red-400 text-[10px]">Delete</button>
-                        </div>
-                    `;
-                });
-                document.getElementById('adminClassList').innerHTML = html || '<p class="text-slate-500 text-xs">No scheduled classes.</p>';
-            });
-        }
-
-        // ================= CHART ANALYTICS =================
-        function generateChartAnalytics() {
-            Promise.all([
-                db.collection('users').get(),
-                db.collection('cbts').get(),
-                db.collection('cbtResults').get()
-            ]).then(([uSnap, cSnap, rSnap]) => {
-                let studentsCount = 0, adminCount = 0;
-                uSnap.forEach(d => { if(d.data().role === 'student') studentsCount++; else adminCount++; });
-
-                const ctx = document.getElementById('analyticsChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Students', 'Staff / Admins', 'Total Exams', 'Exam Submissions'],
-                        datasets: [{
-                            label: 'Platform Metrics',
-                            data: [studentsCount, adminCount, cSnap.size, rSnap.size],
-                            backgroundColor: ['#f59e0b', '#ef4444', '#10b981', '#3b82f6']
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
-                            x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
-                        }
-                    }
-                });
-            });
-        }
-
-        // ================= CSV & PAYMENT / RECEIPT LOGIC =================
-        function exportTableToCSV(collectionName) {
-            db.collection(collectionName).get().then(snap => {
-                if(snap.empty) { alert('No data to export.'); return; }
-                let rows = [];
-                snap.forEach(doc => { rows.push(doc.data()); });
-                let keys = Object.keys(rows[0]);
-                let csvContent = "data:text/csv;charset=utf-8," + [keys.join(","), ...rows.map(e => keys.map(k => JSON.stringify(e[k] || "")).join(","))].join("\n");
-                let encodedUri = encodeURI(csvContent);
-                let link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", `${collectionName}_export.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            });
-        }
-
+        // ================= FINANCE & PAYMENTS FUNCTIONS =================
         function recordPayment() {
             let studentEmail = document.getElementById('payStudentEmail').value;
             let amount = document.getElementById('payAmount').value;
             let purpose = document.getElementById('payPurpose').value;
-            if(!studentEmail || !amount || !purpose) { alert('Fill all fields.'); return; }
+            let term = document.getElementById('payTerm').value;
+
+            if(!studentEmail || !amount || !purpose || !term) {
+                alert('Please fill out all payment fields.');
+                return;
+            }
+
             db.collection('payments').add({
-                studentEmail, amount: Number(amount), purpose, status: 'Successful',
+                studentEmail, amount, purpose, term,
+                recordedBy: auth.currentUser.email,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => { 
-                logAuditAction(`Recorded payment for ${studentEmail}`);
-                alert('Payment saved and receipt generated!'); 
-                loadModule('payments'); 
-            });
+            }).then(() => {
+                alert('Payment recorded successfully & receipt generated!');
+                loadModule('payments');
+            }).catch(err => alert('Error: ' + err.message));
         }
 
         function fetchAdminPayments() {
@@ -698,165 +386,163 @@
                 snap.forEach(doc => {
                     let p = doc.data();
                     html += `
-                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
-                            <div>
-                                <span class="font-bold text-white block">${p.studentEmail}</span>
-                                <span class="text-[10px] text-amber-400">₦${p.amount} - ${p.purpose}</span>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-amber-400">₦${Number(p.amount).toLocaleString()}</span>
+                                <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-bold">${p.term}</span>
                             </div>
-                            <button onclick="printReceipt('${p.studentEmail}', '${p.amount}', '${p.purpose}')" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] px-2.5 py-1 rounded font-bold">📄 Print Receipt</button>
+                            <span class="font-bold text-white text-xs block">Student: ${p.studentEmail}</span>
+                            <span class="text-[10px] text-slate-400 block">Purpose: ${p.purpose} (Recorded by: ${p.recordedBy})</span>
                         </div>
                     `;
                 });
-                document.getElementById('adminPaymentsList').innerHTML = html || '<p class="text-slate-500 text-xs">No payments.</p>';
+                document.getElementById('adminPaymentsList').innerHTML = html || '<p class="text-slate-500 text-xs">No payment records found.</p>';
             });
         }
 
-        function printReceipt(email, amount, purpose) {
-            let receiptWindow = window.open('', '_blank');
-            receiptWindow.document.write(`
-                <html>
-                <head><title>Official Payment Receipt</title>
-                <style>body { font-family: sans-serif; padding: 20px; color: #111; }</style>
-                </head>
-                <body>
-                    <h2>GREAT STAND EDUCATIONAL CONSULT</h2>
-                    <p>Official Payment Receipt</p>
-                    <hr/>
-                    <p><b>Student Email:</b> ${email}</p>
-                    <p><b>Amount Paid:</b> ₦${amount}</p>
-                    <p><b>Purpose:</b> ${purpose}</p>
-                    <p><b>Status:</b> Successful</p>
-                    <p><b>Date:</b> ${new Date().toLocaleDateString()}</p>
-                    <br/><p>Thank you for your payment!</p>
-                </body>
-                </html>
-            `);
-            receiptWindow.document.close();
-            receiptWindow.print();
+        // ================= ANNOUNCEMENTS & ADMISSIONS =================
+        function postAnnouncement() {
+            let category = document.getElementById('annCategory').value;
+            let title = document.getElementById('annTitle').value;
+            let content = document.getElementById('annContent').value;
+            let imageUrl = document.getElementById('annImage').value;
+
+            if(!title || !content) {
+                alert('Please enter a title and content.');
+                return;
+            }
+
+            db.collection('announcements').add({
+                category, title, content, imageUrl,
+                postedBy: auth.currentUser.email,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert('Announcement published successfully!');
+                loadModule('announcements');
+            }).catch(err => alert('Error: ' + err.message));
         }
 
-        function logAuditAction(action) {
-            db.collection('auditLogs').add({
-                action, adminEmail: auth.currentUser ? auth.currentUser.email : 'System',
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).catch(() => {});
-        }
-
-        function uploadPDFFile() {
-            let title = document.getElementById('pdfTitle').value;
-            let fileInput = document.getElementById('pdfFile');
-            if(!title || fileInput.files.length === 0) { alert('Select PDF file.'); return; }
-            let file = fileInput.files[0];
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                db.collection('files').add({
-                    title, fileName: file.name, fileSize: Math.round(file.size / 1024) + ' KB',
-                    dataUrl: e.target.result, createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                }).then(() => { alert('PDF uploaded!'); loadModule('files'); });
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function fetchAdminPDFs() {
-            db.collection('files').orderBy('createdAt', 'desc').get().then(snap => {
+        function fetchAdminAnnouncements() {
+            db.collection('announcements').orderBy('createdAt', 'desc').get().then(snap => {
                 let html = '';
                 snap.forEach(doc => {
-                    let f = doc.data();
-                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center"><span class="font-bold text-white">${f.title}</span><button onclick="db.collection('files').doc('${doc.id}').delete(); loadModule('files');" class="text-red-400 text-[10px]">Delete</button></div>`;
+                    let a = doc.data();
+                    html += `
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-1">
+                            <span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold">${a.category}</span>
+                            <span class="font-bold text-white block">${a.title}</span>
+                            <p class="text-[10px] text-slate-300">${a.content}</p>
+                            ${a.imageUrl ? `<img src="${a.imageUrl}" class="w-full h-32 object-cover rounded-lg mt-1 border border-slate-800">` : ''}
+                            <button onclick="deleteAnnouncement('${doc.id}')" class="text-red-400 text-[10px] bg-red-500/10 px-2 py-0.5 rounded mt-1">Delete</button>
+                        </div>
+                    `;
                 });
-                document.getElementById('adminPdfList').innerHTML = html || '<p class="text-slate-500 text-xs">No PDFs.</p>';
+                document.getElementById('adminAnnList').innerHTML = html || '<p class="text-slate-500 text-xs">No announcements posted yet.</p>';
             });
         }
 
-        function fetchAllUsersList() {
-            db.collection('users').get().then(snap => {
+        function deleteAnnouncement(id) {
+            if(confirm('Delete this announcement?')) {
+                db.collection('announcements').doc(id).delete().then(() => loadModule('announcements'));
+            }
+        }
+
+        function loadDashboardFeed(containerId) {
+            db.collection('announcements').orderBy('createdAt', 'desc').limit(5).get().then(snap => {
                 let html = '';
                 snap.forEach(doc => {
-                    let u = doc.data(), uid = doc.id, isActive = u.isActive !== false;
-                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center"><span>${u.name || 'User'} (${u.email}) [${u.role || 'student'}]</span><button onclick="toggleUserStatus('${uid}', ${isActive}, 'users')" class="text-[10px] px-2 py-1 rounded font-bold ${isActive ? 'bg-amber-500/10 text-amber-400' : 'bg-emerald-500/10 text-emerald-400'}">${isActive ? 'Suspend' : 'Activate'}</button></div>`;
+                    let a = doc.data();
+                    let badgeColor = a.category === 'Admission Update' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+                    html += `
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1.5">
+                            <span class="text-[9px] border px-2 py-0.5 rounded font-bold uppercase tracking-wider ${badgeColor}">${a.category}</span>
+                            <h4 class="font-extrabold text-white text-xs">${a.title}</h4>
+                            <p class="text-[11px] text-slate-300">${a.content}</p>
+                            ${a.imageUrl ? `<img src="${a.imageUrl}" class="w-full h-40 object-cover rounded-xl mt-2 border border-slate-800">` : ''}
+                        </div>
+                    `;
                 });
-                document.getElementById('allUsersManagementList').innerHTML = html || '<p class="text-slate-500 text-xs">No users.</p>';
+                let el = document.getElementById(containerId);
+                if(el) el.innerHTML = html || '<p class="text-slate-500 text-xs">No current announcements or admission updates.</p>';
             });
         }
 
-        function fetchAdminSupportTickets() {
-            db.collection('supportTickets').orderBy('createdAt', 'desc').get().then(snap => {
-                let html = '';
-                snap.forEach(doc => {
-                    let t = doc.data();
-                    html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center"><div><span class="font-bold text-white block">${t.subject} (${t.studentEmail})</span><p class="text-[10px] text-slate-300">${t.message}</p></div><button onclick="db.collection('supportTickets').doc('${doc.id}').update({resolved: true}); loadModule('support');" class="bg-emerald-500/10 text-emerald-400 text-[10px] px-2 py-1 rounded font-bold">Resolve</button></div>`;
-                });
-                document.getElementById('adminSupportList').innerHTML = html || '<p class="text-slate-500 text-xs">No support tickets.</p>';
-            });
-        }
-
-        function savePlatformControl() {
-            let reg = document.getElementById('ctrlReg').value === 'true';
-            let cbt = document.getElementById('ctrlCbt').value === 'true';
-            db.collection('settings').doc('platform').set({ reg, cbt }, { merge: true }).then(() => alert('Saved!'));
-        }
-
-        function fetchRolesUserList() {
-            db.collection('users').get().then(snap => {
-                let html = '';
-                snap.forEach(doc => {
-                    let u = doc.data(), uid = doc.id;
-                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center"><span>${u.email}</span><select onchange="db.collection('users').doc('${uid}').update({role: this.value})" class="bg-slate-900 text-xs text-white p-1 rounded"><option value="student" ${u.role==='student'?'selected':''}>Student</option><option value="tutor" ${u.role==='tutor'?'selected':''}>Tutor</option><option value="bursar" ${u.role==='bursar'?'selected':''}>Bursar</option><option value="super_admin" ${u.role==='super_admin'?'selected':''}>Super Admin</option></select></div>`;
-                });
-                document.getElementById('rolesUserList').innerHTML = html;
-            });
-        }
-
-        function updateAdminProfile() {
-            let newName = document.getElementById('adminNewName').value;
-            if(!newName) return;
-            db.collection('users').doc(auth.currentUser.uid).update({ name: newName }).then(() => alert('Updated!'));
-        }
-
-        function fetchAuditLogs() {
-            db.collection('auditLogs').orderBy('timestamp', 'desc').limit(20).get().then(snap => {
-                let html = '';
-                snap.forEach(doc => { let l = doc.data(); html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${l.action}</span><span class="text-[10px] text-amber-400">${l.adminEmail}</span></div>`; });
-                document.getElementById('auditLogsList').innerHTML = html || '<p class="text-slate-500 text-xs">No logs.</p>';
-            });
-        }
-
-        function saveSystemSettings() {
-            let portalName = document.getElementById('settingPortalName').value;
-            db.collection('settings').doc('config').set({ portalName }, { merge: true }).then(() => alert('Saved!'));
-        }
-
-        function createNewUserAccount(roleTarget) {
+        // ================= USER MANAGEMENT =================
+        function createNewUserAccount(role) {
             let name = document.getElementById('newUserName').value;
             let email = document.getElementById('newUserEmail').value;
             let password = document.getElementById('newUserPassword').value;
-            let chosenRole = document.getElementById('newUserRoleSelect') ? document.getElementById('newUserRoleSelect').value : roleTarget;
-            if(!name || !email || !password) { alert('Fill all fields'); return; }
 
-            let secondaryApp = firebase.initializeApp(firebaseConfig, 'Sec_' + Date.now());
-            secondaryApp.auth().createUserWithEmailAndPassword(email, password)
-                .then(cred => db.collection('users').doc(cred.user.uid).set({ name, email, role: chosenRole, isActive: true }))
-                .then(() => { alert('Created!'); secondaryApp.auth().signOut(); secondaryApp.delete(); loadModule(roleTarget === 'student' ? 'students' : 'admins'); })
-                .catch(err => { alert(err.message); secondaryApp.auth().signOut(); secondaryApp.delete(); });
+            if(!name || !email || !password) { alert('Please fill all fields'); return; }
+
+            let secondaryAppName = 'SecondaryApp_' + Date.now();
+            let secondaryApp = firebase.initializeApp(firebaseConfig, secondaryAppName);
+            let secondaryAuth = secondaryApp.auth();
+
+            secondaryAuth.createUserWithEmailAndPassword(email, password)
+                .then(cred => {
+                    let uid = cred.user.uid;
+                    return db.collection('users').doc(uid).set({
+                        name, email, role, isActive: true,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                })
+                .then(() => {
+                    alert('Account created successfully!');
+                    secondaryAuth.signOut();
+                    secondaryApp.delete();
+                    loadModule(role === 'student' ? 'students' : (role === 'super_admin' ? 'admins' : (role === 'bursar' ? 'bursars' : 'tutors')));
+                })
+                .catch(err => {
+                    alert('Error: ' + err.message);
+                    secondaryAuth.signOut();
+                    secondaryApp.delete();
+                });
         }
 
-        function fetchUserManagementList(roleTarget) {
-            let q = roleTarget === 'student' ? db.collection('users').where('role', '==', 'student') : db.collection('users').where('role', 'in', ['super_admin', 'tutor', 'bursar']);
-            q.get().then(snap => {
+        function fetchUserManagementList(role) {
+            db.collection('users').where('role', '==', role).get().then(snap => {
                 let html = '';
                 snap.forEach(doc => {
-                    let u = doc.data(), uid = doc.id, isActive = u.isActive !== false;
-                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center"><span>${u.name} (${u.email}) [${u.role}]</span><button onclick="toggleUserStatus('${uid}', ${isActive}, '${roleTarget === 'student' ? 'students' : 'admins'}')" class="text-[10px] px-2 py-1 rounded font-bold ${isActive ? 'bg-amber-500/10 text-amber-400' : 'bg-emerald-500/10 text-emerald-400'}">${isActive ? 'Suspend' : 'Activate'}</button></div>`;
+                    let u = doc.data();
+                    let uid = doc.id;
+                    let isActive = u.isActive !== false;
+                    let controls = currentUserRole === 'super_admin' ? `
+                        <div class="flex gap-1.5">
+                            <button onclick="toggleUserStatus('${uid}', ${isActive}, '${role}')" class="text-[10px] px-2 py-1 rounded font-bold ${isActive ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}">${isActive ? 'Suspend' : 'Activate'}</button>
+                            <button onclick="deleteUserAccount('${uid}', '${role}')" class="text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-1 rounded font-bold">Delete</button>
+                        </div>
+                    ` : '';
+
+                    html += `
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-white block">${u.name || 'No Name'} (${u.email})</span>
+                                <span class="text-[10px] ${isActive ? 'text-emerald-400' : 'text-red-400'} font-bold">Status: ${isActive ? 'Active' : 'Suspended'}</span>
+                            </div>
+                            ${controls}
+                        </div>
+                    `;
                 });
-                document.getElementById('userManagementList').innerHTML = html || '<p class="text-slate-500 text-xs">None found.</p>';
+                document.getElementById('userManagementList').innerHTML = html || `<p class="text-slate-500 text-xs">No accounts found.</p>`;
             });
         }
 
-        function toggleUserStatus(uid, currentStatus, returnModule) {
-            db.collection('users').doc(uid).update({ isActive: !currentStatus }).then(() => loadModule(returnModule));
+        function toggleUserStatus(uid, currentStatus, role) {
+            db.collection('users').doc(uid).update({ isActive: !currentStatus })
+                .then(() => fetchUserManagementList(role))
+                .catch(err => alert('Error: ' + err.message));
         }
 
-        // ================= STUDENT MODULES =================
+        function deleteUserAccount(uid, role) {
+            if(confirm('Are you sure you want to delete this user record?')) {
+                db.collection('users').doc(uid).delete()
+                    .then(() => fetchUserManagementList(role))
+                    .catch(err => alert('Error: ' + err.message));
+            }
+        }
+
+        // ================= STUDENT MODULE LOADER =================
         function loadStudentModule(key) {
             if(activeTimer) clearInterval(activeTimer);
             toggleDrawer();
@@ -865,105 +551,57 @@
 
             if (key === 'cbts') {
                 titleEl.innerText = "🧪 Live CBT Examination Center";
-                contentEl.innerHTML = `<p class="text-xs text-slate-400 mb-3">Select active exam:</p><div id="studentAvailableCbts" class="space-y-2">Loading exams...</div>`;
-                fetchStudentCBTs();
-            } else if (key === 'notes') {
-                titleEl.innerText = "📝 Study Notes & Lessons";
-                contentEl.innerHTML = `<div id="studentNotesList" class="space-y-2">Loading notes...</div>`;
-                fetchStudentRichNotes();
-            } else if (key === 'virtualClasses') {
-                titleEl.innerText = "🎥 Live Virtual Classes";
-                contentEl.innerHTML = `<div id="studentClassList" class="space-y-2">Loading live classes...</div>`;
-                fetchStudentVirtualClasses();
-            } else if (key === 'files') {
-                titleEl.innerText = "📥 Downloadable PDF Resources";
-                contentEl.innerHTML = `<div id="studentPdfList" class="space-y-2">Loading PDFs...</div>`;
-                fetchStudentPDFs();
-            } else if (key === 'support') {
-                titleEl.innerText = "🎧 Help & Support Tickets";
                 contentEl.innerHTML = `
-                    <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <input type="text" id="ticketSubject" placeholder="Subject / Issue Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <textarea id="ticketMessage" placeholder="Describe your issue..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-24"></textarea>
-                        <button onclick="submitSupportTicket()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Submit Support Ticket 🎫</button>
-                    </div>
-                    <div class="space-y-2 pt-2"><div id="studentTicketList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading tickets...</div></div>
+                    <p class="text-xs text-slate-400 mb-3">Select an active exam below and click start. Your timer will begin immediately!</p>
+                    <div id="studentAvailableCbts" class="space-y-2">Loading available live exams...</div>
                 `;
-                fetchStudentSupportTickets();
+                fetchStudentCBTs();
+            } else if (key === 'payments') {
+                titleEl.innerText = "💳 My Payment History & Receipts";
+                contentEl.innerHTML = `<div id="myPaymentsList" class="space-y-2">Loading your receipts...</div>`;
+                fetchStudentPayments();
+            } else if (key === 'timetable') {
+                titleEl.innerText = "📅 Class Timetable";
+                fetchStudentList('timetable', contentEl, item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title}</span><span class="text-[10px] text-amber-400">${item.details}</span></div>`);
+            } else if (key === 'notes') {
+                titleEl.innerText = "📚 Notes & Resources";
+                fetchStudentList('notes', contentEl, item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title}</span><span class="text-[10px] text-slate-400">${item.details}</span></div>`);
             }
         }
 
-        function fetchStudentRichNotes() {
-            db.collection('richNotes').orderBy('createdAt', 'desc').get().then(snap => {
+        function fetchStudentPayments() {
+            let email = auth.currentUser.email;
+            db.collection('payments').where('studentEmail', '==', email).get().then(snap => {
                 let html = '';
                 snap.forEach(doc => {
-                    let n = doc.data();
-                    html += `<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2"><h4 class="font-bold text-amber-400 text-sm">${n.title}</h4><div class="text-xs text-slate-200 space-y-1">${n.content}</div></div>`;
-                });
-                document.getElementById('studentNotesList').innerHTML = html || '<p class="text-slate-500 text-xs">No notes posted yet.</p>';
-            });
-        }
-
-        function fetchStudentVirtualClasses() {
-            db.collection('virtualClasses').orderBy('createdAt', 'desc').get().then(snap => {
-                let html = '';
-                snap.forEach(doc => {
-                    let c = doc.data();
+                    let p = doc.data();
                     html += `
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
-                            <div>
-                                <span class="font-bold text-white block">${c.title}</span>
-                                <span class="text-[10px] text-amber-400">📅 ${new Date(c.time).toLocaleString()}</span>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-emerald-400">₦${Number(p.amount).toLocaleString()}</span>
+                                <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Paid & Verified</span>
                             </div>
-                            <a href="${c.link}" target="_blank" class="bg-amber-500 text-slate-950 text-xs font-extrabold px-3 py-2 rounded-xl">Join Class 🚀</a>
+                            <span class="font-bold text-white text-xs block">${p.purpose}</span>
+                            <span class="text-[10px] text-slate-400 block">Term: ${p.term}</span>
                         </div>
                     `;
                 });
-                document.getElementById('studentClassList').innerHTML = html || '<p class="text-slate-500 text-xs">No live classes scheduled.</p>';
+                document.getElementById('myPaymentsList').innerHTML = html || '<p class="text-slate-500 text-xs">No payment records found for your account yet.</p>';
             });
         }
 
-        function fetchStudentPDFs() {
-            db.collection('files').orderBy('createdAt', 'desc').get().then(snap => {
-                let html = '';
-                snap.forEach(doc => {
-                    let f = doc.data();
-                    html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center"><div><span class="font-bold text-white block">${f.title}</span><span class="text-[10px] text-slate-400">${f.fileName}</span></div><a href="${f.dataUrl}" download="${f.fileName}" class="bg-amber-500 text-slate-950 text-xs font-extrabold px-3 py-2 rounded-xl">📥 Download</a></div>`;
-                });
-                document.getElementById('studentPdfList').innerHTML = html || '<p class="text-slate-500 text-xs">No PDFs available.</p>';
-            });
-        }
-
-        function submitSupportTicket() {
-            let subject = document.getElementById('ticketSubject').value;
-            let message = document.getElementById('ticketMessage').value;
-            if(!subject || !message) { alert('Fill all fields.'); return; }
-            db.collection('supportTickets').add({
-                studentEmail: auth.currentUser.email, subject, message, resolved: false,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => { alert('Submitted!'); loadStudentModule('support'); });
-        }
-
-        function fetchStudentSupportTickets() {
-            db.collection('supportTickets').where('studentEmail', '==', auth.currentUser.email).get().then(snap => {
-                let html = '';
-                snap.forEach(doc => {
-                    let t = doc.data();
-                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white">${t.subject}</span><span class="text-[9px] ${t.resolved?'text-emerald-400':'text-amber-400'} block">${t.resolved?'Resolved':'Pending'}</span></div>`;
-                });
-                document.getElementById('studentTicketList').innerHTML = html || '<p class="text-slate-500 text-xs">No tickets.</p>';
-            });
-        }
-
-        // ================= CBT & CERTIFICATE =================
+        // ================= SMART BULK CBT PARSER =================
         function parseAndSaveBulkCBT() {
             let title = document.getElementById('cbtTitle').value;
             let duration = parseInt(document.getElementById('cbtDuration').value);
             let rawText = document.getElementById('bulkQuestionsText').value;
-            if(!title || !duration || !rawText) return;
+
+            if(!title || !duration || !rawText) { alert('Please fill exam title, duration, and questions.'); return; }
 
             let lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-            let questions = [], currentQ = null;
+            let questions = [];
+            let currentQ = null;
+
             for(let line of lines) {
                 let isNewQ = /^(?:question\s*)?\d+[\.\)]\s*/i.test(line);
                 if(isNewQ) {
@@ -973,29 +611,46 @@
                     let optMatch = line.match(/^([a-d])[\.\)]\s*(.+)/i);
                     let ansMatch = line.match(/^(?:answer|correct)\s*[:\-]\s*([a-d])/i);
                     if(optMatch) {
-                        let ltr = optMatch[1].toUpperCase();
-                        if(ltr === 'A') currentQ.a = optMatch[2];
-                        if(ltr === 'B') currentQ.b = optMatch[2];
-                        if(ltr === 'C') currentQ.c = optMatch[2];
-                        if(ltr === 'D') currentQ.d = optMatch[2];
-                    } else if(ansMatch) { currentQ.correct = ansMatch[1].toUpperCase(); }
+                        let optLetter = optMatch[1].toUpperCase();
+                        let optText = optMatch[2];
+                        if(optLetter === 'A') currentQ.a = optText;
+                        if(optLetter === 'B') currentQ.b = optText;
+                        if(optLetter === 'C') currentQ.c = optText;
+                        if(optLetter === 'D') currentQ.d = optText;
+                    } else if(ansMatch) {
+                        currentQ.correct = ansMatch[1].toUpperCase();
+                    } else {
+                        if(!currentQ.a && !currentQ.b) currentQ.q += " " + line;
+                    }
                 }
             }
             if(currentQ) questions.push(currentQ);
 
-            db.collection('cbts').add({ title, duration, questions, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
-                .then(() => { alert('Exam published!'); loadModule('cbts'); });
+            db.collection('cbts').add({
+                title, duration, questions,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert(`Successfully published ${questions.length} questions!`);
+                loadModule('cbts');
+            }).catch(err => alert('Error: ' + err.message));
         }
 
         function fetchAdminCBTs() {
-            db.collection('cbts').get().then(snap => {
+            db.collection('cbts').orderBy('createdAt', 'desc').get().then(snap => {
                 let html = '';
                 snap.forEach(doc => {
                     let c = doc.data();
-                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center"><span class="font-bold text-white text-xs">${c.title}</span><button onclick="db.collection('cbts').doc('${doc.id}').delete(); loadModule('cbts');" class="text-red-400 text-[10px]">Delete</button></div>`;
+                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <div><span class="font-bold text-white block">${c.title}</span><span class="text-[10px] text-amber-400">⏱️ ${c.duration} mins | ❓ ${c.questions ? c.questions.length : 0} Qs</span></div>
+                        <button onclick="deleteCbt('${doc.id}')" class="text-red-400 text-[10px] bg-red-500/10 px-2 py-1 rounded">Delete</button>
+                    </div>`;
                 });
-                document.getElementById('adminCbtList').innerHTML = html || '<p class="text-slate-500 text-xs">No exams.</p>';
+                document.getElementById('adminCbtList').innerHTML = html || '<p class="text-slate-500 text-xs">No CBT exams created yet.</p>';
             });
+        }
+
+        function deleteCbt(id) {
+            if(confirm('Delete this exam?')) { db.collection('cbts').doc(id).delete().then(() => loadModule('cbts')); }
         }
 
         function fetchStudentCBTs() {
@@ -1003,34 +658,68 @@
                 let html = '';
                 snap.forEach(doc => {
                     let c = doc.data();
-                    html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center"><div><span class="font-bold text-white block">${c.title}</span><span class="text-[10px] text-amber-400">⏱️ ${c.duration} Mins</span></div><button onclick="startLiveExam('${doc.id}')" class="bg-amber-500 text-slate-950 font-bold text-xs px-3 py-2 rounded-xl">Start Exam 🚀</button></div>`;
+                    html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <div>
+                            <span class="font-bold text-white block">${c.title}</span>
+                            <span class="text-[10px] text-amber-400">⏱️ Time Allowed: ${c.duration} Mins (${c.questions ? c.questions.length : 0} Questions)</span>
+                        </div>
+                        <button onclick="startLiveExam('${doc.id}')" class="bg-amber-500 text-slate-950 font-extrabold text-xs px-3 py-2 rounded-xl">Start Exam 🚀</button>
+                    </div>`;
                 });
-                document.getElementById('studentAvailableCbts').innerHTML = html || '<p class="text-slate-500 text-xs">No live exams.</p>';
+                document.getElementById('studentAvailableCbts').innerHTML = html || '<p class="text-slate-500 text-xs">No live exams available right now.</p>';
             });
         }
 
         function startLiveExam(cbtId) {
             db.collection('cbts').doc(cbtId).get().then(doc => {
                 if(!doc.exists) return;
-                let exam = doc.data(), questions = exam.questions || [], timeLeft = exam.duration * 60;
+                let exam = doc.data();
+                let questions = exam.questions || [];
+                let timeLeft = exam.duration * 60;
                 let contentEl = document.getElementById('studentModuleContent');
-
-                function renderScreen() {
-                    let m = Math.floor(timeLeft / 60), s = timeLeft % 60, qHtml = '';
+                
+                function renderExamScreen() {
+                    let mins = Math.floor(timeLeft / 60);
+                    let secs = timeLeft % 60;
+                    let timeStr = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    let qHtml = '';
                     questions.forEach((q, idx) => {
-                        qHtml += `<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2"><p class="text-xs font-bold text-white">Q${idx+1}: ${q.q}</p><div class="space-y-1 text-xs"><label class="block"><input type="radio" name="q_${idx}" value="A"> A) ${q.a}</label><label class="block"><input type="radio" name="q_${idx}" value="B"> B) ${q.b}</label>${q.c ? `<label class="block"><input type="radio" name="q_${idx}" value="C"> C) ${q.c}</label>` : ''}${q.d ? `<label class="block"><input type="radio" name="q_${idx}" value="D"> D) ${q.d}</label>` : ''}</div></div>`;
+                        qHtml += `
+                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
+                                <p class="text-xs font-bold text-white">Q${idx + 1}: ${q.q}</p>
+                                <div class="space-y-1 text-xs">
+                                    <label class="block"><input type="radio" name="q_${idx}" value="A"> A) ${q.a}</label>
+                                    <label class="block"><input type="radio" name="q_${idx}" value="B"> B) ${q.b}</label>
+                                    ${q.c ? `<label class="block"><input type="radio" name="q_${idx}" value="C"> C) ${q.c}</label>` : ''}
+                                    ${q.d ? `<label class="block"><input type="radio" name="q_${idx}" value="D"> D) ${q.d}</label>` : ''}
+                                </div>
+                            </div>
+                        `;
                     });
-                    contentEl.innerHTML = `<div class="sticky top-12 bg-slate-900 border border-amber-500/30 p-3 rounded-xl flex justify-between items-center mb-3"><span>${exam.title}</span><span class="text-red-400 font-bold">⏱️ <span id="timerDisplay">${m}:${s < 10 ? '0' : ''}${s}</span></span></div><div class="space-y-3 mb-4">${qHtml}</div><button onclick="submitExam('${cbtId}', ${JSON.stringify(questions).replace(/"/g, '&quot;')})" class="w-full bg-emerald-500 text-slate-950 font-bold text-xs py-3 rounded-xl">Submit Exam</button>`;
+                    contentEl.innerHTML = `
+                        <div class="sticky top-12 bg-slate-900 border border-amber-500/30 p-3 rounded-xl flex justify-between items-center mb-3 shadow-lg z-20">
+                            <div><span class="text-[10px] text-slate-400 block font-bold">Exam in Progress</span><span class="text-xs font-black text-white">${exam.title}</span></div>
+                            <div class="bg-red-500/20 border border-red-500/40 text-red-400 px-3 py-1 rounded-lg text-xs font-black">⏱️ Time Left: <span id="timerDisplay">${timeStr}</span></div>
+                        </div>
+                        <div class="space-y-3 mb-4">${qHtml}</div>
+                        <button onclick="submitExam('${cbtId}', ${JSON.stringify(questions).replace(/"/g, '&quot;')})" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs py-3 rounded-xl">Submit Exam Now</button>
+                    `;
                 }
-                renderScreen();
+
+                renderExamScreen();
                 activeTimer = setInterval(() => {
                     timeLeft--;
-                    let tEl = document.getElementById('timerDisplay');
-                    if(tEl) {
-                        let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
-                        tEl.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+                    let timerEl = document.getElementById('timerDisplay');
+                    if(timerEl) {
+                        let mins = Math.floor(timeLeft / 60);
+                        let secs = timeLeft % 60;
+                        timerEl.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
                     }
-                    if(timeLeft <= 0) { clearInterval(activeTimer); submitExam(cbtId, questions); }
+                    if(timeLeft <= 0) {
+                        clearInterval(activeTimer);
+                        alert('Time is up! Submitting exam automatically.');
+                        submitExam(cbtId, questions);
+                    }
                 }, 1000);
             });
         }
@@ -1038,26 +727,65 @@
         function submitExam(cbtId, questions) {
             if(activeTimer) clearInterval(activeTimer);
             let score = 0;
+            let total = questions.length;
             questions.forEach((q, idx) => {
-                let sel = document.querySelector(`input[name="q_${idx}"]:checked`);
-                if(sel && sel.value.toUpperCase() === q.correct.toUpperCase()) score++;
+                let selected = document.querySelector(`input[name="q_${idx}"]:checked`);
+                if(selected && selected.value.toUpperCase() === q.correct.toUpperCase()) score++;
             });
-            let percentage = Math.round((score / questions.length) * 100);
+            let percentage = Math.round((score / total) * 100);
+
             db.collection('cbtResults').add({
-                studentEmail: auth.currentUser.email, cbtId, score, total: questions.length, percentage,
+                studentEmail: auth.currentUser.email,
+                cbtId, score, total, percentage,
                 submittedAt: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
-                let passHTML = percentage >= 50 ? `<div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-xl mt-3"><h4 class="font-bold text-amber-400 mb-1">🎓 Certificate Earned!</h4><p class="text-[11px] text-slate-300">Passed with ${percentage}%. Certificate ready.</p><button onclick="window.print()" class="mt-2 bg-amber-500 text-slate-950 text-xs font-bold px-3 py-1.5 rounded-lg">🖨️ Print Certificate</button></div>` : '';
-                document.getElementById('studentModuleContent').innerHTML = `<div class="bg-slate-950 p-6 rounded-2xl text-center space-y-3"><h3 class="text-lg font-black text-amber-400">Exam Submitted!</h3><div class="text-3xl font-black text-emerald-400">${score}/${questions.length} (${percentage}%)</div>${passHTML}<button onclick="loadStudentModule('cbts')" class="w-full bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs mt-3">Back to Exams</button></div>`;
-            });
+                document.getElementById('studentModuleContent').innerHTML = `
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 text-center space-y-3 mt-4">
+                        <h3 class="text-lg font-black text-amber-400">🎉 Exam Submitted Successfully!</h3>
+                        <div class="text-3xl font-black text-emerald-400">${score} / ${total} (${percentage}%)</div>
+                        <button onclick="loadStudentModule('cbts')" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Back to CBT Center</button>
+                    </div>
+                `;
+            }).catch(err => alert('Error: ' + err.message));
         }
 
         function fetchCBTResults() {
             db.collection('cbtResults').orderBy('submittedAt', 'desc').get().then(snap => {
                 let html = '';
-                snap.forEach(doc => { let r = doc.data(); html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center"><span>${r.studentEmail}</span><span class="text-emerald-400 font-bold">${r.score}/${r.total} (${r.percentage}%)</span></div>`; });
-                document.getElementById('cbtResultsList').innerHTML = html || '<p class="text-slate-500 text-xs">No results.</p>';
+                snap.forEach(doc => {
+                    let r = doc.data();
+                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <div><span class="font-bold text-white block">${r.studentEmail}</span><span class="text-[10px] text-slate-400">Score: ${r.score}/${r.total} (${r.percentage}%)</span></div>
+                        <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Graded</span>
+                    </div>`;
+                });
+                document.getElementById('cbtResultsList').innerHTML = html || '<p class="text-slate-500 text-xs">No CBT submissions yet.</p>';
             });
+        }
+
+        function fetchList(collectionName, containerId, templateFn) {
+            db.collection(collectionName).orderBy('createdAt', 'desc').get().then(snap => {
+                let html = '';
+                snap.forEach(doc => { html += templateFn(doc.data()); });
+                document.getElementById(containerId).innerHTML = html || '<p class="text-slate-500 text-xs">No records found yet.</p>';
+            });
+        }
+
+        function fetchStudentList(collectionName, containerEl, templateFn) {
+            db.collection(collectionName).get().then(snap => {
+                let html = '<div class="space-y-2">';
+                snap.forEach(doc => { html += templateFn(doc.data()); });
+                html += '</div>';
+                containerEl.innerHTML = html || '<p class="text-slate-500 text-xs">No items posted yet.</p>';
+            });
+        }
+
+        function saveGenericItem(collectionName, data) {
+            for(let k in data) { if(!data[k]) { alert('Please fill all fields'); return; } }
+            data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            db.collection(collectionName).add(data)
+              .then(() => { alert('Saved successfully!'); loadModule(collectionName); })
+              .catch(err => alert('Error: ' + err.message));
         }
 
         function handleLogin(e) {
@@ -1065,39 +793,47 @@
             auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
                 .then(cred => routeUser(cred.user.uid))
                 .catch(err => {
-                    let b = document.getElementById('loginError');
-                    b.innerText = err.message;
-                    b.classList.remove('hidden');
+                    let errBox = document.getElementById('loginError');
+                    errBox.innerText = err.message;
+                    errBox.classList.remove('hidden');
                 });
         }
 
         function routeUser(uid) {
             db.collection('users').doc(uid).get().then(doc => {
                 let userData = doc.exists ? doc.data() : { role: 'student', name: 'User', isActive: true };
+                
                 if(userData.isActive === false) {
                     auth.signOut().then(() => {
-                        let b = document.getElementById('loginError');
-                        b.innerText = "Account suspended. Contact administrator.";
-                        b.classList.remove('hidden');
+                        let errBox = document.getElementById('loginError');
+                        errBox.innerText = "Your account has been suspended. Please contact the administrator.";
+                        errBox.classList.remove('hidden');
                         switchView('loginView');
                     });
                     return;
                 }
-                let role = userData.role || 'student';
-                populateMenu(role);
-                if (role === 'super_admin' || role === 'tutor' || role === 'bursar') {
-                    document.getElementById('superAdminName').innerText = `Welcome, ${userData.name || 'Staff'}`;
+
+                currentUserRole = userData.role || 'student';
+                populateMenu(currentUserRole);
+
+                if (currentUserRole === 'super_admin' || currentUserRole === 'bursar') {
+                    document.getElementById('superAdminName').innerText = `Welcome, ${userData.name || 'Boss'}`;
+                    document.getElementById('roleBadge').innerText = currentUserRole === 'bursar' ? 'Bursary Officer' : 'Super Admin';
                     switchView('superAdminView');
-                    loadModule(role === 'bursar' ? 'payments' : (role === 'tutor' ? 'richNotes' : 'dashboard'));
+                    loadDashboardFeed('dashboardAnnouncementsFeed');
+                    loadModule('dashboard');
                 } else {
                     document.getElementById('standardUserName').innerText = `Welcome, ${userData.name || 'Student'}`;
+                    document.getElementById('standardRoleBadge').innerText = currentUserRole.toUpperCase() + ' PORTAL';
                     switchView('standardView');
+                    loadDashboardFeed('studentAnnouncementsFeed');
                     loadStudentModule('cbts');
                 }
             });
         }
 
         function handleLogout() { if(activeTimer) clearInterval(activeTimer); auth.signOut().then(() => switchView('loginView')); }
+
         auth.onAuthStateChanged(user => { user ? routeUser(user.uid) : switchView('loginView'); });
     </script>
 </body>
