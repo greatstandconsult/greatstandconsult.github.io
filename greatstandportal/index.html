@@ -28,23 +28,26 @@
         <div id="headerAuthArea"></div>
     </header>
 
-    <!-- SLIDE-OUT NAVIGATION DRAWER -->
+    <!-- SLIDE-OUT NAVIGATION DRAWER (ARCHITECTURAL MENU) -->
     <div id="navDrawer" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex">
-        <div class="bg-slate-900 w-72 h-full border-r border-slate-800 p-5 flex flex-col justify-between shadow-2xl overflow-y-auto">
+        <div class="bg-slate-900 w-80 h-full border-r border-slate-800 p-5 flex flex-col justify-between shadow-2xl overflow-y-auto">
             <div>
                 <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
-                    <span class="text-xs font-black text-amber-400 uppercase tracking-wider">Portal Navigation</span>
-                    <button onclick="toggleDrawer()" class="text-slate-400 hover:text-white font-bold text-sm">✕ Close</button>
+                    <div>
+                        <span class="text-[10px] font-black text-amber-400 uppercase tracking-wider block">Master Control</span>
+                        <span class="text-xs font-extrabold text-white">Navigation Menu</span>
+                    </div>
+                    <button onclick="toggleDrawer()" class="text-slate-400 hover:text-white font-bold text-xs bg-slate-800 px-2.5 py-1 rounded-lg">✕ Close</button>
                 </div>
                 
                 <!-- Dynamic Menu Links based on Role -->
-                <div id="drawerLinks" class="space-y-1">
+                <div id="drawerLinks" class="space-y-1.5 text-xs">
                     <!-- Injected via JavaScript -->
                 </div>
             </div>
-            <div class="pt-4 border-t border-slate-800">
+            <div class="pt-4 border-t border-slate-800 mt-4">
                 <button onclick="handleLogout(); toggleDrawer();" class="w-full bg-red-500/20 text-red-300 border border-red-500/30 font-bold text-xs py-2.5 rounded-xl transition">
-                    Logout
+                    🚪 Logout
                 </button>
             </div>
         </div>
@@ -84,11 +87,12 @@
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
                 <span class="bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider">Super Admin Portal</span>
                 <h2 id="superAdminName" class="text-lg font-extrabold text-white mt-1">Welcome, Boss</h2>
-                <p class="text-[11px] text-slate-400">Tap the ☰ menu above to access all platform modules.</p>
+                <p class="text-[11px] text-slate-400 mt-1">Master control center active. Tap the ☰ menu above to explore all 24 management modules.</p>
             </div>
 
+            <!-- Default Active Content Card: Quick User Creator -->
             <div id="adminContentArea" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
-                <h3 class="text-xs font-bold uppercase text-amber-400 mb-3">👥 Create User Account</h3>
+                <h3 class="text-xs font-bold uppercase text-amber-400 mb-3">👥 Quick User Creator</h3>
                 <form onsubmit="handleCreateUser(event)" class="space-y-3">
                     <div>
                         <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Full Name</label>
@@ -107,6 +111,7 @@
                         <select id="newUserRole" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
                             <option value="student">Student</option>
                             <option value="tutor">Tutor / Instructor</option>
+                            <option value="admin">Admin</option>
                             <option value="super_admin">Super Admin</option>
                         </select>
                     </div>
@@ -121,9 +126,9 @@
         <!-- 3. TUTOR PORTAL VIEW -->
         <div id="tutorView" class="view-section space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-                <span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase">Tutor Portal</span>
+                <span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase">Tutor / Admin Portal</span>
                 <h2 id="tutorName" class="text-base font-extrabold text-white mt-1">Welcome, Tutor</h2>
-                <p class="text-[11px] text-slate-400">Access your teaching modules via the ☰ menu.</p>
+                <p class="text-[11px] text-slate-400">Access your authorized teaching and management tools via the ☰ menu.</p>
             </div>
         </div>
 
@@ -132,7 +137,7 @@
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
                 <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase">Student Portal</span>
                 <h2 id="studentName" class="text-base font-extrabold text-white mt-1">Welcome, Student</h2>
-                <p class="text-[11px] text-slate-400">Access your subjects and CBT tests via the ☰ menu.</p>
+                <p class="text-[11px] text-slate-400">Access your subjects, CBT tests, and admission guidance via the ☰ menu.</p>
             </div>
         </div>
 
@@ -187,36 +192,61 @@
             }
         }
 
+        // Populate full sidebar menu based on your exact architectural spec
         function populateMenu(role) {
             const linksContainer = document.getElementById('drawerLinks');
             let html = '';
 
             if (role === 'super_admin') {
                 html = `
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800 text-white text-xs font-bold">🏠 Dashboard</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">👥 Manage Students</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">👑 Admin Management</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">🎓 Manage Courses</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">📚 Manage Notes</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">📢 Post Updates</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">📝 Manage Assignments</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">🧠 Manage CBT / Tests</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">📖 Study Materials</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard Overview</a>
+                    
+                    <div class="text-[10px] font-extrabold text-slate-500 uppercase px-2 pt-2">User Management</div>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">👥 Students Management</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">👑 Admins Management</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🧑🏽‍🏫 Tutors Management</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🔐 Roles & Permissions</a>
+
+                    <div class="text-[10px] font-extrabold text-slate-500 uppercase px-2 pt-2">Academic & Content</div>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📚 Subjects & Topics</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📖 Notes & Resources</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">❓ Master Question Bank</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🧪 CBT Management</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📋 Assignments</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📅 Timetable & Zoom</a>
+
+                    <div class="text-[10px] font-extrabold text-slate-500 uppercase px-2 pt-2">Operations & Analytics</div>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📊 Results & Student Progress</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📢 Announcements</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🎓 Admission Management</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🌐 Website Management</a>
+
+                    <div class="text-[10px] font-extrabold text-slate-500 uppercase px-2 pt-2">System & Security</div>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">💳 Payments & Finance</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🛡️ Security Center</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📝 Audit Logs</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">💾 Backup & Data</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">⚙️ System Settings</a>
                 `;
             } else if (role === 'tutor' || role === 'admin') {
                 html = `
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800 text-white text-xs font-bold">🏠 Tutor Dashboard</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">📚 My Subjects & Notes</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">🧠 Create CBT Questions</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">📝 Manage Assignments</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📚 My Classes & Subjects</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📖 Upload Study Notes</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🧠 Question Bank & CBT</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📝 Assignments & Grading</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📅 Timetable & Zoom</a>
                 `;
             } else {
                 html = `
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-800 text-white text-xs font-bold">🏠 Student Dashboard</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">📚 My Subjects & Notes</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">💻 Take CBT Test</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">📊 My Results & Progress</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-800 text-slate-300 text-xs font-bold">📅 Timetable & Zoom</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Student Dashboard</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📚 My Registered Subjects</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📖 Notes & Resources</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">💻 Take CBT Test</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📝 Assignments</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📊 Results & Progress</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🎓 Admission Guidance</a>
+                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📅 Class Timetable</a>
                 `;
             }
             linksContainer.innerHTML = html;
