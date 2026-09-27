@@ -28,7 +28,7 @@
     <!-- MAIN APP CONTAINER -->
     <main class="max-w-5xl mx-auto w-full px-4 py-6 flex-grow">
 
-        <!-- 1. LOGIN VIEW (Default) -->
+        <!-- 1. LOGIN VIEW -->
         <div id="loginView" class="view-section active max-w-sm mx-auto mt-10">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
                 <div class="text-center mb-6">
@@ -64,21 +64,54 @@
                 <button onclick="handleLogout()" class="bg-slate-800 hover:bg-slate-700 text-red-400 text-xs font-bold px-3 py-2 rounded-xl transition">Logout</button>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase">Manage Users</h3>
-                    <p class="text-xs text-slate-300 mt-1">Create accounts for students and tutors.</p>
-                    <button onclick="alert('User creation module loading next!')" class="mt-3 bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-bold px-3 py-2 rounded-lg w-full transition">Open User Manager</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- User Manager Control Card -->
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-white">👥 Create User Account</h3>
+                        <p class="text-xs text-slate-400 mt-1">Register new students or tutors securely.</p>
+                    </div>
+
+                    <form onsubmit="handleCreateUser(event)" class="space-y-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Full Name</label>
+                            <input type="text" id="newUserName" required placeholder="e.g. John Doe" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Email Address</label>
+                            <input type="email" id="newUserEmail" required placeholder="user@gmail.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Temporary Password</label>
+                            <input type="text" id="newUserPass" required placeholder="Min 6 characters" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Assign Role</label>
+                            <select id="newUserRole" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                                <option value="student">Student</option>
+                                <option value="tutor">Tutor / Instructor</option>
+                                <option value="super_admin">Super Admin</option>
+                            </select>
+                        </div>
+                        <div id="createUserMsg" class="text-xs font-bold hidden p-2 rounded-lg"></div>
+                        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl transition">
+                            Create Account
+                        </button>
+                    </form>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase">Question Bank</h3>
-                    <p class="text-xs text-slate-300 mt-1">Upload JAMB/WAEC CBT questions.</p>
-                    <button onclick="alert('CBT Question Bank loading soon!')" class="mt-3 bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-bold px-3 py-2 rounded-lg w-full transition">Open CBT Manager</button>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase">System Logs</h3>
-                    <p class="text-xs text-slate-300 mt-1">Monitor recent platform activity.</p>
-                    <button onclick="alert('Audit logs active.')" class="mt-3 bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-bold px-3 py-2 rounded-lg w-full transition">View Audit Logs</button>
+
+                <!-- Quick Stats / Actions Card -->
+                <div class="space-y-4">
+                    <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+                        <h3 class="text-sm font-bold text-white mb-2">📝 CBT Question Bank</h3>
+                        <p class="text-xs text-slate-400 mb-4">Upload and manage mock exam questions.</p>
+                        <button onclick="alert('CBT Question Bank coming in Phase 3!')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-bold px-4 py-2.5 rounded-xl w-full transition">Open CBT Manager</button>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+                        <h3 class="text-sm font-bold text-white mb-2">📢 Broadcast Announcements</h3>
+                        <p class="text-xs text-slate-400 mb-4">Send notices to all student dashboards.</p>
+                        <button onclick="alert('Announcements module coming soon!')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-bold px-4 py-2.5 rounded-xl w-full transition">Open Announcements</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -87,9 +120,9 @@
         <div id="tutorView" class="view-section space-y-6">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex justify-between items-center">
                 <div>
-                    <span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Tutor / Admin Portal</span>
+                    <span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Tutor Portal</span>
                     <h2 id="tutorName" class="text-lg font-bold text-white mt-1">Welcome, Tutor</h2>
-                    <p class="text-xs text-slate-400">Manage your subjects, notes, and classes.</p>
+                    <p class="text-xs text-slate-400">Manage your study notes and classes.</p>
                 </div>
                 <button onclick="handleLogout()" class="bg-slate-800 hover:bg-slate-700 text-red-400 text-xs font-bold px-3 py-2 rounded-xl transition">Logout</button>
             </div>
@@ -145,7 +178,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // HARDCODED FIREBASE CONFIGURATION
+        // FIREBASE CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyBHnSGUALrnN-j8inER4MNcveQwJmyhLP4",
             authDomain: "great-stand-portal.firebaseapp.com",
@@ -183,6 +216,48 @@
                 .catch((err) => {
                     errBox.innerText = err.message;
                     errBox.classList.remove('hidden');
+                });
+        }
+
+        // CREATE NEW USER (Using secondary app so admin stays logged in!)
+        function handleCreateUser(e) {
+            e.preventDefault();
+            const name = document.getElementById('newUserName').value;
+            const email = document.getElementById('newUserEmail').value;
+            const pass = document.getElementById('newUserPass').value;
+            const role = document.getElementById('newUserRole').value;
+            const msgBox = document.getElementById('createUserMsg');
+
+            msgBox.classList.remove('hidden');
+            msgBox.className = "text-xs font-bold p-2 rounded-lg bg-amber-500/10 text-amber-400";
+            msgBox.innerText = "Creating account...";
+
+            // Initialize secondary app instance to prevent admin logout
+            const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary_" + Date.now());
+            
+            secondaryApp.auth().createUserWithEmailAndPassword(email, pass)
+                .then((cred) => {
+                    const uid = cred.user.uid;
+                    // Save user profile details & role to Firestore database
+                    return db.collection('users').doc(uid).set({
+                        name: name,
+                        email: email,
+                        role: role,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                })
+                .then(() => {
+                    msgBox.className = "text-xs font-bold p-2 rounded-lg bg-emerald-500/10 text-emerald-400";
+                    msgBox.innerText = `Success! ${name} created as a ${role}.`;
+                    document.getElementById('newUserName').value = '';
+                    document.getElementById('newUserEmail').value = '';
+                    document.getElementById('newUserPass').value = '';
+                    secondaryApp.delete(); // Clean up secondary app
+                })
+                .catch((err) => {
+                    msgBox.className = "text-xs font-bold p-2 rounded-lg bg-red-500/10 text-red-400";
+                    msgBox.innerText = "Error: " + err.message;
+                    secondaryApp.delete();
                 });
         }
 
