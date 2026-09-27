@@ -111,14 +111,16 @@
             document.getElementById(viewId).classList.add('active');
         }
 
-        // Firebase Configuration
+        // Firebase Configuration (Integrated)
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyBHnSGUALrnN-j8inER4MNcveQwJmyhLP4",
+            authDomain: "great-stand-portal.firebaseapp.com",
+            databaseURL: "https://great-stand-portal-default-rtdb.firebaseio.com",
+            projectId: "great-stand-portal",
+            storageBucket: "great-stand-portal.firebasestorage.app",
+            messagingSenderId: "747296287485",
+            appId: "1:747296287485:web:3289d724c48c197141ac94",
+            measurementId: "G-JE18QY2Z2K"
         };
         
         firebase.initializeApp(firebaseConfig);
@@ -194,4 +196,3 @@
     </script>
 </body>
 </html>
-
