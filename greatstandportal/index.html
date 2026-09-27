@@ -219,48 +219,24 @@
             let titleEl = document.getElementById('moduleTitle');
             let contentEl = document.getElementById('moduleContentArea');
 
-            // Map all 35 modules to clean interactive views
-            const moduleDescriptions = {
-                dashboard: { title: "🏠 Dashboard Overview", desc: "Platform overview including students, tutors, admins, CBTs, results, activities, and alerts." },
-                platformControl: { title: "⚡ Platform Control", desc: "Final authority and high-level control over the entire portal architecture." },
-                systemMonitoring: { title: "📊 System Monitoring", desc: "Platform health, uptime, and real-time activity metrics." },
-                adminProfile: { title: "👤 Super Admin Profile", desc: "Manage your super admin credentials, password, and active security sessions." },
-                userManagement: { title: "🛠️ User Management", desc: "Create, edit, activate, deactivate, suspend, or remove student, Admin, and Tutor accounts." },
-                roles: { title: "🔒 Roles & Permissions", desc: "Control what each user tier is allowed to see and execute across the system." },
-                students: { title: "👥 Student Management", desc: "Student profiles, programmes, subjects, registration details, and academic records." },
-                admins: { title: "👑 Admin Management", desc: "Create and manage Admin accounts and control sectional access." },
-                tutors: { title: "🧑🏽‍🏫 Tutor Management", desc: "Tutor account provisioning, subject assignments, and activity monitoring." },
-                programmes: { title: "🎓 Programme Management", desc: "Manage programmes like JAMB, WAEC, NECO, GCE, and other consultancy tracks." },
-                subjects: { title: "📖 Subject Management", desc: "Create, organize, and map subjects to programmes and classes." },
-                topics: { title: "📑 Topic Management", desc: "Structure topics under subjects for organized learning materials and questions." },
-                classes: { title: "🏫 Class Management", desc: "Organize physical or virtual classes linking students, tutors, and subjects." },
-                timetable: { title: "📅 Timetable Management", desc: "Schedule class times, dates, tutors, and live Zoom meeting links." },
-                notes: { title: "📚 Notes Management", desc: "Create, upload, edit, approve, and publish lesson notes." },
-                resources: { title: "📂 Resource Management", desc: "Manage PDFs, past questions, study guides, worksheets, and media." },
-                questions: { title: "❓ Question Bank Management", desc: "Add, categorize, and verify JAMB/WAEC questions, options, and explanations." },
-                contentApproval: { title: "✅ Content Approval", desc: "Review and greenlight notes, questions, and announcements before public release." },
-                cbts: { title: "🧪 CBT Management", desc: "Configure online mock exams, timers, passing criteria, and availability." },
-                cbtResults: { title: "📈 CBT Results", desc: "Review student test scores, attempt histories, and performance analytics." },
-                assignments: { title: "📝 Assignment Management", desc: "Issue tasks, set submission deadlines, and grade student submissions." },
-                studentProgress: { title: "📊 Student Progress Tracking", desc: "Analyze individual student mastery, completed modules, and weak areas." },
-                results: { title: "🏆 Results Management", desc: "Access official student scores and authorize result modifications." },
-                reports: { title: "📊 Reports & Analytics", desc: "Comprehensive reports on student performance, registrations, and system usage." },
-                announcements: { title: "📢 Announcement Management", desc: "Publish urgent broadcast announcements to all users or selected groups." },
-                notifications: { title: "🔔 Notification Management", desc: "Dispatch automated alerts regarding classes, CBTs, and deadlines." },
-                support: { title: "🎧 Support Management", desc: "Resolve complaints, technical tickets, and support requests from users." },
-                admissions: { title: "🏛️ Admission Management", desc: "Manage institution admission guidelines, cutoffs, deadlines, and updates." },
-                website: { title: "🌐 Website Management", desc: "Control public landing pages, services, blogs, and public announcements." },
-                files: { title: "🗂️ File Management", desc: "Track media storage, document directories, and file references." },
-                payments: { title: "💳 Payment Management", desc: "Track transactions, paid subscriptions, and financial logs." },
-                security: { title: "🛡️ Security Management", desc: "Configure security barriers, authentication rules, and access restrictions." },
-                audit: { title: "📜 Activity / Audit Logs", desc: "Immutable trail of administrative actions tracking who modified what and when." },
-                settings: { title: "⚙️ System Settings", desc: "Configure institution naming, contact info, branding logos, and core preferences." },
-                backup: { title: "💾 Backup & Data Management", desc: "Database exports, automated backup schedules, and point-in-time recovery." }
+            const titles = {
+                dashboard: "🏠 Dashboard Overview", platformControl: "⚡ Platform Control", systemMonitoring: "📊 System Monitoring",
+                adminProfile: "👤 Super Admin Profile", userManagement: "🛠️ User Management", roles: "🔒 Roles & Permissions",
+                students: "👥 Student Management", admins: "👑 Admin Management", tutors: "🧑🏽‍🏫 Tutor Management",
+                programmes: "🎓 Programme Management", subjects: "📖 Subject Management", topics: "📑 Topic Management",
+                classes: "🏫 Class Management", timetable: "📅 Timetable Management", notes: "📚 Notes Management",
+                resources: "📂 Resource Management", questions: "❓ Question Bank Management", contentApproval: "✅ Content Approval",
+                cbts: "🧪 CBT Management", cbtResults: "📈 CBT Results", assignments: "📝 Assignment Management",
+                studentProgress: "📊 Student Progress", results: "🏆 Results Management", reports: "📊 Reports & Analytics",
+                announcements: "📢 Announcement Management", notifications: "🔔 Notification Management", support: "🎧 Support Management",
+                admissions: "🏛️ Admission Management", website: "🌐 Website Management", files: "🗂️ File Management",
+                payments: "💳 Payment Management", security: "🛡️ Security Management", audit: "📜 Activity / Audit Logs",
+                settings: "⚙️ System Settings", backup: "💾 Backup & Data Management"
             };
 
-            let currentModule = moduleDescriptions[key] || { title: "⚙️ Management Module", desc: "Active administrative module." };
-            titleEl.innerText = currentModule.title;
+            titleEl.innerText = titles[key] || "⚙️ Management Module";
 
+            // Specific interactive UI views for key modules
             if (key === 'dashboard') {
                 contentEl.innerHTML = `
                     <div class="grid grid-cols-2 gap-3 mb-4">
@@ -273,7 +249,7 @@
                             <span class="text-xs font-black text-emerald-400 mt-1 block">Online & Secure</span>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-400">${currentModule.desc}</p>
+                    <p class="text-xs text-slate-400">Overview of platform activities, registrations, and alerts.</p>
                 `;
                 db.collection('users').get().then(snap => {
                     document.getElementById('statUsers').innerText = snap.size;
@@ -306,10 +282,56 @@
                     document.getElementById('userListContainer').innerHTML = listHtml || '<p class="text-slate-500 text-xs">No records found.</p>';
                 });
             }
+            else if (key === 'programmes') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 border-b border-slate-800 pb-4">
+                        <p class="text-xs text-slate-400">Create academic programmes like JAMB, WAEC, NECO, GCE.</p>
+                        <input type="text" id="progName" placeholder="Programme Name (e.g. JAMB Tutorial)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <textarea id="progDesc" placeholder="Programme Description..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white h-16"></textarea>
+                        <button onclick="saveGenericItem('programmes', {name: document.getElementById('progName').value, description: document.getElementById('progDesc').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Add Programme</button>
+                    </div>
+                    <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Active Programmes:</p><div id="progList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
+                `;
+                fetchList('programmes', 'progList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.name}</span><span class="text-[10px] text-slate-400">${item.description}</span></div>`);
+            }
+            else if (key === 'announcements') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 border-b border-slate-800 pb-4">
+                        <p class="text-xs text-slate-400">Publish urgent broadcast notifications to users.</p>
+                        <input type="text" id="annTitle" placeholder="Announcement Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <textarea id="annBody" placeholder="Message content..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white h-16"></textarea>
+                        <button onclick="saveGenericItem('announcements', {title: document.getElementById('annTitle').value, body: document.getElementById('annBody').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Broadcast Announcement</button>
+                    </div>
+                    <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Recent Broadcasts:</p><div id="annList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
+                `;
+                fetchList('announcements', 'annList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-amber-400 block">${item.title}</span><span class="text-[10px] text-slate-300">${item.body}</span></div>`);
+            }
+            else if (key === 'settings') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3">
+                        <p class="text-xs text-slate-400">Manage platform identity and configurations.</p>
+                        <input type="text" id="setName" value="Great Stand Educational Consult" placeholder="Platform Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="text" id="setContact" value="support@greatstand.com" placeholder="Support Email" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="alert('System settings updated successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Save Configuration</button>
+                    </div>
+                `;
+            }
+            else if (key === 'payments') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 border-b border-slate-800 pb-4">
+                        <p class="text-xs text-slate-400">Log subscriber payments or fee confirmations.</p>
+                        <input type="text" id="payStudent" placeholder="Student Email" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="number" id="payAmount" placeholder="Amount (NGN)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="saveGenericItem('payments', {student: document.getElementById('payStudent').value, amount: document.getElementById('payAmount').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Record Payment</button>
+                    </div>
+                    <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Transaction History:</p><div id="payList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
+                `;
+                fetchList('payments', 'payList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between"><span>${item.student}</span><span class="text-emerald-400 font-bold">₦${item.amount}</span></div>`);
+            }
             else if (key === 'questions') {
                 contentEl.innerHTML = `
                     <div class="space-y-3">
-                        <p class="text-xs text-slate-400">${currentModule.desc}</p>
+                        <p class="text-xs text-slate-400">Add questions into the database bank.</p>
                         <textarea id="qText" placeholder="Type question statement..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white h-20"></textarea>
                         <input type="text" id="qSubject" placeholder="Subject (e.g., Mathematics)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         <button onclick="saveGenericItem('questions', {text: document.getElementById('qText').value, subject: document.getElementById('qSubject').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Save Question</button>
@@ -319,7 +341,7 @@
             else if (key === 'cbts') {
                 contentEl.innerHTML = `
                     <div class="space-y-3">
-                        <p class="text-xs text-slate-400">${currentModule.desc}</p>
+                        <p class="text-xs text-slate-400">Configure online CBT exams and durations.</p>
                         <input type="text" id="cbtTitle" placeholder="Test Title (e.g., Mock JAMB)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         <input type="number" id="cbtDuration" placeholder="Duration in Minutes" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         <button onclick="saveGenericItem('cbts', {title: document.getElementById('cbtTitle').value, duration: document.getElementById('cbtDuration').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Publish CBT Test</button>
@@ -329,7 +351,7 @@
             else if (key === 'timetable') {
                 contentEl.innerHTML = `
                     <div class="space-y-3">
-                        <p class="text-xs text-slate-400">${currentModule.desc}</p>
+                        <p class="text-xs text-slate-400">Post live class schedules and Zoom links.</p>
                         <input type="text" id="classTitle" placeholder="Subject Title (e.g., Physics Revision)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         <input type="text" id="zoomLink" placeholder="Zoom Meeting URL" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         <button onclick="saveGenericItem('timetable', {title: document.getElementById('classTitle').value, link: document.getElementById('zoomLink').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Publish Class Schedule</button>
@@ -339,23 +361,25 @@
             else if (key === 'notes' || key === 'resources') {
                 contentEl.innerHTML = `
                     <div class="space-y-3">
-                        <p class="text-xs text-slate-400">${currentModule.desc}</p>
-                        <input type="text" id="resTitle" placeholder="Document / Material Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="text" id="resUrl" placeholder="File URL or Link" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="saveGenericItem('${key}', {title: document.getElementById('resTitle').value, url: document.getElementById('resUrl').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Upload & Publish</button>
+                        <p class="text-xs text-slate-400">Upload study notes and downloadable resource links.</p>
+                        <input type="text" id="resTitle" placeholder="Document Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="text" id="resUrl" placeholder="File URL / PDF Link" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="saveGenericItem('${key}', {title: document.getElementById('resTitle').value, url: document.getElementById('resUrl').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Upload Resource</button>
                     </div>
                 `;
             }
             else {
+                // Universal dynamic generator for any remaining module
                 contentEl.innerHTML = `
-                    <div class="space-y-3">
-                        <p class="text-xs text-slate-400">${currentModule.desc}</p>
-                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
-                            <span class="text-amber-400 font-bold text-xs block mb-1">Module Operational</span>
-                            <span class="text-[11px] text-slate-400">Database feeds and management tools are active for this sector.</span>
-                        </div>
+                    <div class="space-y-3 border-b border-slate-800 pb-4">
+                        <p class="text-xs text-slate-400">Manage records and configure entries for this module.</p>
+                        <input type="text" id="genTitle" placeholder="Entry Title / Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="text" id="genDetails" placeholder="Description or Details" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="saveGenericItem('${key}', {title: document.getElementById('genTitle').value, details: document.getElementById('genDetails').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Save Record</button>
                     </div>
+                    <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Saved Entries:</p><div id="genList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
                 `;
+                fetchList(key, 'genList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title || item.name || 'Record'}</span><span class="text-[10px] text-slate-400">${item.details || item.body || ''}</span></div>`);
             }
         }
 
@@ -367,6 +391,16 @@
             db.collection(collectionName).add(data)
               .then(() => { alert('Saved successfully!'); loadModule(collectionName); })
               .catch(err => alert('Error: ' + err.message));
+        }
+
+        function fetchList(collectionName, containerId, templateFn) {
+            db.collection(collectionName).orderBy('createdAt', 'desc').get().then(snap => {
+                let html = '';
+                snap.forEach(doc => { html += templateFn(doc.data()); });
+                document.getElementById(containerId).innerHTML = html || '<p class="text-slate-500 text-xs">No records found yet.</p>';
+            }).catch(() => {
+                document.getElementById(containerId).innerHTML = '<p class="text-slate-500 text-xs">Module ready for entries.</p>';
+            });
         }
 
         function handleLogin(e) {
