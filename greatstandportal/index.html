@@ -235,6 +235,60 @@
             }
         }
 
+        // ================= RICH NOTE & TABLE PARSER ENGINE =================
+        function renderRichBody(text) {
+            if (!text) return '';
+            let lines = text.split('\n');
+            let inTable = false;
+            let htmlLines = [];
+            let tableRows = [];
+
+            for (let line of lines) {
+                let trimmed = line.trim();
+                // Check for markdown-style table row e.g., | Col 1 | Col 2 |
+                if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+                    if (!inTable) {
+                        inTable = true;
+                        tableRows = [];
+                    }
+                    // Skip markdown separator lines like |---|---|
+                    if (trimmed.replace(/[\|\-\:\s]/g, '') === '') {
+                        continue;
+                    }
+                    let cells = trimmed.split('|').slice(1, -1).map(c => c.trim());
+                    tableRows.push(cells);
+                } else {
+                    if (inTable) {
+                        htmlLines.push(buildHtmlTable(tableRows));
+                        inTable = false;
+                        tableRows = [];
+                    }
+                    htmlLines.push(line);
+                }
+            }
+            if (inTable) {
+                htmlLines.push(buildHtmlTable(tableRows));
+            }
+
+            return htmlLines.join('<br>');
+        }
+
+        function buildHtmlTable(rows) {
+            if (rows.length === 0) return '';
+            let html = '<div style="overflow-x:auto; margin:10px 0;"><table border="1" style="width:100%; border-collapse:collapse; background:#0f172a; color:#f8fafc; font-size:11px;">';
+            rows.forEach((row, idx) => {
+                let tag = idx === 0 ? 'th' : 'td';
+                let bg = idx === 0 ? 'background:#1e293b; color:#fbbf24;' : '';
+                html += `<tr style="${bg}">`;
+                row.forEach(cell => {
+                    html += `<t${tag} style="border:1px solid #334155; padding:6px; text-align:left;">${cell}</t${tag}>`;
+                });
+                html += '</tr>';
+            });
+            html += '</table></div>';
+            return html;
+        }
+
         // ================= STUDENT MODULE ROUTER =================
         function loadStudentModule(key) {
             if(activeTimer) clearInterval(activeTimer);
@@ -286,7 +340,8 @@
                     snap.forEach(doc => {
                         let n = doc.data();
                         if(assigned.length === 0 || assigned.includes(n.subject)) {
-                            html += `<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2"><span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold">${n.subject}</span><h4 class="font-extrabold text-white text-sm">${n.title}</h4><div class="text-slate-200 bg-slate-900 p-3 rounded-lg border border-slate-800 overflow-x-auto leading-relaxed">${n.body}</div>${n.resourceUrl ? `<a href="${n.resourceUrl}" target="_blank" download="${n.fileName || 'document.pdf'}" class="text-[10px] text-blue-400 underline block mt-1">📄 Download PDF / Resource</a>` : ''}</div>`;
+                            let formattedBody = renderRichBody(n.body);
+                            html += `<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2"><span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold">${n.subject}</span><h4 class="font-extrabold text-white text-sm">${n.title}</h4><div class="text-slate-200 bg-slate-900 p-3 rounded-lg border border-slate-800 overflow-x-auto leading-relaxed">${formattedBody}</div>${n.resourceUrl ? `<a href="${n.resourceUrl}" target="_blank" download="${n.fileName || 'document.pdf'}" class="text-[10px] text-blue-400 underline block mt-1">📄 Download PDF / Resource</a>` : ''}</div>`;
                         }
                     });
                     document.getElementById('studentNotesList').innerHTML = html || '<p class="text-slate-500 text-xs">No notes available for your assigned subjects.</p>';
@@ -518,7 +573,7 @@
                             </div>
                         </div>
 
-                        <textarea id="noteBody" placeholder="Type or paste note content here. Use formatting buttons above..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white h-36 leading-relaxed font-mono text-[11px]"></textarea>
+                        <textarea id="noteBody" placeholder="Type or paste note content here. You can paste markdown tables like | Col 1 | Col 2 |..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white h-36 leading-relaxed font-mono text-[11px]"></textarea>
                         <input type="file" id="notePdfFile" accept=".pdf" class="w-full text-xs text-slate-400">
                         <button onclick="publishRichNote()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Publish Note 📖</button>
                     </div>
@@ -678,7 +733,7 @@
                 insertion = `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin:8px 0;"><iframe src="${url}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;border-radius:8px;" allowfullscreen></iframe></div>`;
             }
             else if(type === 'table') {
-                insertion = `<table border="1" style="width:100%; border-collapse:collapse; margin:8px 0; background:#0f172a; color:#f8fafc; font-size:11px;"><thead><tr style="background:#1e293b; color:#fbbf24;"><th style="border:1px solid #334155; padding:6px;">Header 1</th><th style="border:1px solid #334155; padding:6px;">Header 2</th></tr></thead><tbody><tr><td style="border:1px solid #334155; padding:6px;">Row 1, Col 1</td><td style="border:1px solid #334155; padding:6px;">Row 1, Col 2</td></tr></tbody></table>`;
+                insertion = `\n| Header 1 | Header 2 |\n|---|---|\n| Row 1, Col 1 | Row 1, Col 2 |\n`;
             }
 
             textarea.value = textarea.value.substring(0, start) + insertion + textarea.value.substring(end);
