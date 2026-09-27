@@ -34,7 +34,7 @@
             <div>
                 <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
                     <div>
-                        <span id="drawerRoleTitle" class="text-[10px] font-black text-amber-400 uppercase tracking-wider block">👑 Master Control Menu</span>
+                        <span id="drawerRoleTitle" class="text-[10px] font-black text-amber-400 uppercase tracking-wider block">👑 Portal Menu</span>
                         <span id="drawerUserName" class="text-xs font-extrabold text-white">Full Portal Access</span>
                     </div>
                     <button onclick="toggleDrawer()" class="text-slate-400 hover:text-white font-bold text-xs bg-slate-800 px-2.5 py-1 rounded-lg">✕ Close</button>
@@ -222,6 +222,16 @@
                     <a href="#" onclick="loadModule('contentApproval')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">34. Content Approval</a>
                     <a href="#" onclick="loadModule('platformControl')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">35. Platform Control</a>
                 `;
+            } else if (role === 'tutor') {
+                roleTitle.innerText = "🎓 Tutor Portal Menu";
+                linksContainer.innerHTML = `
+                    <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Tutor Dashboard</a>
+                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📖 Publish Rich Notes & PDFs</a>
+                    <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT Exam Creator</a>
+                    <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏆 CBT Results & Corrections</a>
+                    <a href="#" onclick="loadModule('assignments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📝 Assignment Management</a>
+                    <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Timetable Management</a>
+                `;
             } else {
                 roleTitle.innerText = "STUDENT MENU";
                 linksContainer.innerHTML = `
@@ -245,13 +255,11 @@
 
             for (let line of lines) {
                 let trimmed = line.trim();
-                // Check for markdown-style table row e.g., | Col 1 | Col 2 |
                 if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
                     if (!inTable) {
                         inTable = true;
                         tableRows = [];
                     }
-                    // Skip markdown separator lines like |---|---|
                     if (trimmed.replace(/[\|\-\:\s]/g, '') === '') {
                         continue;
                     }
@@ -429,7 +437,7 @@
             });
         }
 
-        // ================= SUPER ADMIN 35 MODULES ROUTER =================
+        // ================= SUPER ADMIN / TUTOR MODULES ROUTER =================
         function loadModule(key) {
             toggleDrawer();
             let titleEl = document.getElementById('moduleTitle');
@@ -480,19 +488,17 @@
                 fetchMasterUserList(targetRoleFilter);
             }
             else if (key === 'permissions') {
-                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">👑 Super Admin</span><span class="text-[10px] text-slate-400">Full access across all 35 modules, ability to suspend and delete accounts.</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">🎓 Student</span><span class="text-[10px] text-slate-400">Access to assigned subjects, notes, CBT tests, results with corrections, and receipts.</span></div></div>`;
+                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">👑 Super Admin</span><span class="text-[10px] text-slate-400">Full access across all 35 modules, ability to suspend and delete accounts.</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">🎓 Tutor</span><span class="text-[10px] text-slate-400">Access to publish rich notes, create CBT tests, manage assignments and check results.</span></div></div>`;
             }
             else if (key === 'programmes') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Active Academic Programmes:</p><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1"><span class="font-bold text-amber-400 block">🏛️ WAEC Senior Secondary School</span><span class="text-[10px] text-slate-400">Full science, arts, commercial & general curriculum.</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1"><span class="font-bold text-amber-400 block">📚 JAMB UTME Preparatory</span><span class="text-[10px] text-slate-400">CBT practice and core test series.</span></div></div>`;
             }
-            // Module 8: Subject Management & Assignment (Comprehensive Subject List)
             else if (key === 'subjects') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 text-xs">
                         <p class="text-slate-400 font-bold">Assign subjects (General, Sciences, Arts, Commercial):</p>
                         <select id="targetStudentSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><option value="">Loading students...</option></select>
                         <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-3 max-h-72 overflow-y-auto">
-                            
                             <div>
                                 <span class="text-amber-400 font-black block mb-1">🌐 General Subjects</span>
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="English Language"> English Language</label>
@@ -501,7 +507,6 @@
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="Computer Studies / ICT"> Computer Studies / ICT</label>
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="Data Processing"> Data Processing</label>
                             </div>
-
                             <div class="border-t border-slate-800 pt-2">
                                 <span class="text-amber-400 font-black block mb-1">🔬 Science Subjects</span>
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="Physics"> Physics</label>
@@ -510,35 +515,20 @@
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="Agricultural Science"> Agricultural Science</label>
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="Further Mathematics"> Further Mathematics</label>
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="Geography"> Geography</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Health Education"> Health Education</label>
                             </div>
-
                             <div class="border-t border-slate-800 pt-2">
                                 <span class="text-amber-400 font-black block mb-1">🎭 Arts / Humanities Subjects</span>
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="Literature-in-English"> Literature-in-English</label>
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="Government"> Government</label>
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="Christian Religious Studies (CRS)"> Christian Religious Studies (CRS)</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Islamic Studies (IRS)"> Islamic Studies (IRS)</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="History"> History</label>
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="Economics"> Economics</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Visual Art"> Visual Art</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Music"> Music</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="French"> French</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Hausa"> Hausa</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Igbo"> Igbo</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Yoruba"> Yoruba</label>
                             </div>
-
                             <div class="border-t border-slate-800 pt-2">
                                 <span class="text-amber-400 font-black block mb-1">💼 Commercial Subjects</span>
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="Financial Accounting"> Financial Accounting</label>
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="Commerce"> Commerce</label>
                                 <label class="block"><input type="checkbox" name="subjectCheck" value="Book Keeping"> Book Keeping</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Office Practice"> Office Practice</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Insurance"> Insurance</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Marketing"> Marketing</label>
                             </div>
-
                         </div>
                         <button onclick="saveStudentSubjects()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Save Assigned Subjects 🚀</button>
                     </div>
@@ -550,9 +540,9 @@
                 });
             }
             else if (key === 'topics') {
-                contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" id="topicName" placeholder="Topic Title (e.g. Differentiation)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><input type="text" id="topicSubject" placeholder="Subject" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Topic created and structured successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Create Topic</button></div>`;
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" id="topicName" placeholder="Topic Title (e.g. Differentiation)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><input type="text" id="topicSubject" placeholder="Subject" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Topic created successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Create Topic</button></div>`;
             }
-            // Module 10: Notes Management & PDF (Fully Functional Rich Formatting Toolbar)
+            // Module 10: Notes Management & PDF (With Clean HTML Table Insertion)
             else if (key === 'notes') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
@@ -560,7 +550,7 @@
                         <input type="text" id="noteTitle" placeholder="Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
                         <input type="text" id="noteSubject" placeholder="Subject (e.g. Mathematics, Physics)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
                         
-                        <!-- Rich Formatting Toolbar -->
+                        <!-- Formatting Toolbar -->
                         <div>
                             <span class="text-[10px] text-slate-400 font-bold block mb-1">Formatting Toolbar:</span>
                             <div class="flex flex-wrap gap-1.5 bg-slate-950 p-2 rounded-xl border border-slate-800">
@@ -573,7 +563,7 @@
                             </div>
                         </div>
 
-                        <textarea id="noteBody" placeholder="Type or paste note content here. You can paste markdown tables like | Col 1 | Col 2 |..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white h-36 leading-relaxed font-mono text-[11px]"></textarea>
+                        <textarea id="noteBody" placeholder="Type or paste note content here..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white h-36 leading-relaxed font-mono text-[11px]"></textarea>
                         <input type="file" id="notePdfFile" accept=".pdf" class="w-full text-xs text-slate-400">
                         <button onclick="publishRichNote()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Publish Note 📖</button>
                     </div>
@@ -588,7 +578,6 @@
             else if (key === 'questionBank') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Centralized question repository across all subjects and CBT tests.</p><button onclick="loadModule('cbts')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Go to CBT Exam Creator</button></div>`;
             }
-            // Module 13: CBT Exam Creator with Parse Button, Preview, and Timer
             else if (key === 'cbts') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
@@ -607,7 +596,6 @@
                 `;
                 fetchAdminCBTs();
             }
-            // Module 14: CBT Results
             else if (key === 'cbtResults') {
                 contentEl.innerHTML = `<div id="adminCbtResultsList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading student CBT results...</div>`;
                 db.collection('cbtResults').orderBy('submittedAt', 'desc').get().then(snap => {
@@ -623,10 +611,10 @@
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" placeholder="Assignment Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Assignment published successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Publish Assignment</button></div>`;
             }
             else if (key === 'results') {
-                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Access and modify student termly and continuous assessment records.</p><button onclick="loadModule('cbtResults')" class="w-full bg-slate-800 text-amber-400 font-bold py-2 rounded-xl">View CBT Score Records</button></div>`;
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Access student termly records.</p><button onclick="loadModule('cbtResults')" class="w-full bg-slate-800 text-amber-400 font-bold py-2 rounded-xl">View CBT Score Records</button></div>`;
             }
             else if (key === 'progress') {
-                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">Platform Learning Analytics</span><span class="text-[10px] text-slate-400">Average student score across tests: 74%</span></div></div>`;
+                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">Platform Learning Analytics</span><span class="text-[10px] text-slate-400">Average student score: 74%</span></div></div>`;
             }
             else if (key === 'classes') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" placeholder="Class Name (e.g. SS3 Science)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Class created successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Create Class</button></div>`;
@@ -651,13 +639,13 @@
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Automated system notifications and broadcast logs.</p></div>`;
             }
             else if (key === 'admission') {
-                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Manage admission requirements, screening updates, and notices.</p><button onclick="loadModule('announcements')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Post Admission Update</button></div>`;
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Manage admission requirements and screening updates.</p></div>`;
             }
             else if (key === 'website') {
-                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Public portal branding and homepage notification settings.</p></div>`;
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Public portal branding settings.</p></div>`;
             }
             else if (key === 'files') {
-                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Track and manage uploaded documents and server assets.</p></div>`;
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Track and manage uploaded documents and assets.</p></div>`;
             }
             else if (key === 'analytics') {
                 contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-[10px] text-slate-400 block font-bold">Total Platform Revenue</span><span id="analyticsRev" class="text-lg font-black text-emerald-400">Calculating...</span></div></div>`;
@@ -681,35 +669,35 @@
                 fetchAdminPayments();
             }
             else if (key === 'security') {
-                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">🛡️ Security Firewalls Active</span><span class="text-[10px] text-slate-400">Authentication token verification and secure Firestore rules enforced.</span></div></div>`;
+                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">🛡️ Security Firewalls Active</span><span class="text-[10px] text-slate-400">Authentication token verification enforced.</span></div></div>`;
             }
             else if (key === 'auditLogs') {
-                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">📋 System Audit Log</span><span class="text-[10px] text-slate-400">All admin actions are monitored and logged securely.</span></div></div>`;
+                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">📋 System Audit Log</span><span class="text-[10px] text-slate-400">All administrative actions are monitored.</span></div></div>`;
             }
             else if (key === 'support') {
-                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">No pending student or tutor support requests.</p></div>`;
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">No pending support requests.</p></div>`;
             }
             else if (key === 'settings') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" value="Great Stand Educational Consult" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Settings saved!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Save Settings</button></div>`;
             }
             else if (key === 'backup') {
-                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Database backup synchronization is fully active via Firebase cloud infrastructure.</p></div>`;
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Database backup synchronization is active via Firebase cloud infrastructure.</p></div>`;
             }
             else if (key === 'profile') {
-                contentEl.innerHTML = `<div class="space-y-3 text-xs"><label class="block font-bold text-slate-400 uppercase text-[10px]">Super Admin Email</label><input type="email" disabled value="${auth.currentUser ? auth.currentUser.email : ''}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-amber-400 font-bold"></div>`;
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><label class="block font-bold text-slate-400 uppercase text-[10px]">Account Email</label><input type="email" disabled value="${auth.currentUser ? auth.currentUser.email : ''}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-amber-400 font-bold"></div>`;
             }
             else if (key === 'monitoring') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><div class="grid grid-cols-2 gap-3"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="text-[10px] text-slate-400 block font-bold">CPU Load</span><span class="text-base font-black text-emerald-400">12.8%</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="text-[10px] text-slate-400 block font-bold">Memory</span><span class="text-base font-black text-amber-400">294 MB</span></div></div></div>`;
             }
             else if (key === 'contentApproval') {
-                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">All published notes and exams are currently approved and live.</p></div>`;
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">All published notes and exams are approved.</p></div>`;
             }
             else if (key === 'platformControl') {
-                contentEl.innerHTML = `<div class="space-y-3 text-xs"><div class="bg-red-500/10 border border-red-500/20 p-3 rounded-xl"><p class="font-bold text-red-400 mb-1">⚠️ Master Platform Override</p><p class="text-[11px] text-slate-300">You hold final administrative authority over all portal operations, user suspensions, and database configurations.</p></div></div>`;
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><div class="bg-red-500/10 border border-red-500/20 p-3 rounded-xl"><p class="font-bold text-red-400 mb-1">⚠️ Platform Control</p><p class="text-[11px] text-slate-300">Administrative authority over portal operations.</p></div></div>`;
             }
         }
 
-        // ================= RICH NOTE FORMATTING HELPER =================
+        // ================= RICH NOTE FORMATTING HELPER (CLEAN HTML TABLE) =================
         function formatNoteText(type) {
             let textarea = document.getElementById('noteBody');
             if(!textarea) return;
@@ -733,7 +721,16 @@
                 insertion = `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin:8px 0;"><iframe src="${url}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;border-radius:8px;" allowfullscreen></iframe></div>`;
             }
             else if(type === 'table') {
-                insertion = `\n| Header 1 | Header 2 |\n|---|---|\n| Row 1, Col 1 | Row 1, Col 2 |\n`;
+                insertion = `<table border="1" style="width:100%; border-collapse:collapse; margin:10px 0; background:#0f172a; color:#f8fafc; font-size:11px;">\n` +
+                            `  <tr style="background:#1e293b; color:#fbbf24;">\n` +
+                            `    <th style="border:1px solid #334155; padding:6px; text-align:left;">Header 1</th>\n` +
+                            `    <th style="border:1px solid #334155; padding:6px; text-align:left;">Header 2</th>\n` +
+                            `  </tr>\n` +
+                            `  <tr>\n` +
+                            `    <td style="border:1px solid #334155; padding:6px;">Row 1, Col 1</td>\n` +
+                            `    <td style="border:1px solid #334155; padding:6px;">Row 1, Col 2</td>\n` +
+                            `  </tr>\n` +
+                            `</table>`;
             }
 
             textarea.value = textarea.value.substring(0, start) + insertion + textarea.value.substring(end);
@@ -1082,8 +1079,26 @@
                 currentUserRole = userData.role || 'student';
                 populateMenu(currentUserRole, userData.name);
 
-                if (currentUserRole === 'super_admin' || currentUserRole === 'bursar' || currentUserRole === 'tutor') {
+                let roleBadgeEl = document.getElementById('roleBadge');
+                let roleSubBadgeEl = document.getElementById('roleSubBadge');
+
+                if (currentUserRole === 'super_admin' || currentUserRole === 'bursar') {
+                    if(roleBadgeEl) {
+                        roleBadgeEl.innerText = currentUserRole === 'super_admin' ? "Super Admin" : "Bursary Portal";
+                        roleBadgeEl.className = "bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider";
+                    }
+                    if(roleSubBadgeEl) roleSubBadgeEl.innerText = "Master Control";
                     document.getElementById('superAdminName').innerText = `Welcome, ${userData.name || 'Boss'}`;
+                    switchView('superAdminView');
+                    loadDashboardFeed('dashboardAnnouncementsFeed');
+                    loadModule('dashboard');
+                } else if (currentUserRole === 'tutor') {
+                    if(roleBadgeEl) {
+                        roleBadgeEl.innerText = "Tutor Portal";
+                        roleBadgeEl.className = "bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider";
+                    }
+                    if(roleSubBadgeEl) roleSubBadgeEl.innerText = "Academic Staff";
+                    document.getElementById('superAdminName').innerText = `Welcome, ${userData.name || 'Tutor'}`;
                     switchView('superAdminView');
                     loadDashboardFeed('dashboardAnnouncementsFeed');
                     loadModule('dashboard');
