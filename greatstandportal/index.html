@@ -165,7 +165,7 @@
                 linksContainer.innerHTML = `
                     <div class="text-[10px] text-amber-400 uppercase px-2 pt-1 font-black">Overview & Control</div>
                     <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard</a>
-                    <a href="#" onclick="loadModule('platformControl')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">⚙️ Platform Control</a>
+                    <a href="#" onclick="loadModule('platformControl')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">⚡ Platform Control</a>
                     <a href="#" onclick="loadModule('systemMonitoring')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 System Monitoring</a>
                     <a href="#" onclick="loadModule('adminProfile')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👤 Super Admin Profile</a>
 
@@ -174,53 +174,29 @@
                     <a href="#" onclick="loadModule('roles')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🔒 Roles & Permissions</a>
                     <a href="#" onclick="loadModule('students')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👥 Student Management</a>
                     <a href="#" onclick="loadModule('admins')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👑 Admin Management</a>
-                    <a href="#" onclick="loadModule('tutors')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧑🏽‍🏫 Tutor Management</a>
-
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Academics & Curriculum</div>
-                    <a href="#" onclick="loadModule('programmes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎓 Programme Management</a>
-                    <a href="#" onclick="loadModule('subjects')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📖 Subject Management</a>
-                    <a href="#" onclick="loadModule('topics')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📑 Topic Management</a>
-                    <a href="#" onclick="loadModule('classes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏫 Class Management</a>
-                    <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Timetable Management</a>
 
                     <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Content & Learning Materials</div>
-                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes Management</a>
-                    <a href="#" onclick="loadModule('resources')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📂 Resource Management</a>
-                    <a href="#" onclick="loadModule('questions')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">❓ Question Bank Management</a>
                     <a href="#" onclick="loadModule('contentApproval')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">✅ Content Approval</a>
-
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">CBT & Assessments</div>
+                    <a href="#" onclick="loadModule('files')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🗂️ PDF File Manager</a>
                     <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT & Bulk Exam Creator</a>
                     <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📈 CBT Student Results</a>
-                    <a href="#" onclick="loadModule('assignments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📝 Assignment Management</a>
                     <a href="#" onclick="loadModule('studentProgress')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 Student Progress</a>
 
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Results & Reports</div>
-                    <a href="#" onclick="loadModule('results')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏆 Results Management</a>
-                    <a href="#" onclick="loadModule('reports')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 Reports & Analytics</a>
-
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Communication & Support</div>
-                    <a href="#" onclick="loadModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 Announcement Management</a>
-                    <a href="#" onclick="loadModule('notifications')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🔔 Notification Management</a>
-                    <a href="#" onclick="loadModule('support')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎧 Support Management</a>
-
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">System Administration</div>
-                    <a href="#" onclick="loadModule('admissions')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏛️ Admission Management</a>
-                    <a href="#" onclick="loadModule('website')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🌐 Website Management</a>
-                    <a href="#" onclick="loadModule('files')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🗂️ File Management</a>
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Finance & Administration</div>
                     <a href="#" onclick="loadModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💳 Payment Management</a>
+                    <a href="#" onclick="loadModule('support')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎧 Support Management</a>
+                    <a href="#" onclick="loadModule('website')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🌐 Website Management</a>
                     <a href="#" onclick="loadModule('security')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🛡️ Security Management</a>
+                    <a href="#" onclick="loadModule('reports')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 Reports & Analytics</a>
                     <a href="#" onclick="loadModule('audit')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📜 Activity / Audit Logs</a>
                     <a href="#" onclick="loadModule('settings')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">⚙️ System Settings</a>
-                    <a href="#" onclick="loadModule('backup')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💾 Backup & Data Management</a>
                 `;
             } else {
                 roleTitle.innerText = "🎓 Student Portal Menu";
                 linksContainer.innerHTML = `
                     <a href="#" onclick="loadStudentModule('cbts')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🧪 Live CBT Exams</a>
-                    <a href="#" onclick="loadStudentModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Class Timetable</a>
-                    <a href="#" onclick="loadStudentModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes & Resources</a>
-                    <a href="#" onclick="loadStudentModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 Announcements</a>
+                    <a href="#" onclick="loadStudentModule('files')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📥 Downloadable PDFs</a>
+                    <a href="#" onclick="loadStudentModule('support')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎧 Help & Support Tickets</a>
                 `;
             }
         }
@@ -234,16 +210,11 @@
             const titles = {
                 dashboard: "🏠 Dashboard Overview", platformControl: "⚡ Platform Control", systemMonitoring: "📊 System Monitoring",
                 adminProfile: "👤 Super Admin Profile", users: "🛠️ User Management", roles: "🔒 Roles & Permissions",
-                students: "👥 Student Account Management", admins: "👑 Admin Account Management", tutors: "🧑🏽‍🏫 Tutor Management",
-                programmes: "🎓 Programme Management", subjects: "📖 Subject Management", topics: "📑 Topic Management",
-                classes: "🏫 Class Management", timetable: "📅 Timetable Management", notes: "📚 Notes Management",
-                resources: "📂 Resource Management", questions: "❓ Question Bank Management", contentApproval: "✅ Content Approval",
-                cbts: "🧪 CBT & Bulk Exam Creator", cbtResults: "📈 CBT Student Results", assignments: "📝 Assignment Management",
-                studentProgress: "📊 Student Progress", results: "🏆 Results Management", reports: "📊 Reports & Analytics",
-                announcements: "📢 Announcement Management", notifications: "🔔 Notification Management", support: "🎧 Support Management",
-                admissions: "🏛️ Admission Management", website: "🌐 Website Management", files: "🗂️ File Management",
-                payments: "💳 Payment Management", security: "🛡️ Security Management", audit: "📜 Activity / Audit Logs",
-                settings: "⚙️ System Settings", backup: "💾 Backup & Data Management"
+                students: "👥 Student Account Management", admins: "👑 Admin Account Management", contentApproval: "✅ Content Approval",
+                files: "🗂️ PDF File Manager", cbts: "🧪 CBT & Bulk Exam Creator", cbtResults: "📈 CBT Student Results",
+                studentProgress: "📊 Student Progress", payments: "💳 Payment Management", support: "🎧 Support Management",
+                website: "🌐 Website Management", security: "🛡️ Security Management", reports: "📊 Reports & Analytics",
+                audit: "📜 Activity / Audit Logs", settings: "⚙️ System Settings"
             };
 
             titleEl.innerText = titles[key] || "⚙️ Management Module";
@@ -261,12 +232,157 @@
                             <span class="text-xs font-black text-emerald-400 mt-1 block">Live & Secure</span>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-400">Welcome to your central administration panel.</p>
+                    <p class="text-xs text-slate-400">Welcome to your central administration panel. Select modules from the navigation menu above.</p>
                 `;
                 db.collection('users').get().then(snap => {
                     document.getElementById('statUsers').innerText = snap.size;
                 });
             } 
+            else if (key === 'platformControl') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                        <p class="text-xs font-bold text-amber-400">⚡ Global Platform Switches</p>
+                        <div class="flex justify-between items-center text-xs">
+                            <span>New Student Registrations</span>
+                            <select id="ctrlReg" class="bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-white">
+                                <option value="true">Enabled (Open)</option>
+                                <option value="false">Disabled (Closed)</option>
+                            </select>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span>CBT Examination Access</span>
+                            <select id="ctrlCbt" class="bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-white">
+                                <option value="true">Active</option>
+                                <option value="false">Locked</option>
+                            </select>
+                        </div>
+                        <button onclick="savePlatformControl()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Update Platform Status</button>
+                    </div>
+                `;
+                db.collection('settings').doc('platform').get().then(doc => {
+                    if(doc.exists) {
+                        let d = doc.data();
+                        if(d.reg !== undefined) document.getElementById('ctrlReg').value = String(d.reg);
+                        if(d.cbt !== undefined) document.getElementById('ctrlCbt').value = String(d.cbt);
+                    }
+                });
+            }
+            else if (key === 'users') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3">
+                        <p class="text-xs text-slate-400">Universal directory of all registered accounts:</p>
+                        <div id="allUsersManagementList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading all users...</div>
+                    </div>
+                `;
+                fetchAllUsersList();
+            }
+            else if (key === 'files') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 border-b border-slate-800 pb-4">
+                        <p class="text-xs font-bold text-amber-400">🗂️ Upload PDF File for Direct Download</p>
+                        <input type="text" id="pdfTitle" placeholder="PDF Document Title (e.g. Physics Note Chapter 1)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="file" id="pdfFile" accept=".pdf" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-600 cursor-pointer">
+                        <button onclick="uploadPDFFile()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl">Upload PDF 📤</button>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-[11px] text-slate-400 font-bold">Available Downloadable PDFs:</p>
+                        <div id="adminPdfList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading PDFs...</div>
+                    </div>
+                `;
+                fetchAdminPDFs();
+            }
+            else if (key === 'support') {
+                contentEl.innerHTML = `
+                    <div class="space-y-2">
+                        <p class="text-xs text-slate-400">Support tickets submitted by students:</p>
+                        <div id="adminSupportList" class="space-y-2 max-h-64 overflow-y-auto text-xs">Loading support tickets...</div>
+                    </div>
+                `;
+                fetchAdminSupportTickets();
+            }
+            else if (key === 'contentApproval') {
+                contentEl.innerHTML = `
+                    <div class="space-y-2">
+                        <p class="text-xs text-slate-400">Pending content items awaiting admin review:</p>
+                        <div id="adminPendingList" class="space-y-2 max-h-64 overflow-y-auto text-xs">Loading pending items...</div>
+                    </div>
+                `;
+                fetchAdminPendingContent();
+            }
+            else if (key === 'payments') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 border-b border-slate-800 pb-4">
+                        <p class="text-xs font-bold text-amber-400">💳 Record Manual Student Payment</p>
+                        <input type="text" id="payStudentEmail" placeholder="Student Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="number" id="payAmount" placeholder="Amount (e.g. 25000)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="text" id="payPurpose" placeholder="Purpose (e.g. JAMB Tuition Fee)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="recordPayment()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Save Payment Record 💰</button>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-[11px] text-slate-400 font-bold">Transaction History:</p>
+                        <div id="adminPaymentsList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading payments...</div>
+                    </div>
+                `;
+                fetchAdminPayments();
+            }
+            else if (key === 'website') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                        <p class="text-xs font-bold text-amber-400">🌐 Website CMS Settings</p>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Announcement Ticker Text</label>
+                            <input type="text" id="webTicker" placeholder="Admissions for 2026/2027 are now open!" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Contact Phone Number</label>
+                            <input type="text" id="webPhone" placeholder="+234 800 000 0000" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        </div>
+                        <button onclick="saveWebsiteCMS()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Publish Website Changes</button>
+                    </div>
+                `;
+                db.collection('settings').doc('website').get().then(doc => {
+                    if(doc.exists) {
+                        let d = doc.data();
+                        if(d.ticker) document.getElementById('webTicker').value = d.ticker;
+                        if(d.phone) document.getElementById('webPhone').value = d.phone;
+                    }
+                });
+            }
+            else if (key === 'security') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                        <p class="text-xs font-bold text-amber-400">🛡️ Security & Access Control</p>
+                        <div class="flex justify-between items-center text-xs">
+                            <span>Enforce Two-Factor Auth (2FA)</span>
+                            <select id="sec2fa" class="bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-white">
+                                <option value="true">Enabled</option>
+                                <option value="false">Disabled</option>
+                            </select>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span>Session Timeout (Minutes)</span>
+                            <input type="number" id="secTimeout" value="30" class="w-20 bg-slate-900 border border-slate-800 p-1.5 rounded-lg text-white text-center">
+                        </div>
+                        <button onclick="saveSecuritySettings()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Save Security Policy</button>
+                    </div>
+                `;
+                db.collection('settings').doc('security').get().then(doc => {
+                    if(doc.exists) {
+                        let d = doc.data();
+                        if(d.fa2 !== undefined) document.getElementById('sec2fa').value = String(d.fa2);
+                        if(d.timeout) document.getElementById('secTimeout').value = d.timeout;
+                    }
+                });
+            }
+            else if (key === 'studentProgress') {
+                contentEl.innerHTML = `
+                    <div class="space-y-2">
+                        <p class="text-xs text-slate-400">Comprehensive overview of student CBT progression:</p>
+                        <div id="adminProgressList" class="space-y-2 max-h-64 overflow-y-auto text-xs">Loading progress data...</div>
+                    </div>
+                `;
+                fetchAdminProgress();
+            }
             else if (key === 'systemMonitoring') {
                 contentEl.innerHTML = `
                     <div class="space-y-3">
@@ -282,8 +398,7 @@
                         </div>
                         <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
                             <p class="text-xs font-bold text-white">🖥️ Live Telemetry & Cache</p>
-                            <p class="text-[10px] text-slate-400">Active Firebase connection stable. Clear local runtime cache if UI updates lag.</p>
-                            <button onclick="alert('Cache flushed successfully! All systems refreshed.');" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">🧹 Flush Server Cache</button>
+                            <button onclick="alert('Cache flushed successfully!');" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">🧹 Flush Server Cache</button>
                         </div>
                     </div>
                 `;
@@ -291,147 +406,300 @@
             else if (key === 'roles') {
                 contentEl.innerHTML = `
                     <div class="space-y-3">
-                        <p class="text-xs text-slate-400">Manage user permission roles across the platform:</p>
+                        <p class="text-xs text-slate-400">Manage user permission roles:</p>
                         <div id="rolesUserList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading users...</div>
                     </div>
                 `;
                 fetchRolesUserList();
             }
             else if (key === 'reports') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3" id="analyticsContainer">
-                        <p class="text-xs text-slate-400">Generating live analytical report...</p>
-                    </div>
-                `;
+                contentEl.innerHTML = `<div class="space-y-3" id="analyticsContainer"><p class="text-xs text-slate-400">Generating report...</p></div>`;
                 generateAnalyticsReport();
             }
             else if (key === 'adminProfile') {
                 let user = auth.currentUser;
                 contentEl.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-3">
-                            <p class="text-xs font-bold text-amber-400">Super Admin Credentials</p>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Email Address</label>
-                                <input type="email" disabled value="${user ? user.email : ''}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 cursor-not-allowed">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Update Display Name</label>
-                                <input type="text" id="adminNewName" placeholder="Super Admin Boss" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                            </div>
-                            <button onclick="updateAdminProfile()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Save Profile Changes</button>
-                        </div>
+                    <div class="space-y-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                        <p class="text-xs font-bold text-amber-400">Super Admin Credentials</p>
+                        <input type="email" disabled value="${user ? user.email : ''}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400 cursor-not-allowed">
+                        <input type="text" id="adminNewName" placeholder="New Display Name" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="updateAdminProfile()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Save Changes</button>
                     </div>
                 `;
             }
             else if (key === 'audit') {
-                contentEl.innerHTML = `
-                    <div class="space-y-2">
-                        <p class="text-xs text-slate-400">Chronological logs of administrative actions:</p>
-                        <div id="auditLogsList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading audit logs...</div>
-                    </div>
-                `;
+                contentEl.innerHTML = `<div id="auditLogsList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading logs...</div>`;
                 fetchAuditLogs();
             }
             else if (key === 'settings') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                        <p class="text-xs font-bold text-amber-400">Portal Global Configurations</p>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Portal Name</label>
-                            <input type="text" id="settingPortalName" value="Great Stand Educational Consult" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Maintenance Mode</label>
-                            <select id="settingMaintenance" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                                <option value="false">Disabled (Online)</option>
-                                <option value="true">Enabled (Locked Down)</option>
-                            </select>
-                        </div>
-                        <button onclick="saveSystemSettings()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Save System Settings</button>
-                    </div>
-                `;
-            }
-            else if (key === 'backup') {
-                contentEl.innerHTML = `
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center space-y-3">
-                        <p class="text-xs font-bold text-white">💾 Database Backup & Export</p>
-                        <p class="text-[10px] text-slate-400">Download a full JSON backup of user profiles, exams, and student submissions.</p>
-                        <button onclick="downloadDatabaseBackup()" class="w-full bg-amber-500 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl">📥 Export Full JSON Backup</button>
+                        <input type="text" id="settingPortalName" value="Great Stand Educational Consult" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="saveSystemSettings()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Save Settings</button>
                     </div>
                 `;
             }
             else if (key === 'students' || key === 'admins') {
                 let roleTarget = key === 'students' ? 'student' : 'super_admin';
-                let roleLabel = key === 'students' ? 'Student' : 'Admin';
-                
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <p class="text-xs text-amber-400 font-bold">Create New ${roleLabel} Account</p>
                         <input type="text" id="newUserName" placeholder="Full Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="email" id="newUserEmail" placeholder="Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="password" id="newUserPassword" placeholder="Password (min 6 characters)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="createNewUserAccount('${roleTarget}')" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Create ${roleLabel} Account 🚀</button>
+                        <input type="email" id="newUserEmail" placeholder="Email" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="password" id="newUserPassword" placeholder="Password" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="createNewUserAccount('${roleTarget}')" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Create Account</button>
                     </div>
-                    <div class="space-y-2">
-                        <p class="text-[11px] text-slate-400 font-bold">Existing ${roleLabel}s:</p>
-                        <div id="userManagementList" class="space-y-2 max-h-52 overflow-y-auto text-xs">Loading...</div>
-                    </div>
+                    <div id="userManagementList" class="space-y-2 max-h-52 overflow-y-auto text-xs">Loading...</div>
                 `;
                 fetchUserManagementList(roleTarget);
             }
             else if (key === 'cbts') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <p class="text-xs text-amber-400 font-bold">🚀 Bulk CBT Exam Import (Paste 50+ Questions)</p>
-                        <input type="text" id="cbtTitle" placeholder="Exam Title (e.g. JAMB Physics Mock)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="number" id="cbtDuration" placeholder="Duration in Minutes (e.g. 30)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
-                            <p class="text-[11px] text-slate-300 font-bold">Paste Questions Text Below:</p>
-                            <p class="text-[10px] text-slate-400">Format: Use numbers like <code class="text-amber-400">1. Question</code>, options <code class="text-amber-400">A)</code> to <code class="text-amber-400">D)</code>, and <code class="text-amber-400">Answer: B</code></p>
-                            <textarea id="bulkQuestionsText" placeholder="1. What is the capital of Nigeria?&#10;A) Lagos&#10;B) Abuja&#10;C) Kano&#10;D) Ibadan&#10;Answer: B&#10;&#10;2. Next question..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-44"></textarea>
-                            <button onclick="parseAndSaveBulkCBT()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl">⚡ Parse & Publish Live Exam</button>
-                        </div>
+                        <input type="text" id="cbtTitle" placeholder="Exam Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="number" id="cbtDuration" placeholder="Duration (Mins)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <textarea id="bulkQuestionsText" placeholder="1. Question...&#10;A) Opt A&#10;B) Opt B&#10;Answer: A" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-32"></textarea>
+                        <button onclick="parseAndSaveBulkCBT()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Publish Exam</button>
                     </div>
-
-                    <div class="space-y-2">
-                        <p class="text-[11px] text-slate-400 font-bold">Published CBT Exams:</p>
-                        <div id="adminCbtList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading...</div>
-                    </div>
+                    <div id="adminCbtList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading...</div>
                 `;
                 fetchAdminCBTs();
             }
             else if (key === 'cbtResults') {
-                contentEl.innerHTML = `
-                    <div class="space-y-2">
-                        <p class="text-xs text-slate-400">Student exam scores submitted in real-time:</p>
-                        <div id="cbtResultsList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading results...</div>
-                    </div>
-                `;
+                contentEl.innerHTML = `<div id="cbtResultsList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading...</div>`;
                 fetchCBTResults();
-            }
-            else {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <p class="text-xs text-slate-400">Manage records for this section.</p>
-                        <input type="text" id="genTitle" placeholder="Title / Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="text" id="genDetails" placeholder="Details or Description" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="saveGenericItem('${key}', {title: document.getElementById('genTitle').value, details: document.getElementById('genDetails').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Save Record</button>
-                    </div>
-                    <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Saved Entries:</p><div id="genList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
-                `;
-                fetchList(key, 'genList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title || 'Record'}</span><span class="text-[10px] text-slate-400">${item.details || ''}</span></div>`);
             }
         }
 
-        // ================= FUNCTIONAL ADMIN LOGIC =================
+        // ================= FUNCTIONAL ADMIN & FILE LOGIC =================
         function logAuditAction(action) {
             db.collection('auditLogs').add({
-                action,
-                adminEmail: auth.currentUser ? auth.currentUser.email : 'System',
+                action, adminEmail: auth.currentUser ? auth.currentUser.email : 'System',
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }).catch(() => {});
+        }
+
+        function uploadPDFFile() {
+            let title = document.getElementById('pdfTitle').value;
+            let fileInput = document.getElementById('pdfFile');
+            if(!title || fileInput.files.length === 0) { alert('Please enter a title and select a PDF file.'); return; }
+
+            let file = fileInput.files[0];
+            if(file.type !== 'application/pdf') { alert('Only PDF files are permitted.'); return; }
+
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let base64Data = e.target.result;
+                db.collection('files').add({
+                    title, fileName: file.name, fileSize: Math.round(file.size / 1024) + ' KB',
+                    dataUrl: base64Data, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    logAuditAction(`Uploaded PDF file: ${title}`);
+                    alert('PDF uploaded successfully for direct download!');
+                    loadModule('files');
+                }).catch(err => alert('Error: ' + err.message));
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function fetchAdminPDFs() {
+            db.collection('files').orderBy('createdAt', 'desc').get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let f = doc.data();
+                    html += `
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-white block">${f.title}</span>
+                                <span class="text-[10px] text-slate-400">📁 ${f.fileName} (${f.fileSize})</span>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <a href="${f.dataUrl}" download="${f.fileName}" class="bg-emerald-500 text-slate-950 text-[10px] font-bold px-2.5 py-1.5 rounded-lg">📥 Download</a>
+                                <button onclick="deleteFile('${doc.id}')" class="bg-red-500/10 text-red-400 border border-red-500/20 text-[10px] px-2 py-1 rounded">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('adminPdfList').innerHTML = html || '<p class="text-slate-500 text-xs">No PDFs uploaded yet.</p>';
+            });
+        }
+
+        function deleteFile(id) {
+            if(confirm('Delete this file?')) {
+                db.collection('files').doc(id).delete().then(() => {
+                    logAuditAction(`Deleted PDF file ${id}`);
+                    loadModule('files');
+                });
+            }
+        }
+
+        function fetchAllUsersList() {
+            db.collection('users').get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let u = doc.data();
+                    let uid = doc.id;
+                    let isActive = u.isActive !== false;
+                    html += `
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-white block">${u.name || 'User'} (${u.email})</span>
+                                <span class="text-[10px] text-amber-400 uppercase">Role: ${u.role || 'student'} | <span class="${isActive ? 'text-emerald-400' : 'text-red-400'}">${isActive ? 'Active' : 'Suspended'}</span></span>
+                            </div>
+                            <button onclick="toggleUserStatus('${uid}', ${isActive}, 'users')" class="text-[10px] px-2 py-1 rounded font-bold ${isActive ? 'bg-amber-500/10 text-amber-400' : 'bg-emerald-500/10 text-emerald-400'}">${isActive ? 'Suspend' : 'Activate'}</button>
+                        </div>
+                    `;
+                });
+                document.getElementById('allUsersManagementList').innerHTML = html || '<p class="text-slate-500 text-xs">No users found.</p>';
+            });
+        }
+
+        function fetchAdminSupportTickets() {
+            db.collection('supportTickets').orderBy('createdAt', 'desc').get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let t = doc.data();
+                    let isResolved = t.resolved === true;
+                    html += `
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-white block">${t.subject} (${t.studentEmail})</span>
+                                <p class="text-[10px] text-slate-300 mt-0.5">${t.message}</p>
+                                <span class="text-[9px] ${isResolved ? 'text-emerald-400' : 'text-amber-400'} font-bold mt-1 block">Status: ${isResolved ? 'Resolved' : 'Pending'}</span>
+                            </div>
+                            <button onclick="resolveTicket('${doc.id}')" class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] px-2.5 py-1 rounded font-bold">${isResolved ? 'Closed' : 'Resolve'}</button>
+                        </div>
+                    `;
+                });
+                document.getElementById('adminSupportList').innerHTML = html || '<p class="text-slate-500 text-xs">No support tickets submitted.</p>';
+            });
+        }
+
+        function resolveTicket(id) {
+            db.collection('supportTickets').doc(id).update({ resolved: true }).then(() => {
+                logAuditAction(`Resolved support ticket ${id}`);
+                loadModule('support');
+            });
+        }
+
+        function fetchAdminPendingContent() {
+            db.collection('pendingContent').get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let c = doc.data();
+                    html += `
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-white block">${c.title}</span>
+                                <span class="text-[10px] text-slate-400">Submitted by: ${c.submitter || 'Tutor'}</span>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <button onclick="approveContent('${doc.id}', ${JSON.stringify(c).replace(/"/g, '&quot;')})" class="bg-emerald-500 text-slate-950 text-[10px] font-bold px-2 py-1 rounded">Approve</button>
+                                <button onclick="rejectContent('${doc.id}')" class="bg-red-500/10 text-red-400 text-[10px] px-2 py-1 rounded">Reject</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('adminPendingList').innerHTML = html || '<p class="text-slate-500 text-xs">No pending items for approval.</p>';
+            });
+        }
+
+        function approveContent(id, contentObj) {
+            db.collection('notes').add({ title: contentObj.title, details: contentObj.details, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
+                .then(() => db.collection('pendingContent').doc(id).delete())
+                .then(() => {
+                    logAuditAction(`Approved content: ${contentObj.title}`);
+                    alert('Content approved and published!');
+                    loadModule('contentApproval');
+                });
+        }
+
+        function rejectContent(id) {
+            db.collection('pendingContent').doc(id).delete().then(() => {
+                logAuditAction(`Rejected content ${id}`);
+                loadModule('contentApproval');
+            });
+        }
+
+        function recordPayment() {
+            let studentEmail = document.getElementById('payStudentEmail').value;
+            let amount = document.getElementById('payAmount').value;
+            let purpose = document.getElementById('payPurpose').value;
+
+            if(!studentEmail || !amount || !purpose) { alert('Please fill all payment fields.'); return; }
+
+            db.collection('payments').add({
+                studentEmail, amount: Number(amount), purpose, status: 'Successful',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                logAuditAction(`Recorded payment of ${amount} for ${studentEmail}`);
+                alert('Payment record saved!');
+                loadModule('payments');
+            });
+        }
+
+        function fetchAdminPayments() {
+            db.collection('payments').orderBy('createdAt', 'desc').get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let p = doc.data();
+                    html += `
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-white block">${p.studentEmail}</span>
+                                <span class="text-[10px] text-amber-400">₦${p.amount} | ${p.purpose}</span>
+                            </div>
+                            <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">${p.status}</span>
+                        </div>
+                    `;
+                });
+                document.getElementById('adminPaymentsList').innerHTML = html || '<p class="text-slate-500 text-xs">No payment records found.</p>';
+            });
+        }
+
+        function savePlatformControl() {
+            let reg = document.getElementById('ctrlReg').value === 'true';
+            let cbt = document.getElementById('ctrlCbt').value === 'true';
+            db.collection('settings').doc('platform').set({ reg, cbt }, { merge: true }).then(() => {
+                logAuditAction('Updated global platform control switches');
+                alert('Platform controls updated!');
+            });
+        }
+
+        function saveWebsiteCMS() {
+            let ticker = document.getElementById('webTicker').value;
+            let phone = document.getElementById('webPhone').value;
+            db.collection('settings').doc('website').set({ ticker, phone }, { merge: true }).then(() => {
+                logAuditAction('Updated website CMS settings');
+                alert('Website settings updated successfully!');
+            });
+        }
+
+        function saveSecuritySettings() {
+            let fa2 = document.getElementById('sec2fa').value === 'true';
+            let timeout = document.getElementById('secTimeout').value;
+            db.collection('settings').doc('security').set({ fa2, timeout }, { merge: true }).then(() => {
+                logAuditAction('Updated security policies');
+                alert('Security policies saved!');
+            });
+        }
+
+        function fetchAdminProgress() {
+            db.collection('cbtResults').orderBy('submittedAt', 'desc').get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let r = doc.data();
+                    html += `
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-white block">${r.studentEmail}</span>
+                                <span class="text-[10px] text-slate-400">CBT Score: <span class="text-emerald-400 font-bold">${r.score}/${r.total} (${r.percentage}%)</span></span>
+                            </div>
+                            <span class="text-[9px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold">Completed</span>
+                        </div>
+                    `;
+                });
+                document.getElementById('adminProgressList').innerHTML = html || '<p class="text-slate-500 text-xs">No student progress metrics recorded yet.</p>';
+            });
         }
 
         function fetchRolesUserList() {
@@ -444,7 +712,7 @@
                         <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
                             <div>
                                 <span class="font-bold text-white block">${u.name || 'User'} (${u.email})</span>
-                                <span class="text-[10px] text-slate-400">Current Role: <span class="text-amber-400 uppercase font-bold">${u.role || 'student'}</span></span>
+                                <span class="text-[10px] text-slate-400">Role: <span class="text-amber-400 uppercase font-bold">${u.role || 'student'}</span></span>
                             </div>
                             <select onchange="changeUserRole('${uid}', this.value)" class="bg-slate-900 border border-slate-800 text-xs text-white p-1.5 rounded-lg">
                                 <option value="student" ${u.role === 'student' ? 'selected' : ''}>Student</option>
@@ -461,41 +729,20 @@
             db.collection('users').doc(uid).update({ role: newRole }).then(() => {
                 logAuditAction(`Updated user ${uid} role to ${newRole}`);
                 alert('User role updated successfully!');
-            }).catch(err => alert('Error: ' + err.message));
+            });
         }
 
         function generateAnalyticsReport() {
-            Promise.all([
-                db.collection('users').get(),
-                db.collection('cbts').get(),
-                db.collection('cbtResults').get()
-            ]).then(([usersSnap, cbtsSnap, resultsSnap]) => {
-                let totalUsers = usersSnap.size;
-                let totalCbts = cbtsSnap.size;
-                let totalSubmissions = resultsSnap.size;
-                
-                let totalScorePct = 0;
-                resultsSnap.forEach(doc => { totalScorePct += (doc.data().percentage || 0); });
-                let avgScore = totalSubmissions > 0 ? Math.round(totalScorePct / totalSubmissions) : 0;
-
+            Promise.all([db.collection('users').get(), db.collection('cbts').get(), db.collection('cbtResults').get()]).then(([uSnap, cSnap, rSnap]) => {
+                let avg = 0;
+                rSnap.forEach(d => { avg += (d.data().percentage || 0); });
+                let finalAvg = rSnap.size > 0 ? Math.round(avg / rSnap.size) : 0;
                 document.getElementById('analyticsContainer').innerHTML = `
                     <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
-                            <span class="text-[10px] text-slate-400 uppercase block font-bold">Registered Users</span>
-                            <span class="text-xl font-black text-amber-400">${totalUsers}</span>
-                        </div>
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
-                            <span class="text-[10px] text-slate-400 uppercase block font-bold">Published Exams</span>
-                            <span class="text-xl font-black text-amber-400">${totalCbts}</span>
-                        </div>
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
-                            <span class="text-[10px] text-slate-400 uppercase block font-bold">Exam Submissions</span>
-                            <span class="text-xl font-black text-emerald-400">${totalSubmissions}</span>
-                        </div>
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
-                            <span class="text-[10px] text-slate-400 uppercase block font-bold">Average Score</span>
-                            <span class="text-xl font-black text-emerald-400">${avgScore}%</span>
-                        </div>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-[10px] text-slate-400 block uppercase font-bold">Users</span><span class="text-xl font-black text-amber-400">${uSnap.size}</span></div>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-[10px] text-slate-400 block uppercase font-bold">Exams</span><span class="text-xl font-black text-amber-400">${cSnap.size}</span></div>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-[10px] text-slate-400 block uppercase font-bold">Submissions</span><span class="text-xl font-black text-emerald-400">${rSnap.size}</span></div>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-[10px] text-slate-400 block uppercase font-bold">Average Grade</span><span class="text-xl font-black text-emerald-400">${finalAvg}%</span></div>
                     </div>
                 `;
             });
@@ -503,95 +750,50 @@
 
         function updateAdminProfile() {
             let newName = document.getElementById('adminNewName').value;
-            if(!newName) { alert('Please enter a new name'); return; }
-            let uid = auth.currentUser.uid;
-            db.collection('users').doc(uid).update({ name: newName }).then(() => {
+            if(!newName) return;
+            db.collection('users').doc(auth.currentUser.uid).update({ name: newName }).then(() => {
                 logAuditAction(`Updated admin profile name to ${newName}`);
                 document.getElementById('superAdminName').innerText = `Welcome, ${newName}`;
-                alert('Profile updated successfully!');
-            }).catch(err => alert('Error: ' + err.message));
+                alert('Profile updated!');
+            });
         }
 
         function fetchAuditLogs() {
             db.collection('auditLogs').orderBy('timestamp', 'desc').limit(20).get().then(snap => {
                 let html = '';
                 snap.forEach(doc => {
-                    let log = doc.data();
-                    let dateStr = log.timestamp ? new Date(log.timestamp.toDate()).toLocaleString() : 'Just now';
-                    html += `
-                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-                            <span class="font-bold text-white block">${log.action}</span>
-                            <span class="text-[10px] text-amber-400">Admin: ${log.adminEmail} | ${dateStr}</span>
-                        </div>
-                    `;
+                    let l = doc.data();
+                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${l.action}</span><span class="text-[10px] text-amber-400">${l.adminEmail}</span></div>`;
                 });
-                document.getElementById('auditLogsList').innerHTML = html || '<p class="text-slate-500 text-xs">No audit logs recorded yet.</p>';
+                document.getElementById('auditLogsList').innerHTML = html || '<p class="text-slate-500 text-xs">No logs.</p>';
             });
         }
 
         function saveSystemSettings() {
             let portalName = document.getElementById('settingPortalName').value;
-            let maintenance = document.getElementById('settingMaintenance').value === 'true';
-            db.collection('settings').doc('config').set({ portalName, maintenance }, { merge: true }).then(() => {
-                logAuditAction('Updated system global configurations');
-                alert('System settings saved successfully!');
-            }).catch(err => alert('Error: ' + err.message));
-        }
-
-        function downloadDatabaseBackup() {
-            Promise.all([
-                db.collection('users').get(),
-                db.collection('cbts').get(),
-                db.collection('cbtResults').get()
-            ]).then(([usersSnap, cbtsSnap, resultsSnap]) => {
-                let backupData = {
-                    users: usersSnap.docs.map(d => ({ id: d.id, ...d.data() })),
-                    cbts: cbtsSnap.docs.map(d => ({ id: d.id, ...d.data() })),
-                    cbtResults: resultsSnap.docs.map(d => ({ id: d.id, ...d.data() })),
-                    exportedAt: new Date().toISOString()
-                };
-                let blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
-                let url = URL.createObjectURL(blob);
-                let a = document.createElement('a');
-                a.href = url;
-                a.download = `great-stand-backup-${Date.now()}.json`;
-                a.click();
-                logAuditAction('Exported full database JSON backup');
+            db.collection('settings').doc('config').set({ portalName }, { merge: true }).then(() => {
+                logAuditAction('Updated system settings');
+                alert('Saved!');
             });
         }
 
-        // ================= USER MANAGEMENT FUNCTIONS =================
         function createNewUserAccount(role) {
             let name = document.getElementById('newUserName').value;
             let email = document.getElementById('newUserEmail').value;
             let password = document.getElementById('newUserPassword').value;
+            if(!name || !email || !password) { alert('Fill all fields'); return; }
 
-            if(!name || !email || !password) { alert('Please fill all fields'); return; }
-
-            let secondaryAppName = 'SecondaryApp_' + Date.now();
-            let secondaryApp = firebase.initializeApp(firebaseConfig, secondaryAppName);
-            let secondaryAuth = secondaryApp.auth();
-
-            secondaryAuth.createUserWithEmailAndPassword(email, password)
-                .then(cred => {
-                    let uid = cred.user.uid;
-                    return db.collection('users').doc(uid).set({
-                        name, email, role, isActive: true,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                })
+            let secondaryApp = firebase.initializeApp(firebaseConfig, 'Sec_' + Date.now());
+            secondaryApp.auth().createUserWithEmailAndPassword(email, password)
+                .then(cred => db.collection('users').doc(cred.user.uid).set({ name, email, role, isActive: true, createdAt: firebase.firestore.FieldValue.serverTimestamp() }))
                 .then(() => {
                     logAuditAction(`Created new ${role} account: ${email}`);
-                    alert(`${role === 'student' ? 'Student' : 'Admin'} account created successfully!`);
-                    secondaryAuth.signOut();
+                    alert('Account created!');
+                    secondaryApp.auth().signOut();
                     secondaryApp.delete();
                     loadModule(role === 'student' ? 'students' : 'admins');
                 })
-                .catch(err => {
-                    alert('Error: ' + err.message);
-                    secondaryAuth.signOut();
-                    secondaryApp.delete();
-                });
+                .catch(err => { alert(err.message); secondaryApp.auth().signOut(); secondaryApp.delete(); });
         }
 
         function fetchUserManagementList(role) {
@@ -603,14 +805,8 @@
                     let isActive = u.isActive !== false;
                     html += `
                         <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
-                            <div>
-                                <span class="font-bold text-white block">${u.name || 'No Name'} (${u.email})</span>
-                                <span class="text-[10px] ${isActive ? 'text-emerald-400' : 'text-red-400'} font-bold">Status: ${isActive ? 'Active' : 'Suspended'}</span>
-                            </div>
-                            <div class="flex gap-1.5">
-                                <button onclick="toggleUserStatus('${uid}', ${isActive}, '${role}')" class="text-[10px] px-2 py-1 rounded font-bold ${isActive ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}">${isActive ? 'Suspend' : 'Activate'}</button>
-                                <button onclick="deleteUserAccount('${uid}', '${role}')" class="text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-1 rounded font-bold">Delete</button>
-                            </div>
+                            <div><span class="font-bold text-white block">${u.name} (${u.email})</span><span class="text-[10px] ${isActive ? 'text-emerald-400' : 'text-red-400'}">${isActive ? 'Active' : 'Suspended'}</span></div>
+                            <button onclick="toggleUserStatus('${uid}', ${isActive}, '${role}')" class="text-[10px] px-2 py-1 rounded font-bold ${isActive ? 'bg-amber-500/10 text-amber-400' : 'bg-emerald-500/10 text-emerald-400'}">${isActive ? 'Suspend' : 'Activate'}</button>
                         </div>
                     `;
                 });
@@ -618,25 +814,11 @@
             });
         }
 
-        function toggleUserStatus(uid, currentStatus, role) {
-            let newStatus = !currentStatus;
-            db.collection('users').doc(uid).update({ isActive: newStatus })
-                .then(() => {
-                    logAuditAction(`Toggled status for user ${uid} to ${newStatus ? 'Active' : 'Suspended'}`);
-                    fetchUserManagementList(role);
-                })
-                .catch(err => alert('Error: ' + err.message));
-        }
-
-        function deleteUserAccount(uid, role) {
-            if(confirm('Are you sure you want to delete this user record?')) {
-                db.collection('users').doc(uid).delete()
-                    .then(() => {
-                        logAuditAction(`Deleted user account: ${uid}`);
-                        fetchUserManagementList(role);
-                    })
-                    .catch(err => alert('Error: ' + err.message));
-            }
+        function toggleUserStatus(uid, currentStatus, returnModule) {
+            db.collection('users').doc(uid).update({ isActive: !currentStatus }).then(() => {
+                logAuditAction(`Toggled status for user ${uid}`);
+                loadModule(returnModule);
+            });
         }
 
         // ================= STUDENT MODULE LOADER =================
@@ -648,30 +830,88 @@
 
             if (key === 'cbts') {
                 titleEl.innerText = "🧪 Live CBT Examination Center";
-                contentEl.innerHTML = `
-                    <p class="text-xs text-slate-400 mb-3">Select an active exam below and click start. Your timer will begin immediately!</p>
-                    <div id="studentAvailableCbts" class="space-y-2">Loading available live exams...</div>
-                `;
+                contentEl.innerHTML = `<p class="text-xs text-slate-400 mb-3">Select an active exam below to start:</p><div id="studentAvailableCbts" class="space-y-2">Loading exams...</div>`;
                 fetchStudentCBTs();
-            } else if (key === 'timetable') {
-                titleEl.innerText = "📅 Class Timetable";
-                fetchStudentList('timetable', contentEl, item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title}</span><span class="text-[10px] text-amber-400">${item.details}</span></div>`);
-            } else if (key === 'notes') {
-                titleEl.innerText = "📚 Notes & Resources";
-                fetchStudentList('notes', contentEl, item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title}</span><span class="text-[10px] text-slate-400">${item.details}</span></div>`);
-            } else if (key === 'announcements') {
-                titleEl.innerText = "📢 Announcements";
-                fetchStudentList('announcements', contentEl, item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-amber-400 block">${item.title}</span><span class="text-[10px] text-slate-300">${item.details}</span></div>`);
+            } else if (key === 'files') {
+                titleEl.innerText = "📥 Downloadable PDF Resources";
+                contentEl.innerHTML = `<div id="studentPdfList" class="space-y-2">Loading downloadable PDFs...</div>`;
+                fetchStudentPDFs();
+            } else if (key === 'support') {
+                titleEl.innerText = "🎧 Help & Support Tickets";
+                contentEl.innerHTML = `
+                    <div class="space-y-3 border-b border-slate-800 pb-4">
+                        <input type="text" id="ticketSubject" placeholder="Subject / Issue Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <textarea id="ticketMessage" placeholder="Describe your issue or question..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-24"></textarea>
+                        <button onclick="submitSupportTicket()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Submit Support Ticket 🎫</button>
+                    </div>
+                    <div class="space-y-2 pt-2">
+                        <p class="text-xs font-bold text-slate-400">My Submitted Tickets:</p>
+                        <div id="studentTicketList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading your tickets...</div>
+                    </div>
+                `;
+                fetchStudentSupportTickets();
             }
         }
 
-        // ================= BULK CBT & EXAM LOGIC =================
+        function fetchStudentPDFs() {
+            db.collection('files').orderBy('createdAt', 'desc').get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let f = doc.data();
+                    html += `
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-white block">${f.title}</span>
+                                <span class="text-[10px] text-slate-400">📁 ${f.fileName} (${f.fileSize})</span>
+                            </div>
+                            <a href="${f.dataUrl}" download="${f.fileName}" class="bg-amber-500 text-slate-950 text-xs font-extrabold px-3 py-2 rounded-xl">📥 Download PDF</a>
+                        </div>
+                    `;
+                });
+                document.getElementById('studentPdfList').innerHTML = html || '<p class="text-slate-500 text-xs">No downloadable PDF documents available yet.</p>';
+            });
+        }
+
+        function submitSupportTicket() {
+            let subject = document.getElementById('ticketSubject').value;
+            let message = document.getElementById('ticketMessage').value;
+            if(!subject || !message) { alert('Please fill in both subject and message.'); return; }
+
+            db.collection('supportTickets').add({
+                studentEmail: auth.currentUser.email,
+                subject, message, resolved: false,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert('Support ticket submitted successfully!');
+                loadStudentModule('support');
+            });
+        }
+
+        function fetchStudentSupportTickets() {
+            let email = auth.currentUser.email;
+            db.collection('supportTickets').where('studentEmail', '==', email).get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let t = doc.data();
+                    let isResolved = t.resolved === true;
+                    html += `
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                            <span class="font-bold text-white block">${t.subject}</span>
+                            <span class="text-[10px] text-slate-300 block">${t.message}</span>
+                            <span class="text-[9px] ${isResolved ? 'text-emerald-400' : 'text-amber-400'} font-bold mt-1 block">Status: ${isResolved ? 'Resolved' : 'Pending Review'}</span>
+                        </div>
+                    `;
+                });
+                document.getElementById('studentTicketList').innerHTML = html || '<p class="text-slate-500 text-xs">You have not submitted any support tickets.</p>';
+            });
+        }
+
+        // ================= BULK CBT EXAM LOGIC =================
         function parseAndSaveBulkCBT() {
             let title = document.getElementById('cbtTitle').value;
             let duration = parseInt(document.getElementById('cbtDuration').value);
             let rawText = document.getElementById('bulkQuestionsText').value;
-
-            if(!title || !duration || !rawText) { alert('Please fill exam title, duration, and questions.'); return; }
+            if(!title || !duration || !rawText) { alert('Please fill all exam fields.'); return; }
 
             let lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
             let questions = [];
@@ -686,54 +926,35 @@
                     let optMatch = line.match(/^([a-d])[\.\)]\s*(.+)/i);
                     let ansMatch = line.match(/^(?:answer|correct)\s*[:\-]\s*([a-d])/i);
                     if(optMatch) {
-                        let optLetter = optMatch[1].toUpperCase();
-                        let optText = optMatch[2];
-                        if(optLetter === 'A') currentQ.a = optText;
-                        if(optLetter === 'B') currentQ.b = optText;
-                        if(optLetter === 'C') currentQ.c = optText;
-                        if(optLetter === 'D') currentQ.d = optText;
+                        let ltr = optMatch[1].toUpperCase();
+                        if(ltr === 'A') currentQ.a = optMatch[2];
+                        if(ltr === 'B') currentQ.b = optMatch[2];
+                        if(ltr === 'C') currentQ.c = optMatch[2];
+                        if(ltr === 'D') currentQ.d = optMatch[2];
                     } else if(ansMatch) {
                         currentQ.correct = ansMatch[1].toUpperCase();
-                    } else {
-                        if(!currentQ.a && !currentQ.b) currentQ.q += " " + line;
                     }
                 }
             }
             if(currentQ) questions.push(currentQ);
 
-            if(questions.length === 0) { alert('Could not parse questions format.'); return; }
-
-            db.collection('cbts').add({
-                title, duration, questions,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                logAuditAction(`Published new CBT exam: ${title} (${questions.length} Qs)`);
-                alert(`Successfully published ${questions.length} questions!`);
-                loadModule('cbts');
-            }).catch(err => alert('Error: ' + err.message));
+            db.collection('cbts').add({ title, duration, questions, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
+                .then(() => {
+                    logAuditAction(`Published CBT exam: ${title}`);
+                    alert(`Successfully published ${questions.length} questions!`);
+                    loadModule('cbts');
+                });
         }
 
         function fetchAdminCBTs() {
-            db.collection('cbts').orderBy('createdAt', 'desc').get().then(snap => {
+            db.collection('cbts').get().then(snap => {
                 let html = '';
                 snap.forEach(doc => {
                     let c = doc.data();
-                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
-                        <div><span class="font-bold text-white block">${c.title}</span><span class="text-[10px] text-amber-400">⏱️ ${c.duration} mins | ❓ ${c.questions ? c.questions.length : 0} Qs</span></div>
-                        <button onclick="deleteCbt('${doc.id}')" class="text-red-400 text-[10px] bg-red-500/10 px-2 py-1 rounded">Delete</button>
-                    </div>`;
+                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center"><span class="font-bold text-white text-xs">${c.title} (${c.duration} mins)</span><button onclick="db.collection('cbts').doc('${doc.id}').delete(); loadModule('cbts');" class="text-red-400 text-[10px]">Delete</button></div>`;
                 });
-                document.getElementById('adminCbtList').innerHTML = html || '<p class="text-slate-500 text-xs">No CBT exams created yet.</p>';
+                document.getElementById('adminCbtList').innerHTML = html || '<p class="text-slate-500 text-xs">No exams.</p>';
             });
-        }
-
-        function deleteCbt(id) {
-            if(confirm('Delete this exam?')) {
-                db.collection('cbts').doc(id).delete().then(() => {
-                    logAuditAction(`Deleted CBT exam ${id}`);
-                    loadModule('cbts');
-                });
-            }
         }
 
         function fetchStudentCBTs() {
@@ -741,15 +962,9 @@
                 let html = '';
                 snap.forEach(doc => {
                     let c = doc.data();
-                    html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
-                        <div>
-                            <span class="font-bold text-white block">${c.title}</span>
-                            <span class="text-[10px] text-amber-400">⏱️ Time Allowed: ${c.duration} Mins (${c.questions ? c.questions.length : 0} Questions)</span>
-                        </div>
-                        <button onclick="startLiveExam('${doc.id}')" class="bg-amber-500 text-slate-950 font-extrabold text-xs px-3 py-2 rounded-xl">Start Exam 🚀</button>
-                    </div>`;
+                    html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center"><div><span class="font-bold text-white block">${c.title}</span><span class="text-[10px] text-amber-400">⏱️ ${c.duration} Mins</span></div><button onclick="startLiveExam('${doc.id}')" class="bg-amber-500 text-slate-950 font-bold text-xs px-3 py-2 rounded-xl">Start Exam 🚀</button></div>`;
                 });
-                document.getElementById('studentAvailableCbts').innerHTML = html || '<p class="text-slate-500 text-xs">No live exams available right now.</p>';
+                document.getElementById('studentAvailableCbts').innerHTML = html || '<p class="text-slate-500 text-xs">No live exams.</p>';
             });
         }
 
@@ -760,52 +975,24 @@
                 let questions = exam.questions || [];
                 let timeLeft = exam.duration * 60;
                 let contentEl = document.getElementById('studentModuleContent');
-                
-                function renderExamScreen() {
-                    let mins = Math.floor(timeLeft / 60);
-                    let secs = timeLeft % 60;
-                    let timeStr = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 
+                function renderScreen() {
+                    let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
                     let qHtml = '';
                     questions.forEach((q, idx) => {
-                        qHtml += `
-                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
-                                <p class="text-xs font-bold text-white">Q${idx + 1}: ${q.q}</p>
-                                <div class="space-y-1 text-xs">
-                                    <label class="block"><input type="radio" name="q_${idx}" value="A"> A) ${q.a}</label>
-                                    <label class="block"><input type="radio" name="q_${idx}" value="B"> B) ${q.b}</label>
-                                    ${q.c ? `<label class="block"><input type="radio" name="q_${idx}" value="C"> C) ${q.c}</label>` : ''}
-                                    ${q.d ? `<label class="block"><input type="radio" name="q_${idx}" value="D"> D) ${q.d}</label>` : ''}
-                                </div>
-                            </div>
-                        `;
+                        qHtml += `<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2"><p class="text-xs font-bold text-white">Q${idx+1}: ${q.q}</p><div class="space-y-1 text-xs"><label class="block"><input type="radio" name="q_${idx}" value="A"> A) ${q.a}</label><label class="block"><input type="radio" name="q_${idx}" value="B"> B) ${q.b}</label>${q.c ? `<label class="block"><input type="radio" name="q_${idx}" value="C"> C) ${q.c}</label>` : ''}${q.d ? `<label class="block"><input type="radio" name="q_${idx}" value="D"> D) ${q.d}</label>` : ''}</div></div>`;
                     });
-
-                    contentEl.innerHTML = `
-                        <div class="sticky top-12 bg-slate-900 border border-amber-500/30 p-3 rounded-xl flex justify-between items-center mb-3 shadow-lg z-20">
-                            <div><span class="text-[10px] text-slate-400 block font-bold">Exam in Progress</span><span class="text-xs font-black text-white">${exam.title}</span></div>
-                            <div class="bg-red-500/20 border border-red-500/40 text-red-400 px-3 py-1 rounded-lg text-xs font-black">⏱️ Time Left: <span id="timerDisplay">${timeStr}</span></div>
-                        </div>
-                        <div class="space-y-3 mb-4">${qHtml}</div>
-                        <button onclick="submitExam('${cbtId}', ${JSON.stringify(questions).replace(/"/g, '&quot;')})" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs py-3 rounded-xl">Submit Exam Now</button>
-                    `;
+                    contentEl.innerHTML = `<div class="sticky top-12 bg-slate-900 border border-amber-500/30 p-3 rounded-xl flex justify-between items-center mb-3"><span>${exam.title}</span><span class="text-red-400 font-bold">⏱️ <span id="timerDisplay">${m}:${s < 10 ? '0' : ''}${s}</span></span></div><div class="space-y-3 mb-4">${qHtml}</div><button onclick="submitExam('${cbtId}', ${JSON.stringify(questions).replace(/"/g, '&quot;')})" class="w-full bg-emerald-500 text-slate-950 font-bold text-xs py-3 rounded-xl">Submit Exam</button>`;
                 }
-
-                renderExamScreen();
-
+                renderScreen();
                 activeTimer = setInterval(() => {
                     timeLeft--;
-                    let timerEl = document.getElementById('timerDisplay');
-                    if(timerEl) {
-                        let mins = Math.floor(timeLeft / 60);
-                        let secs = timeLeft % 60;
-                        timerEl.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    let tEl = document.getElementById('timerDisplay');
+                    if(tEl) {
+                        let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+                        tEl.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
                     }
-                    if(timeLeft <= 0) {
-                        clearInterval(activeTimer);
-                        alert('Time is up! Submitting exam automatically.');
-                        submitExam(cbtId, questions);
-                    }
+                    if(timeLeft <= 0) { clearInterval(activeTimer); submitExam(cbtId, questions); }
                 }, 1000);
             });
         }
@@ -813,75 +1000,25 @@
         function submitExam(cbtId, questions) {
             if(activeTimer) clearInterval(activeTimer);
             let score = 0;
-            let total = questions.length;
-
             questions.forEach((q, idx) => {
-                let selected = document.querySelector(`input[name="q_${idx}"]:checked`);
-                if(selected && selected.value.toUpperCase() === q.correct.toUpperCase()) score++;
+                let sel = document.querySelector(`input[name="q_${idx}"]:checked`);
+                if(sel && sel.value.toUpperCase() === q.correct.toUpperCase()) score++;
             });
-
-            let percentage = Math.round((score / total) * 100);
-
+            let percentage = Math.round((score / questions.length) * 100);
             db.collection('cbtResults').add({
-                studentEmail: auth.currentUser.email,
-                cbtId, score, total, percentage,
+                studentEmail: auth.currentUser.email, cbtId, score, total: questions.length, percentage,
                 submittedAt: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
-                let contentEl = document.getElementById('studentModuleContent');
-                contentEl.innerHTML = `
-                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 text-center space-y-3 mt-4">
-                        <h3 class="text-lg font-black text-amber-400">🎉 Exam Submitted Successfully!</h3>
-                        <p class="text-xs text-slate-300">Your score breakdown:</p>
-                        <div class="text-3xl font-black text-emerald-400">${score} / ${total} (${percentage}%)</div>
-                        <button onclick="loadStudentModule('cbts')" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Back to CBT Center</button>
-                    </div>
-                `;
-            }).catch(err => alert('Error: ' + err.message));
+                document.getElementById('studentModuleContent').innerHTML = `<div class="bg-slate-950 p-6 rounded-2xl text-center space-y-3"><h3 class="text-lg font-black text-amber-400">Exam Submitted!</h3><div class="text-3xl font-black text-emerald-400">${score}/${questions.length} (${percentage}%)</div><button onclick="loadStudentModule('cbts')" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl text-xs">Back to Exams</button></div>`;
+            });
         }
 
         function fetchCBTResults() {
             db.collection('cbtResults').orderBy('submittedAt', 'desc').get().then(snap => {
                 let html = '';
-                snap.forEach(doc => {
-                    let r = doc.data();
-                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
-                        <div><span class="font-bold text-white block">${r.studentEmail}</span><span class="text-[10px] text-slate-400">Score: ${r.score}/${r.total} (${r.percentage}%)</span></div>
-                        <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Graded</span>
-                    </div>`;
-                });
-                document.getElementById('cbtResultsList').innerHTML = html || '<p class="text-slate-500 text-xs">No CBT submissions yet.</p>';
+                snap.forEach(doc => { let r = doc.data(); html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center"><span>${r.studentEmail}</span><span class="text-emerald-400 font-bold">${r.score}/${r.total} (${r.percentage}%)</span></div>`; });
+                document.getElementById('cbtResultsList').innerHTML = html || '<p class="text-slate-500 text-xs">No results.</p>';
             });
-        }
-
-        function fetchList(collectionName, containerId, templateFn) {
-            db.collection(collectionName).orderBy('createdAt', 'desc').get().then(snap => {
-                let html = '';
-                snap.forEach(doc => { html += templateFn(doc.data()); });
-                document.getElementById(containerId).innerHTML = html || '<p class="text-slate-500 text-xs">No records found yet.</p>';
-            }).catch(() => {
-                document.getElementById(containerId).innerHTML = '<p class="text-slate-500 text-xs">Module ready.</p>';
-            });
-        }
-
-        function fetchStudentList(collectionName, containerEl, templateFn) {
-            db.collection(collectionName).get().then(snap => {
-                let html = '<div class="space-y-2">';
-                snap.forEach(doc => { html += templateFn(doc.data()); });
-                html += '</div>';
-                containerEl.innerHTML = html || '<p class="text-slate-500 text-xs">No items posted yet.</p>';
-            });
-        }
-
-        function saveGenericItem(collectionName, data) {
-            for(let k in data) { if(!data[k]) { alert('Please fill all fields'); return; } }
-            data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-            db.collection(collectionName).add(data)
-              .then(() => { 
-                  logAuditAction(`Created record in ${collectionName}`);
-                  alert('Saved successfully!'); 
-                  loadModule(collectionName); 
-              })
-              .catch(err => alert('Error: ' + err.message));
         }
 
         function handleLogin(e) {
@@ -889,26 +1026,24 @@
             auth.signInWithEmailAndPassword(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
                 .then(cred => routeUser(cred.user.uid))
                 .catch(err => {
-                    let errBox = document.getElementById('loginError');
-                    errBox.innerText = err.message;
-                    errBox.classList.remove('hidden');
+                    let b = document.getElementById('loginError');
+                    b.innerText = err.message;
+                    b.classList.remove('hidden');
                 });
         }
 
         function routeUser(uid) {
             db.collection('users').doc(uid).get().then(doc => {
                 let userData = doc.exists ? doc.data() : { role: 'student', name: 'User', isActive: true };
-                
                 if(userData.isActive === false) {
                     auth.signOut().then(() => {
-                        let errBox = document.getElementById('loginError');
-                        errBox.innerText = "Your account has been suspended. Please contact the administrator.";
-                        errBox.classList.remove('hidden');
+                        let b = document.getElementById('loginError');
+                        b.innerText = "Account suspended. Contact administrator.";
+                        b.classList.remove('hidden');
                         switchView('loginView');
                     });
                     return;
                 }
-
                 let role = userData.role || 'student';
                 populateMenu(role);
                 if (role === 'super_admin') {
@@ -917,7 +1052,6 @@
                     loadModule('dashboard');
                 } else {
                     document.getElementById('standardUserName').innerText = `Welcome, ${userData.name || 'Student'}`;
-                    document.getElementById('standardRoleBadge').innerText = 'STUDENT PORTAL';
                     switchView('standardView');
                     loadStudentModule('cbts');
                 }
@@ -925,7 +1059,6 @@
         }
 
         function handleLogout() { if(activeTimer) clearInterval(activeTimer); auth.signOut().then(() => switchView('loginView')); }
-
         auth.onAuthStateChanged(user => { user ? routeUser(user.uid) : switchView('loginView'); });
     </script>
 </body>
