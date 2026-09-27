@@ -34,7 +34,7 @@
             <div>
                 <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
                     <div>
-                        <span id="drawerRoleTitle" class="text-[10px] font-black text-amber-400 uppercase tracking-wider block">👑 Portal Menu</span>
+                        <span id="drawerRoleTitle" class="text-[10px] font-black text-amber-400 uppercase tracking-wider block">👑 Master Control Menu</span>
                         <span class="text-xs font-extrabold text-white">Navigation</span>
                     </div>
                     <button onclick="toggleDrawer()" class="text-slate-400 hover:text-white font-bold text-xs bg-slate-800 px-2.5 py-1 rounded-lg">✕ Close</button>
@@ -77,7 +77,7 @@
             </div>
         </div>
 
-        <!-- SUPER ADMIN / ADMIN VIEW -->
+        <!-- SUPER ADMIN VIEW -->
         <div id="superAdminView" class="view-section space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex justify-between items-center">
                 <div>
@@ -138,7 +138,6 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        let currentUserRole = 'student';
         let activeTimer = null;
 
         function toggleDrawer() { document.getElementById('navDrawer').classList.toggle('hidden'); }
@@ -158,22 +157,62 @@
         }
 
         function populateMenu(role) {
-            currentUserRole = role;
             const linksContainer = document.getElementById('drawerLinks');
             const roleTitle = document.getElementById('drawerRoleTitle');
 
             if (role === 'super_admin') {
-                roleTitle.innerText = "👑 Super Admin Menu";
+                roleTitle.innerText = "👑 Master Control Menu";
                 linksContainer.innerHTML = `
                     <div class="text-[10px] text-amber-400 uppercase px-2 pt-1 font-black">Overview & Control</div>
                     <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard</a>
+                    <a href="#" onclick="loadModule('platformControl')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">⚙️ Platform Control</a>
+                    <a href="#" onclick="loadModule('systemMonitoring')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 System Monitoring</a>
+                    <a href="#" onclick="loadModule('adminProfile')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👤 Super Admin Profile</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">User & Access Management</div>
                     <a href="#" onclick="loadModule('users')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🛠️ User Management</a>
-                    <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT & Live Exams Manager</a>
-                    <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📈 CBT Results & Scores</a>
-                    <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Timetable</a>
-                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes & Materials</a>
-                    <a href="#" onclick="loadModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 Announcements</a>
-                    <a href="#" onclick="loadModule('settings')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">⚙️ Settings</a>
+                    <a href="#" onclick="loadModule('roles')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🔒 Roles & Permissions</a>
+                    <a href="#" onclick="loadModule('students')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👥 Student Management</a>
+                    <a href="#" onclick="loadModule('admins')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👑 Admin Management</a>
+                    <a href="#" onclick="loadModule('tutors')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧑🏽‍🏫 Tutor Management</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Academics & Curriculum</div>
+                    <a href="#" onclick="loadModule('programmes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎓 Programme Management</a>
+                    <a href="#" onclick="loadModule('subjects')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📖 Subject Management</a>
+                    <a href="#" onclick="loadModule('topics')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📑 Topic Management</a>
+                    <a href="#" onclick="loadModule('classes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏫 Class Management</a>
+                    <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Timetable Management</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Content & Learning Materials</div>
+                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes Management</a>
+                    <a href="#" onclick="loadModule('resources')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📂 Resource Management</a>
+                    <a href="#" onclick="loadModule('questions')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">❓ Question Bank Management</a>
+                    <a href="#" onclick="loadModule('contentApproval')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">✅ Content Approval</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">CBT & Assessments</div>
+                    <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT & Bulk Exam Creator</a>
+                    <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📈 CBT Student Results</a>
+                    <a href="#" onclick="loadModule('assignments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📝 Assignment Management</a>
+                    <a href="#" onclick="loadModule('studentProgress')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 Student Progress</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Results & Reports</div>
+                    <a href="#" onclick="loadModule('results')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏆 Results Management</a>
+                    <a href="#" onclick="loadModule('reports')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 Reports & Analytics</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Communication & Support</div>
+                    <a href="#" onclick="loadModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 Announcement Management</a>
+                    <a href="#" onclick="loadModule('notifications')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🔔 Notification Management</a>
+                    <a href="#" onclick="loadModule('support')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎧 Support Management</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">System Administration</div>
+                    <a href="#" onclick="loadModule('admissions')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏛️ Admission Management</a>
+                    <a href="#" onclick="loadModule('website')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🌐 Website Management</a>
+                    <a href="#" onclick="loadModule('files')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🗂️ File Management</a>
+                    <a href="#" onclick="loadModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💳 Payment Management</a>
+                    <a href="#" onclick="loadModule('security')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🛡️ Security Management</a>
+                    <a href="#" onclick="loadModule('audit')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📜 Activity / Audit Logs</a>
+                    <a href="#" onclick="loadModule('settings')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">⚙️ System Settings</a>
+                    <a href="#" onclick="loadModule('backup')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💾 Backup & Data Management</a>
                 `;
             } else {
                 roleTitle.innerText = "🎓 Student Portal Menu";
@@ -193,10 +232,18 @@
             let contentEl = document.getElementById('moduleContentArea');
 
             const titles = {
-                dashboard: "🏠 Dashboard Overview", users: "🛠️ User Management",
-                cbts: "🧪 Live CBT Exam Builder", cbtResults: "📈 CBT Student Results",
-                timetable: "📅 Timetable Management", notes: "📚 Notes & Materials",
-                announcements: "📢 Announcements", settings: "⚙️ System Settings"
+                dashboard: "🏠 Dashboard Overview", platformControl: "⚡ Platform Control", systemMonitoring: "📊 System Monitoring",
+                adminProfile: "👤 Super Admin Profile", users: "🛠️ User Management", roles: "🔒 Roles & Permissions",
+                students: "👥 Student Management", admins: "👑 Admin Management", tutors: "🧑🏽‍🏫 Tutor Management",
+                programmes: "🎓 Programme Management", subjects: "📖 Subject Management", topics: "📑 Topic Management",
+                classes: "🏫 Class Management", timetable: "📅 Timetable Management", notes: "📚 Notes Management",
+                resources: "📂 Resource Management", questions: "❓ Question Bank Management", contentApproval: "✅ Content Approval",
+                cbts: "🧪 CBT & Bulk Exam Creator", cbtResults: "📈 CBT Student Results", assignments: "📝 Assignment Management",
+                studentProgress: "📊 Student Progress", results: "🏆 Results Management", reports: "📊 Reports & Analytics",
+                announcements: "📢 Announcement Management", notifications: "🔔 Notification Management", support: "🎧 Support Management",
+                admissions: "🏛️ Admission Management", website: "🌐 Website Management", files: "🗂️ File Management",
+                payments: "💳 Payment Management", security: "🛡️ Security Management", audit: "📜 Activity / Audit Logs",
+                settings: "⚙️ System Settings", backup: "💾 Backup & Data Management"
             };
 
             titleEl.innerText = titles[key] || "⚙️ Management Module";
@@ -220,33 +267,19 @@
                 });
             } 
             else if (key === 'cbts') {
-                // Admin CBT Creator
+                // Bulk CBT Creator
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <p class="text-xs text-amber-400 font-bold">Create New Timed CBT Exam</p>
-                        <input type="text" id="cbtTitle" placeholder="Exam Title (e.g. JAMB Physics Mock 1)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="number" id="cbtDuration" placeholder="Duration in Minutes (e.g. 15)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <p class="text-xs text-amber-400 font-bold">🚀 Bulk CBT Exam Import (Paste 50+ Questions)</p>
+                        <input type="text" id="cbtTitle" placeholder="Exam Title (e.g. JAMB Physics Mock)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="number" id="cbtDuration" placeholder="Duration in Minutes (e.g. 30)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         
                         <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
-                            <p class="text-[11px] text-slate-300 font-bold">Add Question</p>
-                            <input type="text" id="qText" placeholder="Question Text" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white">
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="text" id="optA" placeholder="Option A" class="bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-white">
-                                <input type="text" id="optB" placeholder="Option B" class="bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-white">
-                                <input type="text" id="optC" placeholder="Option C" class="bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-white">
-                                <input type="text" id="optD" placeholder="Option D" class="bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-white">
-                            </div>
-                            <select id="correctOpt" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white">
-                                <option value="A">Correct Answer: Option A</option>
-                                <option value="B">Correct Answer: Option B</option>
-                                <option value="C">Correct Answer: Option C</option>
-                                <option value="D">Correct Answer: Option D</option>
-                            </select>
-                            <button onclick="addQuestionToCBT()" class="w-full bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold text-xs py-1.5 rounded-lg">+ Add Question to Exam</button>
+                            <p class="text-[11px] text-slate-300 font-bold">Paste Questions Text Below:</p>
+                            <p class="text-[10px] text-slate-400">Format: Use numbers like <code class="text-amber-400">1. Question</code>, options <code class="text-amber-400">A)</code> to <code class="text-amber-400">D)</code>, and <code class="text-amber-400">Answer: B</code></p>
+                            <textarea id="bulkQuestionsText" placeholder="1. What is the capital of Nigeria?&#10;A) Lagos&#10;B) Abuja&#10;C) Kano&#10;D) Ibadan&#10;Answer: B&#10;&#10;2. Next question..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-44"></textarea>
+                            <button onclick="parseAndSaveBulkCBT()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl">⚡ Parse & Publish Live Exam</button>
                         </div>
-
-                        <div id="tempQuestionList" class="text-[11px] text-slate-400 bg-slate-950 p-2 rounded-xl">0 questions added for this exam.</div>
-                        <button onclick="publishCBTExam()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl">🚀 Publish Live CBT Exam</button>
                     </div>
 
                     <div class="space-y-2">
@@ -254,7 +287,6 @@
                         <div id="adminCbtList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading...</div>
                     </div>
                 `;
-                window.currentDraftQuestions = [];
                 fetchAdminCBTs();
             }
             else if (key === 'cbtResults') {
@@ -306,37 +338,61 @@
             }
         }
 
-        // ================= LIVE CBT EXAM FUNCTIONS =================
-        function addQuestionToCBT() {
-            let q = document.getElementById('qText').value;
-            let a = document.getElementById('optA').value;
-            let b = document.getElementById('optB').value;
-            let c = document.getElementById('optC').value;
-            let d = document.getElementById('optD').value;
-            let correct = document.getElementById('correctOpt').value;
-
-            if(!q || !a || !b) { alert('Please fill question and at least options A and B'); return; }
-            window.currentDraftQuestions.push({ q, a, b, c, d, correct });
-            document.getElementById('tempQuestionList').innerText = `✅ ${window.currentDraftQuestions.length} question(s) added to current draft.`;
-            document.getElementById('qText').value = '';
-            document.getElementById('optA').value = '';
-            document.getElementById('optB').value = '';
-            document.getElementById('optC').value = '';
-            document.getElementById('optD').value = '';
-        }
-
-        function publishCBTExam() {
+        // ================= SMART BULK CBT PARSER =================
+        function parseAndSaveBulkCBT() {
             let title = document.getElementById('cbtTitle').value;
             let duration = parseInt(document.getElementById('cbtDuration').value);
-            if(!title || !duration || window.currentDraftQuestions.length === 0) {
-                alert('Please enter a title, duration, and add at least one question.');
+            let rawText = document.getElementById('bulkQuestionsText').value;
+
+            if(!title || !duration || !rawText) {
+                alert('Please fill the exam title, duration, and paste your questions.');
                 return;
             }
+
+            let lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            let questions = [];
+            let currentQ = null;
+
+            for(let line of lines) {
+                let isNewQ = /^(?:question\s*)?\d+[\.\)]\s*/i.test(line);
+                if(isNewQ) {
+                    if(currentQ) questions.push(currentQ);
+                    currentQ = {
+                        q: line.replace(/^(?:question\s*)?\d+[\.\)]\s*/i, ''),
+                        a: '', b: '', c: '', d: '', correct: 'A'
+                    };
+                } else if(currentQ) {
+                    let optMatch = line.match(/^([a-d])[\.\)]\s*(.+)/i);
+                    let ansMatch = line.match(/^(?:answer|correct)\s*[:\-]\s*([a-d])/i);
+
+                    if(optMatch) {
+                        let optLetter = optMatch[1].toUpperCase();
+                        let optText = optMatch[2];
+                        if(optLetter === 'A') currentQ.a = optText;
+                        if(optLetter === 'B') currentQ.b = optText;
+                        if(optLetter === 'C') currentQ.c = optText;
+                        if(optLetter === 'D') currentQ.d = optText;
+                    } else if(ansMatch) {
+                        currentQ.correct = ansMatch[1].toUpperCase();
+                    } else {
+                        if(!currentQ.a && !currentQ.b) {
+                            currentQ.q += " " + line;
+                        }
+                    }
+                }
+            }
+            if(currentQ) questions.push(currentQ);
+
+            if(questions.length === 0) {
+                alert('Could not parse questions. Please check your format (e.g., "1. Question...", "A) ...", "Answer: B").');
+                return;
+            }
+
             db.collection('cbts').add({
-                title, duration, questions: window.currentDraftQuestions,
+                title, duration, questions,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
-                alert('CBT Exam published successfully!');
+                alert(`Successfully parsed and published ${questions.length} questions!`);
                 loadModule('cbts');
             }).catch(err => alert('Error: ' + err.message));
         }
@@ -356,7 +412,7 @@
         }
 
         function deleteCbt(id) {
-            if(confirm('Are you sure you want to delete this exam?')) {
+            if(confirm('Delete this exam?')) {
                 db.collection('cbts').doc(id).delete().then(() => loadModule('cbts'));
             }
         }
@@ -369,7 +425,7 @@
                     html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
                         <div>
                             <span class="font-bold text-white block">${c.title}</span>
-                            <span class="text-[10px] text-amber-400">⏱️ Time Allowed: ${c.duration} Minutes (${c.questions ? c.questions.length : 0} Questions)</span>
+                            <span class="text-[10px] text-amber-400">⏱️ Time Allowed: ${c.duration} Mins (${c.questions ? c.questions.length : 0} Questions)</span>
                         </div>
                         <button onclick="startLiveExam('${doc.id}')" class="bg-amber-500 text-slate-950 font-extrabold text-xs px-3 py-2 rounded-xl">Start Exam 🚀</button>
                     </div>`;
@@ -383,7 +439,7 @@
                 if(!doc.exists) return;
                 let exam = doc.data();
                 let questions = exam.questions || [];
-                let timeLeft = exam.duration * 60; // in seconds
+                let timeLeft = exam.duration * 60;
 
                 let contentEl = document.getElementById('studentModuleContent');
                 
@@ -400,7 +456,7 @@
                                 <div class="space-y-1 text-xs">
                                     <label class="block"><input type="radio" name="q_${idx}" value="A"> A) ${q.a}</label>
                                     <label class="block"><input type="radio" name="q_${idx}" value="B"> B) ${q.b}</label>
-                                    ${q.qC ? `<label class="block"><input type="radio" name="q_${idx}" value="C"> C) ${q.c}</label>` : (q.c ? `<label class="block"><input type="radio" name="q_${idx}" value="C"> C) ${q.c}</label>` : '')}
+                                    ${q.c ? `<label class="block"><input type="radio" name="q_${idx}" value="C"> C) ${q.c}</label>` : ''}
                                     ${q.d ? `<label class="block"><input type="radio" name="q_${idx}" value="D"> D) ${q.d}</label>` : ''}
                                 </div>
                             </div>
@@ -429,7 +485,7 @@
                     }
                     if(timeLeft <= 0) {
                         clearInterval(activeTimer);
-                        alert('Time is up! Your exam will be submitted automatically.');
+                        alert('Time is up! Submitting exam automatically.');
                         submitExam(cbtId, questions);
                     }
                 }, 1000);
@@ -443,7 +499,7 @@
 
             questions.forEach((q, idx) => {
                 let selected = document.querySelector(`input[name="q_${idx}"]:checked`);
-                if(selected && selected.value === q.correct) {
+                if(selected && selected.value.toUpperCase() === q.correct.toUpperCase()) {
                     score++;
                 }
             });
@@ -459,13 +515,13 @@
                 contentEl.innerHTML = `
                     <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 text-center space-y-3 mt-4">
                         <h3 class="text-lg font-black text-amber-400">🎉 Exam Submitted Successfully!</h3>
-                        <p class="text-xs text-slate-300">Here is your instant performance breakdown:</p>
+                        <p class="text-xs text-slate-300">Your score breakdown:</p>
                         <div class="text-3xl font-black text-emerald-400">${score} / ${total} (${percentage}%)</div>
-                        <p class="text-[11px] text-slate-400">Your score has been securely recorded and sent to the admin.</p>
+                        <p class="text-[11px] text-slate-400">Saved securely to admin results.</p>
                         <button onclick="loadStudentModule('cbts')" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Back to CBT Center</button>
                     </div>
                 `;
-            }).catch(err => alert('Submission error: ' + err.message));
+            }).catch(err => alert('Error: ' + err.message));
         }
 
         function fetchCBTResults() {
@@ -478,7 +534,7 @@
                         <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Graded</span>
                     </div>`;
                 });
-                document.getElementById('cbtResultsList').innerHTML = html || '<p class="text-slate-500 text-xs">No CBT submissions recorded yet.</p>';
+                document.getElementById('cbtResultsList').innerHTML = html || '<p class="text-slate-500 text-xs">No CBT submissions yet.</p>';
             });
         }
 
