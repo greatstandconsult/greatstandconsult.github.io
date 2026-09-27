@@ -479,15 +479,21 @@
                 });
             }
             else if (key === 'cbtResults') {
-                contentEl.innerHTML = `<div id="adminCbtResultsList" class="space-y-2 max-h-64 overflow-y-auto text-xs">Loading student results...</div>`;
+                contentEl.innerHTML = `<div id="adminCbtResultsList" class="space-y-2 max-h-72 overflow-y-auto text-xs">Loading student results...</div>`;
                 db.collection('cbtResults').orderBy('submittedAt', 'desc').get().then(snap => {
                     let html = '';
                     snap.forEach(doc => {
                         let r = doc.data();
                         html += `
-                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
-                                <div><span class="font-bold text-white block">${r.studentEmail}</span><span class="text-[10px] text-slate-400">Score: ${r.score}/${r.total}</span></div>
-                                <span class="text-xs font-black ${r.percentage >= 50 ? 'text-emerald-400' : 'text-red-400'}">${r.percentage}%</span>
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+                                <div>
+                                    <span class="font-bold text-white block">${r.studentEmail}</span>
+                                    <span class="text-[10px] text-slate-400">Score: ${r.score}/${r.total}</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs font-black ${r.percentage >= 50 ? 'text-emerald-400' : 'text-red-400'}">${r.percentage}%</span>
+                                    <button onclick="db.collection('cbtResults').doc('${doc.id}').delete(); loadModule('cbtResults');" class="text-red-400 text-[10px] bg-red-500/10 px-2 py-1 rounded border border-red-500/20">Delete</button>
+                                </div>
                             </div>
                         `;
                     });
@@ -661,9 +667,20 @@
                 let html = '';
                 snap.forEach(doc => {
                     let p = doc.data();
-                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${p.studentEmail}</span><span class="text-[10px] text-slate-400">${p.purpose}</span></div><span class="font-bold text-emerald-400">₦${Number(p.amount).toLocaleString()}</span></div>`;
+                    html += `
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+                            <div>
+                                <span class="font-bold text-white block">${p.studentEmail}</span>
+                                <span class="text-[10px] text-slate-400">${p.purpose} (${p.term || 'General'})</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="font-bold text-emerald-400 block">₦${Number(p.amount).toLocaleString()}</span>
+                                <button onclick="db.collection('payments').doc('${doc.id}').delete(); loadModule('payments');" class="text-red-400 text-[9px] underline mt-0.5">Delete</button>
+                            </div>
+                        </div>
+                    `;
                 });
-                document.getElementById('adminPaymentsList').innerHTML = html || '<p class="text-slate-500 text-xs">No payments.</p>';
+                document.getElementById('adminPaymentsList').innerHTML = html || '<p class="text-slate-500 text-xs">No payment records found.</p>';
             });
         }
 
@@ -720,7 +737,7 @@
             let secondaryApp = firebase.initializeApp(firebaseConfig, 'Sec_' + Date.now());
             secondaryApp.auth().createUserWithEmailAndPassword(email, password)
                 .then(cred => db.collection('users').doc(cred.user.uid).set({ name, email, role, isActive: true, assignedSubjects: [] }))
-                .then(() => { alert('Created!'); secondaryApp.auth().signOut(); secondaryApp.delete(); loadModule(role === 'student' ? 'students' : 'admins'); })
+                .then(() => { alert('Created!'); secondaryApp.auth().signOut(); secondaryApp.delete(); loadModule(role === 'student' ? 'students' : (role === 'super_admin' ? 'admins' : (role === 'bursar' ? 'bursars' : 'tutors'))); })
                 .catch(err => { alert(err.message); secondaryApp.auth().signOut(); secondaryApp.delete(); });
         }
 
@@ -729,10 +746,32 @@
                 let html = '';
                 snap.forEach(doc => {
                     let u = doc.data();
-                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${u.name}</span><span class="text-[10px] text-slate-400">${u.email}</span></div><span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Active</span></div>`;
+                    html += `
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+                            <div>
+                                <span class="font-bold text-white block">${u.name || 'User'}</span>
+                                <span class="text-[10px] text-slate-400">${u.email}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Active</span>
+                                <button onclick="deleteUserAccount('${doc.id}', '${role}')" class="text-red-400 text-[10px] bg-red-500/10 px-2 py-1 rounded border border-red-500/20 hover:bg-red-500/20">Delete</button>
+                            </div>
+                        </div>
+                    `;
                 });
                 document.getElementById('userManagementList').innerHTML = html || '<p class="text-slate-500 text-xs">No users found.</p>';
             });
+        }
+
+        function deleteUserAccount(uid, role) {
+            if(confirm('Are you sure you want to delete this user account?')) {
+                db.collection('users').doc(uid).delete()
+                    .then(() => {
+                        alert('User account deleted successfully.');
+                        loadModule(role === 'student' ? 'students' : (role === 'super_admin' ? 'admins' : (role === 'bursar' ? 'bursars' : 'tutors')));
+                    })
+                    .catch(err => alert('Error deleting user: ' + err.message));
+            }
         }
 
         // ================= CBT & EXAM ENGINE =================
