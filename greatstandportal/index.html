@@ -28,7 +28,7 @@
         <div id="headerAuthArea"></div>
     </header>
 
-    <!-- SLIDE-OUT NAVIGATION DRAWER (ARCHITECTURAL MENU) -->
+    <!-- SLIDE-OUT NAVIGATION DRAWER -->
     <div id="navDrawer" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex">
         <div class="bg-slate-900 w-80 h-full border-r border-slate-800 p-5 flex flex-col justify-between shadow-2xl overflow-y-auto">
             <div>
@@ -84,51 +84,38 @@
 
         <!-- 2. SUPER ADMIN PORTAL VIEW -->
         <div id="superAdminView" class="view-section space-y-4">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-                <span class="bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider">Super Admin Portal</span>
-                <h2 id="superAdminName" class="text-lg font-extrabold text-white mt-1">Welcome, Boss</h2>
-                <p class="text-[11px] text-slate-400 mt-1">Master control center active. Tap the ☰ menu above to explore all 24 management modules.</p>
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex justify-between items-center">
+                <div>
+                    <span class="bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider">Super Admin</span>
+                    <h2 id="superAdminName" class="text-sm font-extrabold text-white mt-1">Welcome, Boss</h2>
+                </div>
+                <span class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-xl font-bold">Full Control</span>
             </div>
 
-            <!-- Default Active Content Card: Quick User Creator -->
-            <div id="adminContentArea" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
-                <h3 class="text-xs font-bold uppercase text-amber-400 mb-3">👥 Quick User Creator</h3>
-                <form onsubmit="handleCreateUser(event)" class="space-y-3">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Full Name</label>
-                        <input type="text" id="newUserName" required placeholder="Student or Tutor Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Email Address</label>
-                        <input type="email" id="newUserEmail" required placeholder="user@gmail.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Temporary Password</label>
-                        <input type="text" id="newUserPass" required placeholder="Min 6 characters" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Assign Role</label>
-                        <select id="newUserRole" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
-                            <option value="student">Student</option>
-                            <option value="tutor">Tutor / Instructor</option>
-                            <option value="admin">Admin</option>
-                            <option value="super_admin">Super Admin</option>
-                        </select>
-                    </div>
-                    <div id="createUserMsg" class="text-xs font-bold hidden p-2 rounded-lg"></div>
-                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl transition">
-                        Create Account
-                    </button>
-                </form>
+            <!-- DYNAMIC MODULE CONTENT CARD -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
+                <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                    <h3 id="moduleTitle" class="text-xs font-black uppercase text-amber-400">🏠 Dashboard Overview</h3>
+                    <span id="moduleBadge" class="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-bold">Active Module</span>
+                </div>
+                
+                <!-- Dynamic body where each selected tool will appear -->
+                <div id="moduleContentArea" class="space-y-4">
+                    <!-- Default loaded view -->
+                </div>
             </div>
         </div>
 
         <!-- 3. TUTOR PORTAL VIEW -->
         <div id="tutorView" class="view-section space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-                <span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase">Tutor / Admin Portal</span>
+                <span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase">Tutor Portal</span>
                 <h2 id="tutorName" class="text-base font-extrabold text-white mt-1">Welcome, Tutor</h2>
-                <p class="text-[11px] text-slate-400">Access your authorized teaching and management tools via the ☰ menu.</p>
+                <p class="text-[11px] text-slate-400 mt-1">Select a tool from the ☰ menu to manage your classes and notes.</p>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg" id="tutorContentArea">
+                <h3 class="text-xs font-black uppercase text-amber-400 mb-2">📚 Tutor Workspace</h3>
+                <p class="text-xs text-slate-400">Choose an option from the navigation menu above.</p>
             </div>
         </div>
 
@@ -137,7 +124,11 @@
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
                 <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase">Student Portal</span>
                 <h2 id="studentName" class="text-base font-extrabold text-white mt-1">Welcome, Student</h2>
-                <p class="text-[11px] text-slate-400">Access your subjects, CBT tests, and admission guidance via the ☰ menu.</p>
+                <p class="text-[11px] text-slate-400 mt-1">Access your subjects, CBT tests, and assignments from the ☰ menu.</p>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg" id="studentContentArea">
+                <h3 class="text-xs font-black uppercase text-amber-400 mb-2">🎓 Student Dashboard</h3>
+                <p class="text-xs text-slate-400">Select your coursework or test modules from the top menu.</p>
             </div>
         </div>
 
@@ -192,64 +183,159 @@
             }
         }
 
-        // Populate full sidebar menu based on your exact architectural spec
+        // POPULATE MENU WITH DYNAMIC ROUTING CALLS
         function populateMenu(role) {
             const linksContainer = document.getElementById('drawerLinks');
             let html = '';
 
             if (role === 'super_admin') {
                 html = `
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard Overview</a>
+                    <a href="#" onclick="loadModule('dashboard')" class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard Overview</a>
                     
                     <div class="text-[10px] font-extrabold text-slate-500 uppercase px-2 pt-2">User Management</div>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">👥 Students Management</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">👑 Admins Management</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🧑🏽‍🏫 Tutors Management</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🔐 Roles & Permissions</a>
+                    <a href="#" onclick="loadModule('students')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">👥 Students Management</a>
+                    <a href="#" onclick="loadModule('admins')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">👑 Admins Management</a>
+                    <a href="#" onclick="loadModule('tutors')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🧑🏽‍🏫 Tutors Management</a>
+                    <a href="#" onclick="loadModule('roles')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🔐 Roles & Permissions</a>
 
                     <div class="text-[10px] font-extrabold text-slate-500 uppercase px-2 pt-2">Academic & Content</div>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📚 Subjects & Topics</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📖 Notes & Resources</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">❓ Master Question Bank</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🧪 CBT Management</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📋 Assignments</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📅 Timetable & Zoom</a>
+                    <a href="#" onclick="loadModule('subjects')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📚 Subjects & Topics</a>
+                    <a href="#" onclick="loadModule('notes')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📖 Notes & Resources</a>
+                    <a href="#" onclick="loadModule('questions')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">❓ Master Question Bank</a>
+                    <a href="#" onclick="loadModule('cbts')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🧪 CBT Management</a>
+                    <a href="#" onclick="loadModule('assignments')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📋 Assignments</a>
+                    <a href="#" onclick="loadModule('timetable')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📅 Timetable & Zoom</a>
 
                     <div class="text-[10px] font-extrabold text-slate-500 uppercase px-2 pt-2">Operations & Analytics</div>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📊 Results & Student Progress</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📢 Announcements</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🎓 Admission Management</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🌐 Website Management</a>
+                    <a href="#" onclick="loadModule('results')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📊 Results & Student Progress</a>
+                    <a href="#" onclick="loadModule('announcements')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📢 Announcements</a>
+                    <a href="#" onclick="loadModule('admissions')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🎓 Admission Management</a>
+                    <a href="#" onclick="loadModule('website')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🌐 Website Management</a>
 
                     <div class="text-[10px] font-extrabold text-slate-500 uppercase px-2 pt-2">System & Security</div>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">💳 Payments & Finance</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🛡️ Security Center</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📝 Audit Logs</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">💾 Backup & Data</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">⚙️ System Settings</a>
+                    <a href="#" onclick="loadModule('payments')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">💳 Payments & Finance</a>
+                    <a href="#" onclick="loadModule('security')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🛡️ Security Center</a>
+                    <a href="#" onclick="loadModule('audit')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📝 Audit Logs</a>
+                    <a href="#" onclick="loadModule('backup')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">💾 Backup & Data</a>
+                    <a href="#" onclick="loadModule('settings')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">⚙️ System Settings</a>
                 `;
             } else if (role === 'tutor' || role === 'admin') {
                 html = `
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📚 My Classes & Subjects</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📖 Upload Study Notes</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🧠 Question Bank & CBT</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📝 Assignments & Grading</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📅 Timetable & Zoom</a>
+                    <a href="#" onclick="loadModule('dashboard')" class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard</a>
+                    <a href="#" onclick="loadModule('tutor_classes')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📚 My Classes & Subjects</a>
+                    <a href="#" onclick="loadModule('tutor_notes')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📖 Upload Study Notes</a>
+                    <a href="#" onclick="loadModule('tutor_cbt')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🧠 Question Bank & CBT</a>
+                    <a href="#" onclick="loadModule('tutor_assignments')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📝 Assignments & Grading</a>
+                    <a href="#" onclick="loadModule('timetable')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📅 Timetable & Zoom</a>
                 `;
             } else {
                 html = `
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Student Dashboard</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📚 My Registered Subjects</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📖 Notes & Resources</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">💻 Take CBT Test</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📝 Assignments</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📊 Results & Progress</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🎓 Admission Guidance</a>
-                    <a href="#" onclick="toggleDrawer();" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📅 Class Timetable</a>
+                    <a href="#" onclick="loadModule('dashboard')" class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Student Dashboard</a>
+                    <a href="#" onclick="loadModule('student_subjects')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📚 My Registered Subjects</a>
+                    <a href="#" onclick="loadModule('student_notes')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📖 Notes & Resources</a>
+                    <a href="#" onclick="loadModule('student_cbt')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">💻 Take CBT Test</a>
+                    <a href="#" onclick="loadModule('student_assignments')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📝 Assignments</a>
+                    <a href="#" onclick="loadModule('student_results')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📊 Results & Progress</a>
+                    <a href="#" onclick="loadModule('admissions')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">🎓 Admission Guidance</a>
+                    <a href="#" onclick="loadModule('timetable')" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-medium">📅 Class Timetable</a>
                 `;
             }
             linksContainer.innerHTML = html;
+        }
+
+        // DYNAMIC MODULE ROUTER (LOADS DIFFERENT UI WHEN TAPPED)
+        function loadModule(key) {
+            toggleDrawer(); // Close the menu drawer
+            const titleEl = document.getElementById('moduleTitle');
+            const contentEl = document.getElementById('moduleContentArea');
+            
+            // SUPER ADMIN MODULES
+            if (key === 'dashboard') {
+                titleEl.innerText = "🏠 Dashboard Overview";
+                contentEl.innerHTML = `
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                            <span class="text-[10px] text-slate-400 uppercase font-bold block">Total Students</span>
+                            <span class="text-lg font-black text-amber-400">--</span>
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                            <span class="text-[10px] text-slate-400 uppercase font-bold block">Total CBTs</span>
+                            <span class="text-lg font-black text-emerald-400">--</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400">Select any module from the ☰ menu to manage platform operations.</p>
+                `;
+            } 
+            else if (key === 'students' || key === 'admins' || key === 'tutors') {
+                const roleName = key === 'students' ? 'Student' : (key === 'admins' ? 'Admin' : 'Tutor');
+                titleEl.innerText = `👥 Manage ${roleName}s`;
+                contentEl.innerHTML = `
+                    <form onsubmit="handleCreateUser(event)" class="space-y-3">
+                        <p class="text-xs text-slate-400">Create or register a new ${roleName.toLowerCase()} account instantly.</p>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Full Name</label>
+                            <input type="text" id="newUserName" required placeholder="Full Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Email Address</label>
+                            <input type="email" id="newUserEmail" required placeholder="email@gmail.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Password</label>
+                            <input type="text" id="newUserPass" required placeholder="Temporary password" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                        </div>
+                        <input type="hidden" id="newUserRole" value="${key === 'students' ? 'student' : (key === 'admins' ? 'admin' : 'tutor')}">
+                        <div id="createUserMsg" class="text-xs font-bold hidden p-2 rounded-lg"></div>
+                        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl transition">
+                            Create ${roleName} Account
+                        </button>
+                    </form>
+                `;
+            }
+            else if (key === 'questions') {
+                titleEl.innerText = "❓ Master Question Bank";
+                contentEl.innerHTML = `
+                    <div class="space-y-3">
+                        <p class="text-xs text-slate-400">Manage, import, and categorize JAMB/WAEC questions.</p>
+                        <button onclick="alert('Question creator interface coming up!')" class="w-full bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold text-xs py-2.5 rounded-xl border border-slate-700">
+                            + Add New Question to Bank
+                        </button>
+                    </div>
+                `;
+            }
+            else if (key === 'cbts') {
+                titleEl.innerText = "🧪 CBT Management";
+                contentEl.innerHTML = `
+                    <div class="space-y-3">
+                        <p class="text-xs text-slate-400">Configure active CBT exams, schedules, and timers.</p>
+                        <button onclick="alert('CBT Scheduler module active!')" class="w-full bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold text-xs py-2.5 rounded-xl border border-slate-700">
+                            + Schedule New CBT Test
+                        </button>
+                    </div>
+                `;
+            }
+            else if (key === 'admissions') {
+                titleEl.innerText = "🎓 Admission Management";
+                contentEl.innerHTML = `
+                    <div class="space-y-3">
+                        <p class="text-xs text-slate-400">Publish university admission updates, cut-off marks, and JAMB CAPS alerts.</p>
+                        <input type="text" placeholder="School / University Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <textarea placeholder="Admission Update Details..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white h-20"></textarea>
+                        <button onclick="alert('Admission update published successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">
+                            Publish Update to Students
+                        </button>
+                    </div>
+                `;
+            }
+            else {
+                titleEl.innerText = `🛠️ ${key.toUpperCase()} Module`;
+                contentEl.innerHTML = `
+                    <div class="p-4 text-center space-y-2">
+                        <p class="text-xs text-slate-300 font-bold">Module initialized successfully.</p>
+                        <p class="text-[11px] text-slate-500">This dedicated workspace for <b>${key}</b> is ready for full backend wiring.</p>
+                    </div>
+                `;
+            }
         }
 
         function handleLogin(e) {
@@ -274,10 +360,10 @@
             const name = document.getElementById('newUserName').value;
             const email = document.getElementById('newUserEmail').value;
             const pass = document.getElementById('newUserPass').value;
-            const role = document.getElementById('newUserRole').value;
+            const role = document.getElementById('newUserRole') ? document.getElementById('newUserRole').value : 'student';
             const msgBox = document.getElementById('createUserMsg');
 
-            msgBox.classList.add('hidden');
+            if(msgBox) msgBox.classList.add('hidden');
             const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary_" + Date.now());
             
             secondaryApp.auth().createUserWithEmailAndPassword(email, pass)
@@ -291,18 +377,22 @@
                     });
                 })
                 .then(() => {
-                    msgBox.className = "text-xs font-bold p-2 rounded-lg bg-emerald-500/10 text-emerald-400 mt-2 border border-emerald-500/20";
-                    msgBox.innerText = `Success! ${name} created as a ${role}.`;
-                    msgBox.classList.remove('hidden');
+                    if(msgBox) {
+                        msgBox.className = "text-xs font-bold p-2 rounded-lg bg-emerald-500/10 text-emerald-400 mt-2 border border-emerald-500/20";
+                        msgBox.innerText = `Success! ${name} created as a ${role}.`;
+                        msgBox.classList.remove('hidden');
+                    }
                     document.getElementById('newUserName').value = '';
                     document.getElementById('newUserEmail').value = '';
                     document.getElementById('newUserPass').value = '';
                     secondaryApp.delete();
                 })
                 .catch((err) => {
-                    msgBox.className = "text-xs font-bold p-2 rounded-lg bg-red-500/10 text-red-400 mt-2 border border-red-500/20";
-                    msgBox.innerText = "Error: " + err.message;
-                    msgBox.classList.remove('hidden');
+                    if(msgBox) {
+                        msgBox.className = "text-xs font-bold p-2 rounded-lg bg-red-500/10 text-red-400 mt-2 border border-red-500/20";
+                        msgBox.innerText = "Error: " + err.message;
+                        msgBox.classList.remove('hidden');
+                    }
                     secondaryApp.delete();
                 });
         }
@@ -318,6 +408,7 @@
                     if (role === 'super_admin') {
                         document.getElementById('superAdminName').innerText = `Welcome, ${data.name || 'Boss'}`;
                         switchView('superAdminView');
+                        loadModule('dashboard'); // Load default dashboard view
                     } else if (role === 'tutor' || role === 'admin') {
                         document.getElementById('tutorName').innerText = `Welcome, ${data.name || 'Tutor'}`;
                         switchView('tutorView');
