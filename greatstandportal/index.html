@@ -503,8 +503,16 @@
                             <button type="button" onclick="formatNoteText('table')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 px-2.5 py-1 rounded text-xs border border-slate-700">📊 Table</button>
                         </div>
 
-                        <textarea id="noteBody" placeholder="Rich note content / HTML formatting..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-36 font-mono"></textarea>
+                        <textarea id="noteBody" oninput="updateNotePreview()" placeholder="Rich note content / HTML formatting..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-32 font-mono"></textarea>
                         
+                        <!-- Live Visual Preview Box -->
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-amber-400 font-bold uppercase tracking-wider block">👁️ Live Visual Preview:</span>
+                            <div id="notePreviewBox" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 min-h-[100px] overflow-x-auto leading-relaxed">
+                                <span class="text-slate-600 italic">Your formatted table or content will render here live...</span>
+                            </div>
+                        </div>
+
                         <!-- Direct PDF / Document Upload -->
                         <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
                             <label class="block text-[11px] font-bold text-slate-300">📄 Direct PDF / Document Upload (For Download)</label>
@@ -580,6 +588,19 @@
 
             textarea.value = textarea.value.substring(0, start) + insertion + textarea.value.substring(end);
             textarea.focus();
+            updateNotePreview();
+        }
+
+        function updateNotePreview() {
+            let bodyText = document.getElementById('noteBody').value;
+            let previewBox = document.getElementById('notePreviewBox');
+            if (previewBox) {
+                if (bodyText.trim() === "") {
+                    previewBox.innerHTML = '<span class="text-slate-600 italic">Your formatted table or content will render here live...</span>';
+                } else {
+                    previewBox.innerHTML = bodyText;
+                }
+            }
         }
 
         function publishRichNote() {
