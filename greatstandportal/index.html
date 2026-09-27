@@ -174,7 +174,9 @@
             const userTitle = document.getElementById('drawerUserName');
             if (userTitle) userTitle.innerText = name || 'User';
 
-            if (role === 'super_admin') {
+            let lowerRole = String(role || '').toLowerCase();
+
+            if (lowerRole === 'super_admin') {
                 roleTitle.innerText = "👑 35 Master Control Functions";
                 linksContainer.innerHTML = `
                     <div class="text-[10px] text-amber-400 uppercase px-2 pt-1 font-black">1-6. Core Overview & User Control</div>
@@ -222,7 +224,7 @@
                     <a href="#" onclick="loadModule('contentApproval')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">34. Content Approval</a>
                     <a href="#" onclick="loadModule('platformControl')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">35. Platform Control</a>
                 `;
-            } else if (role === 'tutor') {
+            } else if (lowerRole === 'tutor') {
                 roleTitle.innerText = "🎓 Tutor Portal Menu";
                 linksContainer.innerHTML = `
                     <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Tutor Dashboard</a>
@@ -231,6 +233,14 @@
                     <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏆 CBT Results & Corrections</a>
                     <a href="#" onclick="loadModule('assignments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📝 Assignment Management</a>
                     <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Timetable Management</a>
+                `;
+            } else if (lowerRole === 'bursar') {
+                roleTitle.innerText = "💳 Bursary Portal Menu";
+                linksContainer.innerHTML = `
+                    <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Bursary Dashboard</a>
+                    <a href="#" onclick="loadModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💳 Payment Management & Receipts</a>
+                    <a href="#" onclick="loadModule('analytics')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 Reports & Revenue Analytics</a>
+                    <a href="#" onclick="loadModule('profile')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👤 Bursar Profile</a>
                 `;
             } else {
                 roleTitle.innerText = "STUDENT MENU";
@@ -1041,18 +1051,19 @@
 
                 let roleBadgeEl = document.getElementById('roleBadge');
                 let roleSubBadgeEl = document.getElementById('roleSubBadge');
+                let lowerRole = String(currentUserRole).toLowerCase();
 
-                if (currentUserRole === 'super_admin' || currentUserRole === 'bursar') {
+                if (lowerRole === 'super_admin' || lowerRole === 'bursar') {
                     if(roleBadgeEl) {
-                        roleBadgeEl.innerText = currentUserRole === 'super_admin' ? "Super Admin" : "Bursary Portal";
+                        roleBadgeEl.innerText = lowerRole === 'super_admin' ? "Super Admin" : "Bursary Portal";
                         roleBadgeEl.className = "bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider";
                     }
-                    if(roleSubBadgeEl) roleSubBadgeEl.innerText = "Master Control";
-                    document.getElementById('superAdminName').innerText = `Welcome, ${userData.name || 'Boss'}`;
+                    if(roleSubBadgeEl) roleSubBadgeEl.innerText = lowerRole === 'super_admin' ? "Master Control" : "Finance Office";
+                    document.getElementById('superAdminName').innerText = `Welcome, ${userData.name || (lowerRole === 'super_admin' ? 'Boss' : 'Bursar')}`;
                     switchView('superAdminView');
                     loadDashboardFeed('dashboardAnnouncementsFeed');
                     loadModule('dashboard');
-                } else if (currentUserRole === 'tutor') {
+                } else if (lowerRole === 'tutor') {
                     if(roleBadgeEl) {
                         roleBadgeEl.innerText = "Tutor Portal";
                         roleBadgeEl.className = "bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider";
