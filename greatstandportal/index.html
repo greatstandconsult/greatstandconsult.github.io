@@ -492,7 +492,7 @@
                         <input type="text" id="noteTitle" placeholder="Note Title (e.g. Advanced Calculus Chapter 1)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         <input type="text" id="noteSubject" placeholder="Subject / Course (e.g. Mathematics)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         
-                        <!-- Rich Text Toolbar -->
+                        <!-- Rich Text Toolbar with Prompting Table Generator -->
                         <div class="bg-slate-950 p-2 rounded-xl border border-slate-800 flex flex-wrap gap-1.5 items-center">
                             <span class="text-[10px] text-slate-400 font-bold mr-1">Toolbar:</span>
                             <button type="button" onclick="formatNoteText('b')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 px-2.5 py-1 rounded text-xs font-bold border border-slate-700"><b>B</b></button>
@@ -557,21 +557,25 @@
                 insertion = `<div class="aspect-video my-2"><iframe src="${url}" class="w-full h-full rounded-xl" allowfullscreen></iframe></div>`;
             }
             else if(type === 'table') {
-                insertion = `
-<table class="w-full border-collapse border border-slate-700 my-2 text-xs">
-    <thead>
-        <tr class="bg-slate-900 text-amber-400">
-            <th class="border border-slate-700 p-2">Header 1</th>
-            <th class="border border-slate-700 p-2">Header 2</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td class="border border-slate-700 p-2">Data 1</td>
-            <td class="border border-slate-700 p-2">Data 2</td>
-        </tr>
-    </tbody>
-</table>`;
+                let rowsInput = prompt("Enter number of rows:", "3");
+                let colsInput = prompt("Enter number of columns:", "3");
+                let rows = parseInt(rowsInput) || 3;
+                let cols = parseInt(colsInput) || 3;
+
+                let tableHtml = '\n<table class="w-full border-collapse border border-slate-700 my-3 text-xs">\n    <thead>\n        <tr class="bg-slate-900 text-amber-400">\n';
+                for(let c = 0; c < cols; c++) {
+                    tableHtml += `            <th class="border border-slate-700 p-2">Header ${c + 1}</th>\n`;
+                }
+                tableHtml += '        </tr>\n    </thead>\n    <tbody>\n';
+                for(let r = 0; r < rows - 1; r++) {
+                    tableHtml += '        <tr>\n';
+                    for(let c = 0; c < cols; c++) {
+                        tableHtml += `            <td class="border border-slate-700 p-2">Data ${r + 1}-${c + 1}</td>\n`;
+                    }
+                    tableHtml += '        </tr>\n';
+                }
+                tableHtml += '    </tbody>\n</table>\n';
+                insertion = tableHtml;
             }
 
             textarea.value = textarea.value.substring(0, start) + insertion + textarea.value.substring(end);
