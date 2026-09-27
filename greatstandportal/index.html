@@ -28,7 +28,7 @@
         <div id="headerAuthArea"></div>
     </header>
 
-    <!-- SLIDE-OUT MENU DRAWER (35 SUPER ADMIN FUNCTIONS) -->
+    <!-- SLIDE-OUT MENU DRAWER -->
     <div id="navDrawer" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex">
         <div class="bg-slate-900 w-80 h-full border-r border-slate-800 p-5 flex flex-col justify-between shadow-2xl overflow-y-auto">
             <div>
@@ -87,7 +87,7 @@
                 <span id="roleSubBadge" class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-xl font-bold">Master Control</span>
             </div>
 
-            <!-- ANNOUNCEMENTS & ADMISSIONS FEED -->
+            <!-- ANNOUNCEMENTS FEED -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg space-y-3">
                 <h3 class="text-xs font-black uppercase text-amber-400 flex items-center gap-1.5">📢 Latest Announcements & Admissions</h3>
                 <div id="dashboardAnnouncementsFeed" class="space-y-3 max-h-64 overflow-y-auto">
@@ -167,7 +167,7 @@
             }
         }
 
-        // ================= POPULATE ALL 35 SUPER ADMIN FUNCTIONS IN MENU =================
+        // ================= POPULATE MENU =================
         function populateMenu(role, name) {
             const linksContainer = document.getElementById('drawerLinks');
             const roleTitle = document.getElementById('drawerRoleTitle');
@@ -189,13 +189,13 @@
                     <a href="#" onclick="loadModule('programmes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">7. Programme Management</a>
                     <a href="#" onclick="loadModule('subjects')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">8. Subject Management & Assign</a>
                     <a href="#" onclick="loadModule('topics')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">9. Topic Management</a>
-                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">10. Notes Management & PDF</a>
+                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">10. Rich Notes Management & PDF</a>
                     <a href="#" onclick="loadModule('resources')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">11. Resource Management</a>
                     <a href="#" onclick="loadModule('questionBank')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">12. Question Bank Management</a>
 
                     <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">13-18. CBT, Assignments & Classes</div>
                     <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">13. CBT Exam Creator & Mgmt</a>
-                    <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">14. CBT Results</a>
+                    <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">14. CBT Results & Corrections</a>
                     <a href="#" onclick="loadModule('assignments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">15. Assignment Management</a>
                     <a href="#" onclick="loadModule('results')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">16. Results Management</a>
                     <a href="#" onclick="loadModule('progress')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">17. Student Progress</a>
@@ -227,9 +227,9 @@
                 linksContainer.innerHTML = `
                     <a href="#" onclick="loadStudentModule('dashboard')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">🏠 Dashboard</a>
                     <a href="#" onclick="loadStudentModule('courses')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">🎓 My Assigned Subjects</a>
-                    <a href="#" onclick="loadStudentModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">📖 My Notes & PDFs</a>
+                    <a href="#" onclick="loadStudentModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">📖 My Rich Notes & PDFs</a>
                     <a href="#" onclick="loadStudentModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">🧪 CBT / Tests</a>
-                    <a href="#" onclick="loadStudentModule('results')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">🏆 My Results</a>
+                    <a href="#" onclick="loadStudentModule('results')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">🏆 My Results & Corrections</a>
                     <a href="#" onclick="loadStudentModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">💳 My Payments</a>
                 `;
             }
@@ -278,7 +278,7 @@
                 contentEl.innerHTML = `<div class="space-y-2">${html}</div>`;
             }
             else if (key === 'notes') {
-                titleEl.innerText = "📖 My Notes & PDFs";
+                titleEl.innerText = "📖 My Rich Notes & PDFs";
                 contentEl.innerHTML = `<div id="studentNotesList" class="space-y-4 text-xs">Loading notes...</div>`;
                 let assigned = loggedInUserData.assignedSubjects || [];
                 db.collection('notes').orderBy('createdAt', 'desc').get().then(snap => {
@@ -299,19 +299,29 @@
                     let html = '';
                     snap.forEach(doc => {
                         let c = doc.data();
-                        html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${c.title}</span><span class="text-[10px] text-amber-400">⏱️ ${c.duration} Mins</span></div><button onclick="startLiveExam('${doc.id}')" class="bg-amber-500 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-lg">Start Exam 🚀</button></div>`;
+                        html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${c.title}</span><span class="text-[10px] text-amber-400">⏱️ ${c.duration} Mins | 📝 ${c.questions ? c.questions.length : 0} Questions</span></div><button onclick="startLiveExam('${doc.id}')" class="bg-amber-500 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-lg">Start Exam 🚀</button></div>`;
                     });
                     document.getElementById('studentAvailableCbts').innerHTML = html || '<p class="text-slate-500 text-xs">No active exams right now.</p>';
                 });
             }
             else if (key === 'results') {
-                titleEl.innerText = "🏆 My CBT Performance & Results";
-                contentEl.innerHTML = `<div id="studentResultsList" class="space-y-2 text-xs">Loading performance history...</div>`;
+                titleEl.innerText = "🏆 My CBT Performance & Corrections";
+                contentEl.innerHTML = `<div id="studentResultsList" class="space-y-3 text-xs">Loading performance history...</div>`;
                 db.collection('cbtResults').where('studentEmail', '==', auth.currentUser.email).get().then(snap => {
                     let html = '';
                     snap.forEach(doc => {
                         let r = doc.data();
-                        html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center"><div><span class="font-bold text-white block">CBT Session</span><span class="text-[10px] text-slate-400">Score: ${r.score}/${r.total}</span></div><span class="text-xs font-black ${r.percentage >= 50 ? 'text-emerald-400' : 'text-red-400'}">${r.percentage}%</span></div>`;
+                        let reviewBtnId = `rev_${doc.id}`;
+                        html += `
+                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <div><span class="font-bold text-white block">CBT Test Result</span><span class="text-[10px] text-slate-400">Score: ${r.score}/${r.total}</span></div>
+                                    <span class="text-xs font-black ${r.percentage >= 50 ? 'text-emerald-400' : 'text-red-400'}">${r.percentage}%</span>
+                                </div>
+                                <button onclick="toggleCorrectionReview('${doc.id}')" class="w-full bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold py-2 rounded-lg border border-slate-800 text-xs">📖 View Corrections & Answers</button>
+                                <div id="${reviewBtnId}" class="hidden space-y-2 pt-2 border-t border-slate-800"></div>
+                            </div>
+                        `;
                     });
                     document.getElementById('studentResultsList').innerHTML = html || '<p class="text-slate-500 text-xs">No exam results recorded yet.</p>';
                 });
@@ -330,6 +340,40 @@
             }
         }
 
+        // Toggle Correction Review
+        function toggleCorrectionReview(resultId) {
+            let container = document.getElementById(`rev_${resultId}`);
+            if(!container) return;
+            if(!container.classList.contains('hidden')) {
+                container.classList.add('hidden');
+                return;
+            }
+            container.classList.remove('hidden');
+            container.innerHTML = `<p class="text-[11px] text-slate-400">Loading corrections...</p>`;
+
+            db.collection('cbtResults').doc(resultId).get().then(doc => {
+                let r = doc.data();
+                let ansMap = r.answers || {};
+                db.collection('cbts').doc(r.cbtId).get().then(cbtDoc => {
+                    if(!cbtDoc.exists) { container.innerHTML = '<p class="text-red-400 text-[11px]">Original exam questions no longer available.</p>'; return; }
+                    let questions = cbtDoc.data().questions || [];
+                    let html = '';
+                    questions.forEach((q, idx) => {
+                        let studentAns = ansMap[idx] || 'Not Answered';
+                        let isCorrect = studentAns.toUpperCase() === q.correct.toUpperCase();
+                        html += `
+                            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-1">
+                                <p class="font-bold text-white text-[11px]">Q${idx+1}: ${q.q}</p>
+                                <p class="text-[10px]">Your Answer: <span class="font-bold ${isCorrect ? 'text-emerald-400' : 'text-red-400'}">${studentAns}</span></p>
+                                <p class="text-[10px] text-amber-400 font-bold">Correct Answer: ${q.correct}</p>
+                            </div>
+                        `;
+                    });
+                    container.innerHTML = html;
+                });
+            });
+        }
+
         // ================= SUPER ADMIN 35 MODULES ROUTER =================
         function loadModule(key) {
             toggleDrawer();
@@ -340,8 +384,8 @@
                 dashboard: "1. Dashboard Overview", userManagement: "2. User Management (Suspend/Delete)", permissions: "3. Roles & Permissions",
                 students: "4. Student Management", admins: "5. Admin Management", tutors: "6. Tutor Management",
                 programmes: "7. Programme Management (JAMB/WAEC)", subjects: "8. Subject Management & Assignment", topics: "9. Topic Management",
-                notes: "10. Notes & PDF Upload Management", resources: "11. Resource Management", questionBank: "12. Question Bank Management",
-                cbts: "13. CBT Exam Management", cbtResults: "14. CBT Student Results", assignments: "15. Assignment Management",
+                notes: "10. Rich Notes & PDF Upload Management", resources: "11. Resource Management", questionBank: "12. Question Bank Management",
+                cbts: "13. CBT Exam Creator & Timer Management", cbtResults: "14. CBT Student Results & Corrections", assignments: "15. Assignment Management",
                 results: "16. Results Management", progress: "17. Student Progress Tracker", classes: "18. Class Management",
                 timetable: "19. Timetable Management", announcements: "20. Announcement Management", notifications: "21. Notification Management",
                 admission: "22. Admission Management", website: "23. Website Management", files: "24. File Management",
@@ -353,12 +397,10 @@
 
             titleEl.innerText = titles[key] || "⚙️ Management Module";
 
-            // Module 1: Dashboard
             if (key === 'dashboard') {
                 contentEl.innerHTML = `<div class="grid grid-cols-2 gap-3 mb-4"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-[10px] text-slate-400 uppercase font-bold block">Total Users</span><span id="statUsers" class="text-xl font-black text-amber-400">Loading...</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-[10px] text-slate-400 uppercase font-bold block">System Status</span><span class="text-xs font-black text-emerald-400 mt-1 block">Secure & Active</span></div></div>`;
                 db.collection('users').get().then(snap => { document.getElementById('statUsers').innerText = snap.size; });
             }
-            // Module 2 & 4 & 5 & 6: Universal User Management with Suspend, Deactivate, Activate, Delete
             else if (key === 'userManagement' || key === 'students' || key === 'admins' || key === 'tutors') {
                 let targetRoleFilter = key === 'students' ? 'student' : (key === 'admins' ? 'super_admin' : (key === 'tutors' ? 'tutor' : 'all'));
                 contentEl.innerHTML = `
@@ -382,11 +424,9 @@
                 `;
                 fetchMasterUserList(targetRoleFilter);
             }
-            // Module 3: Roles & Permissions
             else if (key === 'permissions') {
-                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">👑 Super Admin</span><span class="text-[10px] text-slate-400">Full access across all 35 modules, ability to suspend and delete accounts.</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">🎓 Student</span><span class="text-[10px] text-slate-400">Access to assigned subjects, notes, CBT tests, results, and payment receipts.</span></div></div>`;
+                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">👑 Super Admin</span><span class="text-[10px] text-slate-400">Full access across all 35 modules, ability to suspend and delete accounts.</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">🎓 Student</span><span class="text-[10px] text-slate-400">Access to assigned subjects, notes, CBT tests, results with corrections, and receipts.</span></div></div>`;
             }
-            // Module 7: Programme Management
             else if (key === 'programmes') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Active Academic Programmes:</p><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1"><span class="font-bold text-amber-400 block">🏛️ WAEC Senior Secondary School</span><span class="text-[10px] text-slate-400">Full science, arts, commercial & general curriculum.</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1"><span class="font-bold text-amber-400 block">📚 JAMB UTME Preparatory</span><span class="text-[10px] text-slate-400">CBT practice and core test series.</span></div></div>`;
             }
@@ -454,11 +494,10 @@
                     document.getElementById('targetStudentSelect').innerHTML = opts;
                 });
             }
-            // Module 9: Topic Management
             else if (key === 'topics') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" id="topicName" placeholder="Topic Title (e.g. Differentiation)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><input type="text" id="topicSubject" placeholder="Subject" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Topic created and structured successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Create Topic</button></div>`;
             }
-            // Module 10: Notes Management & PDF (With full Rich Formatting Toolbar)
+            // Module 10: Notes Management & PDF (Fully Functional Rich Formatting Toolbar)
             else if (key === 'notes') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
@@ -466,7 +505,7 @@
                         <input type="text" id="noteTitle" placeholder="Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
                         <input type="text" id="noteSubject" placeholder="Subject (e.g. Mathematics, Physics)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
                         
-                        <!-- Working Rich Formatting Toolbar -->
+                        <!-- Rich Formatting Toolbar -->
                         <div>
                             <span class="text-[10px] text-slate-400 font-bold block mb-1">Formatting Toolbar:</span>
                             <div class="flex flex-wrap gap-1.5 bg-slate-950 p-2 rounded-xl border border-slate-800">
@@ -487,24 +526,22 @@
                 `;
                 fetchAdminNotes();
             }
-            // Module 11: Resource Management
             else if (key === 'resources') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Manage educational PDFs, past questions, and guides uploaded to the system.</p><div id="adminNotesList2" class="space-y-2">Loading resources...</div></div>`;
                 fetchAdminNotes();
             }
-            // Module 12: Question Bank Management
             else if (key === 'questionBank') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Centralized question repository across all subjects and CBT tests.</p><button onclick="loadModule('cbts')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Go to CBT Exam Creator</button></div>`;
             }
-            // Module 13: CBT Management
+            // Module 13: CBT Exam Creator with Timer & Bulk Parser
             else if (key === 'cbts') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
-                        <p class="text-amber-400 font-bold">🚀 Create CBT Exam</p>
-                        <input type="text" id="cbtTitle" placeholder="Exam Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <input type="number" id="cbtDuration" placeholder="Duration (Mins)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <textarea id="bulkQuestionsText" placeholder="1. Question...&#10;A) Opt A&#10;B) Opt B&#10;Answer: A" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white h-28"></textarea>
-                        <button onclick="parseAndSaveBulkCBT()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Publish Live Exam</button>
+                        <p class="text-amber-400 font-bold">🚀 Create CBT Live Exam (Copy & Paste Parser)</p>
+                        <input type="text" id="cbtTitle" placeholder="Exam Title (e.g. Physics Mock)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        <input type="number" id="cbtDuration" placeholder="Duration in Minutes (e.g. 30)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        <textarea id="bulkQuestionsText" placeholder="Paste questions here in format:&#10;1. What is the SI unit of force?&#10;A) Joule&#10;B) Newton&#10;C) Watt&#10;D) Pascal&#10;Answer: B" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white h-36 font-mono"></textarea>
+                        <button onclick="parseAndSaveBulkCBT()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Publish Live Exam 🚀</button>
                     </div>
                     <div id="adminCbtList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading exams...</div>
                 `;
@@ -522,27 +559,21 @@
                     document.getElementById('adminCbtResultsList').innerHTML = html || '<p class="text-slate-500 text-xs">No CBT results submitted yet.</p>';
                 });
             }
-            // Module 15: Assignment Management
             else if (key === 'assignments') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" placeholder="Assignment Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Assignment published successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Publish Assignment</button></div>`;
             }
-            // Module 16: Results Management
             else if (key === 'results') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Access and modify student termly and continuous assessment records.</p><button onclick="loadModule('cbtResults')" class="w-full bg-slate-800 text-amber-400 font-bold py-2 rounded-xl">View CBT Score Records</button></div>`;
             }
-            // Module 17: Student Progress
             else if (key === 'progress') {
                 contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">Platform Learning Analytics</span><span class="text-[10px] text-slate-400">Average student score across tests: 74%</span></div></div>`;
             }
-            // Module 18: Class Management
             else if (key === 'classes') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" placeholder="Class Name (e.g. SS3 Science)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Class created successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Create Class</button></div>`;
             }
-            // Module 19: Timetable Management
             else if (key === 'timetable') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Manage weekly class schedules, meeting links, and session timings.</p></div>`;
             }
-            // Module 20: Announcement Management
             else if (key === 'announcements') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
@@ -556,23 +587,18 @@
                 `;
                 fetchAdminAnnouncements();
             }
-            // Module 21: Notification Management
             else if (key === 'notifications') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Automated system notifications and broadcast logs.</p></div>`;
             }
-            // Module 22: Admission Management
             else if (key === 'admission') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Manage admission requirements, screening updates, and notices.</p><button onclick="loadModule('announcements')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Post Admission Update</button></div>`;
             }
-            // Module 23: Website Management
             else if (key === 'website') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Public portal branding and homepage notification settings.</p></div>`;
             }
-            // Module 24: File Management
             else if (key === 'files') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Track and manage uploaded documents and server assets.</p></div>`;
             }
-            // Module 25: Reports & Analytics
             else if (key === 'analytics') {
                 contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-[10px] text-slate-400 block font-bold">Total Platform Revenue</span><span id="analyticsRev" class="text-lg font-black text-emerald-400">Calculating...</span></div></div>`;
                 db.collection('payments').get().then(snap => {
@@ -580,7 +606,6 @@
                     document.getElementById('analyticsRev').innerText = `₦${total.toLocaleString()}`;
                 });
             }
-            // Module 26: Payment Management
             else if (key === 'payments') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
@@ -595,39 +620,30 @@
                 `;
                 fetchAdminPayments();
             }
-            // Module 27: Security Management
             else if (key === 'security') {
                 contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">🛡️ Security Firewalls Active</span><span class="text-[10px] text-slate-400">Authentication token verification and secure Firestore rules enforced.</span></div></div>`;
             }
-            // Module 28: Activity/Audit Logs
             else if (key === 'auditLogs') {
                 contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">📋 System Audit Log</span><span class="text-[10px] text-slate-400">All admin actions are monitored and logged securely.</span></div></div>`;
             }
-            // Module 29: Support Management
             else if (key === 'support') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">No pending student or tutor support requests.</p></div>`;
             }
-            // Module 30: System Settings
             else if (key === 'settings') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" value="Great Stand Educational Consult" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Settings saved!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Save Settings</button></div>`;
             }
-            // Module 31: Backup & Data Management
             else if (key === 'backup') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Database backup synchronization is fully active via Firebase cloud infrastructure.</p></div>`;
             }
-            // Module 32: Super Admin Profile
             else if (key === 'profile') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><label class="block font-bold text-slate-400 uppercase text-[10px]">Super Admin Email</label><input type="email" disabled value="${auth.currentUser ? auth.currentUser.email : ''}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-amber-400 font-bold"></div>`;
             }
-            // Module 33: System Monitoring
             else if (key === 'monitoring') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><div class="grid grid-cols-2 gap-3"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="text-[10px] text-slate-400 block font-bold">CPU Load</span><span class="text-base font-black text-emerald-400">12.8%</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="text-[10px] text-slate-400 block font-bold">Memory</span><span class="text-base font-black text-amber-400">294 MB</span></div></div></div>`;
             }
-            // Module 34: Content Approval
             else if (key === 'contentApproval') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">All published notes and exams are currently approved and live.</p></div>`;
             }
-            // Module 35: Platform Control
             else if (key === 'platformControl') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><div class="bg-red-500/10 border border-red-500/20 p-3 rounded-xl"><p class="font-bold text-red-400 mb-1">⚠️ Master Platform Override</p><p class="text-[11px] text-slate-300">You hold final administrative authority over all portal operations, user suspensions, and database configurations.</p></div></div>`;
             }
@@ -664,7 +680,7 @@
             textarea.focus();
         }
 
-        // ================= FULL USER MANAGEMENT (SUSPEND, ACTIVATE, DELETE) =================
+        // ================= USER MANAGEMENT =================
         function createNewAccountCustom() {
             let name = document.getElementById('mUserName').value;
             let email = document.getElementById('mUserEmail').value;
@@ -819,12 +835,12 @@
             });
         }
 
-        // ================= CBT ENGINE =================
+        // ================= CBT PARSER & LIVE EXAM ENGINE =================
         function parseAndSaveBulkCBT() {
             let title = document.getElementById('cbtTitle').value;
             let duration = parseInt(document.getElementById('cbtDuration').value);
             let rawText = document.getElementById('bulkQuestionsText').value;
-            if(!title || !duration || !rawText) { alert('Fill all fields.'); return; }
+            if(!title || !duration || !rawText) { alert('Fill all fields including title and duration.'); return; }
 
             let lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
             let questions = [], currentQ = null;
@@ -843,13 +859,17 @@
                         if(ltr === 'B') currentQ.b = optMatch[2];
                         if(ltr === 'C') currentQ.c = optMatch[2];
                         if(ltr === 'D') currentQ.d = optMatch[2];
-                    } else if(ansMatch) currentQ.correct = ansMatch[1].toUpperCase();
+                    } else if(ansMatch) {
+                        currentQ.correct = ansMatch[1].toUpperCase();
+                    }
                 }
             }
             if(currentQ) questions.push(currentQ);
 
+            if(questions.length === 0) { alert('Could not parse questions. Ensure correct format (e.g. 1. Question... A) ... B) ... Answer: B)'); return; }
+
             db.collection('cbts').add({ title, duration, questions, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
-                .then(() => { alert('Exam published!'); loadModule('cbts'); });
+                .then(() => { alert(`Successfully published exam with ${questions.length} questions and ${duration} mins timer!`); loadModule('cbts'); });
         }
 
         function fetchAdminCBTs() {
@@ -857,7 +877,7 @@
                 let html = '';
                 snap.forEach(doc => {
                     let c = doc.data();
-                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${c.title}</span><span class="text-[10px] text-amber-400">⏱️ ${c.duration} mins</span></div><button onclick="db.collection('cbts').doc('${doc.id}').delete(); loadModule('cbts');" class="text-red-400 text-[10px]">Delete</button></div>`;
+                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${c.title}</span><span class="text-[10px] text-amber-400">⏱️ ${c.duration} mins | 📝 ${c.questions ? c.questions.length : 0} Qs</span></div><button onclick="db.collection('cbts').doc('${doc.id}').delete(); loadModule('cbts');" class="text-red-400 text-[10px]">Delete</button></div>`;
                 });
                 document.getElementById('adminCbtList').innerHTML = html || '<p class="text-slate-500 text-xs">No exams.</p>';
             });
@@ -866,17 +886,35 @@
         function startLiveExam(cbtId) {
             db.collection('cbts').doc(cbtId).get().then(doc => {
                 if(!doc.exists) return;
-                let exam = doc.data(), questions = exam.questions || [], timeLeft = exam.duration * 60;
+                let exam = doc.data(), questions = exam.questions || [], timeLeft = (exam.duration || 10) * 60;
                 let contentEl = document.getElementById('studentModuleContent');
 
                 function renderScreen() {
                     let m = Math.floor(timeLeft / 60), s = timeLeft % 60, qHtml = '';
                     questions.forEach((q, idx) => {
-                        qHtml += `<div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2"><p class="text-xs font-bold text-white">Q${idx+1}: ${q.q}</p><div class="space-y-1 text-xs"><label class="block"><input type="radio" name="q_${idx}" value="A"> A) ${q.a}</label><label class="block"><input type="radio" name="q_${idx}" value="B"> B) ${q.b}</label>${q.c ? `<label class="block"><input type="radio" name="q_${idx}" value="C"> C) ${q.c}</label>` : ''}${q.d ? `<label class="block"><input type="radio" name="q_${idx}" value="D"> D) ${q.d}</label>` : ''}</div></div>`;
+                        qHtml += `
+                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
+                                <p class="text-xs font-bold text-white">Q${idx+1}: ${q.q}</p>
+                                <div class="space-y-1 text-xs">
+                                    <label class="block"><input type="radio" name="q_${idx}" value="A"> A) ${q.a}</label>
+                                    <label class="block"><input type="radio" name="q_${idx}" value="B"> B) ${q.b}</label>
+                                    ${q.c ? `<label class="block"><input type="radio" name="q_${idx}" value="C"> C) ${q.c}</label>` : ''}
+                                    ${q.d ? `<label class="block"><input type="radio" name="q_${idx}" value="D"> D) ${q.d}</label>` : ''}
+                                </div>
+                            </div>
+                        `;
                     });
-                    contentEl.innerHTML = `<div class="sticky top-12 bg-slate-900 border border-amber-500/30 p-3 rounded-xl flex justify-between items-center mb-3 text-xs"><span>${exam.title}</span><span class="text-red-400 font-bold">⏱️ <span id="timerDisplay">${m}:${s < 10 ? '0' : ''}${s}</span></span></div><div class="space-y-3 mb-4">${qHtml}</div><button onclick="submitExam('${cbtId}', ${JSON.stringify(questions).replace(/"/g, '&quot;')})" class="w-full bg-emerald-500 text-slate-950 font-bold text-xs py-3 rounded-xl">Submit Exam</button>`;
+                    contentEl.innerHTML = `
+                        <div class="sticky top-12 bg-slate-900 border border-amber-500/30 p-3 rounded-xl flex justify-between items-center mb-3 text-xs z-40 shadow-lg">
+                            <span class="font-bold text-white">${exam.title}</span>
+                            <span class="text-red-400 font-extrabold text-sm">⏱️ Time Left: <span id="timerDisplay">${m}:${s < 10 ? '0' : ''}${s}</span></span>
+                        </div>
+                        <div class="space-y-3 mb-4">${qHtml}</div>
+                        <button onclick="submitExam('${cbtId}', ${JSON.stringify(questions).replace(/"/g, '&quot;')})" class="w-full bg-emerald-500 text-slate-950 font-bold text-xs py-3 rounded-xl shadow-lg">Submit Exam 🚀</button>
+                    `;
                 }
                 renderScreen();
+
                 activeTimer = setInterval(() => {
                     timeLeft--;
                     let tEl = document.getElementById('timerDisplay');
@@ -884,7 +922,11 @@
                         let m = Math.floor(timeLeft / 60), s = timeLeft % 60;
                         tEl.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
                     }
-                    if(timeLeft <= 0) { clearInterval(activeTimer); submitExam(cbtId, questions); }
+                    if(timeLeft <= 0) {
+                        clearInterval(activeTimer);
+                        alert('Time is up! Your exam will now be automatically submitted.');
+                        submitExam(cbtId, questions);
+                    }
                 }, 1000);
             });
         }
@@ -892,16 +934,41 @@
         function submitExam(cbtId, questions) {
             if(activeTimer) clearInterval(activeTimer);
             let score = 0;
+            let answersGiven = {};
             questions.forEach((q, idx) => {
                 let sel = document.querySelector(`input[name="q_${idx}"]:checked`);
-                if(sel && sel.value.toUpperCase() === q.correct.toUpperCase()) score++;
+                let val = sel ? sel.value.toUpperCase() : '';
+                answersGiven[idx] = val;
+                if(val === q.correct.toUpperCase()) score++;
             });
             let percentage = Math.round((score / questions.length) * 100);
+
             db.collection('cbtResults').add({
-                studentEmail: auth.currentUser.email, cbtId, score, total: questions.length, percentage,
+                studentEmail: auth.currentUser.email, cbtId, score, total: questions.length, percentage, answers: answersGiven,
                 submittedAt: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
-                document.getElementById('studentModuleContent').innerHTML = `<div class="bg-slate-950 p-6 rounded-2xl text-center space-y-3"><h3 class="text-lg font-black text-amber-400">Exam Submitted!</h3><div class="text-3xl font-black text-emerald-400">${score}/${questions.length} (${percentage}%)</div><button onclick="loadStudentModule('cbts')" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl text-xs">Back to Exams</button></div>`;
+                let correctionHtml = '';
+                questions.forEach((q, idx) => {
+                    let studentAns = answersGiven[idx] || 'Not Answered';
+                    let isCorrect = studentAns.toUpperCase() === q.correct.toUpperCase();
+                    correctionHtml += `
+                        <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-left space-y-1">
+                            <p class="font-bold text-white text-xs">Q${idx+1}: ${q.q}</p>
+                            <p class="text-[11px]">Your Answer: <span class="font-bold ${isCorrect ? 'text-emerald-400' : 'text-red-400'}">${studentAns}</span></p>
+                            <p class="text-[11px] text-amber-400 font-bold">Correct Answer: ${q.correct}</p>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('studentModuleContent').innerHTML = `
+                    <div class="bg-slate-950 p-6 rounded-2xl text-center space-y-4">
+                        <h3 class="text-lg font-black text-amber-400">Exam Submitted Successfully!</h3>
+                        <div class="text-3xl font-black text-emerald-400">${score}/${questions.length} (${percentage}%)</div>
+                        <p class="text-xs text-slate-400">Review your corrections below:</p>
+                        <div class="space-y-2 max-h-72 overflow-y-auto text-left">${correctionHtml}</div>
+                        <button onclick="loadStudentModule('cbts')" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl text-xs">Back to Exams</button>
+                    </div>
+                `;
             });
         }
 
