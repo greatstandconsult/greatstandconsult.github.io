@@ -203,7 +203,7 @@
                     <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT & Exam Creator</a>
                     <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📈 CBT Student Results</a>
                     <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Timetable Management</a>
-                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Rich Notes Management</a>
+                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Rich Notes & PDF Upload</a>
 
                     <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Announcements & Admissions</div>
                     <a href="#" onclick="loadModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 Post Announcements / Admissions</a>
@@ -221,7 +221,7 @@
                     <a href="#" onclick="loadStudentModule('cbts')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🧪 Live CBT Exams</a>
                     <a href="#" onclick="loadStudentModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💳 My Payments & Receipts</a>
                     <a href="#" onclick="loadStudentModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Class Timetable</a>
-                    <a href="#" onclick="loadStudentModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Rich Notes & Resources</a>
+                    <a href="#" onclick="loadStudentModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Rich Notes & PDFs</a>
                 `;
             }
         }
@@ -248,7 +248,7 @@
                 cbts: "🧪 CBT & Exam Creator", 
                 cbtResults: "📈 CBT Student Results",
                 timetable: "📅 Timetable Management", 
-                notes: "📚 Rich Notes Management",
+                notes: "📚 Rich Notes & PDF Upload Management",
                 announcements: "📢 Announcements & Admission Updates"
             };
 
@@ -488,12 +488,31 @@
             else if (key === 'notes') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <p class="text-xs text-amber-400 font-bold">📚 Publish Rich Educational Note</p>
+                        <p class="text-xs text-amber-400 font-bold">📚 Publish Rich Note & PDF / File</p>
                         <input type="text" id="noteTitle" placeholder="Note Title (e.g. Advanced Calculus Chapter 1)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         <input type="text" id="noteSubject" placeholder="Subject / Course (e.g. Mathematics)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <textarea id="noteBody" placeholder="Rich note content / text..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-32"></textarea>
-                        <input type="url" id="noteResourceUrl" placeholder="Attachment / Resource URL (Optional PDF/Link)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="publishRichNote()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Publish Rich Note 📖</button>
+                        
+                        <!-- Rich Text Toolbar -->
+                        <div class="bg-slate-950 p-2 rounded-xl border border-slate-800 flex flex-wrap gap-1.5 items-center">
+                            <span class="text-[10px] text-slate-400 font-bold mr-1">Toolbar:</span>
+                            <button type="button" onclick="formatNoteText('b')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 px-2.5 py-1 rounded text-xs font-bold border border-slate-700"><b>B</b></button>
+                            <button type="button" onclick="formatNoteText('i')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 px-2.5 py-1 rounded text-xs italic border border-slate-700"><i>I</i></button>
+                            <button type="button" onclick="formatNoteText('u')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 px-2.5 py-1 rounded text-xs underline border border-slate-700"><u>U</u></button>
+                            <button type="button" onclick="formatNoteText('img')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 px-2.5 py-1 rounded text-xs border border-slate-700">🖼️ Image</button>
+                            <button type="button" onclick="formatNoteText('video')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 px-2.5 py-1 rounded text-xs border border-slate-700">🎥 Video</button>
+                            <button type="button" onclick="formatNoteText('table')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 px-2.5 py-1 rounded text-xs border border-slate-700">📊 Table</button>
+                        </div>
+
+                        <textarea id="noteBody" placeholder="Rich note content / HTML formatting..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-36 font-mono"></textarea>
+                        
+                        <!-- Direct PDF / Document Upload -->
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+                            <label class="block text-[11px] font-bold text-slate-300">📄 Direct PDF / Document Upload (For Download)</label>
+                            <input type="file" id="notePdfFile" accept=".pdf,.doc,.docx,.ppt,.xls,.zip" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-600 cursor-pointer">
+                            <input type="url" id="noteResourceUrl" placeholder="Or paste external PDF / Resource URL (Optional)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        </div>
+
+                        <button onclick="publishRichNote()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-3 rounded-xl">Publish Rich Note & PDF 📖</button>
                     </div>
                     <div class="space-y-2">
                         <p class="text-[11px] text-slate-400 font-bold">Published Rich Notes:</p>
@@ -516,24 +535,81 @@
             }
         }
 
-        // ================= RICH NOTES FUNCTIONS =================
+        // ================= RICH NOTES & TOOLBAR FUNCTIONS =================
+        function formatNoteText(type) {
+            let textarea = document.getElementById('noteBody');
+            let start = textarea.selectionStart;
+            let end = textarea.selectionEnd;
+            let selectedText = textarea.value.substring(start, end) || "Sample Text";
+            let insertion = "";
+
+            if(type === 'b') insertion = `<b>${selectedText}</b>`;
+            else if(type === 'i') insertion = `<i>${selectedText}</i>`;
+            else if(type === 'u') insertion = `<u>${selectedText}</u>`;
+            else if(type === 'img') {
+                let url = prompt("Enter Image URL:", "https://images.unsplash.com/photo-...");
+                if(!url) return;
+                insertion = `<img src="${url}" class="w-full h-auto rounded-xl my-2 border border-slate-800" alt="Note Image">`;
+            }
+            else if(type === 'video') {
+                let url = prompt("Enter Video URL (YouTube Embed or MP4):", "https://www.youtube.com/embed/...");
+                if(!url) return;
+                insertion = `<div class="aspect-video my-2"><iframe src="${url}" class="w-full h-full rounded-xl" allowfullscreen></iframe></div>`;
+            }
+            else if(type === 'table') {
+                insertion = `
+<table class="w-full border-collapse border border-slate-700 my-2 text-xs">
+    <thead>
+        <tr class="bg-slate-900 text-amber-400">
+            <th class="border border-slate-700 p-2">Header 1</th>
+            <th class="border border-slate-700 p-2">Header 2</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="border border-slate-700 p-2">Data 1</td>
+            <td class="border border-slate-700 p-2">Data 2</td>
+        </tr>
+    </tbody>
+</table>`;
+            }
+
+            textarea.value = textarea.value.substring(0, start) + insertion + textarea.value.substring(end);
+            textarea.focus();
+        }
+
         function publishRichNote() {
             let title = document.getElementById('noteTitle').value;
             let subject = document.getElementById('noteSubject').value;
             let body = document.getElementById('noteBody').value;
             let resourceUrl = document.getElementById('noteResourceUrl').value;
+            let fileInput = document.getElementById('notePdfFile');
 
             if(!title || !subject || !body) {
                 alert('Please fill in the title, subject, and body content.');
                 return;
             }
 
+            if(fileInput && fileInput.files && fileInput.files[0]) {
+                let file = fileInput.files[0];
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let base64File = e.target.result;
+                    saveNoteToFirestore(title, subject, body, base64File, file.name);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                saveNoteToFirestore(title, subject, body, resourceUrl, resourceUrl ? 'External Link' : '');
+            }
+        }
+
+        function saveNoteToFirestore(title, subject, body, resourceUrl, fileName) {
             db.collection('notes').add({
-                title, subject, body, resourceUrl,
+                title, subject, body, resourceUrl, fileName,
                 postedBy: auth.currentUser ? auth.currentUser.email : 'Admin',
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
-                alert('Rich note published successfully!');
+                alert('Rich note & document published successfully!');
                 loadModule('notes');
             }).catch(err => alert('Error: ' + err.message));
         }
@@ -551,7 +627,7 @@
                             </div>
                             <span class="font-bold text-white block text-xs">${n.title}</span>
                             <div class="text-[11px] text-slate-300 line-clamp-2">${n.body}</div>
-                            ${n.resourceUrl ? `<a href="${n.resourceUrl}" target="_blank" class="text-[10px] text-blue-400 underline block mt-1">🔗 View Attachment / Resource</a>` : ''}
+                            ${n.resourceUrl ? `<a href="${n.resourceUrl}" target="_blank" download="${n.fileName || 'document.pdf'}" class="text-[10px] text-blue-400 underline block mt-1">🔗 Attached File: ${n.fileName || 'Download PDF'}</a>` : ''}
                         </div>
                     `;
                 });
@@ -771,23 +847,30 @@
                 titleEl.innerText = "📅 Class Timetable";
                 fetchStudentList('timetable', contentEl, item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title}</span><span class="text-[10px] text-amber-400">${item.details}</span></div>`);
             } else if (key === 'notes') {
-                titleEl.innerText = "📚 Rich Notes & Resources";
-                contentEl.innerHTML = `<div id="studentNotesList" class="space-y-3">Loading rich notes...</div>`;
+                titleEl.innerText = "📚 Rich Notes & Downloadable PDFs";
+                contentEl.innerHTML = `<div id="studentNotesList" class="space-y-4">Loading rich notes...</div>`;
                 db.collection('notes').orderBy('createdAt', 'desc').get().then(snap => {
                     let html = '';
                     snap.forEach(doc => {
                         let n = doc.data();
                         html += `
-                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
                                 <div class="flex justify-between items-center">
                                     <span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold">${n.subject}</span>
                                     <span class="text-[9px] text-slate-500">By ${n.postedBy || 'Tutor'}</span>
                                 </div>
                                 <h4 class="font-extrabold text-white text-sm">${n.title}</h4>
-                                <div class="text-xs text-slate-200 bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-2 leading-relaxed whitespace-pre-line">
+                                <div class="text-xs text-slate-200 bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-2 leading-relaxed overflow-x-auto">
                                     ${n.body}
                                 </div>
-                                ${n.resourceUrl ? `<a href="${n.resourceUrl}" target="_blank" class="inline-block bg-blue-500/20 border border-blue-500/30 text-blue-300 text-xs font-bold px-3 py-1.5 rounded-xl mt-1">📥 Download / Open Resource File</a>` : ''}
+                                ${n.resourceUrl ? `
+                                    <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+                                        <span class="text-[10px] text-slate-400">📄 Attached File: ${n.fileName || 'Download PDF'}</span>
+                                        <a href="${n.resourceUrl}" target="_blank" download="${n.fileName || 'document.pdf'}" class="bg-blue-500/20 border border-blue-500/30 text-blue-300 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 hover:bg-blue-500/30 transition">
+                                            📥 Download PDF / File
+                                        </a>
+                                    </div>
+                                ` : ''}
                             </div>
                         `;
                     });
