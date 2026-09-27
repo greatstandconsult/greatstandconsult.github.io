@@ -54,21 +54,18 @@
 
         <!-- 2. SUPER ADMIN DASHBOARD VIEW -->
         <div id="adminDashboardView" class="view-section space-y-6">
-            <!-- Header Card -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">Super Admin Panel</span>
                     <h2 id="adminWelcome" class="text-xl font-bold text-white mt-2">Welcome, Admin</h2>
-                    <p class="text-xs text-slate-400">Manage platform users, assign roles, and monitor system controls.</p>
+                    <p class="text-xs text-slate-400">Manage platform users and monitor system controls.</p>
                 </div>
                 <button onclick="handleLogout()" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 font-bold text-xs px-4 py-2 rounded-xl transition">
                     Logout
                 </button>
             </div>
 
-            <!-- Quick Management Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- User Roles Card -->
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
                     <h3 class="text-sm font-bold text-white mb-2">👥 User & Role Control</h3>
                     <p class="text-xs text-slate-400 mb-4">View registered users and update their access levels.</p>
@@ -76,8 +73,6 @@
                         Load Registered Users
                     </button>
                 </div>
-
-                <!-- CBT Question Bank Card -->
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
                     <h3 class="text-sm font-bold text-white mb-2">📝 CBT Question Bank</h3>
                     <p class="text-xs text-slate-400 mb-4">Upload and organize mock exam questions for students.</p>
@@ -87,12 +82,9 @@
                 </div>
             </div>
 
-            <!-- Dynamic Users List Container -->
             <div id="usersListContainer" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 hidden">
                 <h3 class="text-sm font-bold text-white mb-4">Platform User Database</h3>
-                <div id="usersTableContent" class="space-y-3 text-xs text-slate-300">
-                    <!-- Populated dynamically via JS -->
-                </div>
+                <div id="usersTableContent" class="space-y-3 text-xs text-slate-300"></div>
             </div>
         </div>
 
@@ -105,17 +97,15 @@
 
     <!-- SCRIPT LOGIC -->
     <script>
-        // Switch between UI views smoothly
         function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
         }
 
-        // Firebase Configuration (Embedded Automatically)
+        // Your Exact Firebase Config Keys
         const firebaseConfig = {
             apiKey: "AIzaSyBHnSGUALrnN-j8inER4MNcveQwJmyhLP4",
             authDomain: "great-stand-portal.firebaseapp.com",
-            databaseURL: "https://great-stand-portal-default-rtdb.firebaseio.com",
             projectId: "great-stand-portal",
             storageBucket: "great-stand-portal.firebasestorage.app",
             messagingSenderId: "747296287485",
@@ -127,7 +117,6 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Login Handler with Role Checking
         function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
@@ -147,10 +136,10 @@
                                 document.getElementById('adminWelcome').innerText = `Welcome, ${userData.name || user.email}`;
                                 switchView('adminDashboardView');
                             } else {
-                                alert("Logged in successfully! Student/Tutor view loading next.");
+                                alert("Logged in successfully, but you are not set as a Super Admin in Firestore.");
                             }
                         } else {
-                            alert("Welcome! No admin profile found, defaulting to member view.");
+                            alert("User profile record not found in database.");
                         }
                     });
                 })
@@ -160,7 +149,6 @@
                 });
         }
 
-        // Load users for Super Admin
         function loadUserList() {
             const container = document.getElementById('usersListContainer');
             const content = document.getElementById('usersTableContent');
