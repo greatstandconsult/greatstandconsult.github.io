@@ -236,7 +236,6 @@
 
             titleEl.innerText = titles[key] || "⚙️ Management Module";
 
-            // Specific interactive UI views for key modules
             if (key === 'dashboard') {
                 contentEl.innerHTML = `
                     <div class="grid grid-cols-2 gap-3 mb-4">
@@ -281,6 +280,39 @@
                     });
                     document.getElementById('userListContainer').innerHTML = listHtml || '<p class="text-slate-500 text-xs">No records found.</p>';
                 });
+            }
+            else if (key === 'contentApproval') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 border-b border-slate-800 pb-4">
+                        <p class="text-xs text-slate-400">Review and approve uploaded learning notes or questions.</p>
+                        <input type="text" id="appTitle" placeholder="Content Title / Item Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <select id="appStatus" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                            <option value="Approved">Approve Content</option>
+                            <option value="Pending Review">Keep Pending</option>
+                            <option value="Rejected">Reject Content</option>
+                        </select>
+                        <button onclick="saveGenericItem('contentApproval', {title: document.getElementById('appTitle').value, status: document.getElementById('appStatus').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Save Approval Status</button>
+                    </div>
+                    <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Content Log:</p><div id="appList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
+                `;
+                fetchList('contentApproval', 'appList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between"><span>${item.title}</span><span class="text-amber-400 font-bold">${item.status}</span></div>`);
+            }
+            else if (key === 'roles') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 border-b border-slate-800 pb-4">
+                        <p class="text-xs text-slate-400">Assign permission tiers or access rights to accounts.</p>
+                        <input type="email" id="roleEmail" placeholder="User Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <select id="roleLevel" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                            <option value="Super Admin">Super Admin Access</option>
+                            <option value="Admin">Standard Admin Access</option>
+                            <option value="Tutor">Tutor Access</option>
+                            <option value="Student">Student Access</option>
+                        </select>
+                        <button onclick="saveGenericItem('roles', {email: document.getElementById('roleEmail').value, role: document.getElementById('roleLevel').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Update Role Permission</button>
+                    </div>
+                    <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Configured Roles Log:</p><div id="roleList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
+                `;
+                fetchList('roles', 'roleList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between"><span>${item.email}</span><span class="text-amber-400 font-bold">${item.role}</span></div>`);
             }
             else if (key === 'programmes') {
                 contentEl.innerHTML = `
@@ -328,48 +360,7 @@
                 `;
                 fetchList('payments', 'payList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between"><span>${item.student}</span><span class="text-emerald-400 font-bold">₦${item.amount}</span></div>`);
             }
-            else if (key === 'questions') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3">
-                        <p class="text-xs text-slate-400">Add questions into the database bank.</p>
-                        <textarea id="qText" placeholder="Type question statement..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white h-20"></textarea>
-                        <input type="text" id="qSubject" placeholder="Subject (e.g., Mathematics)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="saveGenericItem('questions', {text: document.getElementById('qText').value, subject: document.getElementById('qSubject').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Save Question</button>
-                    </div>
-                `;
-            }
-            else if (key === 'cbts') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3">
-                        <p class="text-xs text-slate-400">Configure online CBT exams and durations.</p>
-                        <input type="text" id="cbtTitle" placeholder="Test Title (e.g., Mock JAMB)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="number" id="cbtDuration" placeholder="Duration in Minutes" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="saveGenericItem('cbts', {title: document.getElementById('cbtTitle').value, duration: document.getElementById('cbtDuration').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Publish CBT Test</button>
-                    </div>
-                `;
-            }
-            else if (key === 'timetable') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3">
-                        <p class="text-xs text-slate-400">Post live class schedules and Zoom links.</p>
-                        <input type="text" id="classTitle" placeholder="Subject Title (e.g., Physics Revision)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="text" id="zoomLink" placeholder="Zoom Meeting URL" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="saveGenericItem('timetable', {title: document.getElementById('classTitle').value, link: document.getElementById('zoomLink').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Publish Class Schedule</button>
-                    </div>
-                `;
-            }
-            else if (key === 'notes' || key === 'resources') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3">
-                        <p class="text-xs text-slate-400">Upload study notes and downloadable resource links.</p>
-                        <input type="text" id="resTitle" placeholder="Document Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="text" id="resUrl" placeholder="File URL / PDF Link" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="saveGenericItem('${key}', {title: document.getElementById('resTitle').value, url: document.getElementById('resUrl').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Upload Resource</button>
-                    </div>
-                `;
-            }
             else {
-                // Universal dynamic generator for any remaining module
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4">
                         <p class="text-xs text-slate-400">Manage records and configure entries for this module.</p>
