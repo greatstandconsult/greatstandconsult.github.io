@@ -77,7 +77,7 @@
             </div>
         </div>
 
-        <!-- DASHBOARD VIEW (Admin / Super Admin / Bursar / Tutor) -->
+        <!-- DASHBOARD VIEW -->
         <div id="superAdminView" class="view-section space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex justify-between items-center">
                 <div>
@@ -203,7 +203,7 @@
                     <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT & Exam Creator</a>
                     <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📈 CBT Student Results</a>
                     <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Timetable Management</a>
-                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes Management</a>
+                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Rich Notes Management</a>
 
                     <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Announcements & Admissions</div>
                     <a href="#" onclick="loadModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 Post Announcements / Admissions</a>
@@ -221,7 +221,7 @@
                     <a href="#" onclick="loadStudentModule('cbts')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🧪 Live CBT Exams</a>
                     <a href="#" onclick="loadStudentModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💳 My Payments & Receipts</a>
                     <a href="#" onclick="loadStudentModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Class Timetable</a>
-                    <a href="#" onclick="loadStudentModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes & Resources</a>
+                    <a href="#" onclick="loadStudentModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Rich Notes & Resources</a>
                 `;
             }
         }
@@ -248,7 +248,7 @@
                 cbts: "🧪 CBT & Exam Creator", 
                 cbtResults: "📈 CBT Student Results",
                 timetable: "📅 Timetable Management", 
-                notes: "📚 Notes Management",
+                notes: "📚 Rich Notes Management",
                 announcements: "📢 Announcements & Admission Updates"
             };
 
@@ -387,7 +387,7 @@
                                 <span>💾 Trigger Database Backup Snapshot</span>
                                 <span class="text-emerald-400 text-[10px]">Backup</span>
                             </button>
-                            <button onclick="alert('Feature flag toggled: Online payment getaway interface active.')" class="w-full bg-slate-950 hover:bg-slate-900 border border-slate-800 p-3 rounded-xl text-left font-bold text-white flex justify-between items-center">
+                            <button onclick="alert('Feature flag toggled: Online payment gateway interface active.')" class="w-full bg-slate-950 hover:bg-slate-900 border border-slate-800 p-3 rounded-xl text-left font-bold text-white flex justify-between items-center">
                                 <span>⚡ Toggle Feature Flags (Payment Gateway)</span>
                                 <span class="text-blue-400 text-[10px]">Configure</span>
                             </button>
@@ -485,6 +485,23 @@
                 `;
                 fetchCBTResults();
             }
+            else if (key === 'notes') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 border-b border-slate-800 pb-4">
+                        <p class="text-xs text-amber-400 font-bold">📚 Publish Rich Educational Note</p>
+                        <input type="text" id="noteTitle" placeholder="Note Title (e.g. Advanced Calculus Chapter 1)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="text" id="noteSubject" placeholder="Subject / Course (e.g. Mathematics)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <textarea id="noteBody" placeholder="Rich note content / text..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white h-32"></textarea>
+                        <input type="url" id="noteResourceUrl" placeholder="Attachment / Resource URL (Optional PDF/Link)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="publishRichNote()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Publish Rich Note 📖</button>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-[11px] text-slate-400 font-bold">Published Rich Notes:</p>
+                        <div id="adminNotesList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading notes...</div>
+                    </div>
+                `;
+                fetchAdminNotes();
+            }
             else {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4">
@@ -496,6 +513,55 @@
                     <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Saved Entries:</p><div id="genList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
                 `;
                 fetchList(key, 'genList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title || 'Record'}</span><span class="text-[10px] text-slate-400">${item.details || ''}</span></div>`);
+            }
+        }
+
+        // ================= RICH NOTES FUNCTIONS =================
+        function publishRichNote() {
+            let title = document.getElementById('noteTitle').value;
+            let subject = document.getElementById('noteSubject').value;
+            let body = document.getElementById('noteBody').value;
+            let resourceUrl = document.getElementById('noteResourceUrl').value;
+
+            if(!title || !subject || !body) {
+                alert('Please fill in the title, subject, and body content.');
+                return;
+            }
+
+            db.collection('notes').add({
+                title, subject, body, resourceUrl,
+                postedBy: auth.currentUser ? auth.currentUser.email : 'Admin',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert('Rich note published successfully!');
+                loadModule('notes');
+            }).catch(err => alert('Error: ' + err.message));
+        }
+
+        function fetchAdminNotes() {
+            db.collection('notes').orderBy('createdAt', 'desc').get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let n = doc.data();
+                    html += `
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1.5">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold">${n.subject}</span>
+                                <button onclick="deleteNote('${doc.id}')" class="text-red-400 text-[10px] bg-red-500/10 px-2 py-0.5 rounded">Delete</button>
+                            </div>
+                            <span class="font-bold text-white block text-xs">${n.title}</span>
+                            <div class="text-[11px] text-slate-300 line-clamp-2">${n.body}</div>
+                            ${n.resourceUrl ? `<a href="${n.resourceUrl}" target="_blank" class="text-[10px] text-blue-400 underline block mt-1">🔗 View Attachment / Resource</a>` : ''}
+                        </div>
+                    `;
+                });
+                document.getElementById('adminNotesList').innerHTML = html || '<p class="text-slate-500 text-xs">No rich notes published yet.</p>';
+            });
+        }
+
+        function deleteNote(id) {
+            if(confirm('Delete this rich note?')) {
+                db.collection('notes').doc(id).delete().then(() => loadModule('notes'));
             }
         }
 
@@ -705,8 +771,28 @@
                 titleEl.innerText = "📅 Class Timetable";
                 fetchStudentList('timetable', contentEl, item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title}</span><span class="text-[10px] text-amber-400">${item.details}</span></div>`);
             } else if (key === 'notes') {
-                titleEl.innerText = "📚 Notes & Resources";
-                fetchStudentList('notes', contentEl, item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title}</span><span class="text-[10px] text-slate-400">${item.details}</span></div>`);
+                titleEl.innerText = "📚 Rich Notes & Resources";
+                contentEl.innerHTML = `<div id="studentNotesList" class="space-y-3">Loading rich notes...</div>`;
+                db.collection('notes').orderBy('createdAt', 'desc').get().then(snap => {
+                    let html = '';
+                    snap.forEach(doc => {
+                        let n = doc.data();
+                        html += `
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold">${n.subject}</span>
+                                    <span class="text-[9px] text-slate-500">By ${n.postedBy || 'Tutor'}</span>
+                                </div>
+                                <h4 class="font-extrabold text-white text-sm">${n.title}</h4>
+                                <div class="text-xs text-slate-200 bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-2 leading-relaxed whitespace-pre-line">
+                                    ${n.body}
+                                </div>
+                                ${n.resourceUrl ? `<a href="${n.resourceUrl}" target="_blank" class="inline-block bg-blue-500/20 border border-blue-500/30 text-blue-300 text-xs font-bold px-3 py-1.5 rounded-xl mt-1">📥 Download / Open Resource File</a>` : ''}
+                            </div>
+                        `;
+                    });
+                    contentEl.innerHTML = html || '<p class="text-slate-500 text-xs">No rich notes available yet.</p>';
+                });
             }
         }
 
