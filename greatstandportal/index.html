@@ -276,7 +276,6 @@
                     let html = '';
                     snap.forEach(doc => {
                         let n = doc.data();
-                        // Filter: show only if student has this subject assigned, or if no subjects are assigned yet show all as fallback
                         if(assigned.length === 0 || assigned.includes(n.subject)) {
                             html += `
                                 <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
@@ -412,18 +411,60 @@
             else if (key === 'assignSubjects') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 text-xs">
-                        <p class="text-slate-400">Select a student and assign or update their authorized subjects:</p>
+                        <p class="text-slate-400">Select a student and check all authorized subjects across Science, Arts, and Commercial (WAEC/JAMB):</p>
                         <select id="targetStudentSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
                             <option value="">Loading students...</option>
                         </select>
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
-                            <p class="font-bold text-amber-400">Check subjects to assign:</p>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="Mathematics"> Mathematics</label>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="Physics"> Physics</label>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="Chemistry"> Chemistry</label>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="English Language"> English Language</label>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="Biology"> Biology</label>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="Economics"> Economics</label>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-3 max-h-72 overflow-y-auto">
+                            
+                            <!-- GENERAL -->
+                            <div>
+                                <p class="font-black text-amber-400 border-b border-slate-800 pb-1 mb-1">📘 General / Compulsory</p>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="English Language"> English Language</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Mathematics"> Mathematics</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Civic Education"> Civic Education</label>
+                            </div>
+
+                            <!-- SCIENCES -->
+                            <div>
+                                <p class="font-black text-amber-400 border-b border-slate-800 pb-1 mb-1">🔬 Sciences</p>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Physics"> Physics</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Chemistry"> Chemistry</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Biology"> Biology</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Agricultural Science"> Agricultural Science</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Further Mathematics"> Further Mathematics</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Computer Studies / ICT"> Computer Studies / ICT</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Technical Drawing"> Technical Drawing</label>
+                            </div>
+
+                            <!-- ARTS / HUMANITIES -->
+                            <div>
+                                <p class="font-black text-amber-400 border-b border-slate-800 pb-1 mb-1">🎨 Arts & Humanities</p>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Literature-in-English"> Literature-in-English</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Government"> Government</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Christian Religious Studies (CRS)"> Christian Religious Studies (CRS)</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Islamic Studies (IRS)"> Islamic Studies (IRS)</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="History"> History</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Geography"> Geography</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="French"> French</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Hausa"> Hausa</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Igbo"> Igbo</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Yoruba"> Yoruba</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Fine Arts"> Fine Arts / Visual Art</label>
+                            </div>
+
+                            <!-- COMMERCIAL -->
+                            <div>
+                                <p class="font-black text-amber-400 border-b border-slate-800 pb-1 mb-1">💼 Commercial & Business</p>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Economics"> Economics</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Financial Accounting"> Financial Accounting</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Commerce"> Commerce</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Marketing"> Marketing</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Insurance"> Insurance</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Office Practice"> Office Practice</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Data Processing"> Data Processing</label>
+                            </div>
+
                         </div>
                         <button onclick="saveStudentSubjects()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Save Assigned Subjects 🚀</button>
                     </div>
@@ -435,6 +476,22 @@
                         options += `<option value="${doc.id}">${u.name || 'Student'} (${u.email})</option>`;
                     });
                     document.getElementById('targetStudentSelect').innerHTML = options;
+                });
+            }
+            else if (key === 'cbtResults') {
+                contentEl.innerHTML = `<div id="adminCbtResultsList" class="space-y-2 max-h-64 overflow-y-auto text-xs">Loading student results...</div>`;
+                db.collection('cbtResults').orderBy('submittedAt', 'desc').get().then(snap => {
+                    let html = '';
+                    snap.forEach(doc => {
+                        let r = doc.data();
+                        html += `
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
+                                <div><span class="font-bold text-white block">${r.studentEmail}</span><span class="text-[10px] text-slate-400">Score: ${r.score}/${r.total}</span></div>
+                                <span class="text-xs font-black ${r.percentage >= 50 ? 'text-emerald-400' : 'text-red-400'}">${r.percentage}%</span>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('adminCbtResultsList').innerHTML = html || '<p class="text-slate-500 text-xs">No CBT results submitted yet.</p>';
                 });
             }
             else if (key === 'students' || key === 'admins' || key === 'bursars' || key === 'tutors') {
