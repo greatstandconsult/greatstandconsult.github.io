@@ -234,7 +234,7 @@
             const titles = {
                 dashboard: "🏠 Dashboard Overview", platformControl: "⚡ Platform Control", systemMonitoring: "📊 System Monitoring",
                 adminProfile: "👤 Super Admin Profile", users: "🛠️ User Management", roles: "🔒 Roles & Permissions",
-                students: "👥 Student Management", admins: "👑 Admin Management", tutors: "🧑🏽‍🏫 Tutor Management",
+                students: "👥 Student Account Management", admins: "👑 Admin Account Management", tutors: "🧑🏽‍🏫 Tutor Management",
                 programmes: "🎓 Programme Management", subjects: "📖 Subject Management", topics: "📑 Topic Management",
                 classes: "🏫 Class Management", timetable: "📅 Timetable Management", notes: "📚 Notes Management",
                 resources: "📂 Resource Management", questions: "❓ Question Bank Management", contentApproval: "✅ Content Approval",
@@ -266,8 +266,26 @@
                     document.getElementById('statUsers').innerText = snap.size;
                 });
             } 
+            else if (key === 'students' || key === 'admins') {
+                let roleTarget = key === 'students' ? 'student' : 'super_admin';
+                let roleLabel = key === 'students' ? 'Student' : 'Admin';
+                
+                contentEl.innerHTML = `
+                    <div class="space-y-3 border-b border-slate-800 pb-4">
+                        <p class="text-xs text-amber-400 font-bold">Create New ${roleLabel} Account</p>
+                        <input type="text" id="newUserName" placeholder="Full Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="email" id="newUserEmail" placeholder="Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="password" id="newUserPassword" placeholder="Password (min 6 characters)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="createNewUserAccount('${roleTarget}')" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Create ${roleLabel} Account 🚀</button>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-[11px] text-slate-400 font-bold">Existing ${roleLabel}s:</p>
+                        <div id="userManagementList" class="space-y-2 max-h-52 overflow-y-auto text-xs">Loading...</div>
+                    </div>
+                `;
+                fetchUserManagementList(roleTarget);
+            }
             else if (key === 'cbts') {
-                // Bulk CBT Creator
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4">
                         <p class="text-xs text-amber-400 font-bold">🚀 Bulk CBT Exam Import (Paste 50+ Questions)</p>
@@ -309,6 +327,86 @@
                     <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Saved Entries:</p><div id="genList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
                 `;
                 fetchList(key, 'genList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title || 'Record'}</span><span class="text-[10px] text-slate-400">${item.details || ''}</span></div>`);
+            }
+        }
+
+        // ================= USER MANAGEMENT FUNCTIONS (CREATE, SUSPEND, DELETE) =================
+        function createNewUserAccount(role) {
+            let name = document.getElementById('newUserName').value;
+            let email = document.getElementById('newUserEmail').value;
+            let password = document.getElementById('newUserPassword').value;
+
+            if(!name || !email || !password) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            // Create secondary Firebase app instance so current Admin doesn't get logged out
+            let secondaryAppName = 'SecondaryApp_' + Date.now();
+            let secondaryApp = firebase.initializeApp(firebaseConfig, secondaryAppName);
+            let secondaryAuth = secondaryApp.auth();
+
+            secondaryAuth.createUserWithEmailAndPassword(email, password)
+                .then(cred => {
+                    let uid = cred.user.uid;
+                    return db.collection('users').doc(uid).set({
+                        name, email, role, isActive: true,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                })
+                .then(() => {
+                    alert(`${role === 'student' ? 'Student' : 'Admin'} account created successfully!`);
+                    secondaryAuth.signOut();
+                    secondaryApp.delete();
+                    loadModule(role === 'student' ? 'students' : 'admins');
+                })
+                .catch(err => {
+                    alert('Error: ' + err.message);
+                    secondaryAuth.signOut();
+                    secondaryApp.delete();
+                });
+        }
+
+        function fetchUserManagementList(role) {
+            db.collection('users').where('role', '==', role).get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let u = doc.data();
+                    let uid = doc.id;
+                    let isActive = u.isActive !== false; // default to true if undefined
+                    html += `
+                        <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div>
+                                <span class="font-bold text-white block">${u.name || 'No Name'} (${u.email})</span>
+                                <span class="text-[10px] ${isActive ? 'text-emerald-400' : 'text-red-400'} font-bold">Status: ${isActive ? 'Active' : 'Suspended'}</span>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <button onclick="toggleUserStatus('${uid}', ${isActive}, '${role}')" class="text-[10px] px-2 py-1 rounded font-bold ${isActive ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}">${isActive ? 'Suspend' : 'Activate'}</button>
+                                <button onclick="deleteUserAccount('${uid}', '${role}')" class="text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-1 rounded font-bold">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('userManagementList').innerHTML = html || `<p class="text-slate-500 text-xs">No ${role} accounts found.</p>`;
+            });
+        }
+
+        function toggleUserStatus(uid, currentStatus, role) {
+            let newStatus = !currentStatus;
+            db.collection('users').doc(uid).update({ isActive: newStatus })
+                .then(() => {
+                    fetchUserManagementList(role);
+                })
+                .catch(err => alert('Error: ' + err.message));
+        }
+
+        function deleteUserAccount(uid, role) {
+            if(confirm('Are you sure you want to delete this user record?')) {
+                db.collection('users').doc(uid).delete()
+                    .then(() => {
+                        fetchUserManagementList(role);
+                    })
+                    .catch(err => alert('Error: ' + err.message));
             }
         }
 
@@ -578,7 +676,19 @@
 
         function routeUser(uid) {
             db.collection('users').doc(uid).get().then(doc => {
-                let userData = doc.exists ? doc.data() : { role: 'student', name: 'User' };
+                let userData = doc.exists ? doc.data() : { role: 'student', name: 'User', isActive: true };
+                
+                // Check if account is suspended
+                if(userData.isActive === false) {
+                    auth.signOut().then(() => {
+                        let errBox = document.getElementById('loginError');
+                        errBox.innerText = "Your account has been suspended. Please contact the administrator.";
+                        errBox.classList.remove('hidden');
+                        switchView('loginView');
+                    });
+                    return;
+                }
+
                 let role = userData.role || 'student';
                 populateMenu(role);
                 if (role === 'super_admin') {
