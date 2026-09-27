@@ -34,8 +34,8 @@
             <div>
                 <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
                     <div>
-                        <span class="text-[10px] font-black text-amber-400 uppercase tracking-wider block">Master Control</span>
-                        <span class="text-xs font-extrabold text-white">Navigation Menu</span>
+                        <span class="text-[10px] font-black text-amber-400 uppercase tracking-wider block">👑 Super Admin</span>
+                        <span class="text-xs font-extrabold text-white">Master Control Menu</span>
                     </div>
                     <button onclick="toggleDrawer()" class="text-slate-400 hover:text-white font-bold text-xs bg-slate-800 px-2.5 py-1 rounded-lg">✕ Close</button>
                 </div>
@@ -84,13 +84,13 @@
                     <span class="bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider">Super Admin</span>
                     <h2 id="superAdminName" class="text-sm font-extrabold text-white mt-1">Welcome, Boss</h2>
                 </div>
-                <span class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-xl font-bold">Live System</span>
+                <span class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-xl font-bold">Full Control</span>
             </div>
 
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
                 <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                     <h3 id="moduleTitle" class="text-xs font-black uppercase text-amber-400">🏠 Dashboard Overview</h3>
-                    <span id="moduleBadge" class="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-bold">Active</span>
+                    <span id="moduleBadge" class="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-bold">Active Module</span>
                 </div>
                 <div id="moduleContentArea" class="space-y-4"></div>
             </div>
@@ -154,17 +154,56 @@
             const linksContainer = document.getElementById('drawerLinks');
             if (role === 'super_admin') {
                 linksContainer.innerHTML = `
-                    <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard Overview</a>
-                    <div class="text-[10px] text-slate-500 uppercase px-2 pt-2 font-black">User Management</div>
-                    <a href="#" onclick="loadModule('students')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👥 Students Management</a>
-                    <a href="#" onclick="loadModule('admins')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👑 Admins Management</a>
-                    <a href="#" onclick="loadModule('tutors')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧑🏽‍🏫 Tutors Management</a>
-                    <div class="text-[10px] text-slate-500 uppercase px-2 pt-2 font-black">Academics & CBT</div>
-                    <a href="#" onclick="loadModule('questions')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">❓ Master Question Bank</a>
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-1 font-black">Overview & Control</div>
+                    <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard</a>
+                    <a href="#" onclick="loadModule('platformControl')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">⚙️ Platform Control</a>
+                    <a href="#" onclick="loadModule('systemMonitoring')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 System Monitoring</a>
+                    <a href="#" onclick="loadModule('adminProfile')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👤 Super Admin Profile</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">User & Access Management</div>
+                    <a href="#" onclick="loadModule('userManagement')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🛠️ User Management</a>
+                    <a href="#" onclick="loadModule('roles')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🔒 Roles & Permissions</a>
+                    <a href="#" onclick="loadModule('students')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👥 Student Management</a>
+                    <a href="#" onclick="loadModule('admins')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👑 Admin Management</a>
+                    <a href="#" onclick="loadModule('tutors')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧑🏽‍🏫 Tutor Management</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Academics & Curriculum</div>
+                    <a href="#" onclick="loadModule('programmes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎓 Programme Management</a>
+                    <a href="#" onclick="loadModule('subjects')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📖 Subject Management</a>
+                    <a href="#" onclick="loadModule('topics')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📑 Topic Management</a>
+                    <a href="#" onclick="loadModule('classes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏫 Class Management</a>
+                    <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Timetable Management</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Content & Learning Materials</div>
+                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes Management</a>
+                    <a href="#" onclick="loadModule('resources')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📂 Resource Management</a>
+                    <a href="#" onclick="loadModule('questions')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">❓ Question Bank Management</a>
+                    <a href="#" onclick="loadModule('contentApproval')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">✅ Content Approval</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">CBT & Assessments</div>
                     <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT Management</a>
-                    <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Timetable & Zoom</a>
-                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes & Resources</a>
-                    <a href="#" onclick="loadModule('audit')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📝 Audit Logs</a>
+                    <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📈 CBT Results</a>
+                    <a href="#" onclick="loadModule('assignments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📝 Assignment Management</a>
+                    <a href="#" onclick="loadModule('studentProgress')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 Student Progress</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Results & Reports</div>
+                    <a href="#" onclick="loadModule('results')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏆 Results Management</a>
+                    <a href="#" onclick="loadModule('reports')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 Reports & Analytics</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Communication & Support</div>
+                    <a href="#" onclick="loadModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 Announcement Management</a>
+                    <a href="#" onclick="loadModule('notifications')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🔔 Notification Management</a>
+                    <a href="#" onclick="loadModule('support')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎧 Support Management</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">System Administration</div>
+                    <a href="#" onclick="loadModule('admissions')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏛️ Admission Management</a>
+                    <a href="#" onclick="loadModule('website')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🌐 Website Management</a>
+                    <a href="#" onclick="loadModule('files')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🗂️ File Management</a>
+                    <a href="#" onclick="loadModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💳 Payment Management</a>
+                    <a href="#" onclick="loadModule('security')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🛡️ Security Management</a>
+                    <a href="#" onclick="loadModule('audit')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📜 Activity / Audit Logs</a>
+                    <a href="#" onclick="loadModule('settings')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">⚙️ System Settings</a>
+                    <a href="#" onclick="loadModule('backup')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💾 Backup & Data Management</a>
                 `;
             } else {
                 linksContainer.innerHTML = `
@@ -180,19 +219,61 @@
             let titleEl = document.getElementById('moduleTitle');
             let contentEl = document.getElementById('moduleContentArea');
 
+            // Map all 35 modules to clean interactive views
+            const moduleDescriptions = {
+                dashboard: { title: "🏠 Dashboard Overview", desc: "Platform overview including students, tutors, admins, CBTs, results, activities, and alerts." },
+                platformControl: { title: "⚡ Platform Control", desc: "Final authority and high-level control over the entire portal architecture." },
+                systemMonitoring: { title: "📊 System Monitoring", desc: "Platform health, uptime, and real-time activity metrics." },
+                adminProfile: { title: "👤 Super Admin Profile", desc: "Manage your super admin credentials, password, and active security sessions." },
+                userManagement: { title: "🛠️ User Management", desc: "Create, edit, activate, deactivate, suspend, or remove student, Admin, and Tutor accounts." },
+                roles: { title: "🔒 Roles & Permissions", desc: "Control what each user tier is allowed to see and execute across the system." },
+                students: { title: "👥 Student Management", desc: "Student profiles, programmes, subjects, registration details, and academic records." },
+                admins: { title: "👑 Admin Management", desc: "Create and manage Admin accounts and control sectional access." },
+                tutors: { title: "🧑🏽‍🏫 Tutor Management", desc: "Tutor account provisioning, subject assignments, and activity monitoring." },
+                programmes: { title: "🎓 Programme Management", desc: "Manage programmes like JAMB, WAEC, NECO, GCE, and other consultancy tracks." },
+                subjects: { title: "📖 Subject Management", desc: "Create, organize, and map subjects to programmes and classes." },
+                topics: { title: "📑 Topic Management", desc: "Structure topics under subjects for organized learning materials and questions." },
+                classes: { title: "🏫 Class Management", desc: "Organize physical or virtual classes linking students, tutors, and subjects." },
+                timetable: { title: "📅 Timetable Management", desc: "Schedule class times, dates, tutors, and live Zoom meeting links." },
+                notes: { title: "📚 Notes Management", desc: "Create, upload, edit, approve, and publish lesson notes." },
+                resources: { title: "📂 Resource Management", desc: "Manage PDFs, past questions, study guides, worksheets, and media." },
+                questions: { title: "❓ Question Bank Management", desc: "Add, categorize, and verify JAMB/WAEC questions, options, and explanations." },
+                contentApproval: { title: "✅ Content Approval", desc: "Review and greenlight notes, questions, and announcements before public release." },
+                cbts: { title: "🧪 CBT Management", desc: "Configure online mock exams, timers, passing criteria, and availability." },
+                cbtResults: { title: "📈 CBT Results", desc: "Review student test scores, attempt histories, and performance analytics." },
+                assignments: { title: "📝 Assignment Management", desc: "Issue tasks, set submission deadlines, and grade student submissions." },
+                studentProgress: { title: "📊 Student Progress Tracking", desc: "Analyze individual student mastery, completed modules, and weak areas." },
+                results: { title: "🏆 Results Management", desc: "Access official student scores and authorize result modifications." },
+                reports: { title: "📊 Reports & Analytics", desc: "Comprehensive reports on student performance, registrations, and system usage." },
+                announcements: { title: "📢 Announcement Management", desc: "Publish urgent broadcast announcements to all users or selected groups." },
+                notifications: { title: "🔔 Notification Management", desc: "Dispatch automated alerts regarding classes, CBTs, and deadlines." },
+                support: { title: "🎧 Support Management", desc: "Resolve complaints, technical tickets, and support requests from users." },
+                admissions: { title: "🏛️ Admission Management", desc: "Manage institution admission guidelines, cutoffs, deadlines, and updates." },
+                website: { title: "🌐 Website Management", desc: "Control public landing pages, services, blogs, and public announcements." },
+                files: { title: "🗂️ File Management", desc: "Track media storage, document directories, and file references." },
+                payments: { title: "💳 Payment Management", desc: "Track transactions, paid subscriptions, and financial logs." },
+                security: { title: "🛡️ Security Management", desc: "Configure security barriers, authentication rules, and access restrictions." },
+                audit: { title: "📜 Activity / Audit Logs", desc: "Immutable trail of administrative actions tracking who modified what and when." },
+                settings: { title: "⚙️ System Settings", desc: "Configure institution naming, contact info, branding logos, and core preferences." },
+                backup: { title: "💾 Backup & Data Management", desc: "Database exports, automated backup schedules, and point-in-time recovery." }
+            };
+
+            let currentModule = moduleDescriptions[key] || { title: "⚙️ Management Module", desc: "Active administrative module." };
+            titleEl.innerText = currentModule.title;
+
             if (key === 'dashboard') {
-                titleEl.innerText = "🏠 Dashboard Overview";
                 contentEl.innerHTML = `
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-3 mb-4">
                         <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
                             <span class="text-[10px] text-slate-400 uppercase font-bold block">Total Users</span>
                             <span id="statUsers" class="text-xl font-black text-amber-400">Loading...</span>
                         </div>
                         <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
                             <span class="text-[10px] text-slate-400 uppercase font-bold block">System Status</span>
-                            <span class="text-xs font-black text-emerald-400 mt-1 block">Online</span>
+                            <span class="text-xs font-black text-emerald-400 mt-1 block">Online & Secure</span>
                         </div>
                     </div>
+                    <p class="text-xs text-slate-400">${currentModule.desc}</p>
                 `;
                 db.collection('users').get().then(snap => {
                     document.getElementById('statUsers').innerText = snap.size;
@@ -200,7 +281,6 @@
             } 
             else if (key === 'students' || key === 'admins' || key === 'tutors') {
                 let roleType = key === 'students' ? 'student' : (key === 'admins' ? 'admin' : 'tutor');
-                titleEl.innerText = `👥 Manage ${key.toUpperCase()}`;
                 contentEl.innerHTML = `
                     <form onsubmit="handleCreateUser(event, '${roleType}')" class="space-y-3 border-b border-slate-800 pb-4">
                         <p class="text-[11px] text-slate-400 font-bold">Register New ${roleType}</p>
@@ -210,8 +290,8 @@
                         <button type="submit" class="w-full bg-amber-500 text-slate-950 font-extrabold text-xs py-2 rounded-xl">Create Account</button>
                     </form>
                     <div class="space-y-2">
-                        <p class="text-[11px] text-slate-400 font-bold">Registered List:</p>
-                        <div id="userListContainer" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading list...</div>
+                        <p class="text-[11px] text-slate-400 font-bold">Existing ${key}:</p>
+                        <div id="userListContainer" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading records...</div>
                     </div>
                 `;
                 db.collection('users').where('role', '==', roleType).get().then(snap => {
@@ -227,95 +307,65 @@
                 });
             }
             else if (key === 'questions') {
-                titleEl.innerText = "❓ Master Question Bank";
                 contentEl.innerHTML = `
                     <div class="space-y-3">
-                        <p class="text-xs text-slate-400">Add questions into the database.</p>
-                        <textarea id="qText" placeholder="Type question here..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white h-20"></textarea>
+                        <p class="text-xs text-slate-400">${currentModule.desc}</p>
+                        <textarea id="qText" placeholder="Type question statement..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white h-20"></textarea>
                         <input type="text" id="qSubject" placeholder="Subject (e.g., Mathematics)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="saveQuestionItem()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Save Question</button>
+                        <button onclick="saveGenericItem('questions', {text: document.getElementById('qText').value, subject: document.getElementById('qSubject').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Save Question</button>
                     </div>
                 `;
             }
             else if (key === 'cbts') {
-                titleEl.innerText = "🧪 CBT Test Management";
                 contentEl.innerHTML = `
                     <div class="space-y-3">
-                        <p class="text-xs text-slate-400">Configure online CBT exams and durations.</p>
+                        <p class="text-xs text-slate-400">${currentModule.desc}</p>
                         <input type="text" id="cbtTitle" placeholder="Test Title (e.g., Mock JAMB)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         <input type="number" id="cbtDuration" placeholder="Duration in Minutes" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="saveCbtItem()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Publish CBT Test</button>
+                        <button onclick="saveGenericItem('cbts', {title: document.getElementById('cbtTitle').value, duration: document.getElementById('cbtDuration').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Publish CBT Test</button>
                     </div>
                 `;
             }
             else if (key === 'timetable') {
-                titleEl.innerText = "📅 Timetable & Zoom Classes";
                 contentEl.innerHTML = `
                     <div class="space-y-3">
-                        <p class="text-xs text-slate-400">Post live class schedules and Zoom links.</p>
+                        <p class="text-xs text-slate-400">${currentModule.desc}</p>
                         <input type="text" id="classTitle" placeholder="Subject Title (e.g., Physics Revision)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         <input type="text" id="zoomLink" placeholder="Zoom Meeting URL" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="saveTimetableItem()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Publish Class Schedule</button>
+                        <button onclick="saveGenericItem('timetable', {title: document.getElementById('classTitle').value, link: document.getElementById('zoomLink').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Publish Class Schedule</button>
                     </div>
                 `;
             }
-            else if (key === 'notes') {
-                titleEl.innerText = "📚 Notes & Resources";
+            else if (key === 'notes' || key === 'resources') {
                 contentEl.innerHTML = `
                     <div class="space-y-3">
-                        <p class="text-xs text-slate-400">Upload study materials and resource links.</p>
-                        <input type="text" id="noteTitle" placeholder="Document Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="text" id="noteUrl" placeholder="Download / File Link URL" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="saveNoteItem()" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Upload Resource</button>
+                        <p class="text-xs text-slate-400">${currentModule.desc}</p>
+                        <input type="text" id="resTitle" placeholder="Document / Material Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="text" id="resUrl" placeholder="File URL or Link" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="saveGenericItem('${key}', {title: document.getElementById('resTitle').value, url: document.getElementById('resUrl').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Upload & Publish</button>
                     </div>
                 `;
             }
-            else if (key === 'audit') {
-                titleEl.innerText = "📝 System Audit Logs";
+            else {
                 contentEl.innerHTML = `
-                    <div class="space-y-2">
-                        <p class="text-xs text-slate-400">Administrative actions and security records.</p>
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-300">
-                            <span class="text-amber-400 font-bold block">[System Log]</span> Database connection active and secure.
+                    <div class="space-y-3">
+                        <p class="text-xs text-slate-400">${currentModule.desc}</p>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                            <span class="text-amber-400 font-bold text-xs block mb-1">Module Operational</span>
+                            <span class="text-[11px] text-slate-400">Database feeds and management tools are active for this sector.</span>
                         </div>
                     </div>
                 `;
             }
         }
 
-        function saveQuestionItem() {
-            let text = document.getElementById('qText').value;
-            let subject = document.getElementById('qSubject').value;
-            if(!text || !subject) { alert('Please fill all fields'); return; }
-            db.collection('questions').add({ text, subject, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
-              .then(() => { alert('Question successfully saved to database!'); document.getElementById('qText').value = ''; document.getElementById('qSubject').value = ''; })
-              .catch(err => alert('Error: ' + err.message));
-        }
-
-        function saveCbtItem() {
-            let title = document.getElementById('cbtTitle').value;
-            let duration = document.getElementById('cbtDuration').value;
-            if(!title || !duration) { alert('Please fill all fields'); return; }
-            db.collection('cbts').add({ title, duration, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
-              .then(() => { alert('CBT test successfully published!'); document.getElementById('cbtTitle').value = ''; document.getElementById('cbtDuration').value = ''; })
-              .catch(err => alert('Error: ' + err.message));
-        }
-
-        function saveTimetableItem() {
-            let title = document.getElementById('classTitle').value;
-            let link = document.getElementById('zoomLink').value;
-            if(!title || !link) { alert('Please fill all fields'); return; }
-            db.collection('timetable').add({ title, link, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
-              .then(() => { alert('Class schedule published successfully!'); document.getElementById('classTitle').value = ''; document.getElementById('zoomLink').value = ''; })
-              .catch(err => alert('Error: ' + err.message));
-        }
-
-        function saveNoteItem() {
-            let title = document.getElementById('noteTitle').value;
-            let url = document.getElementById('noteUrl').value;
-            if(!title || !url) { alert('Please fill all fields'); return; }
-            db.collection('notes').add({ title, url, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
-              .then(() => { alert('Resource uploaded successfully!'); document.getElementById('noteTitle').value = ''; document.getElementById('noteUrl').value = ''; })
+        function saveGenericItem(collectionName, data) {
+            for(let k in data) {
+                if(!data[k]) { alert('Please fill all fields'); return; }
+            }
+            data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            db.collection(collectionName).add(data)
+              .then(() => { alert('Saved successfully!'); loadModule(collectionName); })
               .catch(err => alert('Error: ' + err.message));
         }
 
