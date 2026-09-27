@@ -14,22 +14,29 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between">
 
-    <!-- TOP NAVIGATION -->
-    <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto flex justify-between items-center">
-            <div>
-                <span class="font-black text-sm tracking-wider text-white">GREAT STAND</span>
-                <span class="block text-[10px] text-amber-400 font-bold uppercase">Educational Consult</span>
+    <!-- TOP HEADER -->
+    <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 sticky top-0 z-50 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center font-black text-amber-400 text-sm">
+                G
             </div>
-            <div id="navAuthArea"></div>
+            <div>
+                <span class="font-black text-xs tracking-wider text-white block">GREAT STAND</span>
+                <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Educational Consult</span>
+            </div>
+        </div>
+        <div id="headerLogoutBtn" class="hidden">
+            <button onclick="handleLogout()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl transition">
+                Logout
+            </button>
         </div>
     </header>
 
     <!-- MAIN APP CONTAINER -->
-    <main class="max-w-5xl mx-auto w-full px-4 py-6 flex-grow">
+    <main class="max-w-md mx-auto w-full px-4 py-6 flex-grow">
 
         <!-- 1. LOGIN VIEW -->
-        <div id="loginView" class="view-section active max-w-sm mx-auto mt-10">
+        <div id="loginView" class="view-section active mt-10">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
                 <div class="text-center mb-6">
                     <h1 class="text-xl font-extrabold text-amber-400">Portal Login</h1>
@@ -39,11 +46,11 @@
                 <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
                     <div>
                         <label class="block text-[11px] font-bold text-slate-300 mb-1 uppercase">Email Address</label>
-                        <input type="email" id="loginEmail" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                        <input type="email" id="loginEmail" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-slate-300 mb-1 uppercase">Password</label>
-                        <input type="password" id="loginPassword" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                        <input type="password" id="loginPassword" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
                     </div>
                     <div id="loginError" class="text-red-400 text-xs hidden bg-red-500/10 p-2 rounded-lg border border-red-500/20"></div>
                     <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-3 rounded-xl transition">
@@ -53,85 +60,140 @@
             </div>
         </div>
 
-        <!-- 2. SUPER ADMIN PORTAL VIEW (V3) -->
-        <div id="superAdminView" class="view-section space-y-6">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex justify-between items-center">
-                <div>
-                    <span class="bg-red-500/20 text-red-400 border border-red-500/30 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Super Admin Portal (v3)</span>
-                    <h2 id="superAdminName" class="text-lg font-bold text-white mt-1">Welcome, Boss</h2>
-                    <p class="text-xs text-slate-400">Master control center active.</p>
-                </div>
-                <button onclick="handleLogout()" class="bg-slate-800 hover:bg-slate-700 text-red-400 text-xs font-bold px-3 py-2 rounded-xl transition">Logout</button>
-            </div>
+        <!-- 2. SUPER ADMIN CONTROL PANEL (MATCHING DESIGN) -->
+        <div id="superAdminView" class="view-section space-y-4">
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- User Creator Card -->
-                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
+            <!-- User Profile Header Card -->
+            <div class="bg-white text-slate-900 rounded-2xl p-5 shadow-lg border border-slate-200">
+                <span class="bg-amber-500 text-slate-950 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider">Superadmin</span>
+                <h2 id="superAdminName" class="text-lg font-extrabold text-slate-900 mt-1">Joseph Olawale</h2>
+                <p class="text-[11px] text-slate-500">Full portal control and system management active.</p>
+            </div>
+
+            <!-- Menu Control Card List -->
+            <div class="bg-white text-slate-900 rounded-2xl p-3 shadow-lg border border-slate-200 space-y-1">
+                <div class="px-3 py-2 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Superadmin Control</div>
+                
+                <!-- Dashboard Active Pill -->
+                <a href="#" onclick="switchAdminTab('dashboard')" class="flex items-center gap-3 p-3 rounded-xl bg-blue-600 text-white transition shadow-sm">
+                    <span class="text-lg">🏠</span>
                     <div>
-                        <h3 class="text-sm font-bold text-white">👥 Create User Account</h3>
-                        <p class="text-xs text-slate-400 mt-1">Register new students or tutors securely.</p>
+                        <div class="text-xs font-bold">Dashboard</div>
+                        <div class="text-[10px] text-blue-100">Full portal overview</div>
                     </div>
+                </a>
 
-                    <form onsubmit="handleCreateUser(event)" class="space-y-3">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Full Name</label>
-                            <input type="text" id="newUserName" required placeholder="e.g. John Doe" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Email Address</label>
-                            <input type="email" id="newUserEmail" required placeholder="user@gmail.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Temporary Password</label>
-                            <input type="text" id="newUserPass" required placeholder="Min 6 characters" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Assign Role</label>
-                            <select id="newUserRole" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
-                                <option value="student">Student</option>
-                                <option value="tutor">Tutor / Instructor</option>
-                                <option value="super_admin">Super Admin</option>
-                            </select>
-                        </div>
-                        <div id="createUserMsg" class="text-xs font-bold hidden p-2 rounded-lg"></div>
-                        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl transition">
-                            Create Account
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Secondary Actions Card -->
-                <div class="space-y-4">
-                    <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
-                        <h3 class="text-sm font-bold text-white mb-2">📝 CBT Question Bank</h3>
-                        <p class="text-xs text-slate-400 mb-4">Upload and manage mock exam questions.</p>
-                        <button onclick="alert('CBT Question Manager ready for setup.')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-bold px-4 py-2.5 rounded-xl w-full transition">Open CBT Manager</button>
+                <!-- Manage Students -->
+                <a href="#" onclick="switchAdminTab('users')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition">
+                    <span class="text-lg">👨‍🎓</span>
+                    <div>
+                        <div class="text-xs font-bold text-slate-900">Manage Students</div>
+                        <div class="text-[10px] text-slate-500">Create and manage student accounts</div>
                     </div>
+                </a>
+
+                <!-- Manage Courses & Lessons -->
+                <a href="#" onclick="switchAdminTab('courses')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition">
+                    <span class="text-lg">🎓</span>
+                    <div>
+                        <div class="text-xs font-bold text-slate-900">Manage Courses & Lessons</div>
+                        <div class="text-[10px] text-slate-500">Build and publish learning content</div>
+                    </div>
+                </a>
+
+                <!-- Manage Notes -->
+                <a href="#" onclick="switchAdminTab('notes')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition">
+                    <span class="text-lg">📚</span>
+                    <div>
+                        <div class="text-xs font-bold text-slate-900">Manage Notes</div>
+                        <div class="text-[10px] text-slate-500">Publish notes for students</div>
+                    </div>
+                </a>
+
+                <!-- Post Updates -->
+                <a href="#" onclick="switchAdminTab('updates')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition">
+                    <span class="text-lg">📢</span>
+                    <div>
+                        <div class="text-xs font-bold text-slate-900">Post Updates</div>
+                        <div class="text-[10px] text-slate-500">Create announcements for students</div>
+                    </div>
+                </a>
+
+                <!-- Manage CBT / Tests -->
+                <a href="#" onclick="switchAdminTab('cbt')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition">
+                    <span class="text-lg">🧠</span>
+                    <div>
+                        <div class="text-xs font-bold text-slate-900">Manage CBT / Tests</div>
+                        <div class="text-[10px] text-slate-500">Create practice tests</div>
+                    </div>
+                </a>
+
+                <!-- Manage Study Materials -->
+                <a href="#" onclick="switchAdminTab('materials')" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition">
+                    <span class="text-lg">📖</span>
+                    <div>
+                        <div class="text-xs font-bold text-slate-900">Manage Study Materials</div>
+                        <div class="text-[10px] text-slate-500">Manage downloadable materials</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Dynamic Admin Content Display Area -->
+            <div id="adminContentArea" class="bg-white text-slate-900 rounded-2xl p-5 shadow-lg border border-slate-200">
+                <h3 class="text-xs font-bold uppercase text-slate-400 mb-3">Quick User Creator</h3>
+                <form onsubmit="handleCreateUser(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Full Name</label>
+                        <input type="text" id="newUserName" required placeholder="Student or Tutor Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Email Address</label>
+                        <input type="email" id="newUserEmail" required placeholder="user@gmail.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Temporary Password</label>
+                        <input type="text" id="newUserPass" required placeholder="Min 6 characters" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Assign Role</label>
+                        <select id="newUserRole" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                            <option value="student">Student</option>
+                            <option value="tutor">Tutor / Instructor</option>
+                            <option value="super_admin">Super Admin</option>
+                        </select>
+                    </div>
+                    <div id="createUserMsg" class="text-xs font-bold hidden p-2 rounded-lg"></div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs py-2.5 rounded-xl transition">
+                        Create Account
+                    </button>
+                </form>
+            </div>
+
+            <!-- Bottom Logout Button -->
+            <button onclick="handleLogout()" class="w-full bg-white hover:bg-slate-50 text-red-600 border border-slate-200 font-bold text-xs py-3 rounded-2xl shadow-md transition flex items-center justify-center gap-2">
+                <span>🚪</span> Logout
+            </button>
+        </div>
+
+        <!-- 3. STUDENT PORTAL VIEW -->
+        <div id="studentView" class="view-section space-y-4">
+            <div class="bg-white text-slate-900 rounded-2xl p-5 shadow-lg border border-slate-200 flex justify-between items-center">
+                <div>
+                    <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded uppercase">Student Portal</span>
+                    <h2 id="studentName" class="text-base font-extrabold text-slate-900 mt-1">Welcome, Student</h2>
                 </div>
+                <button onclick="handleLogout()" class="bg-slate-100 hover:bg-slate-200 text-red-600 text-xs font-bold px-3 py-1.5 rounded-xl transition">Logout</button>
             </div>
         </div>
 
-        <!-- 3. TUTOR PORTAL VIEW -->
-        <div id="tutorView" class="view-section space-y-6">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex justify-between items-center">
+        <!-- 4. TUTOR PORTAL VIEW -->
+        <div id="tutorView" class="view-section space-y-4">
+            <div class="bg-white text-slate-900 rounded-2xl p-5 shadow-lg border border-slate-200 flex justify-between items-center">
                 <div>
-                    <span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Tutor Portal</span>
-                    <h2 id="tutorName" class="text-lg font-bold text-white mt-1">Welcome, Tutor</h2>
-                    <p class="text-xs text-slate-400">Manage your study notes and classes.</p>
+                    <span class="bg-amber-100 text-amber-800 text-[9px] font-black px-2 py-0.5 rounded uppercase">Tutor Portal</span>
+                    <h2 id="tutorName" class="text-base font-extrabold text-slate-900 mt-1">Welcome, Tutor</h2>
                 </div>
-                <button onclick="handleLogout()" class="bg-slate-800 hover:bg-slate-700 text-red-400 text-xs font-bold px-3 py-2 rounded-xl transition">Logout</button>
-            </div>
-        </div>
-
-        <!-- 4. STUDENT PORTAL VIEW -->
-        <div id="studentView" class="view-section space-y-6">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex justify-between items-center">
-                <div>
-                    <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Student Portal</span>
-                    <h2 id="studentName" class="text-lg font-bold text-white mt-1">Welcome, Student</h2>
-                    <p class="text-xs text-slate-400">Access your subjects, notes, and CBT tests.</p>
-                </div>
-                <button onclick="handleLogout()" class="bg-slate-800 hover:bg-slate-700 text-red-400 text-xs font-bold px-3 py-2 rounded-xl transition">Logout</button>
+                <button onclick="handleLogout()" class="bg-slate-100 hover:bg-slate-200 text-red-600 text-xs font-bold px-3 py-1.5 rounded-xl transition">Logout</button>
             </div>
         </div>
 
@@ -168,6 +230,53 @@
         function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
+            
+            if(viewId === 'loginView') {
+                document.getElementById('headerLogoutBtn').classList.add('hidden');
+            } else {
+                document.getElementById('headerLogoutBtn').classList.remove('hidden');
+            }
+        }
+
+        function switchAdminTab(tab) {
+            const area = document.getElementById('adminContentArea');
+            if(tab === 'users') {
+                area.innerHTML = `
+                    <h3 class="text-xs font-bold uppercase text-slate-400 mb-3">👥 Create User Account</h3>
+                    <form onsubmit="handleCreateUser(event)" class="space-y-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Full Name</label>
+                            <input type="text" id="newUserName" required placeholder="Student or Tutor Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Email Address</label>
+                            <input type="email" id="newUserEmail" required placeholder="user@gmail.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Temporary Password</label>
+                            <input type="text" id="newUserPass" required placeholder="Min 6 characters" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">Assign Role</label>
+                            <select id="newUserRole" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-blue-600">
+                                <option value="student">Student</option>
+                                <option value="tutor">Tutor / Instructor</option>
+                                <option value="super_admin">Super Admin</option>
+                            </select>
+                        </div>
+                        <div id="createUserMsg" class="text-xs font-bold hidden p-2 rounded-lg"></div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs py-2.5 rounded-xl transition">
+                            Create Account
+                        </button>
+                    </form>`;
+            } else {
+                area.innerHTML = `
+                    <div class="text-center py-6">
+                        <span class="text-3xl">🛠️</span>
+                        <h4 class="text-sm font-bold text-slate-900 mt-2 capitalize">${tab} Module</h4>
+                        <p class="text-xs text-slate-500 mt-1">This control module is ready for configuration.</p>
+                    </div>`;
+            }
         }
 
         function handleLogin(e) {
@@ -187,7 +296,6 @@
                 });
         }
 
-        // V3 USER CREATION WITH SECONDARY APP
         function handleCreateUser(e) {
             e.preventDefault();
             const name = document.getElementById('newUserName').value;
@@ -196,10 +304,7 @@
             const role = document.getElementById('newUserRole').value;
             const msgBox = document.getElementById('createUserMsg');
 
-            msgBox.classList.remove('hidden');
-            msgBox.className = "text-xs font-bold p-2 rounded-lg bg-amber-500/10 text-amber-400";
-            msgBox.innerText = "Creating account...";
-
+            msgBox.classList.add('hidden');
             const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary_" + Date.now());
             
             secondaryApp.auth().createUserWithEmailAndPassword(email, pass)
@@ -213,16 +318,18 @@
                     });
                 })
                 .then(() => {
-                    msgBox.className = "text-xs font-bold p-2 rounded-lg bg-emerald-500/10 text-emerald-400";
+                    msgBox.className = "text-xs font-bold p-2 rounded-lg bg-emerald-100 text-emerald-800 mt-2";
                     msgBox.innerText = `Success! ${name} created as a ${role}.`;
+                    msgBox.classList.remove('hidden');
                     document.getElementById('newUserName').value = '';
                     document.getElementById('newUserEmail').value = '';
                     document.getElementById('newUserPass').value = '';
                     secondaryApp.delete();
                 })
                 .catch((err) => {
-                    msgBox.className = "text-xs font-bold p-2 rounded-lg bg-red-500/10 text-red-400";
+                    msgBox.className = "text-xs font-bold p-2 rounded-lg bg-red-100 text-red-800 mt-2";
                     msgBox.innerText = "Error: " + err.message;
+                    msgBox.classList.remove('hidden');
                     secondaryApp.delete();
                 });
         }
@@ -234,7 +341,7 @@
                     const role = data.role || 'student';
 
                     if (role === 'super_admin') {
-                        document.getElementById('superAdminName').innerText = `Welcome, ${data.name || 'Boss'}`;
+                        document.getElementById('superAdminName').innerText = data.name || 'Joseph Olawale';
                         switchView('superAdminView');
                     } else if (role === 'tutor' || role === 'admin') {
                         document.getElementById('tutorName').innerText = `Welcome, ${data.name || 'Tutor'}`;
