@@ -518,7 +518,7 @@
                             </div>
                         </div>
 
-                        <textarea id="noteBody" placeholder="Type or paste note content here. Use formatting buttons above..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white h-36 leading-relaxed"></textarea>
+                        <textarea id="noteBody" placeholder="Type or paste note content here. Use formatting buttons above..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white h-36 leading-relaxed font-mono text-[11px]"></textarea>
                         <input type="file" id="notePdfFile" accept=".pdf" class="w-full text-xs text-slate-400">
                         <button onclick="publishRichNote()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Publish Note 📖</button>
                     </div>
@@ -533,15 +533,20 @@
             else if (key === 'questionBank') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Centralized question repository across all subjects and CBT tests.</p><button onclick="loadModule('cbts')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Go to CBT Exam Creator</button></div>`;
             }
-            // Module 13: CBT Exam Creator with Timer & Bulk Parser
+            // Module 13: CBT Exam Creator with Parse Button, Preview, and Timer
             else if (key === 'cbts') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
-                        <p class="text-amber-400 font-bold">🚀 Create CBT Live Exam (Copy & Paste Parser)</p>
+                        <p class="text-amber-400 font-bold">🚀 Create CBT Live Exam</p>
                         <input type="text" id="cbtTitle" placeholder="Exam Title (e.g. Physics Mock)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
                         <input type="number" id="cbtDuration" placeholder="Duration in Minutes (e.g. 30)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <textarea id="bulkQuestionsText" placeholder="Paste questions here in format:&#10;1. What is the SI unit of force?&#10;A) Joule&#10;B) Newton&#10;C) Watt&#10;D) Pascal&#10;Answer: B" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white h-36 font-mono"></textarea>
-                        <button onclick="parseAndSaveBulkCBT()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Publish Live Exam 🚀</button>
+                        <textarea id="bulkQuestionsText" placeholder="Paste questions here:&#10;1. What is the SI unit of force?&#10;A) Joule&#10;B) Newton&#10;C) Watt&#10;D) Pascal&#10;Answer: B" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white h-36 font-mono"></textarea>
+                        
+                        <div class="flex gap-2">
+                            <button onclick="previewParsedCBT()" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold py-2.5 rounded-xl border border-slate-700">🔍 Parse Questions</button>
+                            <button onclick="parseAndSaveBulkCBT()" class="w-1/2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2.5 rounded-xl">Publish Live Exam 🚀</button>
+                        </div>
+                        <div id="cbtParsePreview" class="text-[11px] text-slate-300 bg-slate-950 p-3 rounded-xl border border-slate-800 hidden space-y-2"></div>
                     </div>
                     <div id="adminCbtList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading exams...</div>
                 `;
@@ -673,7 +678,7 @@
                 insertion = `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin:8px 0;"><iframe src="${url}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;border-radius:8px;" allowfullscreen></iframe></div>`;
             }
             else if(type === 'table') {
-                insertion = `<table style="width:100%; border-collapse:collapse; margin:8px 0; font-size:11px;"><thead><tr style="background:#1e293b; color:#fbbf24;"><th style="border:1px solid #334155; padding:6px;">Header 1</th><th style="border:1px solid #334155; padding:6px;">Header 2</th></tr></thead><tbody><tr><td style="border:1px solid #334155; padding:6px;">Data 1</td><td style="border:1px solid #334155; padding:6px;">Data 2</td></tr></tbody></table>`;
+                insertion = `<table border="1" style="width:100%; border-collapse:collapse; margin:8px 0; background:#0f172a; color:#f8fafc; font-size:11px;"><thead><tr style="background:#1e293b; color:#fbbf24;"><th style="border:1px solid #334155; padding:6px;">Header 1</th><th style="border:1px solid #334155; padding:6px;">Header 2</th></tr></thead><tbody><tr><td style="border:1px solid #334155; padding:6px;">Row 1, Col 1</td><td style="border:1px solid #334155; padding:6px;">Row 1, Col 2</td></tr></tbody></table>`;
             }
 
             textarea.value = textarea.value.substring(0, start) + insertion + textarea.value.substring(end);
@@ -835,13 +840,8 @@
             });
         }
 
-        // ================= CBT PARSER & LIVE EXAM ENGINE =================
-        function parseAndSaveBulkCBT() {
-            let title = document.getElementById('cbtTitle').value;
-            let duration = parseInt(document.getElementById('cbtDuration').value);
-            let rawText = document.getElementById('bulkQuestionsText').value;
-            if(!title || !duration || !rawText) { alert('Fill all fields including title and duration.'); return; }
-
+        // ================= CBT PARSER & PREVIEW ENGINE =================
+        function extractQuestionsFromText(rawText) {
             let lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
             let questions = [], currentQ = null;
 
@@ -865,8 +865,37 @@
                 }
             }
             if(currentQ) questions.push(currentQ);
+            return questions;
+        }
 
-            if(questions.length === 0) { alert('Could not parse questions. Ensure correct format (e.g. 1. Question... A) ... B) ... Answer: B)'); return; }
+        function previewParsedCBT() {
+            let rawText = document.getElementById('bulkQuestionsText').value;
+            let previewEl = document.getElementById('cbtParsePreview');
+            if(!rawText) { alert('Paste questions first.'); return; }
+            
+            let parsed = extractQuestionsFromText(rawText);
+            previewEl.classList.remove('hidden');
+            if(parsed.length === 0) {
+                previewEl.innerHTML = `<span class="text-red-400 font-bold">❌ Could not parse any questions. Check format (e.g. 1. Question... A) Opt... Answer: B)</span>`;
+                return;
+            }
+
+            let previewHtml = `<span class="text-emerald-400 font-bold block mb-1">✅ Successfully Parsed ${parsed.length} Questions:</span>`;
+            parsed.slice(0, 3).forEach((q, idx) => {
+                previewHtml += `<div class="text-[10px] text-slate-300 border-t border-slate-800 pt-1"><b>Q${idx+1}:</b> ${q.q} <br><b>Ans:</b> ${q.correct}</div>`;
+            });
+            if(parsed.length > 3) previewHtml += `<span class="text-[10px] text-amber-400 block pt-1">...and ${parsed.length - 3} more questions.</span>`;
+            previewEl.innerHTML = previewHtml;
+        }
+
+        function parseAndSaveBulkCBT() {
+            let title = document.getElementById('cbtTitle').value;
+            let duration = parseInt(document.getElementById('cbtDuration').value);
+            let rawText = document.getElementById('bulkQuestionsText').value;
+            if(!title || !duration || !rawText) { alert('Fill all fields including title, duration, and questions.'); return; }
+
+            let questions = extractQuestionsFromText(rawText);
+            if(questions.length === 0) { alert('Could not parse questions. Ensure correct format.'); return; }
 
             db.collection('cbts').add({ title, duration, questions, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
                 .then(() => { alert(`Successfully published exam with ${questions.length} questions and ${duration} mins timer!`); loadModule('cbts'); });
@@ -879,7 +908,8 @@
                     let c = doc.data();
                     html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${c.title}</span><span class="text-[10px] text-amber-400">⏱️ ${c.duration} mins | 📝 ${c.questions ? c.questions.length : 0} Qs</span></div><button onclick="db.collection('cbts').doc('${doc.id}').delete(); loadModule('cbts');" class="text-red-400 text-[10px]">Delete</button></div>`;
                 });
-                document.getElementById('adminCbtList').innerHTML = html || '<p class="text-slate-500 text-xs">No exams.</p>';
+                let el = document.getElementById('adminCbtList');
+                if(el) el.innerHTML = html || '<p class="text-slate-500 text-xs">No exams.</p>';
             });
         }
 
