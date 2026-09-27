@@ -53,19 +53,19 @@
             </div>
         </div>
 
-        <!-- 2. SUPER ADMIN PORTAL VIEW -->
+        <!-- 2. SUPER ADMIN PORTAL VIEW (V3) -->
         <div id="superAdminView" class="view-section space-y-6">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex justify-between items-center">
                 <div>
-                    <span class="bg-red-500/20 text-red-400 border border-red-500/30 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Super Admin Portal</span>
+                    <span class="bg-red-500/20 text-red-400 border border-red-500/30 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Super Admin Portal (v3)</span>
                     <h2 id="superAdminName" class="text-lg font-bold text-white mt-1">Welcome, Boss</h2>
-                    <p class="text-xs text-slate-400">Full master control center active.</p>
+                    <p class="text-xs text-slate-400">Master control center active.</p>
                 </div>
                 <button onclick="handleLogout()" class="bg-slate-800 hover:bg-slate-700 text-red-400 text-xs font-bold px-3 py-2 rounded-xl transition">Logout</button>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- User Manager Control Card -->
+                <!-- User Creator Card -->
                 <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
                     <div>
                         <h3 class="text-sm font-bold text-white">👥 Create User Account</h3>
@@ -100,17 +100,12 @@
                     </form>
                 </div>
 
-                <!-- Quick Stats / Actions Card -->
+                <!-- Secondary Actions Card -->
                 <div class="space-y-4">
                     <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
                         <h3 class="text-sm font-bold text-white mb-2">📝 CBT Question Bank</h3>
                         <p class="text-xs text-slate-400 mb-4">Upload and manage mock exam questions.</p>
-                        <button onclick="alert('CBT Question Bank coming in Phase 3!')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-bold px-4 py-2.5 rounded-xl w-full transition">Open CBT Manager</button>
-                    </div>
-                    <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
-                        <h3 class="text-sm font-bold text-white mb-2">📢 Broadcast Announcements</h3>
-                        <p class="text-xs text-slate-400 mb-4">Send notices to all student dashboards.</p>
-                        <button onclick="alert('Announcements module coming soon!')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-bold px-4 py-2.5 rounded-xl w-full transition">Open Announcements</button>
+                        <button onclick="alert('CBT Question Manager ready for setup.')" class="bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-bold px-4 py-2.5 rounded-xl w-full transition">Open CBT Manager</button>
                     </div>
                 </div>
             </div>
@@ -126,12 +121,6 @@
                 </div>
                 <button onclick="handleLogout()" class="bg-slate-800 hover:bg-slate-700 text-red-400 text-xs font-bold px-3 py-2 rounded-xl transition">Logout</button>
             </div>
-            
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
-                <h3 class="text-sm font-bold text-white mb-2">📖 Note & Material Publisher</h3>
-                <p class="text-xs text-slate-400 mb-4">Upload PDF study notes for your assigned subjects.</p>
-                <button onclick="alert('Note uploader ready!')" class="bg-amber-500 text-slate-950 text-xs font-extrabold px-4 py-2.5 rounded-xl">Upload New Study Note</button>
-            </div>
         </div>
 
         <!-- 4. STUDENT PORTAL VIEW -->
@@ -143,25 +132,6 @@
                     <p class="text-xs text-slate-400">Access your subjects, notes, and CBT tests.</p>
                 </div>
                 <button onclick="handleLogout()" class="bg-slate-800 hover:bg-slate-700 text-red-400 text-xs font-bold px-3 py-2 rounded-xl transition">Logout</button>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center">
-                    <span class="text-xl">📚</span>
-                    <h4 class="text-xs font-bold text-white mt-2">My Subjects</h4>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center">
-                    <span class="text-xl">💻</span>
-                    <h4 class="text-xs font-bold text-white mt-2">CBT Practice</h4>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center">
-                    <span class="text-xl">📊</span>
-                    <h4 class="text-xs font-bold text-white mt-2">My Results</h4>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl text-center">
-                    <span class="text-xl">📢</span>
-                    <h4 class="text-xs font-bold text-white mt-2">Announcements</h4>
-                </div>
             </div>
         </div>
 
@@ -178,7 +148,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // FIREBASE CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyBHnSGUALrnN-j8inER4MNcveQwJmyhLP4",
             authDomain: "great-stand-portal.firebaseapp.com",
@@ -201,7 +170,6 @@
             document.getElementById(viewId).classList.add('active');
         }
 
-        // LOGIN HANDLER & ROUTER
         function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
@@ -219,7 +187,7 @@
                 });
         }
 
-        // CREATE NEW USER (Using secondary app so admin stays logged in!)
+        // V3 USER CREATION WITH SECONDARY APP
         function handleCreateUser(e) {
             e.preventDefault();
             const name = document.getElementById('newUserName').value;
@@ -232,13 +200,11 @@
             msgBox.className = "text-xs font-bold p-2 rounded-lg bg-amber-500/10 text-amber-400";
             msgBox.innerText = "Creating account...";
 
-            // Initialize secondary app instance to prevent admin logout
             const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary_" + Date.now());
             
             secondaryApp.auth().createUserWithEmailAndPassword(email, pass)
                 .then((cred) => {
                     const uid = cred.user.uid;
-                    // Save user profile details & role to Firestore database
                     return db.collection('users').doc(uid).set({
                         name: name,
                         email: email,
@@ -252,7 +218,7 @@
                     document.getElementById('newUserName').value = '';
                     document.getElementById('newUserEmail').value = '';
                     document.getElementById('newUserPass').value = '';
-                    secondaryApp.delete(); // Clean up secondary app
+                    secondaryApp.delete();
                 })
                 .catch((err) => {
                     msgBox.className = "text-xs font-bold p-2 rounded-lg bg-red-500/10 text-red-400";
@@ -261,7 +227,6 @@
                 });
         }
 
-        // ROUTE USER BASED ON FIRESTORE ROLE
         function routeUser(uid) {
             db.collection('users').doc(uid).get().then((doc) => {
                 if (doc.exists) {
@@ -292,7 +257,6 @@
             });
         }
 
-        // AUTO-LOGIN CHECK ON LOAD
         auth.onAuthStateChanged((user) => {
             if (user) {
                 routeUser(user.uid);
