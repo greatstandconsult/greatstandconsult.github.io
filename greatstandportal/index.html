@@ -34,8 +34,8 @@
             <div>
                 <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
                     <div>
-                        <span class="text-[10px] font-black text-amber-400 uppercase tracking-wider block">👑 Super Admin</span>
-                        <span class="text-xs font-extrabold text-white">Master Control Menu</span>
+                        <span id="drawerRoleTitle" class="text-[10px] font-black text-amber-400 uppercase tracking-wider block">👑 Portal Menu</span>
+                        <span class="text-xs font-extrabold text-white">Navigation</span>
                     </div>
                     <button onclick="toggleDrawer()" class="text-slate-400 hover:text-white font-bold text-xs bg-slate-800 px-2.5 py-1 rounded-lg">✕ Close</button>
                 </div>
@@ -77,7 +77,7 @@
             </div>
         </div>
 
-        <!-- SUPER ADMIN VIEW -->
+        <!-- SUPER ADMIN / ADMIN VIEW -->
         <div id="superAdminView" class="view-section space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex justify-between items-center">
                 <div>
@@ -96,14 +96,18 @@
             </div>
         </div>
 
-        <!-- STANDARD USER VIEW -->
+        <!-- STANDARD USER / STUDENT VIEW -->
         <div id="standardView" class="view-section space-y-4">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-                <span id="standardRoleBadge" class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase">Member Portal</span>
-                <h2 id="standardUserName" class="text-base font-extrabold text-white mt-1">Welcome</h2>
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg flex justify-between items-center">
+                <div>
+                    <span id="standardRoleBadge" class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase">Student Portal</span>
+                    <h2 id="standardUserName" class="text-sm font-extrabold text-white mt-1">Welcome</h2>
+                </div>
+                <span class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-xl font-bold">Online Student</span>
             </div>
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg" id="standardContentArea">
-                <h3 class="text-xs font-black uppercase text-amber-400 mb-2">Workspace</h3>
+                <h3 id="studentModuleTitle" class="text-xs font-black uppercase text-amber-400 mb-3">📚 CBT Examination Center</h3>
+                <div id="studentModuleContent"></div>
             </div>
         </div>
 
@@ -134,6 +138,9 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        let currentUserRole = 'student';
+        let activeTimer = null;
+
         function toggleDrawer() { document.getElementById('navDrawer').classList.toggle('hidden'); }
 
         function switchView(viewId) {
@@ -151,87 +158,45 @@
         }
 
         function populateMenu(role) {
+            currentUserRole = role;
             const linksContainer = document.getElementById('drawerLinks');
+            const roleTitle = document.getElementById('drawerRoleTitle');
+
             if (role === 'super_admin') {
+                roleTitle.innerText = "👑 Super Admin Menu";
                 linksContainer.innerHTML = `
                     <div class="text-[10px] text-amber-400 uppercase px-2 pt-1 font-black">Overview & Control</div>
                     <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard</a>
-                    <a href="#" onclick="loadModule('platformControl')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">⚙️ Platform Control</a>
-                    <a href="#" onclick="loadModule('systemMonitoring')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 System Monitoring</a>
-                    <a href="#" onclick="loadModule('adminProfile')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👤 Super Admin Profile</a>
-
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">User & Access Management</div>
-                    <a href="#" onclick="loadModule('userManagement')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🛠️ User Management</a>
-                    <a href="#" onclick="loadModule('roles')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🔒 Roles & Permissions</a>
-                    <a href="#" onclick="loadModule('students')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👥 Student Management</a>
-                    <a href="#" onclick="loadModule('admins')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👑 Admin Management</a>
-                    <a href="#" onclick="loadModule('tutors')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧑🏽‍🏫 Tutor Management</a>
-
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Academics & Curriculum</div>
-                    <a href="#" onclick="loadModule('programmes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎓 Programme Management</a>
-                    <a href="#" onclick="loadModule('subjects')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📖 Subject Management</a>
-                    <a href="#" onclick="loadModule('topics')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📑 Topic Management</a>
-                    <a href="#" onclick="loadModule('classes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏫 Class Management</a>
-                    <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Timetable Management</a>
-
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Content & Learning Materials</div>
-                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes Management</a>
-                    <a href="#" onclick="loadModule('resources')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📂 Resource Management</a>
-                    <a href="#" onclick="loadModule('questions')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">❓ Question Bank Management</a>
-                    <a href="#" onclick="loadModule('contentApproval')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">✅ Content Approval</a>
-
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">CBT & Assessments</div>
-                    <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT Management</a>
-                    <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📈 CBT Results</a>
-                    <a href="#" onclick="loadModule('assignments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📝 Assignment Management</a>
-                    <a href="#" onclick="loadModule('studentProgress')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 Student Progress</a>
-
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Results & Reports</div>
-                    <a href="#" onclick="loadModule('results')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏆 Results Management</a>
-                    <a href="#" onclick="loadModule('reports')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 Reports & Analytics</a>
-
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Communication & Support</div>
-                    <a href="#" onclick="loadModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 Announcement Management</a>
-                    <a href="#" onclick="loadModule('notifications')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🔔 Notification Management</a>
-                    <a href="#" onclick="loadModule('support')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🎧 Support Management</a>
-
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">System Administration</div>
-                    <a href="#" onclick="loadModule('admissions')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🏛️ Admission Management</a>
-                    <a href="#" onclick="loadModule('website')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🌐 Website Management</a>
-                    <a href="#" onclick="loadModule('files')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🗂️ File Management</a>
-                    <a href="#" onclick="loadModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💳 Payment Management</a>
-                    <a href="#" onclick="loadModule('security')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🛡️ Security Management</a>
-                    <a href="#" onclick="loadModule('audit')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📜 Activity / Audit Logs</a>
-                    <a href="#" onclick="loadModule('settings')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">⚙️ System Settings</a>
-                    <a href="#" onclick="loadModule('backup')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💾 Backup & Data Management</a>
+                    <a href="#" onclick="loadModule('users')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🛠️ User Management</a>
+                    <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT & Live Exams Manager</a>
+                    <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📈 CBT Results & Scores</a>
+                    <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Timetable</a>
+                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes & Materials</a>
+                    <a href="#" onclick="loadModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 Announcements</a>
+                    <a href="#" onclick="loadModule('settings')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">⚙️ Settings</a>
                 `;
             } else {
+                roleTitle.innerText = "🎓 Student Portal Menu";
                 linksContainer.innerHTML = `
-                    <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard</a>
-                    <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Class Timetable</a>
-                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes & Resources</a>
+                    <a href="#" onclick="loadStudentModule('cbts')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🧪 Live CBT Exams</a>
+                    <a href="#" onclick="loadStudentModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Class Timetable</a>
+                    <a href="#" onclick="loadStudentModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes & Resources</a>
+                    <a href="#" onclick="loadStudentModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 Announcements</a>
                 `;
             }
         }
 
+        // ================= ADMIN MODULE LOADER =================
         function loadModule(key) {
             toggleDrawer();
             let titleEl = document.getElementById('moduleTitle');
             let contentEl = document.getElementById('moduleContentArea');
 
             const titles = {
-                dashboard: "🏠 Dashboard Overview", platformControl: "⚡ Platform Control", systemMonitoring: "📊 System Monitoring",
-                adminProfile: "👤 Super Admin Profile", userManagement: "🛠️ User Management", roles: "🔒 Roles & Permissions",
-                students: "👥 Student Management", admins: "👑 Admin Management", tutors: "🧑🏽‍🏫 Tutor Management",
-                programmes: "🎓 Programme Management", subjects: "📖 Subject Management", topics: "📑 Topic Management",
-                classes: "🏫 Class Management", timetable: "📅 Timetable Management", notes: "📚 Notes Management",
-                resources: "📂 Resource Management", questions: "❓ Question Bank Management", contentApproval: "✅ Content Approval",
-                cbts: "🧪 CBT Management", cbtResults: "📈 CBT Results", assignments: "📝 Assignment Management",
-                studentProgress: "📊 Student Progress", results: "🏆 Results Management", reports: "📊 Reports & Analytics",
-                announcements: "📢 Announcement Management", notifications: "🔔 Notification Management", support: "🎧 Support Management",
-                admissions: "🏛️ Admission Management", website: "🌐 Website Management", files: "🗂️ File Management",
-                payments: "💳 Payment Management", security: "🛡️ Security Management", audit: "📜 Activity / Audit Logs",
-                settings: "⚙️ System Settings", backup: "💾 Backup & Data Management"
+                dashboard: "🏠 Dashboard Overview", users: "🛠️ User Management",
+                cbts: "🧪 Live CBT Exam Builder", cbtResults: "📈 CBT Student Results",
+                timetable: "📅 Timetable Management", notes: "📚 Notes & Materials",
+                announcements: "📢 Announcements", settings: "⚙️ System Settings"
             };
 
             titleEl.innerText = titles[key] || "⚙️ Management Module";
@@ -245,143 +210,276 @@
                         </div>
                         <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
                             <span class="text-[10px] text-slate-400 uppercase font-bold block">System Status</span>
-                            <span class="text-xs font-black text-emerald-400 mt-1 block">Online & Secure</span>
+                            <span class="text-xs font-black text-emerald-400 mt-1 block">Live & Secure</span>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-400">Overview of platform activities, registrations, and alerts.</p>
+                    <p class="text-xs text-slate-400">Welcome to your central administration panel.</p>
                 `;
                 db.collection('users').get().then(snap => {
                     document.getElementById('statUsers').innerText = snap.size;
                 });
             } 
-            else if (key === 'students' || key === 'admins' || key === 'tutors') {
-                let roleType = key === 'students' ? 'student' : (key === 'admins' ? 'admin' : 'tutor');
+            else if (key === 'cbts') {
+                // Admin CBT Creator
                 contentEl.innerHTML = `
-                    <form onsubmit="handleCreateUser(event, '${roleType}')" class="space-y-3 border-b border-slate-800 pb-4">
-                        <p class="text-[11px] text-slate-400 font-bold">Register New ${roleType}</p>
-                        <input type="text" id="regName" required placeholder="Full Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="email" id="regEmail" required placeholder="Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="text" id="regPass" required placeholder="Temporary Password" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button type="submit" class="w-full bg-amber-500 text-slate-950 font-extrabold text-xs py-2 rounded-xl">Create Account</button>
-                    </form>
+                    <div class="space-y-3 border-b border-slate-800 pb-4">
+                        <p class="text-xs text-amber-400 font-bold">Create New Timed CBT Exam</p>
+                        <input type="text" id="cbtTitle" placeholder="Exam Title (e.g. JAMB Physics Mock 1)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="number" id="cbtDuration" placeholder="Duration in Minutes (e.g. 15)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+                            <p class="text-[11px] text-slate-300 font-bold">Add Question</p>
+                            <input type="text" id="qText" placeholder="Question Text" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="optA" placeholder="Option A" class="bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-white">
+                                <input type="text" id="optB" placeholder="Option B" class="bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-white">
+                                <input type="text" id="optC" placeholder="Option C" class="bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-white">
+                                <input type="text" id="optD" placeholder="Option D" class="bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-white">
+                            </div>
+                            <select id="correctOpt" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white">
+                                <option value="A">Correct Answer: Option A</option>
+                                <option value="B">Correct Answer: Option B</option>
+                                <option value="C">Correct Answer: Option C</option>
+                                <option value="D">Correct Answer: Option D</option>
+                            </select>
+                            <button onclick="addQuestionToCBT()" class="w-full bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold text-xs py-1.5 rounded-lg">+ Add Question to Exam</button>
+                        </div>
+
+                        <div id="tempQuestionList" class="text-[11px] text-slate-400 bg-slate-950 p-2 rounded-xl">0 questions added for this exam.</div>
+                        <button onclick="publishCBTExam()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs py-2.5 rounded-xl">🚀 Publish Live CBT Exam</button>
+                    </div>
+
                     <div class="space-y-2">
-                        <p class="text-[11px] text-slate-400 font-bold">Existing ${key}:</p>
-                        <div id="userListContainer" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading records...</div>
+                        <p class="text-[11px] text-slate-400 font-bold">Published CBT Exams:</p>
+                        <div id="adminCbtList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading...</div>
                     </div>
                 `;
-                db.collection('users').where('role', '==', roleType).get().then(snap => {
-                    let listHtml = '';
-                    snap.forEach(doc => {
-                        let u = doc.data();
-                        listHtml += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
-                            <div><span class="font-bold text-white block">${u.name}</span><span class="text-[10px] text-slate-500">${u.email}</span></div>
-                            <span class="text-[9px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold">${u.role}</span>
-                        </div>`;
-                    });
-                    document.getElementById('userListContainer').innerHTML = listHtml || '<p class="text-slate-500 text-xs">No records found.</p>';
-                });
+                window.currentDraftQuestions = [];
+                fetchAdminCBTs();
             }
-            else if (key === 'contentApproval') {
+            else if (key === 'cbtResults') {
                 contentEl.innerHTML = `
-                    <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <p class="text-xs text-slate-400">Review and approve uploaded learning notes or questions.</p>
-                        <input type="text" id="appTitle" placeholder="Content Title / Item Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <select id="appStatus" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                            <option value="Approved">Approve Content</option>
-                            <option value="Pending Review">Keep Pending</option>
-                            <option value="Rejected">Reject Content</option>
-                        </select>
-                        <button onclick="saveGenericItem('contentApproval', {title: document.getElementById('appTitle').value, status: document.getElementById('appStatus').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Save Approval Status</button>
-                    </div>
-                    <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Content Log:</p><div id="appList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
-                `;
-                fetchList('contentApproval', 'appList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between"><span>${item.title}</span><span class="text-amber-400 font-bold">${item.status}</span></div>`);
-            }
-            else if (key === 'roles') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <p class="text-xs text-slate-400">Assign permission tiers or access rights to accounts.</p>
-                        <input type="email" id="roleEmail" placeholder="User Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <select id="roleLevel" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                            <option value="Super Admin">Super Admin Access</option>
-                            <option value="Admin">Standard Admin Access</option>
-                            <option value="Tutor">Tutor Access</option>
-                            <option value="Student">Student Access</option>
-                        </select>
-                        <button onclick="saveGenericItem('roles', {email: document.getElementById('roleEmail').value, role: document.getElementById('roleLevel').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Update Role Permission</button>
-                    </div>
-                    <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Configured Roles Log:</p><div id="roleList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
-                `;
-                fetchList('roles', 'roleList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between"><span>${item.email}</span><span class="text-amber-400 font-bold">${item.role}</span></div>`);
-            }
-            else if (key === 'programmes') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <p class="text-xs text-slate-400">Create academic programmes like JAMB, WAEC, NECO, GCE.</p>
-                        <input type="text" id="progName" placeholder="Programme Name (e.g. JAMB Tutorial)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <textarea id="progDesc" placeholder="Programme Description..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white h-16"></textarea>
-                        <button onclick="saveGenericItem('programmes', {name: document.getElementById('progName').value, description: document.getElementById('progDesc').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Add Programme</button>
-                    </div>
-                    <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Active Programmes:</p><div id="progList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
-                `;
-                fetchList('programmes', 'progList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.name}</span><span class="text-[10px] text-slate-400">${item.description}</span></div>`);
-            }
-            else if (key === 'announcements') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <p class="text-xs text-slate-400">Publish urgent broadcast notifications to users.</p>
-                        <input type="text" id="annTitle" placeholder="Announcement Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <textarea id="annBody" placeholder="Message content..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white h-16"></textarea>
-                        <button onclick="saveGenericItem('announcements', {title: document.getElementById('annTitle').value, body: document.getElementById('annBody').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Broadcast Announcement</button>
-                    </div>
-                    <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Recent Broadcasts:</p><div id="annList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
-                `;
-                fetchList('announcements', 'annList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-amber-400 block">${item.title}</span><span class="text-[10px] text-slate-300">${item.body}</span></div>`);
-            }
-            else if (key === 'settings') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3">
-                        <p class="text-xs text-slate-400">Manage platform identity and configurations.</p>
-                        <input type="text" id="setName" value="Great Stand Educational Consult" placeholder="Platform Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="text" id="setContact" value="support@greatstand.com" placeholder="Support Email" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="alert('System settings updated successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Save Configuration</button>
+                    <div class="space-y-2">
+                        <p class="text-xs text-slate-400">Student exam scores submitted in real-time:</p>
+                        <div id="cbtResultsList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading results...</div>
                     </div>
                 `;
-            }
-            else if (key === 'payments') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <p class="text-xs text-slate-400">Log subscriber payments or fee confirmations.</p>
-                        <input type="text" id="payStudent" placeholder="Student Email" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="number" id="payAmount" placeholder="Amount (NGN)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <button onclick="saveGenericItem('payments', {student: document.getElementById('payStudent').value, amount: document.getElementById('payAmount').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Record Payment</button>
-                    </div>
-                    <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Transaction History:</p><div id="payList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
-                `;
-                fetchList('payments', 'payList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between"><span>${item.student}</span><span class="text-emerald-400 font-bold">₦${item.amount}</span></div>`);
+                fetchCBTResults();
             }
             else {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4">
-                        <p class="text-xs text-slate-400">Manage records and configure entries for this module.</p>
-                        <input type="text" id="genTitle" placeholder="Entry Title / Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                        <input type="text" id="genDetails" placeholder="Description or Details" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <p class="text-xs text-slate-400">Manage records for this section.</p>
+                        <input type="text" id="genTitle" placeholder="Title / Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="text" id="genDetails" placeholder="Details or Description" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         <button onclick="saveGenericItem('${key}', {title: document.getElementById('genTitle').value, details: document.getElementById('genDetails').value})" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Save Record</button>
                     </div>
                     <div class="space-y-2"><p class="text-[11px] text-slate-400 font-bold">Saved Entries:</p><div id="genList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div></div>
                 `;
-                fetchList(key, 'genList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title || item.name || 'Record'}</span><span class="text-[10px] text-slate-400">${item.details || item.body || ''}</span></div>`);
+                fetchList(key, 'genList', item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title || 'Record'}</span><span class="text-[10px] text-slate-400">${item.details || ''}</span></div>`);
             }
         }
 
-        function saveGenericItem(collectionName, data) {
-            for(let k in data) {
-                if(!data[k]) { alert('Please fill all fields'); return; }
+        // ================= STUDENT MODULE LOADER =================
+        function loadStudentModule(key) {
+            if(activeTimer) clearInterval(activeTimer);
+            toggleDrawer();
+            let titleEl = document.getElementById('studentModuleTitle');
+            let contentEl = document.getElementById('studentModuleContent');
+
+            if (key === 'cbts') {
+                titleEl.innerText = "🧪 Live CBT Examination Center";
+                contentEl.innerHTML = `
+                    <p class="text-xs text-slate-400 mb-3">Select an active exam below and click start. Your timer will begin immediately!</p>
+                    <div id="studentAvailableCbts" class="space-y-2">Loading available live exams...</div>
+                `;
+                fetchStudentCBTs();
+            } else if (key === 'timetable') {
+                titleEl.innerText = "📅 Class Timetable";
+                fetchStudentList('timetable', contentEl, item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title}</span><span class="text-[10px] text-amber-400">${item.details}</span></div>`);
+            } else if (key === 'notes') {
+                titleEl.innerText = "📚 Notes & Resources";
+                fetchStudentList('notes', contentEl, item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-white block">${item.title}</span><span class="text-[10px] text-slate-400">${item.details}</span></div>`);
+            } else if (key === 'announcements') {
+                titleEl.innerText = "📢 Announcements";
+                fetchStudentList('announcements', contentEl, item => `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span class="font-bold text-amber-400 block">${item.title}</span><span class="text-[10px] text-slate-300">${item.details}</span></div>`);
             }
-            data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-            db.collection(collectionName).add(data)
-              .then(() => { alert('Saved successfully!'); loadModule(collectionName); })
-              .catch(err => alert('Error: ' + err.message));
+        }
+
+        // ================= LIVE CBT EXAM FUNCTIONS =================
+        function addQuestionToCBT() {
+            let q = document.getElementById('qText').value;
+            let a = document.getElementById('optA').value;
+            let b = document.getElementById('optB').value;
+            let c = document.getElementById('optC').value;
+            let d = document.getElementById('optD').value;
+            let correct = document.getElementById('correctOpt').value;
+
+            if(!q || !a || !b) { alert('Please fill question and at least options A and B'); return; }
+            window.currentDraftQuestions.push({ q, a, b, c, d, correct });
+            document.getElementById('tempQuestionList').innerText = `✅ ${window.currentDraftQuestions.length} question(s) added to current draft.`;
+            document.getElementById('qText').value = '';
+            document.getElementById('optA').value = '';
+            document.getElementById('optB').value = '';
+            document.getElementById('optC').value = '';
+            document.getElementById('optD').value = '';
+        }
+
+        function publishCBTExam() {
+            let title = document.getElementById('cbtTitle').value;
+            let duration = parseInt(document.getElementById('cbtDuration').value);
+            if(!title || !duration || window.currentDraftQuestions.length === 0) {
+                alert('Please enter a title, duration, and add at least one question.');
+                return;
+            }
+            db.collection('cbts').add({
+                title, duration, questions: window.currentDraftQuestions,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert('CBT Exam published successfully!');
+                loadModule('cbts');
+            }).catch(err => alert('Error: ' + err.message));
+        }
+
+        function fetchAdminCBTs() {
+            db.collection('cbts').orderBy('createdAt', 'desc').get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let c = doc.data();
+                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <div><span class="font-bold text-white block">${c.title}</span><span class="text-[10px] text-amber-400">⏱️ ${c.duration} mins | ❓ ${c.questions ? c.questions.length : 0} Qs</span></div>
+                        <button onclick="deleteCbt('${doc.id}')" class="text-red-400 text-[10px] bg-red-500/10 px-2 py-1 rounded">Delete</button>
+                    </div>`;
+                });
+                document.getElementById('adminCbtList').innerHTML = html || '<p class="text-slate-500 text-xs">No CBT exams created yet.</p>';
+            });
+        }
+
+        function deleteCbt(id) {
+            if(confirm('Are you sure you want to delete this exam?')) {
+                db.collection('cbts').doc(id).delete().then(() => loadModule('cbts'));
+            }
+        }
+
+        function fetchStudentCBTs() {
+            db.collection('cbts').get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let c = doc.data();
+                    html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <div>
+                            <span class="font-bold text-white block">${c.title}</span>
+                            <span class="text-[10px] text-amber-400">⏱️ Time Allowed: ${c.duration} Minutes (${c.questions ? c.questions.length : 0} Questions)</span>
+                        </div>
+                        <button onclick="startLiveExam('${doc.id}')" class="bg-amber-500 text-slate-950 font-extrabold text-xs px-3 py-2 rounded-xl">Start Exam 🚀</button>
+                    </div>`;
+                });
+                document.getElementById('studentAvailableCbts').innerHTML = html || '<p class="text-slate-500 text-xs">No live exams available right now.</p>';
+            });
+        }
+
+        function startLiveExam(cbtId) {
+            db.collection('cbts').doc(cbtId).get().then(doc => {
+                if(!doc.exists) return;
+                let exam = doc.data();
+                let questions = exam.questions || [];
+                let timeLeft = exam.duration * 60; // in seconds
+
+                let contentEl = document.getElementById('studentModuleContent');
+                
+                function renderExamScreen() {
+                    let mins = Math.floor(timeLeft / 60);
+                    let secs = timeLeft % 60;
+                    let timeStr = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+                    let qHtml = '';
+                    questions.forEach((q, idx) => {
+                        qHtml += `
+                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
+                                <p class="text-xs font-bold text-white">Q${idx + 1}: ${q.q}</p>
+                                <div class="space-y-1 text-xs">
+                                    <label class="block"><input type="radio" name="q_${idx}" value="A"> A) ${q.a}</label>
+                                    <label class="block"><input type="radio" name="q_${idx}" value="B"> B) ${q.b}</label>
+                                    ${q.qC ? `<label class="block"><input type="radio" name="q_${idx}" value="C"> C) ${q.c}</label>` : (q.c ? `<label class="block"><input type="radio" name="q_${idx}" value="C"> C) ${q.c}</label>` : '')}
+                                    ${q.d ? `<label class="block"><input type="radio" name="q_${idx}" value="D"> D) ${q.d}</label>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    contentEl.innerHTML = `
+                        <div class="sticky top-12 bg-slate-900 border border-amber-500/30 p-3 rounded-xl flex justify-between items-center mb-3 shadow-lg z-20">
+                            <div><span class="text-[10px] text-slate-400 block font-bold">Exam in Progress</span><span class="text-xs font-black text-white">${exam.title}</span></div>
+                            <div class="bg-red-500/20 border border-red-500/40 text-red-400 px-3 py-1 rounded-lg text-xs font-black">⏱️ Time Left: <span id="timerDisplay">${timeStr}</span></div>
+                        </div>
+                        <div class="space-y-3 mb-4">${qHtml}</div>
+                        <button onclick="submitExam('${cbtId}', ${JSON.stringify(questions).replace(/"/g, '&quot;')})" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs py-3 rounded-xl">Submit Exam Now</button>
+                    `;
+                }
+
+                renderExamScreen();
+
+                activeTimer = setInterval(() => {
+                    timeLeft--;
+                    let timerEl = document.getElementById('timerDisplay');
+                    if(timerEl) {
+                        let mins = Math.floor(timeLeft / 60);
+                        let secs = timeLeft % 60;
+                        timerEl.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                    }
+                    if(timeLeft <= 0) {
+                        clearInterval(activeTimer);
+                        alert('Time is up! Your exam will be submitted automatically.');
+                        submitExam(cbtId, questions);
+                    }
+                }, 1000);
+            });
+        }
+
+        function submitExam(cbtId, questions) {
+            if(activeTimer) clearInterval(activeTimer);
+            let score = 0;
+            let total = questions.length;
+
+            questions.forEach((q, idx) => {
+                let selected = document.querySelector(`input[name="q_${idx}"]:checked`);
+                if(selected && selected.value === q.correct) {
+                    score++;
+                }
+            });
+
+            let percentage = Math.round((score / total) * 100);
+
+            db.collection('cbtResults').add({
+                studentEmail: auth.currentUser.email,
+                cbtId, score, total, percentage,
+                submittedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                let contentEl = document.getElementById('studentModuleContent');
+                contentEl.innerHTML = `
+                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 text-center space-y-3 mt-4">
+                        <h3 class="text-lg font-black text-amber-400">🎉 Exam Submitted Successfully!</h3>
+                        <p class="text-xs text-slate-300">Here is your instant performance breakdown:</p>
+                        <div class="text-3xl font-black text-emerald-400">${score} / ${total} (${percentage}%)</div>
+                        <p class="text-[11px] text-slate-400">Your score has been securely recorded and sent to the admin.</p>
+                        <button onclick="loadStudentModule('cbts')" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl">Back to CBT Center</button>
+                    </div>
+                `;
+            }).catch(err => alert('Submission error: ' + err.message));
+        }
+
+        function fetchCBTResults() {
+            db.collection('cbtResults').orderBy('submittedAt', 'desc').get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let r = doc.data();
+                    html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <div><span class="font-bold text-white block">${r.studentEmail}</span><span class="text-[10px] text-slate-400">Score: ${r.score}/${r.total} (${r.percentage}%)</span></div>
+                        <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Graded</span>
+                    </div>`;
+                });
+                document.getElementById('cbtResultsList').innerHTML = html || '<p class="text-slate-500 text-xs">No CBT submissions recorded yet.</p>';
+            });
         }
 
         function fetchList(collectionName, containerId, templateFn) {
@@ -390,8 +488,25 @@
                 snap.forEach(doc => { html += templateFn(doc.data()); });
                 document.getElementById(containerId).innerHTML = html || '<p class="text-slate-500 text-xs">No records found yet.</p>';
             }).catch(() => {
-                document.getElementById(containerId).innerHTML = '<p class="text-slate-500 text-xs">Module ready for entries.</p>';
+                document.getElementById(containerId).innerHTML = '<p class="text-slate-500 text-xs">Module ready.</p>';
             });
+        }
+
+        function fetchStudentList(collectionName, containerEl, templateFn) {
+            db.collection(collectionName).get().then(snap => {
+                let html = '<div class="space-y-2">';
+                snap.forEach(doc => { html += templateFn(doc.data()); });
+                html += '</div>';
+                containerEl.innerHTML = html || '<p class="text-slate-500 text-xs">No items posted yet.</p>';
+            });
+        }
+
+        function saveGenericItem(collectionName, data) {
+            for(let k in data) { if(!data[k]) { alert('Please fill all fields'); return; } }
+            data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            db.collection(collectionName).add(data)
+              .then(() => { alert('Saved successfully!'); loadModule(collectionName); })
+              .catch(err => alert('Error: ' + err.message));
         }
 
         function handleLogin(e) {
@@ -405,27 +520,6 @@
                 });
         }
 
-        function handleCreateUser(e, role) {
-            e.preventDefault();
-            let name = document.getElementById('regName').value;
-            let email = document.getElementById('regEmail').value;
-            let pass = document.getElementById('regPass').value;
-
-            let secondaryApp = firebase.initializeApp(firebaseConfig, "Sec_" + Date.now());
-            secondaryApp.auth().createUserWithEmailAndPassword(email, pass)
-                .then(cred => {
-                    return db.collection('users').doc(cred.user.uid).set({
-                        name, email, role, createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                })
-                .then(() => {
-                    alert(`Success! ${name} registered.`);
-                    secondaryApp.delete();
-                    loadModule(role === 'student' ? 'students' : (role === 'admin' ? 'admins' : 'tutors'));
-                })
-                .catch(err => { alert("Error: " + err.message); secondaryApp.delete(); });
-        }
-
         function routeUser(uid) {
             db.collection('users').doc(uid).get().then(doc => {
                 let userData = doc.exists ? doc.data() : { role: 'student', name: 'User' };
@@ -436,15 +530,15 @@
                     switchView('superAdminView');
                     loadModule('dashboard');
                 } else {
-                    document.getElementById('standardUserName').innerText = `Welcome, ${userData.name || 'Member'}`;
-                    document.getElementById('standardRoleBadge').innerText = role.toUpperCase() + ' PORTAL';
+                    document.getElementById('standardUserName').innerText = `Welcome, ${userData.name || 'Student'}`;
+                    document.getElementById('standardRoleBadge').innerText = 'STUDENT PORTAL';
                     switchView('standardView');
-                    loadModule('timetable');
+                    loadStudentModule('cbts');
                 }
             });
         }
 
-        function handleLogout() { auth.signOut().then(() => switchView('loginView')); }
+        function handleLogout() { if(activeTimer) clearInterval(activeTimer); auth.signOut().then(() => switchView('loginView')); }
 
         auth.onAuthStateChanged(user => { user ? routeUser(user.uid) : switchView('loginView'); });
     </script>
