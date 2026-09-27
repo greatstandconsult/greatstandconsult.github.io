@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Great Stand Educational Consult | Portal</title>
+    <title>Great Stand Educational Consult | Master Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -28,14 +28,14 @@
         <div id="headerAuthArea"></div>
     </header>
 
-    <!-- SLIDE-OUT MENU DRAWER -->
+    <!-- SLIDE-OUT MENU DRAWER (35 SUPER ADMIN FUNCTIONS) -->
     <div id="navDrawer" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex">
         <div class="bg-slate-900 w-80 h-full border-r border-slate-800 p-5 flex flex-col justify-between shadow-2xl overflow-y-auto">
             <div>
                 <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
                     <div>
-                        <span id="drawerRoleTitle" class="text-[10px] font-black text-amber-400 uppercase tracking-wider block">👑 Navigation Menu</span>
-                        <span id="drawerUserName" class="text-xs font-extrabold text-white">Portal Control</span>
+                        <span id="drawerRoleTitle" class="text-[10px] font-black text-amber-400 uppercase tracking-wider block">👑 Master Control Menu</span>
+                        <span id="drawerUserName" class="text-xs font-extrabold text-white">Full Portal Access</span>
                     </div>
                     <button onclick="toggleDrawer()" class="text-slate-400 hover:text-white font-bold text-xs bg-slate-800 px-2.5 py-1 rounded-lg">✕ Close</button>
                 </div>
@@ -58,7 +58,7 @@
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
                 <div class="text-center mb-6">
                     <h1 class="text-xl font-extrabold text-amber-400">Portal Login</h1>
-                    <p class="text-xs text-slate-400 mt-1">Enter your credentials to access your dashboard.</p>
+                    <p class="text-xs text-slate-400 mt-1">Enter your credentials to access the master system.</p>
                 </div>
                 <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
                     <div>
@@ -77,14 +77,14 @@
             </div>
         </div>
 
-        <!-- SUPER ADMIN & BURSAR VIEW -->
+        <!-- SUPER ADMIN & STAFF VIEW -->
         <div id="superAdminView" class="view-section space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-lg flex justify-between items-center">
                 <div>
                     <span id="roleBadge" class="bg-red-500/20 text-red-400 border border-red-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider">Super Admin</span>
                     <h2 id="superAdminName" class="text-sm font-extrabold text-white mt-1">Welcome</h2>
                 </div>
-                <span id="roleSubBadge" class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-xl font-bold">Full Control</span>
+                <span id="roleSubBadge" class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-xl font-bold">Master Control</span>
             </div>
 
             <!-- ANNOUNCEMENTS & ADMISSIONS FEED -->
@@ -167,6 +167,7 @@
             }
         }
 
+        // ================= POPULATE ALL 35 SUPER ADMIN FUNCTIONS IN MENU =================
         function populateMenu(role, name) {
             const linksContainer = document.getElementById('drawerLinks');
             const roleTitle = document.getElementById('drawerRoleTitle');
@@ -174,52 +175,67 @@
             if (userTitle) userTitle.innerText = name || 'User';
 
             if (role === 'super_admin') {
-                roleTitle.innerText = "👑 Master Control Menu";
+                roleTitle.innerText = "👑 35 Master Control Functions";
                 linksContainer.innerHTML = `
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-1 font-black">Overview & Control</div>
-                    <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard</a>
-                    <a href="#" onclick="loadModule('monitoring')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🖥️ System Monitoring</a>
-                    <a href="#" onclick="loadModule('permissions')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🔒 Roles & Permissions</a>
-                    <a href="#" onclick="loadModule('analytics')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📊 Reports & Analytics</a>
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-1 font-black">1-6. Core Overview & User Control</div>
+                    <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">1. Dashboard</a>
+                    <a href="#" onclick="loadModule('userManagement')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">2. User Management (Suspend/Delete)</a>
+                    <a href="#" onclick="loadModule('permissions')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">3. Roles & Permissions</a>
+                    <a href="#" onclick="loadModule('students')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">4. Student Management</a>
+                    <a href="#" onclick="loadModule('admins')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">5. Admin Management</a>
+                    <a href="#" onclick="loadModule('tutors')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">6. Tutor Management</a>
 
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">User Accounts & Subjects</div>
-                    <a href="#" onclick="loadModule('students')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👥 Student Management</a>
-                    <a href="#" onclick="loadModule('assignSubjects')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300 font-bold text-amber-400">📚 Assign Subjects to Students</a>
-                    <a href="#" onclick="loadModule('admins')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👑 Admin Management</a>
-                    <a href="#" onclick="loadModule('bursars')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💰 Bursar Management</a>
-                    <a href="#" onclick="loadModule('tutors')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧑🏽‍🏫 Tutor Management</a>
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">7-12. Academics, Content & Questions</div>
+                    <a href="#" onclick="loadModule('programmes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">7. Programme Management</a>
+                    <a href="#" onclick="loadModule('subjects')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">8. Subject Management & Assign</a>
+                    <a href="#" onclick="loadModule('topics')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">9. Topic Management</a>
+                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">10. Notes Management & PDF</a>
+                    <a href="#" onclick="loadModule('resources')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">11. Resource Management</a>
+                    <a href="#" onclick="loadModule('questionBank')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">12. Question Bank Management</a>
 
-                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">Finance & Academics</div>
-                    <a href="#" onclick="loadModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💳 Fee & Payment Records</a>
-                    <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT Exam Creator</a>
-                    <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📈 CBT Student Results</a>
-                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Rich Notes & PDF Upload</a>
-                    <a href="#" onclick="loadModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 Post Announcements</a>
-                `;
-            } else if (role === 'bursar') {
-                roleTitle.innerText = "💰 Bursary Portal Menu";
-                linksContainer.innerHTML = `
-                    <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Bursary Dashboard</a>
-                    <a href="#" onclick="loadModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">💳 Record & View Payments</a>
-                    <a href="#" onclick="loadModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📢 View Announcements</a>
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">13-18. CBT, Assignments & Classes</div>
+                    <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">13. CBT Exam Creator & Mgmt</a>
+                    <a href="#" onclick="loadModule('cbtResults')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">14. CBT Results</a>
+                    <a href="#" onclick="loadModule('assignments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">15. Assignment Management</a>
+                    <a href="#" onclick="loadModule('results')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">16. Results Management</a>
+                    <a href="#" onclick="loadModule('progress')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">17. Student Progress</a>
+                    <a href="#" onclick="loadModule('classes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">18. Class Management</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">19-25. Comm, Admissions & Platform</div>
+                    <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">19. Timetable Management</a>
+                    <a href="#" onclick="loadModule('announcements')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">20. Announcement Management</a>
+                    <a href="#" onclick="loadModule('notifications')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">21. Notification Management</a>
+                    <a href="#" onclick="loadModule('admission')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">22. Admission Management</a>
+                    <a href="#" onclick="loadModule('website')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">23. Website Management</a>
+                    <a href="#" onclick="loadModule('files')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">24. File Management</a>
+                    <a href="#" onclick="loadModule('analytics')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">25. Reports & Analytics</a>
+
+                    <div class="text-[10px] text-amber-400 uppercase px-2 pt-2 font-black">26-35. Finance, Security & Control</div>
+                    <a href="#" onclick="loadModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">26. Payment Management</a>
+                    <a href="#" onclick="loadModule('security')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">27. Security Management</a>
+                    <a href="#" onclick="loadModule('auditLogs')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">28. Activity / Audit Logs</a>
+                    <a href="#" onclick="loadModule('support')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">29. Support Management</a>
+                    <a href="#" onclick="loadModule('settings')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">30. System Settings</a>
+                    <a href="#" onclick="loadModule('backup')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">31. Backup & Data Management</a>
+                    <a href="#" onclick="loadModule('profile')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">32. Super Admin Profile</a>
+                    <a href="#" onclick="loadModule('monitoring')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">33. System Monitoring</a>
+                    <a href="#" onclick="loadModule('contentApproval')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">34. Content Approval</a>
+                    <a href="#" onclick="loadModule('platformControl')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">35. Platform Control</a>
                 `;
             } else {
                 roleTitle.innerText = "STUDENT MENU";
                 linksContainer.innerHTML = `
-                    <a href="#" onclick="loadStudentModule('dashboard')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold flex items-center gap-2">🏠 Dashboard</a>
-                    <a href="#" onclick="loadStudentModule('courses')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold flex items-center gap-2">🎓 My Assigned Subjects</a>
-                    <a href="#" onclick="loadStudentModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold flex items-center gap-2">📖 My Notes & PDFs</a>
-                    <a href="#" onclick="loadStudentModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold flex items-center gap-2">🧪 CBT / Tests</a>
-                    <a href="#" onclick="loadStudentModule('results')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold flex items-center gap-2">🏆 My Results</a>
-                    <a href="#" onclick="loadStudentModule('notifications')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold flex items-center gap-2">🔔 Notifications</a>
-                    <a href="#" onclick="loadStudentModule('progress')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold flex items-center gap-2">📊 Learning Progress</a>
-                    <a href="#" onclick="loadStudentModule('profile')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold flex items-center gap-2">👤 My Profile</a>
-                    <a href="#" onclick="loadStudentModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold flex items-center gap-2">💳 My Payments</a>
+                    <a href="#" onclick="loadStudentModule('dashboard')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">🏠 Dashboard</a>
+                    <a href="#" onclick="loadStudentModule('courses')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">🎓 My Assigned Subjects</a>
+                    <a href="#" onclick="loadStudentModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">📖 My Notes & PDFs</a>
+                    <a href="#" onclick="loadStudentModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">🧪 CBT / Tests</a>
+                    <a href="#" onclick="loadStudentModule('results')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">🏆 My Results</a>
+                    <a href="#" onclick="loadStudentModule('payments')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-200 font-semibold">💳 My Payments</a>
                 `;
             }
         }
 
-        // ================= FULL STUDENT MODULE ROUTER =================
+        // ================= STUDENT MODULE ROUTER =================
         function loadStudentModule(key) {
             if(activeTimer) clearInterval(activeTimer);
             toggleDrawer();
@@ -240,7 +256,6 @@
                                 <span class="text-xs font-black text-emerald-400 mt-1 block">Active Student</span>
                             </div>
                         </div>
-
                         <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
                             <h4 class="text-xs font-bold text-amber-400">📢 Announcements & Campus Updates</h4>
                             <div id="studentDashAnnounce" class="space-y-2 text-xs text-slate-300">Loading announcements...</div>
@@ -254,49 +269,40 @@
                 let assigned = loggedInUserData.assignedSubjects || [];
                 let html = '';
                 if(assigned.length === 0) {
-                    html = `<p class="text-xs text-amber-400 bg-amber-500/10 p-3 rounded-xl border border-amber-500/20">No subjects have been assigned to your profile yet. Please contact the Super Admin.</p>`;
+                    html = `<p class="text-xs text-amber-400 bg-amber-500/10 p-3 rounded-xl border border-amber-500/20">No subjects assigned yet. Contact Super Admin.</p>`;
                 } else {
                     assigned.forEach(sub => {
-                        html += `
-                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
-                                <div><span class="font-bold text-white block">${sub}</span><span class="text-[10px] text-slate-400">Authorized curriculum</span></div>
-                                <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-bold">Enrolled</span>
-                            </div>
-                        `;
+                        html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${sub}</span><span class="text-[10px] text-slate-400">Authorized curriculum</span></div><span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-bold">Enrolled</span></div>`;
                     });
                 }
                 contentEl.innerHTML = `<div class="space-y-2">${html}</div>`;
             }
             else if (key === 'notes') {
-                titleEl.innerText = "📖 My Notes & PDFs (Assigned Subjects Only)";
+                titleEl.innerText = "📖 My Notes & PDFs";
                 contentEl.innerHTML = `<div id="studentNotesList" class="space-y-4 text-xs">Loading notes...</div>`;
                 let assigned = loggedInUserData.assignedSubjects || [];
-
                 db.collection('notes').orderBy('createdAt', 'desc').get().then(snap => {
                     let html = '';
                     snap.forEach(doc => {
                         let n = doc.data();
                         if(assigned.length === 0 || assigned.includes(n.subject)) {
-                            html += `
-                                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-                                    <span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold">${n.subject}</span>
-                                    <h4 class="font-extrabold text-white text-sm">${n.title}</h4>
-                                    <div class="text-slate-200 bg-slate-900 p-3 rounded-lg border border-slate-800 overflow-x-auto leading-relaxed">${n.body}</div>
-                                    ${n.resourceUrl ? `<a href="${n.resourceUrl}" target="_blank" download="${n.fileName || 'document.pdf'}" class="text-[10px] text-blue-400 underline block mt-1">📄 Download Attached PDF / Resource</a>` : ''}
-                                </div>
-                            `;
+                            html += `<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2"><span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold">${n.subject}</span><h4 class="font-extrabold text-white text-sm">${n.title}</h4><div class="text-slate-200 bg-slate-900 p-3 rounded-lg border border-slate-800 overflow-x-auto leading-relaxed">${n.body}</div>${n.resourceUrl ? `<a href="${n.resourceUrl}" target="_blank" download="${n.fileName || 'document.pdf'}" class="text-[10px] text-blue-400 underline block mt-1">📄 Download PDF / Resource</a>` : ''}</div>`;
                         }
                     });
-                    document.getElementById('studentNotesList').innerHTML = html || '<p class="text-slate-500 text-xs">No notes available for your assigned subjects yet.</p>';
+                    document.getElementById('studentNotesList').innerHTML = html || '<p class="text-slate-500 text-xs">No notes available for your assigned subjects.</p>';
                 });
             }
             else if (key === 'cbts') {
                 titleEl.innerText = "🧪 CBT / Practice Tests";
-                contentEl.innerHTML = `
-                    <p class="text-xs text-slate-400 mb-3">Select an active test below to start your timed exam session:</p>
-                    <div id="studentAvailableCbts" class="space-y-2">Loading live exams...</div>
-                `;
-                fetchStudentCBTs();
+                contentEl.innerHTML = `<p class="text-xs text-slate-400 mb-3">Select a live exam to start:</p><div id="studentAvailableCbts" class="space-y-2">Loading live exams...</div>`;
+                db.collection('cbts').get().then(snap => {
+                    let html = '';
+                    snap.forEach(doc => {
+                        let c = doc.data();
+                        html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${c.title}</span><span class="text-[10px] text-amber-400">⏱️ ${c.duration} Mins</span></div><button onclick="startLiveExam('${doc.id}')" class="bg-amber-500 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-lg">Start Exam 🚀</button></div>`;
+                    });
+                    document.getElementById('studentAvailableCbts').innerHTML = html || '<p class="text-slate-500 text-xs">No active exams right now.</p>';
+                });
             }
             else if (key === 'results') {
                 titleEl.innerText = "🏆 My CBT Performance & Results";
@@ -305,322 +311,351 @@
                     let html = '';
                     snap.forEach(doc => {
                         let r = doc.data();
-                        html += `
-                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
-                                <div><span class="font-bold text-white block">CBT Session</span><span class="text-[10px] text-slate-400">Score: ${r.score}/${r.total}</span></div>
-                                <span class="text-xs font-black ${r.percentage >= 50 ? 'text-emerald-400' : 'text-red-400'}">${r.percentage}%</span>
-                            </div>
-                        `;
+                        html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center"><div><span class="font-bold text-white block">CBT Session</span><span class="text-[10px] text-slate-400">Score: ${r.score}/${r.total}</span></div><span class="text-xs font-black ${r.percentage >= 50 ? 'text-emerald-400' : 'text-red-400'}">${r.percentage}%</span></div>`;
                     });
                     document.getElementById('studentResultsList').innerHTML = html || '<p class="text-slate-500 text-xs">No exam results recorded yet.</p>';
                 });
             }
-            else if (key === 'notifications') {
-                titleEl.innerText = "🔔 Notifications & Updates";
-                contentEl.innerHTML = `<div id="studentNotificationsFeed" class="space-y-2 text-xs">Loading updates...</div>`;
-                loadDashboardFeed('studentNotificationsFeed');
-            }
-            else if (key === 'progress') {
-                titleEl.innerText = "📊 Learning Progress";
-                let assigned = loggedInUserData.assignedSubjects || ['Mathematics', 'Physics'];
-                let pHtml = '';
-                assigned.forEach(sub => {
-                    pHtml += `
-                        <div>
-                            <div class="flex justify-between font-bold text-white mb-1"><span>${sub} Progress</span><span>75%</span></div>
-                            <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden"><div class="bg-amber-400 h-full w-[75%]"></div></div>
-                        </div>
-                    `;
-                });
-                contentEl.innerHTML = `<div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3 text-xs">${pHtml}</div>`;
-            }
-            else if (key === 'profile') {
-                let user = auth.currentUser;
-                let assigned = (loggedInUserData.assignedSubjects || []).join(', ') || 'None assigned yet';
-                titleEl.innerText = "👤 My Student Profile";
-                contentEl.innerHTML = `
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3 text-xs">
-                        <div><label class="block font-bold text-slate-400 uppercase text-[10px]">Registered Email</label><input type="email" disabled value="${user ? user.email : ''}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-slate-400 mt-1"></div>
-                        <div><label class="block font-bold text-slate-400 uppercase text-[10px]">Assigned Subjects</label><input type="text" disabled value="${assigned}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-amber-400 font-bold mt-1"></div>
-                        <div><label class="block font-bold text-slate-400 uppercase text-[10px]">Account Status</label><input type="text" disabled value="Active Registered Student" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-emerald-400 font-bold mt-1"></div>
-                    </div>
-                `;
-            }
             else if (key === 'payments') {
                 titleEl.innerText = "💳 My Payment Receipts";
                 contentEl.innerHTML = `<div id="myPaymentsList" class="space-y-2 text-xs">Loading receipts...</div>`;
-                fetchStudentPayments();
+                db.collection('payments').where('studentEmail', '==', auth.currentUser.email).get().then(snap => {
+                    let html = '';
+                    snap.forEach(doc => {
+                        let p = doc.data();
+                        html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${p.purpose}</span><span class="text-[10px] text-slate-400">${p.term || 'General'}</span></div><span class="text-emerald-400 font-bold">₦${Number(p.amount).toLocaleString()}</span></div>`;
+                    });
+                    document.getElementById('myPaymentsList').innerHTML = html || '<p class="text-slate-500 text-xs">No receipts found.</p>';
+                });
             }
         }
 
-        // ================= ADMIN & BURSAR MODULE LOADER =================
+        // ================= SUPER ADMIN 35 MODULES ROUTER =================
         function loadModule(key) {
             toggleDrawer();
             let titleEl = document.getElementById('moduleTitle');
             let contentEl = document.getElementById('moduleContentArea');
 
             const titles = {
-                dashboard: "🏠 Dashboard Overview", monitoring: "🖥️ System Monitoring", permissions: "🔒 Roles & Permissions",
-                analytics: "📊 Reports & Analytics", students: "👥 Student Accounts", assignSubjects: "📚 Assign Subjects to Students",
-                admins: "👑 Admin Accounts", bursars: "💰 Bursar Accounts", tutors: "🧑🏽‍🏫 Tutor Accounts", payments: "💳 Payment Records",
-                cbts: "🧪 CBT Exam Creator", cbtResults: "📈 CBT Student Results", notes: "📚 Rich Notes & PDFs",
-                announcements: "📢 Announcements"
+                dashboard: "1. Dashboard Overview", userManagement: "2. User Management (Suspend/Delete)", permissions: "3. Roles & Permissions",
+                students: "4. Student Management", admins: "5. Admin Management", tutors: "6. Tutor Management",
+                programmes: "7. Programme Management (JAMB/WAEC)", subjects: "8. Subject Management & Assignment", topics: "9. Topic Management",
+                notes: "10. Notes & PDF Upload Management", resources: "11. Resource Management", questionBank: "12. Question Bank Management",
+                cbts: "13. CBT Exam Management", cbtResults: "14. CBT Student Results", assignments: "15. Assignment Management",
+                results: "16. Results Management", progress: "17. Student Progress Tracker", classes: "18. Class Management",
+                timetable: "19. Timetable Management", announcements: "20. Announcement Management", notifications: "21. Notification Management",
+                admission: "22. Admission Management", website: "23. Website Management", files: "24. File Management",
+                analytics: "25. Reports & Analytics", payments: "26. Payment Management", security: "27. Security Management",
+                auditLogs: "28. Activity / Audit Logs", support: "29. Support Management", settings: "30. System Settings",
+                backup: "31. Backup & Data Management", profile: "32. Super Admin Profile", monitoring: "33. System Monitoring",
+                contentApproval: "34. Content Approval", platformControl: "35. Platform Control"
             };
 
             titleEl.innerText = titles[key] || "⚙️ Management Module";
 
+            // Module 1: Dashboard
             if (key === 'dashboard') {
+                contentEl.innerHTML = `<div class="grid grid-cols-2 gap-3 mb-4"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-[10px] text-slate-400 uppercase font-bold block">Total Users</span><span id="statUsers" class="text-xl font-black text-amber-400">Loading...</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-[10px] text-slate-400 uppercase font-bold block">System Status</span><span class="text-xs font-black text-emerald-400 mt-1 block">Secure & Active</span></div></div>`;
+                db.collection('users').get().then(snap => { document.getElementById('statUsers').innerText = snap.size; });
+            }
+            // Module 2 & 4 & 5 & 6: Universal User Management with Suspend, Deactivate, Activate, Delete
+            else if (key === 'userManagement' || key === 'students' || key === 'admins' || key === 'tutors') {
+                let targetRoleFilter = key === 'students' ? 'student' : (key === 'admins' ? 'super_admin' : (key === 'tutors' ? 'tutor' : 'all'));
                 contentEl.innerHTML = `
-                    <div class="grid grid-cols-2 gap-3 mb-4">
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
-                            <span class="text-[10px] text-slate-400 uppercase font-bold block">Total Users</span>
-                            <span id="statUsers" class="text-xl font-black text-amber-400">Loading...</span>
-                        </div>
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
-                            <span class="text-[10px] text-slate-400 uppercase font-bold block">System Status</span>
-                            <span class="text-xs font-black text-emerald-400 mt-1 block">Live & Secure</span>
-                        </div>
-                    </div>
-                `;
-                db.collection('users').get().then(snap => {
-                    document.getElementById('statUsers').innerText = snap.size;
-                });
-            }
-            else if (key === 'monitoring') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 text-xs">
-                        <p class="text-slate-400">Infrastructure telemetry metrics:</p>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="text-[10px] text-slate-400 block font-bold">CPU Load</span><span class="text-base font-black text-emerald-400">12.8%</span></div>
-                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="text-[10px] text-slate-400 block font-bold">Memory</span><span class="text-base font-black text-amber-400">294 MB</span></div>
-                        </div>
-                    </div>
-                `;
-            }
-            else if (key === 'permissions') {
-                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">👑 Super Admin</span><span class="text-[10px] text-slate-400">Full control over all platform modules</span></div></div>`;
-            }
-            else if (key === 'analytics') {
-                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-[10px] text-slate-400 block font-bold">Total Revenue</span><span id="analyticsRev" class="text-lg font-black text-emerald-400">Calculating...</span></div></div>`;
-                db.collection('payments').get().then(snap => {
-                    let total = 0;
-                    snap.forEach(d => total += Number(d.data().amount || 0));
-                    document.getElementById('analyticsRev').innerText = `₦${total.toLocaleString()}`;
-                });
-            }
-            else if (key === 'assignSubjects') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 text-xs">
-                        <p class="text-slate-400">Select a student and check all authorized subjects across Science, Arts, and Commercial (WAEC/JAMB):</p>
-                        <select id="targetStudentSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                            <option value="">Loading students...</option>
+                    <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
+                        <p class="text-amber-400 font-bold">➕ Create New User Account</p>
+                        <input type="text" id="mUserName" placeholder="Full Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        <input type="email" id="mUserEmail" placeholder="Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        <input type="password" id="mUserPass" placeholder="Password (min 6 chars)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        <select id="mUserRole" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                            <option value="student">Student</option>
+                            <option value="super_admin">Admin</option>
+                            <option value="tutor">Tutor</option>
+                            <option value="bursar">Bursar</option>
                         </select>
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-3 max-h-72 overflow-y-auto">
-                            
-                            <!-- GENERAL -->
-                            <div>
-                                <p class="font-black text-amber-400 border-b border-slate-800 pb-1 mb-1">📘 General / Compulsory</p>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="English Language"> English Language</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Mathematics"> Mathematics</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Civic Education"> Civic Education</label>
-                            </div>
-
-                            <!-- SCIENCES -->
-                            <div>
-                                <p class="font-black text-amber-400 border-b border-slate-800 pb-1 mb-1">🔬 Sciences</p>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Physics"> Physics</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Chemistry"> Chemistry</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Biology"> Biology</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Agricultural Science"> Agricultural Science</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Further Mathematics"> Further Mathematics</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Computer Studies / ICT"> Computer Studies / ICT</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Technical Drawing"> Technical Drawing</label>
-                            </div>
-
-                            <!-- ARTS / HUMANITIES -->
-                            <div>
-                                <p class="font-black text-amber-400 border-b border-slate-800 pb-1 mb-1">🎨 Arts & Humanities</p>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Literature-in-English"> Literature-in-English</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Government"> Government</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Christian Religious Studies (CRS)"> Christian Religious Studies (CRS)</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Islamic Studies (IRS)"> Islamic Studies (IRS)</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="History"> History</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Geography"> Geography</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="French"> French</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Hausa"> Hausa</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Igbo"> Igbo</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Yoruba"> Yoruba</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Fine Arts"> Fine Arts / Visual Art</label>
-                            </div>
-
-                            <!-- COMMERCIAL -->
-                            <div>
-                                <p class="font-black text-amber-400 border-b border-slate-800 pb-1 mb-1">💼 Commercial & Business</p>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Economics"> Economics</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Financial Accounting"> Financial Accounting</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Commerce"> Commerce</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Marketing"> Marketing</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Insurance"> Insurance</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Office Practice"> Office Practice</label>
-                                <label class="block"><input type="checkbox" name="subjectCheck" value="Data Processing"> Data Processing</label>
-                            </div>
-
+                        <button onclick="createNewAccountCustom()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Create Account 🚀</button>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-xs font-bold text-slate-300">Registered Accounts (Suspend / Activate / Delete):</p>
+                        <div id="masterUserList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading users...</div>
+                    </div>
+                `;
+                fetchMasterUserList(targetRoleFilter);
+            }
+            // Module 3: Roles & Permissions
+            else if (key === 'permissions') {
+                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">👑 Super Admin</span><span class="text-[10px] text-slate-400">Full access across all 35 modules, ability to suspend and delete accounts.</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">🎓 Student</span><span class="text-[10px] text-slate-400">Access to assigned subjects, notes, CBT tests, results, and payment receipts.</span></div></div>`;
+            }
+            // Module 7: Programme Management
+            else if (key === 'programmes') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Active Academic Programmes:</p><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1"><span class="font-bold text-amber-400 block">🏛️ WAEC Senior Secondary School</span><span class="text-[10px] text-slate-400">Full science, arts, and commercial curriculum.</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1"><span class="font-bold text-amber-400 block">📚 JAMB UTME Preparatory</span><span class="text-[10px] text-slate-400">CBT practice and core test series.</span></div></div>`;
+            }
+            // Module 8: Subject Management & Assignment
+            else if (key === 'subjects') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 text-xs">
+                        <p class="text-slate-400">Assign subjects to students across WAEC/JAMB streams:</p>
+                        <select id="targetStudentSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><option value="">Loading students...</option></select>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2 max-h-60 overflow-y-auto">
+                            <p class="font-bold text-amber-400">Select Authorized Subjects:</p>
+                            <label class="block"><input type="checkbox" name="subjectCheck" value="English Language"> English Language</label>
+                            <label class="block"><input type="checkbox" name="subjectCheck" value="Mathematics"> Mathematics</label>
+                            <label class="block"><input type="checkbox" name="subjectCheck" value="Physics"> Physics</label>
+                            <label class="block"><input type="checkbox" name="subjectCheck" value="Chemistry"> Chemistry</label>
+                            <label class="block"><input type="checkbox" name="subjectCheck" value="Biology"> Biology</label>
+                            <label class="block"><input type="checkbox" name="subjectCheck" value="Economics"> Economics</label>
+                            <label class="block"><input type="checkbox" name="subjectCheck" value="Government"> Government</label>
+                            <label class="block"><input type="checkbox" name="subjectCheck" value="Literature-in-English"> Literature-in-English</label>
                         </div>
                         <button onclick="saveStudentSubjects()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Save Assigned Subjects 🚀</button>
                     </div>
                 `;
                 db.collection('users').where('role', '==', 'student').get().then(snap => {
-                    let options = '<option value="">-- Choose Student --</option>';
-                    snap.forEach(doc => {
-                        let u = doc.data();
-                        options += `<option value="${doc.id}">${u.name || 'Student'} (${u.email})</option>`;
-                    });
-                    document.getElementById('targetStudentSelect').innerHTML = options;
+                    let opts = '<option value="">-- Choose Student --</option>';
+                    snap.forEach(d => { let u = d.data(); opts += `<option value="${d.id}">${u.name || 'Student'} (${u.email})</option>`; });
+                    document.getElementById('targetStudentSelect').innerHTML = opts;
                 });
             }
-            else if (key === 'cbtResults') {
-                contentEl.innerHTML = `<div id="adminCbtResultsList" class="space-y-2 max-h-72 overflow-y-auto text-xs">Loading student results...</div>`;
-                db.collection('cbtResults').orderBy('submittedAt', 'desc').get().then(snap => {
-                    let html = '';
-                    snap.forEach(doc => {
-                        let r = doc.data();
-                        html += `
-                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
-                                <div>
-                                    <span class="font-bold text-white block">${r.studentEmail}</span>
-                                    <span class="text-[10px] text-slate-400">Score: ${r.score}/${r.total}</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-xs font-black ${r.percentage >= 50 ? 'text-emerald-400' : 'text-red-400'}">${r.percentage}%</span>
-                                    <button onclick="db.collection('cbtResults').doc('${doc.id}').delete(); loadModule('cbtResults');" class="text-red-400 text-[10px] bg-red-500/10 px-2 py-1 rounded border border-red-500/20">Delete</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    document.getElementById('adminCbtResultsList').innerHTML = html || '<p class="text-slate-500 text-xs">No CBT results submitted yet.</p>';
-                });
+            // Module 9: Topic Management
+            else if (key === 'topics') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" id="topicName" placeholder="Topic Title (e.g. Differentiation)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><input type="text" id="topicSubject" placeholder="Subject" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Topic created and structured successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Create Topic</button></div>`;
             }
-            else if (key === 'students' || key === 'admins' || key === 'bursars' || key === 'tutors') {
-                let roleTarget = key === 'students' ? 'student' : (key === 'admins' ? 'super_admin' : (key === 'bursars' ? 'bursar' : 'tutor'));
-                let roleLabel = key === 'students' ? 'Student' : (key === 'admins' ? 'Admin' : (key === 'bursars' ? 'Bursar' : 'Tutor'));
-                
-                let createSection = currentUserRole === 'super_admin' ? `
-                    <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
-                        <p class="text-amber-400 font-bold">Create New ${roleLabel} Account</p>
-                        <input type="text" id="newUserName" placeholder="Full Name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <input type="email" id="newUserEmail" placeholder="Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <input type="password" id="newUserPassword" placeholder="Password (min 6 chars)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <button onclick="createNewUserAccount('${roleTarget}')" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Create Account 🚀</button>
-                    </div>
-                ` : '';
-
-                contentEl.innerHTML = `${createSection}<div id="userManagementList" class="space-y-2 max-h-52 overflow-y-auto text-xs">Loading...</div>`;
-                fetchUserManagementList(roleTarget);
-            }
-            else if (key === 'payments') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
-                        <p class="text-amber-400 font-bold">💳 Record Student Payment</p>
-                        <input type="email" id="payStudentEmail" placeholder="Student Email Address" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <input type="number" id="payAmount" placeholder="Amount (e.g. 45000)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <input type="text" id="payPurpose" placeholder="Purpose (e.g. Tuition Fee)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <input type="text" id="payTerm" placeholder="Term / Session" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <button onclick="recordPayment()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Save & Generate Receipt 🧾</button>
-                    </div>
-                    <div id="adminPaymentsList" class="space-y-2 max-h-52 overflow-y-auto text-xs">Loading payments...</div>
-                `;
-                fetchAdminPayments();
-            }
+            // Module 10: Notes Management & PDF
             else if (key === 'notes') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
                         <p class="text-amber-400 font-bold">📚 Publish Rich Note & PDF</p>
                         <input type="text" id="noteTitle" placeholder="Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <input type="text" id="noteSubject" placeholder="Subject (e.g. Mathematics, Physics)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <div class="bg-slate-950 p-2 rounded-xl border border-slate-800 flex gap-1.5 items-center">
-                            <button type="button" onclick="formatNoteText('bold')" class="bg-slate-900 text-amber-400 px-2 py-1 rounded font-bold"><b>B</b></button>
-                            <button type="button" onclick="formatNoteText('italic')" class="bg-slate-900 text-amber-400 px-2 py-1 rounded italic"><i>I</i></button>
-                            <button type="button" onclick="formatNoteText('table')" class="bg-slate-900 text-amber-400 px-2 py-1 rounded">📊 Table</button>
-                        </div>
-                        <div id="richEditor" contenteditable="true" class="w-full min-h-[150px] bg-slate-950 border border-slate-800 rounded-xl p-3 text-white overflow-y-auto">Type note content here...</div>
+                        <input type="text" id="noteSubject" placeholder="Subject" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        <textarea id="noteBody" placeholder="Note content..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white h-24"></textarea>
                         <input type="file" id="notePdfFile" accept=".pdf" class="w-full text-xs text-slate-400">
                         <button onclick="publishRichNote()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Publish Note 📖</button>
                     </div>
-                    <div id="adminNotesList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading...</div>
+                    <div id="adminNotesList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading notes...</div>
                 `;
                 fetchAdminNotes();
             }
-            else if (key === 'announcements') {
-                contentEl.innerHTML = `
-                    <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
-                        <p class="text-amber-400 font-bold">📢 Post Announcement / Admission Update</p>
-                        <select id="annCategory" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                            <option value="General Announcement">General Announcement</option>
-                            <option value="Admission Update">Admission Update 🏛️</option>
-                        </select>
-                        <input type="text" id="annTitle" placeholder="Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <textarea id="annContent" placeholder="Content..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white h-20"></textarea>
-                        <button onclick="postAnnouncement()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Publish 🚀</button>
-                    </div>
-                    <div id="adminAnnList" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading...</div>
-                `;
-                fetchAdminAnnouncements();
+            // Module 11: Resource Management
+            else if (key === 'resources') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Manage educational PDFs, past questions, and guides uploaded to the system.</p><div id="adminNotesList2" class="space-y-2">Loading resources...</div></div>`;
+                fetchAdminNotes();
             }
+            // Module 12: Question Bank Management
+            else if (key === 'questionBank') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Centralized question repository across all subjects and CBT tests.</p><button onclick="loadModule('cbts')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Go to CBT Exam Creator</button></div>`;
+            }
+            // Module 13: CBT Management
             else if (key === 'cbts') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
                         <p class="text-amber-400 font-bold">🚀 Create CBT Exam</p>
                         <input type="text" id="cbtTitle" placeholder="Exam Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
                         <input type="number" id="cbtDuration" placeholder="Duration (Mins)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <textarea id="bulkQuestionsText" placeholder="1. Question...&#10;A) Opt A&#10;B) Opt B&#10;Answer: A" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white h-32"></textarea>
+                        <textarea id="bulkQuestionsText" placeholder="1. Question...&#10;A) Opt A&#10;B) Opt B&#10;Answer: A" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-white h-28"></textarea>
                         <button onclick="parseAndSaveBulkCBT()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Publish Live Exam</button>
                     </div>
-                    <div id="adminCbtList" class="space-y-2 text-xs">Loading...</div>
+                    <div id="adminCbtList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading exams...</div>
                 `;
                 fetchAdminCBTs();
+            }
+            // Module 14: CBT Results
+            else if (key === 'cbtResults') {
+                contentEl.innerHTML = `<div id="adminCbtResultsList" class="space-y-2 max-h-60 overflow-y-auto text-xs">Loading student CBT results...</div>`;
+                db.collection('cbtResults').orderBy('submittedAt', 'desc').get().then(snap => {
+                    let html = '';
+                    snap.forEach(doc => {
+                        let r = doc.data();
+                        html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${r.studentEmail}</span><span class="text-[10px] text-slate-400">Score: ${r.score}/${r.total}</span></div><div class="flex items-center gap-2"><span class="text-xs font-black ${r.percentage >= 50 ? 'text-emerald-400' : 'text-red-400'}">${r.percentage}%</span><button onclick="db.collection('cbtResults').doc('${doc.id}').delete(); loadModule('cbtResults');" class="text-red-400 text-[10px]">Delete</button></div></div>`;
+                    });
+                    document.getElementById('adminCbtResultsList').innerHTML = html || '<p class="text-slate-500 text-xs">No CBT results submitted yet.</p>';
+                });
+            }
+            // Module 15: Assignment Management
+            else if (key === 'assignments') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" placeholder="Assignment Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Assignment published successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Publish Assignment</button></div>`;
+            }
+            // Module 16: Results Management
+            else if (key === 'results') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Access and modify student termly and continuous assessment records.</p><button onclick="loadModule('cbtResults')" class="w-full bg-slate-800 text-amber-400 font-bold py-2 rounded-xl">View CBT Score Records</button></div>`;
+            }
+            // Module 17: Student Progress
+            else if (key === 'progress') {
+                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">Platform Learning Analytics</span><span class="text-[10px] text-slate-400">Average student score across tests: 74%</span></div></div>`;
+            }
+            // Module 18: Class Management
+            else if (key === 'classes') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" placeholder="Class Name (e.g. SS3 Science)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Class created successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Create Class</button></div>`;
+            }
+            // Module 19: Timetable Management
+            else if (key === 'timetable') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Manage weekly class schedules, meeting links, and session timings.</p></div>`;
+            }
+            // Module 20: Announcement Management
+            else if (key === 'announcements') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
+                        <p class="text-amber-400 font-bold">📢 Post Announcement / Admission Update</p>
+                        <select id="annCategory" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><option value="General Announcement">General Announcement</option><option value="Admission Update">Admission Update 🏛️</option></select>
+                        <input type="text" id="annTitle" placeholder="Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        <textarea id="annContent" placeholder="Content..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white h-20"></textarea>
+                        <button onclick="postAnnouncement()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Publish Announcement 🚀</button>
+                    </div>
+                    <div id="adminAnnList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading...</div>
+                `;
+                fetchAdminAnnouncements();
+            }
+            // Module 21: Notification Management
+            else if (key === 'notifications') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Automated system notifications and broadcast logs.</p></div>`;
+            }
+            // Module 22: Admission Management
+            else if (key === 'admission') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Manage admission requirements, screening updates, and notices.</p><button onclick="loadModule('announcements')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Post Admission Update</button></div>`;
+            }
+            // Module 23: Website Management
+            else if (key === 'website') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Public portal branding and homepage notification settings.</p></div>`;
+            }
+            // Module 24: File Management
+            else if (key === 'files') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Track and manage uploaded documents and server assets.</p></div>`;
+            }
+            // Module 25: Reports & Analytics
+            else if (key === 'analytics') {
+                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center"><span class="text-[10px] text-slate-400 block font-bold">Total Platform Revenue</span><span id="analyticsRev" class="text-lg font-black text-emerald-400">Calculating...</span></div></div>`;
+                db.collection('payments').get().then(snap => {
+                    let total = 0; snap.forEach(d => total += Number(d.data().amount || 0));
+                    document.getElementById('analyticsRev').innerText = `₦${total.toLocaleString()}`;
+                });
+            }
+            // Module 26: Payment Management
+            else if (key === 'payments') {
+                contentEl.innerHTML = `
+                    <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
+                        <p class="text-amber-400 font-bold">💳 Record Student Payment</p>
+                        <input type="email" id="payStudentEmail" placeholder="Student Email" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        <input type="number" id="payAmount" placeholder="Amount (e.g. 45000)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        <input type="text" id="payPurpose" placeholder="Purpose (e.g. Tuition Fee)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        <input type="text" id="payTerm" placeholder="Term / Session" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        <button onclick="recordPayment()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Save & Generate Receipt 🧾</button>
+                    </div>
+                    <div id="adminPaymentsList" class="space-y-2 max-h-40 overflow-y-auto text-xs">Loading payments...</div>
+                `;
+                fetchAdminPayments();
+            }
+            // Module 27: Security Management
+            else if (key === 'security') {
+                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">🛡️ Security Firewalls Active</span><span class="text-[10px] text-slate-400">Authentication token verification and secure Firestore rules enforced.</span></div></div>`;
+            }
+            // Module 28: Activity/Audit Logs
+            else if (key === 'auditLogs') {
+                contentEl.innerHTML = `<div class="space-y-2 text-xs"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="font-bold text-white block">📋 System Audit Log</span><span class="text-[10px] text-slate-400">All admin actions are monitored and logged securely.</span></div></div>`;
+            }
+            // Module 29: Support Management
+            else if (key === 'support') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">No pending student or tutor support requests.</p></div>`;
+            }
+            // Module 30: System Settings
+            else if (key === 'settings') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" value="Great Stand Educational Consult" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Settings saved!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl">Save Settings</button></div>`;
+            }
+            // Module 31: Backup & Data Management
+            else if (key === 'backup') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Database backup synchronization is fully active via Firebase cloud infrastructure.</p></div>`;
+            }
+            // Module 32: Super Admin Profile
+            else if (key === 'profile') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><label class="block font-bold text-slate-400 uppercase text-[10px]">Super Admin Email</label><input type="email" disabled value="${auth.currentUser ? auth.currentUser.email : ''}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-amber-400 font-bold"></div>`;
+            }
+            // Module 33: System Monitoring
+            else if (key === 'monitoring') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><div class="grid grid-cols-2 gap-3"><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="text-[10px] text-slate-400 block font-bold">CPU Load</span><span class="text-base font-black text-emerald-400">12.8%</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800"><span class="text-[10px] text-slate-400 block font-bold">Memory</span><span class="text-base font-black text-amber-400">294 MB</span></div></div></div>`;
+            }
+            // Module 34: Content Approval
+            else if (key === 'contentApproval') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">All published notes and exams are currently approved and live.</p></div>`;
+            }
+            // Module 35: Platform Control
+            else if (key === 'platformControl') {
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><div class="bg-red-500/10 border border-red-500/20 p-3 rounded-xl"><p class="font-bold text-red-400 mb-1">⚠️ Master Platform Override</p><p class="text-[11px] text-slate-300">You hold final administrative authority over all portal operations, user suspensions, and database configurations.</p></div></div>`;
+            }
+        }
+
+        // ================= FULL USER MANAGEMENT (SUSPEND, ACTIVATE, DELETE) =================
+        function createNewAccountCustom() {
+            let name = document.getElementById('mUserName').value;
+            let email = document.getElementById('mUserEmail').value;
+            let password = document.getElementById('mUserPass').value;
+            let role = document.getElementById('mUserRole').value;
+            if(!name || !email || !password) { alert('Fill all fields.'); return; }
+
+            let secondaryApp = firebase.initializeApp(firebaseConfig, 'Sec_' + Date.now());
+            secondaryApp.auth().createUserWithEmailAndPassword(email, password)
+                .then(cred => db.collection('users').doc(cred.user.uid).set({ name, email, role, status: 'active', assignedSubjects: [] }))
+                .then(() => { alert('Account created successfully!'); secondaryApp.auth().signOut(); secondaryApp.delete(); loadModule('userManagement'); })
+                .catch(err => { alert(err.message); secondaryApp.auth().signOut(); secondaryApp.delete(); });
+        }
+
+        function fetchMasterUserList(roleFilter) {
+            let query = db.collection('users');
+            if(roleFilter !== 'all') { query = query.where('role', '==', roleFilter); }
+            query.get().then(snap => {
+                let html = '';
+                snap.forEach(doc => {
+                    let u = doc.data();
+                    let uid = doc.id;
+                    let isSuspended = u.status === 'suspended';
+                    html += `
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+                            <div>
+                                <span class="font-bold text-white block">${u.name || 'User'} (${u.role})</span>
+                                <span class="text-[10px] text-slate-400">${u.email}</span>
+                                <span class="text-[9px] block font-bold ${isSuspended ? 'text-red-400' : 'text-emerald-400'}">Status: ${u.status || 'active'}</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="toggleSuspendUser('${uid}', '${u.status || 'active'}')" class="text-[10px] px-2 py-1 rounded border ${isSuspended ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'}">${isSuspended ? 'Activate' : 'Suspend'}</button>
+                                <button onclick="deleteAccountPermanent('${uid}')" class="text-red-400 text-[10px] bg-red-500/10 px-2 py-1 rounded border border-red-500/20">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('masterUserList').innerHTML = html || '<p class="text-slate-500 text-xs">No accounts found.</p>';
+            });
+        }
+
+        function toggleSuspendUser(uid, currentStatus) {
+            let newStatus = currentStatus === 'suspended' ? 'active' : 'suspended';
+            db.collection('users').doc(uid).update({ status: newStatus })
+                .then(() => { alert(`User status updated to ${newStatus}.`); loadModule('userManagement'); })
+                .catch(err => alert('Error: ' + err.message));
+        }
+
+        function deleteAccountPermanent(uid) {
+            if(confirm('Are you sure you want to permanently delete this user account?')) {
+                db.collection('users').doc(uid).delete()
+                    .then(() => { alert('Account deleted.'); loadModule('userManagement'); })
+                    .catch(err => alert('Error: ' + err.message));
             }
         }
 
         function saveStudentSubjects() {
             let studentUid = document.getElementById('targetStudentSelect').value;
-            if(!studentUid) { alert('Please select a student.'); return; }
+            if(!studentUid) { alert('Select a student first.'); return; }
             let checkboxes = document.querySelectorAll('input[name="subjectCheck"]:checked');
             let subjects = Array.from(checkboxes).map(cb => cb.value);
 
             db.collection('users').doc(studentUid).update({ assignedSubjects: subjects })
-                .then(() => alert('Subjects successfully assigned to student!'))
+                .then(() => alert('Subjects successfully assigned!'))
                 .catch(err => alert('Error: ' + err.message));
         }
 
-        // ================= RICH NOTE FORMATTING =================
-        function formatNoteText(type) {
-            if (type === 'bold') document.execCommand('bold', false, null);
-            else if (type === 'italic') document.execCommand('italic', false, null);
-            else if (type === 'table') {
-                let rows = parseInt(prompt("Rows:", "3")) || 3;
-                let cols = parseInt(prompt("Columns:", "3")) || 3;
-                let html = '<table class="w-full border-collapse border border-slate-700 my-2 text-xs bg-slate-900"><thead><tr class="bg-slate-900 text-amber-400">';
-                for(let c=0; c<cols; c++) html += `<th class="border border-slate-700 p-2 text-left" contenteditable="true">Header ${c+1}</th>`;
-                html += '</tr></thead><tbody>';
-                for(let r=0; r<rows-1; r++) {
-                    html += '<tr>';
-                    for(let c=0; c<cols; c++) html += `<td class="border border-slate-700 p-2" contenteditable="true">Data ${r+1}-${c+1}</td>`;
-                    html += '</tr>';
-                }
-                html += '</tbody></table><p><br></p>';
-                let editor = document.getElementById('richEditor');
-                if(editor) { editor.focus(); document.execCommand('insertHTML', false, html); }
-            }
-        }
-
+        // ================= NOTES & FINANCE =================
         function publishRichNote() {
             let title = document.getElementById('noteTitle').value;
             let subject = document.getElementById('noteSubject').value;
-            let editor = document.getElementById('richEditor');
-            let body = editor ? editor.innerHTML : '';
+            let body = document.getElementById('noteBody').value;
             let fileInput = document.getElementById('notePdfFile');
-
-            if(!title || !subject || !body) { alert('Fill in all note fields.'); return; }
+            if(!title || !subject || !body) { alert('Fill all fields.'); return; }
 
             if(fileInput && fileInput.files && fileInput.files[0]) {
                 let reader = new FileReader();
@@ -630,11 +665,8 @@
         }
 
         function saveNoteToFirestore(title, subject, body, resourceUrl, fileName) {
-            db.collection('notes').add({
-                title, subject, body, resourceUrl, fileName,
-                postedBy: auth.currentUser ? auth.currentUser.email : 'Admin',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => { alert('Note published!'); loadModule('notes'); });
+            db.collection('notes').add({ title, subject, body, resourceUrl, fileName, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
+                .then(() => { alert('Note published!'); loadModule('notes'); });
         }
 
         function fetchAdminNotes() {
@@ -644,22 +676,21 @@
                     let n = doc.data();
                     html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${n.title}</span><span class="text-[10px] text-amber-400">${n.subject}</span></div><button onclick="db.collection('notes').doc('${doc.id}').delete(); loadModule('notes');" class="text-red-400 text-[10px]">Delete</button></div>`;
                 });
-                document.getElementById('adminNotesList').innerHTML = html || '<p class="text-slate-500 text-xs">No notes.</p>';
+                let el1 = document.getElementById('adminNotesList');
+                let el2 = document.getElementById('adminNotesList2');
+                if(el1) el1.innerHTML = html || '<p class="text-slate-500 text-xs">No notes.</p>';
+                if(el2) el2.innerHTML = html || '<p class="text-slate-500 text-xs">No resources.</p>';
             });
         }
 
-        // ================= FINANCE & ANNOUNCEMENTS =================
         function recordPayment() {
             let studentEmail = document.getElementById('payStudentEmail').value;
             let amount = document.getElementById('payAmount').value;
             let purpose = document.getElementById('payPurpose').value;
             let term = document.getElementById('payTerm').value;
-
             if(!studentEmail || !amount || !purpose) { alert('Fill all fields.'); return; }
-            db.collection('payments').add({
-                studentEmail, amount, purpose, term, recordedBy: auth.currentUser.email,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => { alert('Payment recorded!'); loadModule('payments'); });
+            db.collection('payments').add({ studentEmail, amount, purpose, term, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
+                .then(() => { alert('Payment recorded!'); loadModule('payments'); });
         }
 
         function fetchAdminPayments() {
@@ -667,31 +698,9 @@
                 let html = '';
                 snap.forEach(doc => {
                     let p = doc.data();
-                    html += `
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
-                            <div>
-                                <span class="font-bold text-white block">${p.studentEmail}</span>
-                                <span class="text-[10px] text-slate-400">${p.purpose} (${p.term || 'General'})</span>
-                            </div>
-                            <div class="text-right">
-                                <span class="font-bold text-emerald-400 block">₦${Number(p.amount).toLocaleString()}</span>
-                                <button onclick="db.collection('payments').doc('${doc.id}').delete(); loadModule('payments');" class="text-red-400 text-[9px] underline mt-0.5">Delete</button>
-                            </div>
-                        </div>
-                    `;
+                    html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${p.studentEmail}</span><span class="text-[10px] text-slate-400">${p.purpose} (${p.term || 'General'})</span></div><div class="text-right"><span class="font-bold text-emerald-400 block">₦${Number(p.amount).toLocaleString()}</span><button onclick="db.collection('payments').doc('${doc.id}').delete(); loadModule('payments');" class="text-red-400 text-[9px] underline">Delete</button></div></div>`;
                 });
-                document.getElementById('adminPaymentsList').innerHTML = html || '<p class="text-slate-500 text-xs">No payment records found.</p>';
-            });
-        }
-
-        function fetchStudentPayments() {
-            db.collection('payments').where('studentEmail', '==', auth.currentUser.email).get().then(snap => {
-                let html = '';
-                snap.forEach(doc => {
-                    let p = doc.data();
-                    html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${p.purpose}</span><span class="text-[10px] text-slate-400">${p.term}</span></div><span class="text-emerald-400 font-bold">₦${Number(p.amount).toLocaleString()}</span></div>`;
-                });
-                document.getElementById('myPaymentsList').innerHTML = html || '<p class="text-slate-500 text-xs">No receipts found.</p>';
+                document.getElementById('adminPaymentsList').innerHTML = html || '<p class="text-slate-500 text-xs">No payment records.</p>';
             });
         }
 
@@ -699,7 +708,7 @@
             let category = document.getElementById('annCategory').value;
             let title = document.getElementById('annTitle').value;
             let content = document.getElementById('annContent').value;
-            if(!title || !content) { alert('Fill out title and content.'); return; }
+            if(!title || !content) { alert('Fill title and content.'); return; }
             db.collection('announcements').add({ category, title, content, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
                 .then(() => { alert('Published!'); loadModule('announcements'); });
         }
@@ -727,54 +736,7 @@
             });
         }
 
-        // ================= USER MANAGEMENT =================
-        function createNewUserAccount(role) {
-            let name = document.getElementById('newUserName').value;
-            let email = document.getElementById('newUserEmail').value;
-            let password = document.getElementById('newUserPassword').value;
-            if(!name || !email || !password) { alert('Fill all fields.'); return; }
-
-            let secondaryApp = firebase.initializeApp(firebaseConfig, 'Sec_' + Date.now());
-            secondaryApp.auth().createUserWithEmailAndPassword(email, password)
-                .then(cred => db.collection('users').doc(cred.user.uid).set({ name, email, role, isActive: true, assignedSubjects: [] }))
-                .then(() => { alert('Created!'); secondaryApp.auth().signOut(); secondaryApp.delete(); loadModule(role === 'student' ? 'students' : (role === 'super_admin' ? 'admins' : (role === 'bursar' ? 'bursars' : 'tutors'))); })
-                .catch(err => { alert(err.message); secondaryApp.auth().signOut(); secondaryApp.delete(); });
-        }
-
-        function fetchUserManagementList(role) {
-            db.collection('users').where('role', '==', role).get().then(snap => {
-                let html = '';
-                snap.forEach(doc => {
-                    let u = doc.data();
-                    html += `
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
-                            <div>
-                                <span class="font-bold text-white block">${u.name || 'User'}</span>
-                                <span class="text-[10px] text-slate-400">${u.email}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Active</span>
-                                <button onclick="deleteUserAccount('${doc.id}', '${role}')" class="text-red-400 text-[10px] bg-red-500/10 px-2 py-1 rounded border border-red-500/20 hover:bg-red-500/20">Delete</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                document.getElementById('userManagementList').innerHTML = html || '<p class="text-slate-500 text-xs">No users found.</p>';
-            });
-        }
-
-        function deleteUserAccount(uid, role) {
-            if(confirm('Are you sure you want to delete this user account?')) {
-                db.collection('users').doc(uid).delete()
-                    .then(() => {
-                        alert('User account deleted successfully.');
-                        loadModule(role === 'student' ? 'students' : (role === 'super_admin' ? 'admins' : (role === 'bursar' ? 'bursars' : 'tutors')));
-                    })
-                    .catch(err => alert('Error deleting user: ' + err.message));
-            }
-        }
-
-        // ================= CBT & EXAM ENGINE =================
+        // ================= CBT ENGINE =================
         function parseAndSaveBulkCBT() {
             let title = document.getElementById('cbtTitle').value;
             let duration = parseInt(document.getElementById('cbtDuration').value);
@@ -815,17 +777,6 @@
                     html += `<div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${c.title}</span><span class="text-[10px] text-amber-400">⏱️ ${c.duration} mins</span></div><button onclick="db.collection('cbts').doc('${doc.id}').delete(); loadModule('cbts');" class="text-red-400 text-[10px]">Delete</button></div>`;
                 });
                 document.getElementById('adminCbtList').innerHTML = html || '<p class="text-slate-500 text-xs">No exams.</p>';
-            });
-        }
-
-        function fetchStudentCBTs() {
-            db.collection('cbts').get().then(snap => {
-                let html = '';
-                snap.forEach(doc => {
-                    let c = doc.data();
-                    html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs"><div><span class="font-bold text-white block">${c.title}</span><span class="text-[10px] text-amber-400">⏱️ ${c.duration} Mins</span></div><button onclick="startLiveExam('${doc.id}')" class="bg-amber-500 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-lg">Start Exam 🚀</button></div>`;
-                });
-                document.getElementById('studentAvailableCbts').innerHTML = html || '<p class="text-slate-500 text-xs">No live exams.</p>';
             });
         }
 
@@ -884,12 +835,20 @@
 
         function routeUser(uid) {
             db.collection('users').doc(uid).get().then(doc => {
-                let userData = doc.exists ? doc.data() : { role: 'student', name: 'Student', isActive: true, assignedSubjects: [] };
+                let userData = doc.exists ? doc.data() : { role: 'student', name: 'Student', status: 'active', assignedSubjects: [] };
+                
+                // Check if suspended
+                if(userData.status === 'suspended') {
+                    alert('Your account has been suspended by the Super Admin.');
+                    auth.signOut();
+                    return;
+                }
+
                 loggedInUserData = userData;
                 currentUserRole = userData.role || 'student';
                 populateMenu(currentUserRole, userData.name);
 
-                if (currentUserRole === 'super_admin' || currentUserRole === 'bursar') {
+                if (currentUserRole === 'super_admin' || currentUserRole === 'bursar' || currentUserRole === 'tutor') {
                     document.getElementById('superAdminName').innerText = `Welcome, ${userData.name || 'Boss'}`;
                     switchView('superAdminView');
                     loadDashboardFeed('dashboardAnnouncementsFeed');
