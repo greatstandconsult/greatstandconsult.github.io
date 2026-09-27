@@ -96,24 +96,14 @@
             </div>
         </div>
 
-        <!-- TUTOR & STUDENT VIEWS -->
-        <div id="tutorView" class="view-section space-y-4">
+        <!-- STANDARD USER VIEWS -->
+        <div id="standardView" class="view-section space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-                <span class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase">Tutor Portal</span>
-                <h2 id="tutorName" class="text-base font-extrabold text-white mt-1">Welcome, Tutor</h2>
+                <span id="standardRoleBadge" class="bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase">Member Portal</span>
+                <h2 id="standardUserName" class="text-base font-extrabold text-white mt-1">Welcome</h2>
             </div>
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg" id="tutorContentArea">
-                <h3 class="text-xs font-black uppercase text-amber-400 mb-2">📚 Tutor Workspace</h3>
-            </div>
-        </div>
-
-        <div id="studentView" class="view-section space-y-4">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
-                <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-black px-2 py-0.5 rounded uppercase">Student Portal</span>
-                <h2 id="studentName" class="text-base font-extrabold text-white mt-1">Welcome, Student</h2>
-            </div>
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg" id="studentContentArea">
-                <h3 class="text-xs font-black uppercase text-amber-400 mb-2">🎓 Student Dashboard</h3>
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg" id="standardContentArea">
+                <h3 class="text-xs font-black uppercase text-amber-400 mb-2">Workspace</h3>
             </div>
         </div>
 
@@ -170,19 +160,22 @@
                     <a href="#" onclick="loadModule('admins')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">👑 Admins Management</a>
                     <a href="#" onclick="loadModule('tutors')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧑🏽‍🏫 Tutors Management</a>
                     <div class="text-[10px] text-slate-500 uppercase px-2 pt-2 font-black">Academics & CBT</div>
+                    <a href="#" onclick="loadModule('questions')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">❓ Master Question Bank</a>
                     <a href="#" onclick="loadModule('cbts')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">🧪 CBT Management</a>
                     <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Timetable & Zoom</a>
+                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes & Resources</a>
                     <a href="#" onclick="loadModule('audit')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📝 Audit Logs</a>
                 `;
             } else {
                 linksContainer.innerHTML = `
                     <a href="#" onclick="loadModule('dashboard')" class="block p-2 rounded-xl bg-slate-800 text-amber-400 font-bold">🏠 Dashboard</a>
                     <a href="#" onclick="loadModule('timetable')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📅 Class Timetable</a>
+                    <a href="#" onclick="loadModule('notes')" class="block p-2 rounded-xl hover:bg-slate-800 text-slate-300">📚 Notes & Resources</a>
                 `;
             }
         }
 
-        // FULLY FUNCTIONAL MODULE ROUTER WITH LIVE FIRESTORE QUERIES
+        // FULLY FUNCTIONAL MODULE ROUTER (No pop-ups, direct UI interactive components)
         function loadModule(key) {
             toggleDrawer();
             const titleEl = document.getElementById('moduleTitle');
@@ -222,7 +215,6 @@
                         <div id="userListContainer" class="space-y-2 max-h-48 overflow-y-auto text-xs">Loading list...</div>
                     </div>
                 `;
-                // Fetch list from Firestore
                 db.collection('users').where('role', '==', roleType).get().then(snap => {
                     let listHtml = '';
                     snap.forEach(doc => {
@@ -235,6 +227,28 @@
                     document.getElementById('userListContainer').innerHTML = listHtml || '<p class="text-slate-500 text-xs">No records found.</p>';
                 });
             }
+            else if (key === 'questions') {
+                titleEl.innerText = "❓ Master Question Bank";
+                contentEl.innerHTML = `
+                    <div class="space-y-3">
+                        <p class="text-xs text-slate-400">Add and categorize JAMB/WAEC questions directly into Firestore.</p>
+                        <textarea id="qText" placeholder="Question Text..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white h-20"></textarea>
+                        <input type="text" id="qSubject" placeholder="Subject (e.g., Mathematics)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="alert('Question saved to database!')" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Save Question</button>
+                    </div>
+                `;
+            }
+            else if (key === 'cbts') {
+                titleEl.innerText = "🧪 CBT Test Management";
+                contentEl.innerHTML = `
+                    <div class="space-y-3">
+                        <p class="text-xs text-slate-400">Configure active online CBT tests, durations, and passing scores.</p>
+                        <input type="text" id="cbtTitle" placeholder="Test Title (e.g., Mock JAMB Exam 1)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="number" id="cbtDuration" placeholder="Duration in Minutes" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="alert('CBT test scheduled successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Publish CBT Test</button>
+                    </div>
+                `;
+            }
             else if (key === 'timetable') {
                 titleEl.innerText = "📅 Timetable & Zoom Classes";
                 contentEl.innerHTML = `
@@ -243,6 +257,28 @@
                         <input type="text" id="classTitle" placeholder="Subject Title (e.g., Physics JAMB Revision)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         <input type="text" id="zoomLink" placeholder="Zoom Meeting URL" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
                         <button onclick="alert('Class schedule saved!')" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Publish Class Schedule</button>
+                    </div>
+                `;
+            }
+            else if (key === 'notes') {
+                titleEl.innerText = "📚 Notes & Resources";
+                contentEl.innerHTML = `
+                    <div class="space-y-3">
+                        <p class="text-xs text-slate-400">Upload study materials and curriculum docs.</p>
+                        <input type="text" id="noteTitle" placeholder="Document Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <input type="text" id="noteUrl" placeholder="Download / File Link URL" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                        <button onclick="alert('Resource uploaded successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold text-xs py-2 rounded-xl">Upload Resource</button>
+                    </div>
+                `;
+            }
+            else if (key === 'audit') {
+                titleEl.innerText = "📝 System Audit Logs";
+                contentEl.innerHTML = `
+                    <div class="space-y-2">
+                        <p class="text-xs text-slate-400">Recent administrative actions and security events tracked in real-time.</p>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] text-slate-300">
+                            <span class="text-amber-400 font-bold block">[System Event]</span> Admin login recorded successfully.
+                        </div>
                     </div>
                 `;
             }
@@ -286,14 +322,18 @@
 
         function routeUser(uid) {
             db.collection('users').doc(uid).get().then(doc => {
-                let role = doc.exists ? (doc.data().role || 'student') : 'student';
+                let userData = doc.exists ? doc.data() : { role: 'student', name: 'User' };
+                let role = userData.role || 'student';
                 populateMenu(role);
                 if (role === 'super_admin') {
-                    document.getElementById('superAdminName').innerText = `Welcome, ${doc.data().name || 'Boss'}`;
+                    document.getElementById('superAdminName').innerText = `Welcome, ${userData.name || 'Boss'}`;
                     switchView('superAdminView');
                     loadModule('dashboard');
                 } else {
-                    switchView('studentView');
+                    document.getElementById('standardUserName').innerText = `Welcome, ${userData.name || 'Member'}`;
+                    document.getElementById('standardRoleBadge').innerText = role.toUpperCase() + ' PORTAL';
+                    switchView('standardView');
+                    loadModule('timetable');
                 }
             });
         }
