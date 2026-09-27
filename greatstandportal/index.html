@@ -542,7 +542,7 @@
             else if (key === 'topics') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" id="topicName" placeholder="Topic Title (e.g. Differentiation)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><input type="text" id="topicSubject" placeholder="Subject" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Topic created successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Create Topic</button></div>`;
             }
-            // Module 10: Notes Management & PDF (With Clean HTML Table Insertion)
+            // Module 10: Notes Management & PDF (With Markdown Table Insertion)
             else if (key === 'notes') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
@@ -697,7 +697,7 @@
             }
         }
 
-        // ================= RICH NOTE FORMATTING HELPER (CLEAN HTML TABLE) =================
+        // ================= RICH NOTE FORMATTING HELPER (CLEAN MARKDOWN TABLE) =================
         function formatNoteText(type) {
             let textarea = document.getElementById('noteBody');
             if(!textarea) return;
@@ -721,16 +721,7 @@
                 insertion = `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin:8px 0;"><iframe src="${url}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;border-radius:8px;" allowfullscreen></iframe></div>`;
             }
             else if(type === 'table') {
-                insertion = `<table border="1" style="width:100%; border-collapse:collapse; margin:10px 0; background:#0f172a; color:#f8fafc; font-size:11px;">\n` +
-                            `  <tr style="background:#1e293b; color:#fbbf24;">\n` +
-                            `    <th style="border:1px solid #334155; padding:6px; text-align:left;">Header 1</th>\n` +
-                            `    <th style="border:1px solid #334155; padding:6px; text-align:left;">Header 2</th>\n` +
-                            `  </tr>\n` +
-                            `  <tr>\n` +
-                            `    <td style="border:1px solid #334155; padding:6px;">Row 1, Col 1</td>\n` +
-                            `    <td style="border:1px solid #334155; padding:6px;">Row 1, Col 2</td>\n` +
-                            `  </tr>\n` +
-                            `</table>`;
+                insertion = `\n| Header 1 | Header 2 | Header 3 |\n|---|---|---|\n| Data 1-1 | Data 1-2 | Data 1-3 |\n| Data 2-1 | Data 2-2 | Data 2-3 |\n`;
             }
 
             textarea.value = textarea.value.substring(0, start) + insertion + textarea.value.substring(end);
