@@ -388,24 +388,62 @@
             }
             // Module 7: Programme Management
             else if (key === 'programmes') {
-                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Active Academic Programmes:</p><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1"><span class="font-bold text-amber-400 block">🏛️ WAEC Senior Secondary School</span><span class="text-[10px] text-slate-400">Full science, arts, and commercial curriculum.</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1"><span class="font-bold text-amber-400 block">📚 JAMB UTME Preparatory</span><span class="text-[10px] text-slate-400">CBT practice and core test series.</span></div></div>`;
+                contentEl.innerHTML = `<div class="space-y-3 text-xs"><p class="text-slate-400">Active Academic Programmes:</p><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1"><span class="font-bold text-amber-400 block">🏛️ WAEC Senior Secondary School</span><span class="text-[10px] text-slate-400">Full science, arts, commercial & general curriculum.</span></div><div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1"><span class="font-bold text-amber-400 block">📚 JAMB UTME Preparatory</span><span class="text-[10px] text-slate-400">CBT practice and core test series.</span></div></div>`;
             }
-            // Module 8: Subject Management & Assignment
+            // Module 8: Subject Management & Assignment (Comprehensive Subject List)
             else if (key === 'subjects') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 text-xs">
-                        <p class="text-slate-400">Assign subjects to students across WAEC/JAMB streams:</p>
+                        <p class="text-slate-400 font-bold">Assign subjects (General, Sciences, Arts, Commercial):</p>
                         <select id="targetStudentSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><option value="">Loading students...</option></select>
-                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2 max-h-60 overflow-y-auto">
-                            <p class="font-bold text-amber-400">Select Authorized Subjects:</p>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="English Language"> English Language</label>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="Mathematics"> Mathematics</label>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="Physics"> Physics</label>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="Chemistry"> Chemistry</label>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="Biology"> Biology</label>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="Economics"> Economics</label>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="Government"> Government</label>
-                            <label class="block"><input type="checkbox" name="subjectCheck" value="Literature-in-English"> Literature-in-English</label>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-3 max-h-72 overflow-y-auto">
+                            
+                            <div>
+                                <span class="text-amber-400 font-black block mb-1">🌐 General Subjects</span>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="English Language"> English Language</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Mathematics"> Mathematics</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Civic Education"> Civic Education</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Computer Studies / ICT"> Computer Studies / ICT</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Data Processing"> Data Processing</label>
+                            </div>
+
+                            <div class="border-t border-slate-800 pt-2">
+                                <span class="text-amber-400 font-black block mb-1">🔬 Science Subjects</span>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Physics"> Physics</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Chemistry"> Chemistry</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Biology"> Biology</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Agricultural Science"> Agricultural Science</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Further Mathematics"> Further Mathematics</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Geography"> Geography</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Health Education"> Health Education</label>
+                            </div>
+
+                            <div class="border-t border-slate-800 pt-2">
+                                <span class="text-amber-400 font-black block mb-1">🎭 Arts / Humanities Subjects</span>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Literature-in-English"> Literature-in-English</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Government"> Government</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Christian Religious Studies (CRS)"> Christian Religious Studies (CRS)</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Islamic Studies (IRS)"> Islamic Studies (IRS)</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="History"> History</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Economics"> Economics</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Visual Art"> Visual Art</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Music"> Music</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="French"> French</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Hausa"> Hausa</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Igbo"> Igbo</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Yoruba"> Yoruba</label>
+                            </div>
+
+                            <div class="border-t border-slate-800 pt-2">
+                                <span class="text-amber-400 font-black block mb-1">💼 Commercial Subjects</span>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Financial Accounting"> Financial Accounting</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Commerce"> Commerce</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Book Keeping"> Book Keeping</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Office Practice"> Office Practice</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Insurance"> Insurance</label>
+                                <label class="block"><input type="checkbox" name="subjectCheck" value="Marketing"> Marketing</label>
+                            </div>
+
                         </div>
                         <button onclick="saveStudentSubjects()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Save Assigned Subjects 🚀</button>
                     </div>
@@ -420,14 +458,28 @@
             else if (key === 'topics') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><input type="text" id="topicName" placeholder="Topic Title (e.g. Differentiation)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><input type="text" id="topicSubject" placeholder="Subject" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white"><button onclick="alert('Topic created and structured successfully!')" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Create Topic</button></div>`;
             }
-            // Module 10: Notes Management & PDF
+            // Module 10: Notes Management & PDF (With full Rich Formatting Toolbar)
             else if (key === 'notes') {
                 contentEl.innerHTML = `
                     <div class="space-y-3 border-b border-slate-800 pb-4 text-xs">
                         <p class="text-amber-400 font-bold">📚 Publish Rich Note & PDF</p>
                         <input type="text" id="noteTitle" placeholder="Title" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <input type="text" id="noteSubject" placeholder="Subject" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
-                        <textarea id="noteBody" placeholder="Note content..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white h-24"></textarea>
+                        <input type="text" id="noteSubject" placeholder="Subject (e.g. Mathematics, Physics)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white">
+                        
+                        <!-- Working Rich Formatting Toolbar -->
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold block mb-1">Formatting Toolbar:</span>
+                            <div class="flex flex-wrap gap-1.5 bg-slate-950 p-2 rounded-xl border border-slate-800">
+                                <button type="button" onclick="formatNoteText('b')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold px-3 py-1 rounded border border-slate-800 text-xs">B</button>
+                                <button type="button" onclick="formatNoteText('i')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold px-3 py-1 rounded border border-slate-800 text-xs italic">I</button>
+                                <button type="button" onclick="formatNoteText('u')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold px-3 py-1 rounded border border-slate-800 text-xs underline">U</button>
+                                <button type="button" onclick="formatNoteText('img')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold px-2.5 py-1 rounded border border-slate-800 text-xs">🖼️ Image</button>
+                                <button type="button" onclick="formatNoteText('video')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold px-2.5 py-1 rounded border border-slate-800 text-xs">🎬 Video</button>
+                                <button type="button" onclick="formatNoteText('table')" class="bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold px-2.5 py-1 rounded border border-slate-800 text-xs">📊 Table</button>
+                            </div>
+                        </div>
+
+                        <textarea id="noteBody" placeholder="Type or paste note content here. Use formatting buttons above..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white h-36 leading-relaxed"></textarea>
                         <input type="file" id="notePdfFile" accept=".pdf" class="w-full text-xs text-slate-400">
                         <button onclick="publishRichNote()" class="w-full bg-amber-500 text-slate-950 font-bold py-2.5 rounded-xl">Publish Note 📖</button>
                     </div>
@@ -579,6 +631,37 @@
             else if (key === 'platformControl') {
                 contentEl.innerHTML = `<div class="space-y-3 text-xs"><div class="bg-red-500/10 border border-red-500/20 p-3 rounded-xl"><p class="font-bold text-red-400 mb-1">⚠️ Master Platform Override</p><p class="text-[11px] text-slate-300">You hold final administrative authority over all portal operations, user suspensions, and database configurations.</p></div></div>`;
             }
+        }
+
+        // ================= RICH NOTE FORMATTING HELPER =================
+        function formatNoteText(type) {
+            let textarea = document.getElementById('noteBody');
+            if(!textarea) return;
+            let start = textarea.selectionStart;
+            let end = textarea.selectionEnd;
+            let selectedText = textarea.value.substring(start, end) || 'Sample Text';
+            let insertion = '';
+
+            if(type === 'b') insertion = `<b>${selectedText}</b>`;
+            else if(type === 'i') insertion = `<i>${selectedText}</i>`;
+            else if(type === 'u') insertion = `<u>${selectedText}</u>`;
+            else if(type === 'img') {
+                let url = prompt('Enter Image URL:', 'https://images.unsplash.com/...');
+                if(!url) return;
+                insertion = `<img src="${url}" alt="Note Image" style="max-width:100%; border-radius:8px; margin:8px 0;" />`;
+            }
+            else if(type === 'video') {
+                let url = prompt('Enter YouTube Embed URL or Video Link:', 'https://www.youtube.com/embed/...');
+                if(!url) return;
+                if(url.includes('watch?v=')) { url = url.replace('watch?v=', 'embed/'); }
+                insertion = `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin:8px 0;"><iframe src="${url}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;border-radius:8px;" allowfullscreen></iframe></div>`;
+            }
+            else if(type === 'table') {
+                insertion = `<table style="width:100%; border-collapse:collapse; margin:8px 0; font-size:11px;"><thead><tr style="background:#1e293b; color:#fbbf24;"><th style="border:1px solid #334155; padding:6px;">Header 1</th><th style="border:1px solid #334155; padding:6px;">Header 2</th></tr></thead><tbody><tr><td style="border:1px solid #334155; padding:6px;">Data 1</td><td style="border:1px solid #334155; padding:6px;">Data 2</td></tr></tbody></table>`;
+            }
+
+            textarea.value = textarea.value.substring(0, start) + insertion + textarea.value.substring(end);
+            textarea.focus();
         }
 
         // ================= FULL USER MANAGEMENT (SUSPEND, ACTIVATE, DELETE) =================
@@ -837,7 +920,6 @@
             db.collection('users').doc(uid).get().then(doc => {
                 let userData = doc.exists ? doc.data() : { role: 'student', name: 'Student', status: 'active', assignedSubjects: [] };
                 
-                // Check if suspended
                 if(userData.status === 'suspended') {
                     alert('Your account has been suspended by the Super Admin.');
                     auth.signOut();
