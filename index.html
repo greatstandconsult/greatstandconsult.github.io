@@ -278,7 +278,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-  <!-- Live Feed Script -->
+  <!-- Ultra-Flexible Live Feed Script -->
   <script>
       const firebaseConfig = {
           apiKey: "AIzaSyBHnSGUALrnN-j8inER4MNcveQwJmyhLP4",
@@ -314,15 +314,22 @@
               let html = '';
               snap.forEach(doc => {
                   let a = doc.data();
+                  
+                  // Flexible mapping for fields
+                  let title = a.title || a.heading || a.subject || a.name || 'Announcement';
+                  let content = a.content || a.message || a.body || a.text || 'View details in portal.';
+                  let category = a.category || a.type || 'General Announcement';
+                  
                   let dateStr = 'Recent Update';
                   if (a.createdAt && a.createdAt.toDate) {
                       dateStr = a.createdAt.toDate().toLocaleDateString();
                   }
+
                   html += `
                       <article class="update-card reveal">
-                          <div class="update-tag">${a.category || 'Update'}</div>
-                          <h3>${a.title}</h3>
-                          <p>${a.content}</p>
+                          <div class="update-tag">${category}</div>
+                          <h3>${title}</h3>
+                          <p>${content}</p>
                           <span>${dateStr}</span>
                       </article>
                   `;
@@ -335,13 +342,11 @@
                       <div class="update-tag" style="background: rgba(239, 68, 68, 0.1); color: #f87171;">CONNECTION NOTICE</div>
                       <h3>Unable to load live updates</h3>
                       <p>Error details: ${err.message}</p>
-                      <span>Please check Firebase rules</span>
                   </article>
               `;
           });
       }
 
-      // Execute immediately on page load
       loadPublicNewsFeed();
   </script>
 
