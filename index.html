@@ -187,6 +187,7 @@
       </div>
     </section>
 
+    <!-- LIVE UPDATES SECTION CONNECTED TO FIREBASE -->
     <section class="updates section" id="updates">
       <div class="container">
         <div class="section-heading reveal">
@@ -194,12 +195,15 @@
             <div class="section-kicker">STAY INFORMED</div>
             <h2>Latest educational <span>updates.</span></h2>
           </div>
-          <p>This section is ready for Great Stand to publish JAMB, WAEC, Post-UTME, admission, result and scholarship updates.</p>
+          <p>Official announcements, JAMB, WAEC, Post-UTME, admission and consultancy updates from Great Stand.</p>
         </div>
-        <div class="update-grid">
-          <article class="update-card reveal"><div class="update-tag">JAMB</div><h3>JAMB & admission updates</h3><p>Important announcements and guidance for candidates.</p><span>Updates coming soon</span></article>
-          <article class="update-card reveal"><div class="update-tag">WAEC</div><h3>WAEC information</h3><p>Examination news, results and useful preparation information.</p><span>Updates coming soon</span></article>
-          <article class="update-card reveal"><div class="update-tag">ADMISSIONS</div><h3>University admission updates</h3><p>Screening, admission lists, requirements and deadlines.</p><span>Updates coming soon</span></article>
+        <div class="update-grid" id="publicNewsFeed">
+          <article class="update-card reveal">
+            <div class="update-tag">LIVE FEED</div>
+            <h3>Loading latest updates...</h3>
+            <p>Please wait while we fetch the latest announcements from Great Stand.</p>
+            <span>Connecting...</span>
+          </article>
         </div>
       </div>
     </section>
@@ -260,7 +264,7 @@
   <footer class="footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <img src="assets/great-stand-logo.jpg" alt="Great Stand Educational Consult logo">
+        <img src="great-stand-logo.jpg" alt="Great Stand Educational Consult logo">
         <div><strong>GREAT STAND</strong><span>EDUCATIONAL CONSULT</span></div>
         <p>Guiding Students. Building Futures.</p>
       </div>
@@ -269,6 +273,61 @@
     </div>
     <div class="container copyright">© 2026 Great Stand Educational Consult. All Rights Reserved.</div>
   </footer>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <script>
+      const firebaseConfig = {
+          apiKey: "AIzaSyBHnSGUALrnN-j8inER4MNcveQwJmyhLP4",
+          authDomain: "great-stand-portal.firebaseapp.com",
+          databaseURL: "https://great-stand-portal-default-rtdb.firebaseio.com",
+          projectId: "great-stand-portal",
+          storageBucket: "great-stand-portal.firebasestorage.app",
+          messagingSenderId: "747296287485",
+          appId: "1:747296287485:web:3289d724c48c197141ac94",
+          measurementId: "G-JE18QY2Z2K"
+      };
+
+      if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+      const db = firebase.firestore();
+
+      function loadPublicNewsFeed() {
+          db.collection('announcements').orderBy('createdAt', 'desc').limit(6).get().then(snap => {
+              let html = '';
+              snap.forEach(doc => {
+                  let a = doc.data();
+                  let dateStr = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleDateString() : 'Recent';
+                  html += `
+                      <article class="update-card reveal">
+                          <div class="update-tag">${a.category || 'Update'}</div>
+                          <h3>${a.title}</h3>
+                          <p>${a.content}</p>
+                          <span>${dateStr}</span>
+                      </article>
+                  `;
+              });
+              let feedEl = document.getElementById('publicNewsFeed');
+              if(feedEl && html) {
+                  feedEl.innerHTML = html;
+              } else if(feedEl) {
+                  feedEl.innerHTML = `
+                      <article class="update-card reveal">
+                          <div class="update-tag">NOTICE</div>
+                          <h3>No public updates yet</h3>
+                          <p>Check back soon for the latest announcements from Great Stand Educational Consult.</p>
+                          <span>Stay tuned</span>
+                      </article>
+                  `;
+              }
+          }).catch(err => {
+              console.error("Error loading updates:", err);
+          });
+      }
+
+      window.addEventListener('DOMContentLoaded', loadPublicNewsFeed);
+  </script>
 
   <script src="script.js"></script>
 </body>
