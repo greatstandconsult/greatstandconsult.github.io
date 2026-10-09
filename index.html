@@ -278,7 +278,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-  <!-- Bulletproof Live Feed Script -->
+  <!-- Live Feed Script -->
   <script>
       const firebaseConfig = {
           apiKey: "AIzaSyBHnSGUALrnN-j8inER4MNcveQwJmyhLP4",
@@ -341,7 +341,8 @@
           });
       }
 
-      window.addEventListener('DOMContentLoaded', loadPublicNewsFeed);
+      // Execute immediately on page load
+      loadPublicNewsFeed();
   </script>
 
   <script src="script.js"></script>
