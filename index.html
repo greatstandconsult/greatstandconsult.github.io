@@ -274,21 +274,21 @@
     <div class="container copyright">© 2026 Great Stand Educational Consult. All Rights Reserved.</div>
   </footer>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDKs (Compat Version) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-  <!-- Ultra-Flexible Live Feed Script -->
+  <!-- Portal Project Config & Flexible Fetcher -->
   <script>
       const firebaseConfig = {
-          apiKey: "AIzaSyBHnSGUALrnN-j8inER4MNcveQwJmyhLP4",
-          authDomain: "great-stand-portal.firebaseapp.com",
-          databaseURL: "https://great-stand-portal-default-rtdb.firebaseio.com",
-          projectId: "great-stand-portal",
-          storageBucket: "great-stand-portal.firebasestorage.app",
-          messagingSenderId: "747296287485",
-          appId: "1:747296287485:web:3289d724c48c197141ac94",
-          measurementId: "G-JE18QY2Z2K"
+        apiKey: "AIzaSyBHnSGUALrnN-j8inER4MNcveQwJmyhLP4",
+        authDomain: "great-stand-portal.firebaseapp.com",
+        databaseURL: "https://great-stand-portal-default-rtdb.firebaseio.com",
+        projectId: "great-stand-portal",
+        storageBucket: "great-stand-portal.firebasestorage.app",
+        messagingSenderId: "747296287485",
+        appId: "1:747296287485:web:3289d724c48c197141ac94",
+        measurementId: "G-JE18QY2Z2K"
       };
 
       if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
@@ -314,8 +314,6 @@
               let html = '';
               snap.forEach(doc => {
                   let a = doc.data();
-                  
-                  // Flexible mapping for fields
                   let title = a.title || a.heading || a.subject || a.name || 'Announcement';
                   let content = a.content || a.message || a.body || a.text || 'View details in portal.';
                   let category = a.category || a.type || 'General Announcement';
