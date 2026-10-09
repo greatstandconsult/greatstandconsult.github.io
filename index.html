@@ -278,6 +278,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
+  <!-- Bulletproof Live Feed Script -->
   <script>
       const firebaseConfig = {
           apiKey: "AIzaSyBHnSGUALrnN-j8inER4MNcveQwJmyhLP4",
@@ -294,11 +295,29 @@
       const db = firebase.firestore();
 
       function loadPublicNewsFeed() {
-          db.collection('announcements').orderBy('createdAt', 'desc').limit(6).get().then(snap => {
+          let feedEl = document.getElementById('publicNewsFeed');
+          if (!feedEl) return;
+
+          db.collection('announcements').get().then(snap => {
+              if (snap.empty) {
+                  feedEl.innerHTML = `
+                      <article class="update-card reveal">
+                          <div class="update-tag">NOTICE</div>
+                          <h3>No public updates yet</h3>
+                          <p>Check back soon for the latest announcements from Great Stand Educational Consult.</p>
+                          <span>Stay tuned</span>
+                      </article>
+                  `;
+                  return;
+              }
+
               let html = '';
               snap.forEach(doc => {
                   let a = doc.data();
-                  let dateStr = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleDateString() : 'Recent';
+                  let dateStr = 'Recent Update';
+                  if (a.createdAt && a.createdAt.toDate) {
+                      dateStr = a.createdAt.toDate().toLocaleDateString();
+                  }
                   html += `
                       <article class="update-card reveal">
                           <div class="update-tag">${a.category || 'Update'}</div>
@@ -308,21 +327,17 @@
                       </article>
                   `;
               });
-              let feedEl = document.getElementById('publicNewsFeed');
-              if(feedEl && html) {
-                  feedEl.innerHTML = html;
-              } else if(feedEl) {
-                  feedEl.innerHTML = `
-                      <article class="update-card reveal">
-                          <div class="update-tag">NOTICE</div>
-                          <h3>No public updates yet</h3>
-                          <p>Check back soon for the latest announcements from Great Stand Educational Consult.</p>
-                          <span>Stay tuned</span>
-                      </article>
-                  `;
-              }
+              feedEl.innerHTML = html;
           }).catch(err => {
-              console.error("Error loading updates:", err);
+              console.error("Firebase Error:", err);
+              feedEl.innerHTML = `
+                  <article class="update-card reveal" style="border-color: rgba(239, 68, 68, 0.3);">
+                      <div class="update-tag" style="background: rgba(239, 68, 68, 0.1); color: #f87171;">CONNECTION NOTICE</div>
+                      <h3>Unable to load live updates</h3>
+                      <p>Error details: ${err.message}</p>
+                      <span>Please check Firebase rules</span>
+                  </article>
+              `;
           });
       }
 
